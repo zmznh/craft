@@ -1,0 +1,10 @@
+{
+  "name": "Crafty",
+  "short_name": "Crafty",
+  "description": "本地的 Craft 风格文档与白板工作区",
+  "start_url": "/documents",
+  "display": "standalone",
+  "background_color": "#fcf9f7",
+  "theme_color": "#030302",
+  "icons": []
+}

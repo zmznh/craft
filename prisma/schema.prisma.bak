@@ -1,0 +1,335 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════
+// 用户
+// ═══════════════════════════════════════════
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String    // bcrypt
+  image         String?
+  theme         String    @default("system") // "light" | "dark" | "system"
+  editorFont    String    @default("inter")  // 编辑器字体偏好
+  editorWidth   String    @default("default") // "narrow" | "default" | "wide"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  documents     Document[]
+  folders       Folder[]
+  favorites     Favorite[]
+  tags          Tag[]
+  collections   Collection[]
+  whiteboards   Whiteboard[]
+  dailyNotesConfig DailyNotesConfig?
+
+  @@map("users")
+}
+
+// ═══════════════════════════════════════════
+// 文件夹（无限嵌套）
+// ═══════════════════════════════════════════
+model Folder {
+  id        String    @id @default(cuid())
+  name      String    @default("未命名文件夹")
+  icon      String?
+  order     Float     @default(0)
+  parentId  String?
+  userId    String
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Folder?   @relation("FolderTree", fields: [parentId], references: [id])
+  children  Folder[]  @relation("FolderTree")
+  documents Document[]
+  collections Collection[]
+  whiteboards Whiteboard[]
+
+  @@index([userId])
+  @@index([parentId])
+  @@map("folders")
+}
+
+// ═══════════════════════════════════════════
+// 文档（核心）
+// ═══════════════════════════════════════════
+model Document {
+  id            String    @id @default(cuid())
+  title         String    @default("无标题")
+  icon          String?   // emoji
+  coverImage    String?   // URL
+  coverType     String?   // "image" | "gradient" | "color" | "none"
+  content       Json?     // TipTap ProseMirror JSON
+  plainText     String    @default("") // 提取纯文本，用于搜索
+  order         Float     @default(0)
+
+  // 层级
+  parentId      String?   // 父文档（子页面）
+  folderId      String?
+  userId        String
+
+  // 页面样式
+  font          String?   // 覆盖用户默认字体
+  width         String?   // 覆盖用户默认宽度
+
+  // 状态
+  isTemplate    Boolean   @default(false)
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+
+  // 日记
+  isDailyNote   Boolean   @default(false)
+  dailyNoteDate DateTime?
+
+  // 统计缓存
+  wordCount     Int       @default(0)
+  charCount     Int       @default(0)
+
+  // 版本历史
+  version       Int       @default(1)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent        Document? @relation("DocumentTree", fields: [parentId], references: [id])
+  children      Document[] @relation("DocumentTree")
+  folder        Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  favorites     Favorite[]
+  tags          DocumentTag[]
+  backlinks     Backlink[] @relation("LinkedDocument")
+  linkingDocs   Backlink[] @relation("SourceDocument")
+  versions      DocumentVersion[]
+
+  @@index([userId])
+  @@index([folderId])
+  @@index([parentId])
+  @@index([isDeleted])
+  @@index([isDailyNote, dailyNoteDate])
+  @@map("documents")
+}
+
+// ═══════════════════════════════════════════
+// 文档版本历史
+// ═══════════════════════════════════════════
+model DocumentVersion {
+  id          String   @id @default(cuid())
+  documentId  String
+  version     Int
+  title       String
+  content     Json
+  plainText   String   @default("")
+  wordCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, version])
+  @@map("document_versions")
+}
+
+// ═══════════════════════════════════════════
+// 集合/数据库（类 Notion Database）
+// ═══════════════════════════════════════════
+model Collection {
+  id          String   @id @default(cuid())
+  name        String   @default("未命名集合")
+  icon        String?
+  description String?
+  order       Float    @default(0)
+  folderId    String?
+  userId      String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder      Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  properties  CollectionProperty[]
+  items       CollectionItem[]
+  views       CollectionView[]
+
+  @@index([userId])
+  @@index([folderId])
+  @@map("collections")
+}
+
+model CollectionProperty {
+  id           String   @id @default(cuid())
+  collectionId String
+  name         String
+  type         String   // "text"|"number"|"date"|"select"|"multi_select"|"checkbox"|"url"|"email"|"file"|"relation"|"formula"|"created_at"|"updated_at"
+  config       Json?    // 类型特定配置（如 select 的选项列表）
+  order        Int      @default(0)
+  isVisible    Boolean  @default(true)
+  width        Int?     // 列宽
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  values       CollectionValue[]
+
+  @@index([collectionId])
+  @@map("collection_properties")
+}
+
+model CollectionItem {
+  id           String   @id @default(cuid())
+  collectionId String
+  order        Float    @default(0)
+  // 关联文档（每个集合项可以展开为一个文档）
+  documentId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  document     Document?  @relation(fields: [documentId], references: [id])
+  values       CollectionValue[]
+
+  @@index([collectionId])
+  @@map("collection_items")
+}
+
+model CollectionValue {
+  id           String   @id @default(cuid())
+  itemId       String
+  propertyId   String
+  value        Json?    // 灵活存储各种类型的值
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  item         CollectionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  property     CollectionProperty @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, propertyId])
+  @@map("collection_values")
+}
+
+model CollectionView {
+  id           String   @id @default(cuid())
+  collectionId String
+  name         String   @default("默认视图")
+  type         String   // "table" | "kanban" | "calendar" | "list"
+  config       Json?    // 筛选、排序、分组、可见属性、看板分组属性等
+  isActive     Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@index([collectionId])
+  @@map("collection_views")
+}
+
+// ═══════════════════════════════════════════
+// 白板
+// ═══════════════════════════════════════════
+model Whiteboard {
+  id          String   @id @default(cuid())
+  name        String   @default("未命名白板")
+  icon        String?
+  data        Json?    // Excalidraw 场景数据
+  order       Float    @default(0)
+  folderId    String?
+  userId      String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder      Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([folderId])
+  @@map("whiteboards")
+}
+
+// ═══════════════════════════════════════════
+// 标签
+// ═══════════════════════════════════════════
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("#6366f1")
+  userId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents DocumentTag[]
+
+  @@unique([name, userId])
+  @@map("tags")
+}
+
+model DocumentTag {
+  documentId String
+  tagId      String
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([documentId, tagId])
+  @@map("document_tags")
+}
+
+// ═══════════════════════════════════════════
+// 收藏
+// ═══════════════════════════════════════════
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  documentId String
+  order      Float    @default(0)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, documentId])
+  @@map("favorites")
+}
+
+// ═══════════════════════════════════════════
+// 反向链接
+// ═══════════════════════════════════════════
+model Backlink {
+  id               String   @id @default(cuid())
+  sourceDocumentId String
+  linkedDocumentId String
+  createdAt        DateTime @default(now())
+
+  sourceDocument   Document @relation("SourceDocument", fields: [sourceDocumentId], references: [id], onDelete: Cascade)
+  linkedDocument   Document @relation("LinkedDocument", fields: [linkedDocumentId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceDocumentId, linkedDocumentId])
+  @@map("backlinks")
+}
+
+// ═══════════════════════════════════════════
+// 日记配置
+// ═══════════════════════════════════════════
+model DailyNotesConfig {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  folderId    String?  // 日记存放的文件夹
+  templateId  String?  // 日记模板文档 ID
+  startTime   String   @default("00:00") // 一天的开始时间
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("daily_notes_config")
+}
