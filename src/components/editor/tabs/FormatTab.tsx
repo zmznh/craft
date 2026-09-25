@@ -61,8 +61,8 @@ function FormatButton({ icon: Icon, active, onClick, label }: {
       title={label}
       onClick={onClick}
       className={cn(
-        'flex size-8 items-center justify-center rounded-md border border-border transition-colors',
-        active ? 'bg-accent text-accent-foreground' : 'bg-card text-muted-foreground hover:bg-muted'
+        'flex size-8 items-center justify-center rounded-md border border-foreground/8 transition-colors duration-150 ease-craft',
+        active ? 'bg-foreground/8 text-foreground' : 'bg-card text-foreground/55 hover:bg-foreground/4 hover:text-foreground/85'
       )}
     >
       <Icon className="size-4" />
@@ -75,7 +75,7 @@ export function FormatTab({ editor }: FormatTabProps) {
     <div className="space-y-4 p-3">
       {/* Text styles */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">文本</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">文本</h4>
         <div className="grid grid-cols-3 gap-1">
           {textStyles.map((style) => (
             <button
@@ -83,8 +83,8 @@ export function FormatTab({ editor }: FormatTabProps) {
               type="button"
               onClick={() => style.action(editor)}
               className={cn(
-                'rounded-md border border-border px-2 py-1.5 text-[11px] transition-colors hover:bg-muted',
-                style.check(editor) ? 'bg-accent text-accent-foreground' : 'bg-card text-muted-foreground'
+                'rounded-md border border-foreground/8 px-2 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4',
+                style.check(editor) ? 'bg-foreground/8 text-foreground' : 'bg-card text-foreground/55'
               )}
             >
               {style.label}
@@ -162,7 +162,7 @@ export function FormatTab({ editor }: FormatTabProps) {
 
       {/* Color */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">颜色</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">颜色</h4>
         <div className="grid grid-cols-5 gap-2">
           {formatColors.map((color) => (
             <button
@@ -171,7 +171,7 @@ export function FormatTab({ editor }: FormatTabProps) {
               title={color}
               className={cn(
                 'size-7 rounded-full border-2 border-transparent transition-transform hover:scale-110',
-                editor.isActive('textStyle', { color }) && 'ring-2 ring-primary ring-offset-2'
+                editor.isActive('textStyle', { color }) && 'ring-2 ring-craft-accent ring-offset-2'
               )}
               style={{ backgroundColor: color }}
               onClick={() => editor.chain().focus().setColor(color).run()}

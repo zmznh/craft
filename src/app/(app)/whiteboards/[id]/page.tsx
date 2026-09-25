@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { ViewTransition } from 'react';
 import { auth } from '@/lib/auth/auth';
 import { getWhiteboard } from '@/actions/whiteboard/whiteboard';
 import { Board } from '@/components/whiteboard/Board';
@@ -19,6 +20,7 @@ export default async function WhiteboardPage({ params }: WhiteboardPageProps) {
   if (!board) redirect('/whiteboards');
 
   return (
+    <ViewTransition>
     <div className="flex h-full flex-1 flex-col overflow-hidden">
       <div className="flex h-12 shrink-0 items-center justify-between gap-3 px-4">
         <div className="min-w-0 flex-1">
@@ -30,5 +32,6 @@ export default async function WhiteboardPage({ params }: WhiteboardPageProps) {
         <Board whiteboardId={board.id} />
       </div>
     </div>
+    </ViewTransition>
   );
 }

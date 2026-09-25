@@ -16,10 +16,10 @@ export function SidebarSection({ title, children, defaultOpen = true, action }: 
 
   return (
     <div className="py-1">
-      <div className="flex items-center justify-between px-3 py-1">
+      <div className="flex items-center justify-between px-1.5 py-1">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1 text-meta font-semibold text-foreground/40 hover:text-foreground transition-colors duration-150"
         >
           <ChevronRight
             className={cn(

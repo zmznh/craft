@@ -96,18 +96,23 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
 
   if (!isOpen) {
     return (
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)}>
-        <Plus className="mr-2 size-4" />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+        onClick={() => setIsOpen(true)}
+      >
+        <Plus className="mr-1.5 size-3.5" />
         添加筛选
       </Button>
     );
   }
 
   return (
-    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3">
+    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3 text-ui">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">筛选条件</span>
-        <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+        <span className="text-ui font-medium">筛选条件</span>
+        <Button variant="ghost" size="sm" className="h-7 rounded-md hover:bg-foreground/4" onClick={() => setIsOpen(false)}>
           <X className="size-4" />
         </Button>
       </div>
@@ -122,7 +127,7 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
               <select
                 value={filter.propertyId}
                 onChange={(e) => handleUpdateFilter(filter.id, { propertyId: e.target.value })}
-                className="rounded border border-border bg-background px-2 py-1 text-sm"
+                className="h-7 rounded-md border border-border bg-background px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
               >
                 {properties.map((p: any) => (
                   <option key={p.id} value={p.id}>
@@ -134,7 +139,7 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
               <select
                 value={filter.operator}
                 onChange={(e) => handleUpdateFilter(filter.id, { operator: e.target.value })}
-                className="rounded border border-border bg-background px-2 py-1 text-sm"
+                className="h-7 rounded-md border border-border bg-background px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
               >
                 {availableOperators.map((op: any) => (
                   <option key={op.value} value={op.value}>
@@ -148,7 +153,7 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
                   type={property?.type === 'number' ? 'number' : property?.type === 'date' ? 'date' : 'text'}
                   value={filter.value ?? ''}
                   onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
-                  className="flex-1 rounded border border-border bg-background px-2 py-1 text-sm"
+                  className="h-7 flex-1 rounded-md border border-border bg-background px-2 text-ui focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
                   placeholder="值"
                 />
               )}
@@ -156,6 +161,7 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-7 rounded-md hover:bg-foreground/4"
                 onClick={() => handleRemoveFilter(filter.id)}
               >
                 <X className="size-4" />
@@ -165,8 +171,8 @@ export function FilterBar({ collection, filters, onFiltersChange }: FilterBarPro
         })}
       </div>
 
-      <Button variant="ghost" size="sm" onClick={handleAddFilter}>
-        <Plus className="mr-2 size-4" />
+      <Button variant="ghost" size="sm" className="h-7 rounded-md text-ui hover:bg-foreground/4" onClick={handleAddFilter}>
+        <Plus className="mr-1.5 size-3.5" />
         添加条件
       </Button>
     </div>

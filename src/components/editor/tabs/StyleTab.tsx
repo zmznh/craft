@@ -54,13 +54,13 @@ export function StyleTab({
     <div className="space-y-5 p-3">
       {/* Color section */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">颜色</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">颜色</h4>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[13px]">背景</span>
+            <span className="text-ui">背景</span>
             <button
               type="button"
-              className="flex size-6 items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-muted"
+              className="flex size-6 items-center justify-center rounded-md border border-foreground/10 text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
               title="添加背景色"
               onClick={() => onUpdate({ coverImage: coverImage ? null : bgColors[0], coverType: coverImage ? 'none' : 'color' })}
             >
@@ -72,8 +72,8 @@ export function StyleTab({
               <button
                 key={color}
                 className={cn(
-                  'size-6 rounded border border-border transition-transform hover:scale-110',
-                  coverType === 'color' && coverImage === color && 'ring-2 ring-accent'
+                  'size-6 rounded-md border border-foreground/10 transition-transform hover:scale-110',
+                  coverType === 'color' && coverImage === color && 'ring-2 ring-craft-accent'
                 )}
                 style={{ backgroundColor: color }}
                 onClick={() => onUpdate({ coverImage: color, coverType: 'color' })}
@@ -82,12 +82,12 @@ export function StyleTab({
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-[13px]">文档颜色</span>
+            <span className="text-ui">文档颜色</span>
             <button
               type="button"
               className={cn(
-                'size-6 rounded-md border border-border',
-                (pageStyle.theme ?? 'default') !== 'default' && 'ring-2 ring-accent'
+                'size-6 rounded-md border border-foreground/10',
+                (pageStyle.theme ?? 'default') !== 'default' && 'ring-2 ring-craft-accent'
               )}
               style={{
                 backgroundColor: pageThemes.find(t => t.id === pageStyle.theme)?.color || '#fff',
@@ -105,13 +105,13 @@ export function StyleTab({
 
       {/* Cover section */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">封面</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">封面</h4>
         <div className="flex items-center justify-between">
-          <span className="text-[13px]">封面图片</span>
+          <span className="text-ui">封面图片</span>
           <button
             type="button"
             onClick={() => setCoverInputOpen((open) => !open)}
-            className="flex size-6 items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-muted"
+            className="flex size-6 items-center justify-center rounded-md border border-foreground/10 text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
           >
             <Plus className="size-3.5" />
           </button>
@@ -122,7 +122,7 @@ export function StyleTab({
               value={coverUrlInput}
               onChange={(event) => setCoverUrlInput(event.target.value)}
               placeholder="粘贴封面图片地址"
-              className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-1 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-w-0 flex-1 rounded-md border border-foreground/10 bg-background px-2 py-1 text-meta outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             />
             <button
               type="button"
@@ -132,7 +132,7 @@ export function StyleTab({
                 setCoverUrlInput('');
                 setCoverInputOpen(false);
               }}
-              className="rounded-md bg-primary px-2 text-xs text-primary-foreground"
+              className="rounded-lg bg-craft-accent px-2.5 py-1 text-ui text-white transition-colors duration-150 ease-craft hover:bg-craft-accent-hover"
             >添加</button>
           </div>
         )}
@@ -140,7 +140,7 @@ export function StyleTab({
           <button
             type="button"
             onClick={() => onUpdate({ coverImage: null, coverType: 'none' })}
-            className="mt-1 flex items-center gap-1 text-[11px] text-destructive hover:underline"
+            className="mt-1 flex items-center gap-1 text-meta text-destructive transition-colors hover:underline"
           >
             <Minus className="size-3" /> 移除封面
           </button>
@@ -149,21 +149,21 @@ export function StyleTab({
 
       {/* Page theme colors */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">页面色调</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">页面色调</h4>
         <div className="grid grid-cols-6 gap-1.5">
           {pageThemes.map((theme) => (
             <button
               key={theme.id}
               title={theme.label}
               className={cn(
-                'flex size-7 items-center justify-center rounded-md border border-border transition-transform hover:scale-110',
-                (pageStyle.theme ?? 'default') === theme.id && 'ring-2 ring-accent'
+                'flex size-7 items-center justify-center rounded-md border border-foreground/10 transition-transform hover:scale-110',
+                (pageStyle.theme ?? 'default') === theme.id && 'ring-2 ring-craft-accent'
               )}
               style={{
                 backgroundColor: theme.color === 'transparent' ? undefined : theme.color,
                 backgroundImage:
                   theme.color === 'transparent'
-                    ? 'repeating-conic-gradient(#e5e5e5 0% 25%, #fff 0% 50%)'
+                    ? 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)'
                     : undefined,
                 backgroundSize: theme.color === 'transparent' ? '6px 6px' : undefined,
               }}
@@ -175,15 +175,15 @@ export function StyleTab({
 
       {/* Font */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">字体</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">字体</h4>
         <div className="flex gap-1.5">
           {fontPacks.map((font) => (
             <button
               key={font.id}
               type="button"
               className={cn(
-                'flex-1 rounded-lg border border-border px-2 py-1.5 text-[11px] transition-colors hover:bg-muted',
-                (pageStyle.fontPack ?? 'inter') === font.id && 'border-primary bg-primary/5 text-primary'
+                'flex-1 rounded-lg border border-foreground/10 px-2 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4',
+                (pageStyle.fontPack ?? 'inter') === font.id && 'border-craft-accent bg-craft-accent/12 text-craft-accent'
               )}
               style={{ fontFamily: font.stack }}
               onClick={() => setPageStyle({ fontPack: font.id })}
@@ -196,19 +196,19 @@ export function StyleTab({
 
       {/* Washi */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">Washi 胶带</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">Washi 胶带</h4>
         <div className="grid grid-cols-5 gap-1.5">
           {washiTapes.map((tape) => (
             <button
               key={tape.id}
               title={tape.label}
               className={cn(
-                'h-5 rounded-sm border border-border transition-transform hover:scale-110',
-                (pageStyle.washi ?? 'none') === tape.id && 'ring-2 ring-accent'
+                'h-5 rounded-sm border border-foreground/10 transition-transform hover:scale-110',
+                (pageStyle.washi ?? 'none') === tape.id && 'ring-2 ring-craft-accent'
               )}
               style={{
                 background:
-                  tape.gradient || 'repeating-conic-gradient(#e5e5e5 0% 25%, #fff 0% 50%) 6px',
+                  tape.gradient || 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 6px',
               }}
               onClick={() => setPageStyle({ washi: tape.id })}
             />
@@ -218,20 +218,20 @@ export function StyleTab({
 
       {/* Advanced: width toggle */}
       <section>
-        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">高级</h4>
+        <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">高级</h4>
         <div className="flex items-center justify-between">
-          <span className="text-[13px]">宽页</span>
+          <span className="text-ui">宽页</span>
           <button
             type="button"
             onClick={() => onUpdate({ width: width === 'wide' ? 'default' : 'wide' })}
             className={cn(
               'relative h-5 w-9 rounded-full transition-colors',
-              width === 'wide' ? 'bg-primary' : 'bg-border'
+              width === 'wide' ? 'bg-craft-accent' : 'bg-foreground/15'
             )}
           >
             <span
               className={cn(
-                'absolute left-0.5 top-0.5 size-4 rounded-full bg-white shadow-sm transition-transform',
+                'absolute left-0.5 top-0.5 size-4 rounded-full bg-background shadow-sm transition-transform',
                 width === 'wide' && 'translate-x-4'
               )}
             />

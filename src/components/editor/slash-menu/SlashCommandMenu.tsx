@@ -40,7 +40,7 @@ export function SlashCommandMenu({ commands, selectedIndex, editor, range }: Sla
         ref={containerRef}
         role="listbox"
         aria-label="插入命令"
-        className="rounded-lg border border-border bg-popover p-3 shadow-md"
+        className="rounded-lg bg-popover p-3 shadow-lg animate-in fade-in-0 zoom-in-95 duration-150"
       >
         <p className="text-sm text-muted-foreground">无匹配命令</p>
       </div>
@@ -60,11 +60,11 @@ export function SlashCommandMenu({ commands, selectedIndex, editor, range }: Sla
       ref={containerRef}
       role="listbox"
       aria-label="插入命令"
-      className="max-h-80 w-72 overflow-y-auto rounded-lg border border-border bg-popover p-1.5 shadow-md"
+      className="max-h-80 w-72 overflow-y-auto rounded-lg bg-popover p-1.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-150"
     >
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category}>
-          <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="px-2 py-1.5 text-caption font-semibold uppercase tracking-wider text-foreground/40">
             {category}
           </div>
           {items.map((cmd) => {
@@ -80,18 +80,18 @@ export function SlashCommandMenu({ commands, selectedIndex, editor, range }: Sla
                 aria-selected={idx === activeIndex}
                 onClick={() => selectItem(idx)}
                 className={cn(
-                  'flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors',
+                  'flex h-8 w-full items-center gap-3 rounded-md px-2 text-left text-ui transition-colors duration-150 ease-craft',
                   idx === activeIndex
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-foreground hover:bg-muted'
+                    ? 'bg-foreground/4 text-foreground/85'
+                    : 'text-foreground/85 hover:bg-foreground/4'
                 )}
               >
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-background">
-                  <Icon className="size-4 text-muted-foreground" />
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-foreground/8 bg-background">
+                  <Icon className="size-3.5 text-foreground/55" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium">{cmd.name}</div>
-                  <div className="truncate text-xs text-muted-foreground">{cmd.description}</div>
+                  <div className="text-ui font-medium leading-tight">{cmd.name}</div>
+                  <div className="truncate text-meta text-foreground/40">{cmd.description}</div>
                 </div>
               </button>
             );

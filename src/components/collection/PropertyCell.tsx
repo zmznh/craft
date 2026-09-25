@@ -93,8 +93,8 @@ function TextCell({ value, onChange }: { value: any; onChange: (v: any) => void 
 
   if (!editing) {
     return (
-      <div className="min-h-[32px] cursor-pointer px-2 py-1" onClick={() => setEditing(true)}>
-        <span className="text-sm">{value || <span className="text-muted-foreground/50">-</span>}</span>
+      <div className="min-h-8 cursor-pointer px-2 py-1 transition-colors duration-150 hover:bg-foreground/[0.03]" onClick={() => setEditing(true)}>
+        <span className="text-ui">{value || <span className="text-muted-foreground/50">-</span>}</span>
       </div>
     );
   }
@@ -110,7 +110,7 @@ function TextCell({ value, onChange }: { value: any; onChange: (v: any) => void 
         if (e.key === 'Enter') { setEditing(false); onChange(text); }
         if (e.key === 'Escape') { setText(value ?? ''); setEditing(false); }
       }}
-      className="w-full rounded border border-primary bg-background px-1 py-0.5 text-sm outline-none"
+      className="w-full rounded-md border border-craft-accent bg-background px-1 py-0.5 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     />
   );
 }
@@ -127,8 +127,8 @@ function NumberCell({ value, onChange }: { value: any; onChange: (v: any) => voi
 
   if (!editing) {
     return (
-      <div className="min-h-[32px] cursor-pointer px-2 py-1" onClick={() => setEditing(true)}>
-        <span className="text-sm tabular-nums">{value != null ? String(value) : <span className="text-muted-foreground/50">-</span>}</span>
+      <div className="min-h-8 cursor-pointer px-2 py-1 transition-colors duration-150 hover:bg-foreground/[0.03]" onClick={() => setEditing(true)}>
+        <span className="text-ui tabular-nums">{value != null ? String(value) : <span className="text-muted-foreground/50">-</span>}</span>
       </div>
     );
   }
@@ -144,7 +144,7 @@ function NumberCell({ value, onChange }: { value: any; onChange: (v: any) => voi
         if (e.key === 'Enter') { const n = parseFloat(text); onChange(isNaN(n) ? null : n); setEditing(false); }
         if (e.key === 'Escape') { setText(value != null ? String(value) : ''); setEditing(false); }
       }}
-      className="w-full rounded border border-primary bg-background px-1 py-0.5 text-sm tabular-nums outline-none"
+      className="w-full rounded-md border border-craft-accent bg-background px-1 py-0.5 text-ui tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     />
   );
 }
@@ -152,14 +152,14 @@ function NumberCell({ value, onChange }: { value: any; onChange: (v: any) => voi
 // ─── Checkbox ────────────────────────────────────────
 function CheckboxCell({ value, onChange }: { value: any; onChange: (v: any) => void }) {
   return (
-    <div className="flex min-h-[32px] items-center px-2 py-1">
+    <div className="flex min-h-8 items-center px-2 py-1">
       <button
         onClick={() => onChange(!value)}
         className={cn(
-          'flex size-4 items-center justify-center rounded border transition-colors',
+          'flex size-4 items-center justify-center rounded-md border transition-colors duration-150',
           value
-            ? 'border-primary bg-primary text-primary-foreground'
-            : 'border-muted-foreground/40 hover:border-primary'
+            ? 'border-craft-accent bg-craft-accent text-white'
+            : 'border-foreground/25 hover:border-craft-accent'
         )}
       >
         {value && <Check className="size-3" />}
@@ -180,8 +180,8 @@ function DateCell({ value, onChange }: { value: any; onChange: (v: any) => void 
 
   if (!editing) {
     return (
-      <div className="min-h-[32px] cursor-pointer px-2 py-1" onClick={() => { setText(value ?? ''); setEditing(true); }}>
-        <span className="text-sm">{value || <span className="text-muted-foreground/50">-</span>}</span>
+      <div className="min-h-8 cursor-pointer px-2 py-1 transition-colors duration-150 hover:bg-foreground/[0.03]" onClick={() => { setText(value ?? ''); setEditing(true); }}>
+        <span className="text-ui">{value || <span className="text-muted-foreground/50">-</span>}</span>
       </div>
     );
   }
@@ -197,7 +197,7 @@ function DateCell({ value, onChange }: { value: any; onChange: (v: any) => void 
         if (e.key === 'Enter') { setEditing(false); onChange(text || null); }
         if (e.key === 'Escape') { setEditing(false); }
       }}
-      className="w-full rounded border border-primary bg-background px-1 py-0.5 text-sm outline-none"
+      className="w-full rounded-md border border-craft-accent bg-background px-1 py-0.5 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     />
   );
 }
@@ -210,14 +210,14 @@ function SelectCell({ property, value, onChange }: { property: Property; value: 
   const selected = options.find(o => o.id === value);
 
   return (
-    <div className="relative min-h-[32px] px-2 py-1">
+    <div className="relative min-h-8 px-2 py-1">
       <button
-        className="flex w-full items-center gap-1 text-left text-sm"
+        className="flex w-full items-center gap-1 text-left text-ui transition-colors duration-150 hover:text-foreground/70 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
         onClick={() => setOpen(!open)}
       >
         {selected ? (
           <span
-            className="rounded-full px-2 py-0.5 text-xs font-medium"
+            className="rounded-md px-2 py-0.5 text-ui font-medium"
             style={{ backgroundColor: selected.color + '20', color: selected.color }}
           >
             {selected.label}
@@ -230,11 +230,11 @@ function SelectCell({ property, value, onChange }: { property: Property; value: 
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-full z-20 mt-1 min-w-[160px] rounded-md border border-border bg-popover p-1 shadow-md">
+          <div className="absolute left-0 top-full z-20 mt-1 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
             {options.map(option => (
               <button
                 key={option.id}
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-muted"
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-ui transition-colors duration-150 hover:bg-foreground/4"
                 onClick={() => { onChange(option.id); setOpen(false); }}
               >
                 <span
@@ -246,7 +246,7 @@ function SelectCell({ property, value, onChange }: { property: Property; value: 
               </button>
             ))}
             <button
-              className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted"
+              className="flex w-full items-center rounded-md px-2 py-1.5 text-ui text-foreground/40 transition-colors duration-150 hover:bg-foreground/4 hover:text-foreground"
               onClick={() => { onChange(null); setOpen(false); }}
             >
               清除
@@ -272,9 +272,9 @@ function MultiSelectCell({ property, value, onChange }: { property: Property; va
   };
 
   return (
-    <div className="relative min-h-[32px] px-2 py-1">
+    <div className="relative min-h-8 px-2 py-1">
       <button
-        className="flex w-full flex-wrap items-center gap-1 text-left text-sm"
+        className="flex w-full flex-wrap items-center gap-1 text-left text-ui transition-colors duration-150 hover:text-foreground/70 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
         onClick={() => setOpen(!open)}
       >
         {selected.length > 0 ? (
@@ -284,7 +284,7 @@ function MultiSelectCell({ property, value, onChange }: { property: Property; va
             return (
               <span
                 key={id}
-                className="rounded-full px-2 py-0.5 text-xs font-medium"
+                className="rounded-md px-2 py-0.5 text-ui font-medium"
                 style={{ backgroundColor: opt.color + '20', color: opt.color }}
               >
                 {opt.label}
@@ -299,11 +299,11 @@ function MultiSelectCell({ property, value, onChange }: { property: Property; va
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-full z-20 mt-1 min-w-[160px] rounded-md border border-border bg-popover p-1 shadow-md">
+          <div className="absolute left-0 top-full z-20 mt-1 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
             {options.map(option => (
               <button
                 key={option.id}
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-muted"
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-ui transition-colors duration-150 hover:bg-foreground/4"
                 onClick={() => toggle(option.id)}
               >
                 <span
@@ -333,13 +333,13 @@ function URLCell({ value, onChange }: { value: any; onChange: (v: any) => void }
 
   if (!editing) {
     return (
-      <div className="min-h-[32px] cursor-pointer px-2 py-1" onClick={() => setEditing(true)}>
+      <div className="min-h-8 cursor-pointer px-2 py-1 transition-colors duration-150 hover:bg-foreground/[0.03]" onClick={() => setEditing(true)}>
         {value ? (
           <a
             href={String(value)}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-primary underline-offset-4 hover:underline"
+            className="text-ui text-craft-accent underline-offset-4 hover:underline"
             onClick={e => e.stopPropagation()}
           >
             {String(value).replace(/^https?:\/\//, '').slice(0, 40)}
@@ -362,7 +362,7 @@ function URLCell({ value, onChange }: { value: any; onChange: (v: any) => void }
         if (e.key === 'Enter') { setEditing(false); onChange(text || null); }
         if (e.key === 'Escape') { setText(value ?? ''); setEditing(false); }
       }}
-      className="w-full rounded border border-primary bg-background px-1 py-0.5 text-sm outline-none"
+      className="w-full rounded-md border border-craft-accent bg-background px-1 py-0.5 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     />
   );
 }
@@ -379,11 +379,11 @@ function EmailCell({ value, onChange }: { value: any; onChange: (v: any) => void
 
   if (!editing) {
     return (
-      <div className="min-h-[32px] cursor-pointer px-2 py-1" onClick={() => setEditing(true)}>
+      <div className="min-h-8 cursor-pointer px-2 py-1 transition-colors duration-150 hover:bg-foreground/[0.03]" onClick={() => setEditing(true)}>
         {value ? (
           <a
             href={`mailto:${String(value)}`}
-            className="text-sm text-primary underline-offset-4 hover:underline"
+            className="text-ui text-craft-accent underline-offset-4 hover:underline"
             onClick={e => e.stopPropagation()}
           >
             {String(value)}
@@ -406,7 +406,7 @@ function EmailCell({ value, onChange }: { value: any; onChange: (v: any) => void
         if (e.key === 'Enter') { setEditing(false); onChange(text || null); }
         if (e.key === 'Escape') { setText(value ?? ''); setEditing(false); }
       }}
-      className="w-full rounded border border-primary bg-background px-1 py-0.5 text-sm outline-none"
+      className="w-full rounded-md border border-craft-accent bg-background px-1 py-0.5 text-ui outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     />
   );
 }

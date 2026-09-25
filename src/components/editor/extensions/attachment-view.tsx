@@ -12,12 +12,12 @@ export function AttachmentView({ node, deleteNode }: NodeViewProps) {
 
   return (
     <NodeViewWrapper as="div" className="my-2">
-      <div className="group flex items-center gap-3 rounded-lg border bg-card px-3 py-2.5">
+      <div className="group flex items-center gap-3 rounded-lg border border-foreground/8 bg-card px-3 py-2.5 transition-colors duration-150 ease-craft hover:bg-foreground/4">
         <FileText className="size-5 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13px] font-medium">{name}</div>
+          <div className="truncate text-ui font-medium">{name}</div>
           {size != null && (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-meta text-foreground/40">
               {formatFileSize(size)}
             </div>
           )}
@@ -25,7 +25,7 @@ export function AttachmentView({ node, deleteNode }: NodeViewProps) {
         <a
           href={url}
           download={name}
-          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/6 hover:text-foreground/85"
           title="下载"
         >
           <Download className="size-4" />
@@ -33,7 +33,7 @@ export function AttachmentView({ node, deleteNode }: NodeViewProps) {
         <button
           type="button"
           onClick={() => deleteNode()}
-          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all duration-150 ease-craft hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
           title="删除"
         >
           <svg

@@ -151,9 +151,9 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
         useAiBubbleStore.getState().isOpen && state.selection.from === from && from !== to
       }
     >
-      <div className="w-64 rounded-lg border border-border bg-popover p-1.5 shadow-md">
+      <div className="w-64 rounded-md bg-[rgb(250,250,250)] p-1.5 shadow-md animate-in fade-in-0 zoom-in-95 duration-150 dark:bg-[#242424]">
         <div className="mb-1 flex items-center justify-between px-1">
-          <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          <span className="flex items-center gap-1.5 text-meta font-medium text-foreground/40">
             <Sparkles className="size-3.5" />
             AI 助手
           </span>
@@ -161,7 +161,7 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
             type="button"
             onClick={handleClose}
             aria-label="关闭"
-            className="flex size-5 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex size-5 items-center justify-center rounded-md text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
           >
             <X className="size-3.5" />
           </button>
@@ -177,8 +177,8 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
                   disabled={loading !== null}
                   onClick={() => runAction(action.id, action.replace)}
                   className={cn(
-                    'flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors',
-                    'text-foreground hover:bg-muted disabled:opacity-50'
+                    'flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-ui transition-colors duration-150 ease-craft',
+                    'text-foreground/85 hover:bg-foreground/4 disabled:opacity-50'
                   )}
                 >
                   {loading === action.id ? (
@@ -206,18 +206,18 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
                 );
               }}
               className={cn(
-                'mt-1 flex w-full items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors',
-                'text-foreground hover:bg-muted'
+                'mt-1 flex w-full items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-ui transition-colors duration-150 ease-craft',
+                'text-foreground/85 hover:bg-foreground/4'
               )}
             >
               <ImageIcon className="size-3.5 text-muted-foreground" />
               生成图像
             </button>
-            {error && <p className="px-1 pt-1.5 text-xs text-destructive">{error}</p>}
+            {error && <p className="px-1 pt-1.5 text-meta text-destructive">{error}</p>}
           </>
         ) : (
           <div>
-            <div className="max-h-32 overflow-y-auto rounded-md bg-muted/60 px-2 py-1.5 text-xs leading-relaxed whitespace-pre-wrap">
+            <div className="max-h-32 overflow-y-auto rounded-md bg-foreground/4 px-2 py-1.5 text-meta leading-relaxed whitespace-pre-wrap">
               {result}
             </div>
             <div className="mt-1.5 flex items-center gap-1">
@@ -225,7 +225,7 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
                 <button
                   type="button"
                   onClick={() => applyResult('replace')}
-                  className="flex-1 rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground transition-colors hover:bg-primary/90"
+                  className="flex-1 rounded-lg bg-craft-accent px-2 py-1 text-ui text-white transition-colors duration-150 ease-craft hover:bg-craft-accent-hover"
                 >
                   替换选区
                 </button>
@@ -234,8 +234,10 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
                 type="button"
                 onClick={() => applyResult('insert-below')}
                 className={cn(
-                  'rounded-md border border-border px-2 py-1 text-xs transition-colors hover:bg-muted',
-                  pendingReplace ? 'flex-1' : 'flex-1 bg-primary text-primary-foreground hover:bg-primary/90'
+                  'rounded-lg px-2 py-1 text-ui transition-colors duration-150 ease-craft',
+                  pendingReplace
+                    ? 'flex-1 border border-foreground/10 text-foreground/85 hover:bg-foreground/4'
+                    : 'flex-1 bg-craft-accent text-white hover:bg-craft-accent-hover'
                 )}
               >
                 插入到下方
@@ -244,7 +246,7 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
                 type="button"
                 onClick={handleClose}
                 aria-label="取消"
-                className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="flex size-6 items-center justify-center rounded-md text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
               >
                 <X className="size-3.5" />
               </button>

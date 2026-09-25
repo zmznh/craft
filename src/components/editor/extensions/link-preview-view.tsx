@@ -65,7 +65,7 @@ export function LinkPreviewView({ node, updateAttributes }: NodeViewProps) {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex overflow-hidden rounded-lg border transition-colors hover:bg-muted/40"
+        className="flex overflow-hidden rounded-lg border border-foreground/8 transition-colors duration-150 ease-craft hover:bg-foreground/4"
       >
         {image && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -76,7 +76,7 @@ export function LinkPreviewView({ node, updateAttributes }: NodeViewProps) {
           />
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-1 px-3 py-2.5">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-meta text-foreground/40">
             {favicon ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={favicon} alt="" className="size-3.5 rounded-sm" />
@@ -86,17 +86,17 @@ export function LinkPreviewView({ node, updateAttributes }: NodeViewProps) {
             <span className="truncate">{siteName}</span>
           </div>
           {loading && !title ? (
-            <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <div className="flex items-center gap-2 text-ui text-foreground/40">
               <Loader2 className="size-3.5 animate-spin" />
               正在获取链接预览...
             </div>
           ) : (
             <>
-              <div className="truncate text-[13px] font-medium">
+              <div className="truncate text-ui font-medium">
                 {title ?? url}
               </div>
               {description && (
-                <div className="line-clamp-2 text-xs text-muted-foreground">
+                <div className="line-clamp-2 text-meta text-foreground/55">
                   {description}
                 </div>
               )}

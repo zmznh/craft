@@ -47,31 +47,32 @@ export function CreateCollectionButton() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>
+      <DialogTrigger render={<Button className="h-8 rounded-lg bg-craft-accent text-ui font-medium text-white transition-colors duration-150 hover:bg-craft-accent-hover" />}>
         <Plus className="mr-2 size-4" />
         新建集合
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-xl border border-border shadow-lg">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>新建集合</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-title font-semibold">新建集合</DialogTitle>
+            <DialogDescription className="text-ui text-foreground/40">
               创建一个新集合来组织和管理你的数据
             </DialogDescription>
           </DialogHeader>
           <div className="my-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="icon">图标（可选）</Label>
+              <Label htmlFor="icon" className="text-ui font-medium">图标（可选）</Label>
               <Input
                 id="icon"
                 placeholder="📊"
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
                 maxLength={2}
+                className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">名称</Label>
+              <Label htmlFor="name" className="text-ui font-medium">名称</Label>
               <Input
                 id="name"
                 placeholder="输入集合名称"
@@ -79,6 +80,7 @@ export function CreateCollectionButton() {
                 onChange={(e) => setName(e.target.value)}
                 autoFocus
                 required
+                className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
               />
             </div>
           </div>
@@ -86,11 +88,16 @@ export function CreateCollectionButton() {
             <Button
               type="button"
               variant="outline"
+              className="h-8 rounded-lg border-border text-ui hover:bg-foreground/4"
               onClick={() => setOpen(false)}
             >
               取消
             </Button>
-            <Button type="submit" disabled={loading || !name.trim()}>
+            <Button
+              type="submit"
+              className="h-8 rounded-lg bg-craft-accent text-ui font-medium text-white transition-colors duration-150 hover:bg-craft-accent-hover"
+              disabled={loading || !name.trim()}
+            >
               {loading ? '创建中...' : '创建'}
             </Button>
           </DialogFooter>

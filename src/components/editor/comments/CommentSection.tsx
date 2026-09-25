@@ -98,7 +98,7 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
 
   return (
     <section>
-      <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+      <h4 className="mb-2 flex items-center gap-1.5 text-caption font-medium uppercase tracking-wider text-foreground/40">
         <MessageSquare className="size-3" />
         评论 ({openThreads.length})
       </h4>
@@ -107,25 +107,25 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
         <button
           type="button"
           onClick={() => setShowComposer(true)}
-          className="mb-2 w-full rounded-md border border-border px-2 py-1.5 text-[12px] transition-colors hover:bg-muted"
+          className="mb-2 w-full rounded-md border border-foreground/10 px-2 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4"
         >
           评论所选文本
         </button>
       )}
       {showComposer && (
-        <div className="mb-2 rounded-md border border-border p-2">
+        <div className="mb-2 rounded-md border border-foreground/10 p-2">
           <textarea
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             rows={2}
             placeholder="写下评论..."
-            className="w-full resize-none rounded-md border border-border bg-transparent p-2 text-[12px] outline-none focus:border-primary"
+            className="w-full resize-none rounded-md border border-foreground/10 bg-transparent p-2 text-meta outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           />
           <div className="flex justify-end gap-1">
             <button
               type="button"
               onClick={() => setShowComposer(false)}
-              className="rounded-md px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
+              className="rounded-md px-2 py-1 text-meta text-foreground/55 transition-colors duration-150 ease-craft hover:text-foreground/85"
             >
               取消
             </button>
@@ -133,7 +133,7 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
               type="button"
               disabled={!draft.trim()}
               onClick={handleCreate}
-              className="rounded-md bg-primary px-2 py-1 text-[11px] text-primary-foreground disabled:opacity-50"
+              className="rounded-lg bg-craft-accent px-3 py-1 text-meta font-medium text-white transition-colors duration-150 ease-craft hover:bg-craft-accent-hover disabled:opacity-50"
             >
               发布
             </button>
@@ -143,14 +143,14 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
 
       <div className="space-y-2">
         {openThreads.map((thread) => (
-          <div key={thread.id} className="rounded-md border border-border p-2">
+          <div key={thread.id} className="rounded-md border border-foreground/10 p-2">
             {thread.blockText && (
-              <p className="mb-1.5 line-clamp-2 border-l-2 border-border pl-2 text-[11px] text-muted-foreground">
+              <p className="mb-1.5 line-clamp-2 border-l-2 border-foreground/15 pl-2 text-meta text-foreground/40">
                 {thread.blockText}
               </p>
             )}
             {thread.comments.map((comment) => (
-              <p key={comment.id} className="text-[12px]">
+              <p key={comment.id} className="text-meta text-foreground/85">
                 {comment.body}
               </p>
             ))}
@@ -161,13 +161,13 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
                   setReplyDrafts((prev) => ({ ...prev, [thread.id]: event.target.value }))
                 }
                 placeholder="回复..."
-                className="flex-1 rounded-md border border-border bg-transparent px-2 py-1 text-[11px] outline-none focus:border-primary"
+                className="flex-1 rounded-md border border-foreground/10 bg-transparent px-2 py-1 text-meta outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               />
               <button
                 type="button"
                 disabled={!replyDrafts[thread.id]?.trim()}
                 onClick={() => void handleReply(thread.id)}
-                className="rounded-md px-2 py-1 text-[11px] text-primary disabled:opacity-50"
+                className="rounded-md px-2 py-1 text-meta font-medium text-craft-accent transition-colors duration-150 ease-craft hover:bg-craft-accent/12 disabled:opacity-50"
               >
                 回复
               </button>
@@ -175,7 +175,7 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
                 type="button"
                 title="解决"
                 onClick={() => void handleResolve(thread.id, true)}
-                className="rounded-md p-1 text-muted-foreground hover:text-foreground"
+                className="rounded-md p-1 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
               >
                 <Check className="size-3.5" />
               </button>
@@ -184,20 +184,20 @@ export function CommentSection({ documentId, editor }: CommentSectionProps) {
         ))}
         {resolvedThreads.length > 0 && (
           <details>
-            <summary className="cursor-pointer text-[11px] text-muted-foreground">
+            <summary className="cursor-pointer text-meta text-foreground/40 transition-colors hover:text-foreground/70">
               已解决 ({resolvedThreads.length})
             </summary>
             {resolvedThreads.map((thread) => (
               <div
                 key={thread.id}
-                className="mt-1 flex items-center justify-between rounded-md border border-border p-2 opacity-60"
+                className="mt-1 flex items-center justify-between rounded-md border border-foreground/10 p-2 opacity-60"
               >
-                <span className="line-clamp-1 text-[11px]">{thread.comments[0]?.body}</span>
+                <span className="line-clamp-1 text-meta">{thread.comments[0]?.body}</span>
                 <button
                   type="button"
                   title="重新打开"
                   onClick={() => void handleResolve(thread.id, false)}
-                  className="p-1 text-muted-foreground hover:text-foreground"
+                  className="p-1 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
                 >
                   <X className="size-3.5" />
                 </button>

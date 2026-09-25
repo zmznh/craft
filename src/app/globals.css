@@ -1005,3 +1005,43 @@
     display: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Merge complement (ui/craft-alignment): semantic utilities used
+   across auto-merged files. Maps the Craft tokens defined above
+   plus the measured type scale (docs/craft-ref/design-spec.md,
+   matching official --ui-md 13 / --heading sizes).
+   ═══════════════════════════════════════════════════════════ */
+@theme inline {
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.65rem;
+  --text-doctitle: 1.4375rem;
+  --text-doctitle--line-height: 1.75rem;
+  --text-h2: 1.25rem;
+  --text-h2--line-height: 1.5rem;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.375rem;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.4375rem;
+  --text-card-title: 0.9375rem;
+  --text-card-title--line-height: 1.125rem;
+  --text-sec: 0.875rem;
+  --text-sec--line-height: 1rem;
+  --text-ui: 0.8125rem;
+  --text-ui--line-height: 1rem;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 0.9375rem;
+  --text-caption: 0.625rem;
+  --text-caption--line-height: 0.75rem;
+
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-craft-accent: var(--craft-accent);
+  --color-craft-accent-hover: var(--craft-accent-hover);
+  --color-editor-bg: var(--editor-bg);
+  --color-editor-border: var(--editor-border);
+  --color-editor-muted: var(--editor-muted);
+
+  --ease-craft: cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,5 +1,6 @@
 import { getCollection } from '@/actions/collection/collection';
 import { notFound } from 'next/navigation';
+import { ViewTransition } from 'react';
 import { CollectionHeader } from './CollectionHeader';
 import { CollectionView } from './CollectionView';
 
@@ -18,6 +19,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   const activeView = collection.views.find((v: { isActive: boolean }) => v.isActive) || collection.views[0];
 
   return (
+    <ViewTransition>
     <div className="flex flex-1 flex-col overflow-hidden">
       <CollectionHeader collection={collection} />
       <CollectionView
@@ -25,5 +27,6 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         activeView={activeView}
       />
     </div>
+    </ViewTransition>
   );
 }

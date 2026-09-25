@@ -1,0 +1,201 @@
+{
+  "navLinks": [
+    {
+      "t": "新建文档",
+      "h": "/editor/d/<spaceId>?nd=<objId:17>"
+    },
+    {
+      "t": "所有文档",
+      "h": "/s/<空间名--spaceId>/all"
+    },
+    {
+      "t": "任务",
+      "h": "/s/<空间名--spaceId>/tasks"
+    },
+    {
+      "t": "日历",
+      "h": "/s/<空间名--spaceId>/calendar"
+    },
+    {
+      "t": "连接",
+      "h": "/s/<空间名--spaceId>/connections"
+    },
+    {
+      "t": "与我共享 0",
+      "h": "/shared-with-me"
+    },
+    {
+      "t": "我的模板 0",
+      "h": "/s/<空间名--spaceId>/templates"
+    },
+    {
+      "t": "星标",
+      "h": "/s/<空间名--spaceId>/starred"
+    },
+    {
+      "t": "文件夹",
+      "h": "/s/<空间名--spaceId>/folders"
+    },
+    {
+      "t": "未分类 4",
+      "h": "/s/<空间名--spaceId>/inbox"
+    },
+    {
+      "t": "👋 How to use Craft 5",
+      "h": "/s/<空间名--spaceId>/f/How-to-use-Craft--<objId:18>"
+    },
+    {
+      "t": "标签",
+      "h": "/s/<空间名--spaceId>/tags"
+    }
+  ],
+  "hover": [
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .ProjectName .TextInput--readonly:hover",
+      "d": "background: none;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .compact-shape-actions .ToolIcon .ToolIcon__icon:hover",
+      "d": "background-color: transparent;"
+    },
+    {
+      "s": "[data-vaul-handle]:active, [data-vaul-handle]:hover",
+      "d": "opacity: 1;"
+    },
+    {
+      "s": "[data-whatinput]:not([data-whatinput=\"touch\"]) .hmsQYm.isHoverable:hover .sc-wrwa8u-1, [data-whatinput=\"touch\"] .hmsQYm.isHoverable:active .sc-wrwa8u-1",
+      "d": "transform: translateY(3px);"
+    },
+    {
+      "s": ".hYjVVK.Plain.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.Plain:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) .hYjVVK.Pl",
+      "d": "background: rgba(26, 28, 30, 0.04);"
+    },
+    {
+      "s": ".hYjVVK.WeakPlain.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.WeakPlain:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) .h",
+      "d": "background: rgba(26, 28, 30, 0.04);"
+    },
+    {
+      "s": ".hYjVVK.AccentPlain.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.AccentPlain:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]",
+      "d": "background: rgba(46, 109, 233, 0.12);"
+    },
+    {
+      "s": ".hYjVVK.PlainDanger.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.PlainDanger:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]",
+      "d": "background: rgba(255, 56, 60, 0.12);"
+    },
+    {
+      "s": ".hYjVVK.WarningPlain.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.WarningPlain:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch",
+      "d": "background: rgba(255, 141, 40, 0.12);"
+    },
+    {
+      "s": ".hYjVVK.DangerPlainFilled.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.DangerPlainFilled:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatin",
+      "d": "background: rgba(255, 56, 60, 0.24);"
+    },
+    {
+      "s": ".hYjVVK.WarningPlainFilled.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.WarningPlainFilled:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-what",
+      "d": "background: rgba(255, 141, 40, 0.24);"
+    },
+    {
+      "s": ".hYjVVK.Filled.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.Filled:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) .hYjVVK.",
+      "d": "background: rgba(26, 28, 30, 0.08);"
+    },
+    {
+      "s": ".hYjVVK.FilledStrong.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledStrong:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch",
+      "d": "background: rgba(46, 109, 233, 0.7);"
+    },
+    {
+      "s": ".hYjVVK.FilledAccentLight.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledAccentLight:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatin",
+      "d": "background: rgba(46, 109, 233, 0.24);"
+    },
+    {
+      "s": ".hYjVVK.FilledStrongBrand.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledStrongBrand:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatin",
+      "d": "background: rgba(46, 109, 233, 0.7);"
+    },
+    {
+      "s": ".hYjVVK.FilledStrongBrandBlack.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledStrongBrandBlack:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([d",
+      "d": "background: rgba(31, 34, 37, 0.9);"
+    },
+    {
+      "s": ".hYjVVK.FilledWeak.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledWeak:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) ",
+      "d": "background: rgba(26, 28, 30, 0.08);"
+    },
+    {
+      "s": ".hYjVVK.FilledDanger.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledDanger:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch",
+      "d": "background: rgba(255, 56, 60, 0.7);"
+    },
+    {
+      "s": ".hYjVVK.FilledWarning.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.FilledWarning:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"tou",
+      "d": "background: rgba(255, 141, 40, 0.7);"
+    },
+    {
+      "s": ".hYjVVK.Outlined.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.Outlined:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) .hYj",
+      "d": "background: rgba(26, 28, 30, 0.04);"
+    },
+    {
+      "s": ".hYjVVK.OutlinedDanger.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.OutlinedDanger:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"t",
+      "d": "background: rgba(255, 56, 60, 0.12); box-shadow: rgba(255, 56, 60, 0.24) 0px 0px 0px 1px inset;"
+    },
+    {
+      "s": ".hYjVVK.OutlinedWarning.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.OutlinedWarning:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=",
+      "d": "background: rgba(255, 141, 40, 0.12); box-shadow: rgba(255, 141, 40, 0.24) 0px 0px 0px 1px inset;"
+    },
+    {
+      "s": ".hYjVVK.Active.isActive, [data-whatinput=\"keyboard\"] .hYjVVK.Active:not(.isStatic):not(:disabled):focus, [data-whatinput]:not([data-whatinput=\"touch\"]) .hYjVVK.",
+      "d": "background: rgba(26, 28, 30, 0.04);"
+    },
+    {
+      "s": "[data-whatinput]:not([data-whatinput=\"touch\"]) .izdbdW:hover, [data-whatinput=\"touch\"] .izdbdW:active, .izdbdW.isActive",
+      "d": "opacity: 1;"
+    },
+    {
+      "s": "[data-whatinput]:not([data-whatinput=\"touch\"]) .iuDBvf:hover:not(.isDisabled):not(.isFocused), [data-whatinput=\"touch\"] .iuDBvf:active:not(.isDisabled):not(.isF",
+      "d": "box-shadow: rgba(26, 28, 30, 0.08) 0px 0px 0px 1px inset; background-color: rgba(26, 28, 30, 0);"
+    },
+    {
+      "s": "[data-whatinput]:not([data-whatinput=\"touch\"]) .gYKOoq:hover, [data-whatinput=\"touch\"] .gYKOoq:active, .gYKOoq.isActive",
+      "d": "opacity: 1;"
+    },
+    {
+      "s": ".kbzJHX.kbzJHX.isActive, [data-whatinput]:not([data-whatinput=\"touch\"]) .kbzJHX.kbzJHX:not(.isStatic):not(:disabled):hover, [data-whatinput=\"touch\"] .kbzJHX.kbz",
+      "d": "background: rgba(26, 28, 30, 0.08);"
+    },
+    {
+      "s": ".kbzJHX.kbzJHX.isActive .sc-1bud7ou-2, [data-whatinput]:not([data-whatinput=\"touch\"]) .kbzJHX.kbzJHX:not(.isStatic):not(:disabled):hover .sc-1bud7ou-2, [data-wh",
+      "d": "color: rgba(26, 28, 30, 0.7);"
+    }
+  ],
+  "keyframes": {
+    "fade-in": "0% { opacity: 0; } | 100% { opacity: 1; }",
+    "fadeIn": "0% { opacity: 0; } | 100% { opacity: 1; }",
+    "fadeOut": "100% { opacity: 0; }",
+    "slideFromBottom": "0% { transform: translate3d(0,var(--initial-transform,100%),0); } | 100% { transform: translate3d(0px, 0px, 0px); }",
+    "slideToBottom": "100% { transform: translate3d(0,var(--initial-transform,100%),0); }",
+    "slideFromTop": "0% { transform: translate3d(0,calc(var(--initial-transform,100%) * -1),0); } | 100% { transform: translate3d(0px, 0px, 0px); }",
+    "slideToTop": "100% { transform: translate3d(0,calc(var(--initial-transform,100%) * -1),0); }",
+    "slideFromLeft": "0% { transform: translate3d(calc(var(--initial-transform,100%) * -1),0,0); } | 100% { transform: translate3d(0px, 0px, 0px); }",
+    "slideToLeft": "100% { transform: translate3d(calc(var(--initial-transform,100%) * -1),0,0); }",
+    "slideFromRight": "0% { transform: translate3d(var(--initial-transform,100%),0,0); } | 100% { transform: translate3d(0px, 0px, 0px); }",
+    "slideToRight": "100% { transform: translate3d(var(--initial-transform,100%),0,0); }"
+  },
+  "themeClues": [
+    {
+      "s": ".shape-actions-theme-scope",
+      "d": "--button-border: transparent; --button-bg: var(--color-surface-mid);"
+    },
+    {
+      "s": ":root.theme--dark .shape-actions-theme-scope",
+      "d": "--button-hover-bg: #363541; --button-bg: var(--color-surface-high);"
+    },
+    {
+      "s": ".LoadingMessage--dark",
+      "d": "background-color: rgb(18, 18, 18); color: rgb(206, 212, 218);"
+    },
+    {
+      "s": ":root, [data-theme=\"light\"]",
+      "d": "--accent-blue: 46 109 233; --accent-pink: 214 23 155; --accent-green: 0 194 166; --accent-purple: 94 2 210; --accent-yellow: 228 192 17; --accent-gray: 82 92 102; --accent-contrast: 255 255 255; --acc"
+    },
+    {
+      "s": "[data-theme=\"dark\"]",
+      "d": "--accent-contrast: var(--base); --accent-contrast-900: var(--base-900); --accent-blue: 113 178 255; --accent-pink: 255 106 209; --accent-green: 77 255 221; --accent-purple: 191 139 255; --accent-yello"
+    }
+  ]
+}

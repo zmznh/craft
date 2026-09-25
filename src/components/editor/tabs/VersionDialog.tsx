@@ -96,7 +96,7 @@ export function VersionDialog({ documentId, open, onOpenChange }: VersionDialogP
                 <Loader2 className="size-4 animate-spin" />
               </div>
             ) : versions.length === 0 ? (
-              <div className="py-8 text-center text-xs text-muted-foreground">
+              <div className="py-8 text-center text-meta text-foreground/40">
                 暂无版本
               </div>
             ) : (
@@ -105,25 +105,25 @@ export function VersionDialog({ documentId, open, onOpenChange }: VersionDialogP
                   key={v.id}
                   type="button"
                   onClick={() => handlePreview(v.id)}
-                  className={`w-full rounded-md px-2 py-1.5 text-left transition-colors ${
+                  className={`w-full rounded-md px-2 py-1.5 text-left transition-colors duration-150 ease-craft ${
                     previewId === v.id
-                      ? 'bg-muted'
-                      : 'hover:bg-muted/60'
+                      ? 'bg-foreground/6'
+                      : 'hover:bg-foreground/4'
                   }`}
                 >
-                  <div className="text-[13px] font-medium">
+                  <div className="text-ui font-medium">
                     v{v.version} · {formatTime(v.createdAt)}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-meta text-foreground/40">
                     {v.wordCount} 字
                   </div>
                 </button>
               ))
             )}
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto rounded-md border bg-muted/30 p-3">
+          <div className="min-h-0 flex-1 overflow-y-auto rounded-md border border-foreground/10 bg-foreground/4 p-3">
             {previewId === null ? (
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+              <div className="flex h-full items-center justify-center text-meta text-foreground/40">
                 选择左侧版本查看内容
               </div>
             ) : previewText === null ? (
@@ -132,14 +132,14 @@ export function VersionDialog({ documentId, open, onOpenChange }: VersionDialogP
               </div>
             ) : (
               <>
-                <p className="whitespace-pre-wrap text-[13px] leading-relaxed">
+                <p className="whitespace-pre-wrap text-ui leading-relaxed">
                   {previewText}
                 </p>
                 <button
                   type="button"
                   onClick={() => handleRestore(previewId)}
                   disabled={restoring !== null}
-                  className="mt-3 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[12px] transition-colors hover:bg-muted disabled:opacity-50"
+                  className="mt-3 flex items-center gap-1.5 rounded-md border border-foreground/10 px-2.5 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4 disabled:opacity-50"
                 >
                   {restoring ? (
                     <Loader2 className="size-3.5 animate-spin" />

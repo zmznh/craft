@@ -1,0 +1,433 @@
+{
+  "media": [
+    {
+      "q": "screen and (max-width: 450px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .App-toolbar-container .ToolIcon__icon { width: 1.8rem; height: 1.8rem; }"
+      ]
+    },
+    {
+      "q": "screen and (max-width: 379px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .App-toolbar-container .ToolIcon__icon { width: 1.5rem; height: 1.5rem; }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 1921px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .dropdown-menu.fonts { max-height: calc(14px + 19.7rem); }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 861px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .command-palette-dialog .Modal__content { max-height: 750px; height: 100%; }"
+      ]
+    },
+    {
+      "q": "screen and (max-width: 861px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .ttd-dialog-panel textarea { width: auto; height: 10rem; }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 1024px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .HelpDialog__islands-container { grid-template-columns: 1fr 1fr; }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 1024px)",
+      "count": 3,
+      "sample": [
+        ".excalidraw .HelpDialog__island--tools { grid-area: 1 / 1 / 2 / 2; }",
+        ".excalidraw .HelpDialog__island--view { grid-area: 2 / 1 / 3 / 2; }",
+        ".excalidraw .HelpDialog__island--editor { grid-area: 1 / 2 / 3 / 3; }"
+      ]
+    },
+    {
+      "q": "(max-width: 460px)",
+      "count": 2,
+      "sample": [
+        ".excalidraw .ExportDialog--json .ExportDialog-cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }",
+        ".excalidraw .ExportDialog--json .ExportDialog-cards .Card-details { min-height: 40px; }"
+      ]
+    },
+    {
+      "q": "(max-width: 1024px), (max-width: 800px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .welcome-screen-decor-hint .welcome-screen-decor--help, .excalidraw .welcome-screen-decor-hint .welcome-screen-decor--menu { display: none; }"
+      ]
+    },
+    {
+      "q": "(max-width: 860px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .welcome-screen-decor-hint--menu .welcome-screen-decor-hint__label { max-width: 160px; }"
+      ]
+    },
+    {
+      "q": "(max-height: 500px), (max-width: 320px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .welcome-screen-center { display: none; }"
+      ]
+    },
+    {
+      "q": "(min-width: 1536px)",
+      "count": 1,
+      "sample": [
+        ".excalidraw .App-menu_top { grid-template-columns: 1fr 1fr 1fr; gap: 3rem; }"
+      ]
+    },
+    {
+      "q": "(min-width: -1px)",
+      "count": 1,
+      "sample": [
+        ".hYjVVK { border-radius: 10px; }"
+      ]
+    },
+    {
+      "q": "((min-width: -1px))",
+      "count": 1,
+      "sample": [
+        "[data-whatinput=\"keyboard\"] .hYjVVK:not(.isStatic):not(:disabled):focus { outline: rgb(46, 109, 233) solid 1px; outline-offset: -1px; }"
+      ]
+    },
+    {
+      "q": "(pointer: coarse) and (max-width: 747px)",
+      "count": 1,
+      "sample": [
+        ".fvpATv > * { width: auto; max-width: calc(-2rem + 100vw); }"
+      ]
+    },
+    {
+      "q": "((max-width: 747px) and (max-width: -1px))",
+      "count": 1,
+      "sample": [
+        ".hhUtnq { margin-left: 0px; margin-right: 0px; }"
+      ]
+    },
+    {
+      "q": "(max-width: 747px)",
+      "count": 1,
+      "sample": [
+        ".jSyorC { flex: 0 1 0%; }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 600px) and (max-width: 900px)",
+      "count": 2,
+      "sample": [
+        ".kxrhjO { min-width: 300px; }",
+        ".kxrhjO.isInEditor { min-width: min(300px, -558px + 100vw); }"
+      ]
+    },
+    {
+      "q": "screen and (min-width: 900px)",
+      "count": 2,
+      "sample": [
+        ".kxrhjO { min-width: 480px; }",
+        ".kxrhjO.isInEditor { min-width: min(480px, -558px + 100vw); }"
+      ]
+    },
+    {
+      "q": "((max-width: 747px))",
+      "count": 3,
+      "sample": [
+        ".fsbnni { background: transparent; border-radius: 0px; padding: 0px; box-shadow: none; }",
+        ".fsbnni::after { display: none; }",
+        ".fsbnni button, .fsbnni a { transition: unset; }"
+      ]
+    },
+    {
+      "q": "((max-width: 747px))",
+      "count": 1,
+      "sample": [
+        ".frvbLJ.frvbLJ { width: unset; }"
+      ]
+    },
+    {
+      "q": "(min-width: 748px)",
+      "count": 1,
+      "sample": [
+        ".kfCFoF { padding-top: 16px; gap: 20px; }"
+      ]
+    }
+  ],
+  "hoverRules": [
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ToolIcon .ToolIcon__icon:hover",
+      "d": "background: var(--button-hover-bg);"
+    },
+    {
+      "s": ".excalidraw .ToolIcon_type_button:disabled:active, [data-whatintent=\"keyboard\"] .excalidraw .ToolIcon_type_button:disabled:focus, [data-what",
+      "d": "background-color: initial; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; box-shadow: none;"
+    },
+    {
+      "s": ".excalidraw .ToolIcon_type_floating, [data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ToolIcon_type_floating:hover, .excalidraw",
+      "d": "background-color: transparent;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ToolIcon_type_floating .ToolIcon__icon:hover",
+      "d": "background-color: var(--button-gray-2);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw button.standalone:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw button.standalone.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .excalidraw-eye-dropper-trigger:hover",
+      "d": "background: var(--button-hover-bg);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .color-picker__button:hover:not(.active):not(.color-picker__button--large)",
+      "d": "transform: scale(1.075);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .color-picker__button:hover:not(.active).color-picker__button--large::after",
+      "d": "content: \"\"; position: absolute; inset: -1px; box-shadow: 0 0 0 1px var(--color-gray-30); border-radius: var(--radius); filter: var(--theme-filter);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .color-picker-label-swatch:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .color-picker-label-swatch.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .picker-container button:hover, [data-whatintent]:not([data-whatintent=\"touch\"]",
+      "d": "background-color: var(--button-gray-2);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .Checkbox:hover:not(.is-checked) .Checkbox-box:not(:focus)",
+      "d": "box-shadow: rgb(77, 171, 247) 0px 0px 0px 2px;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .Checkbox:hover:not(.is-checked) .Checkbox-box:not(:focus) svg",
+      "d": "display: block; opacity: 0.3;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .Checkbox:hover .Checkbox-box",
+      "d": "background-color: rgba(208, 235, 255, 0.2);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .Checkbox.is-checked:hover .Checkbox-box",
+      "d": "background-color: rgb(165, 216, 255);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .ProjectName .TextInput--readonly:hover",
+      "d": "background: none;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .publish-library__buttons--confirm.ToolIcon_type_button:hover",
+      "d": "background-color: rgb(25, 113, 194);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .publish-library__buttons--cancel.ToolIcon_type_button:hover",
+      "d": "background-color: rgb(134, 142, 150);"
+    },
+    {
+      "s": ".excalidraw .single-library-item .ToolIcon, [data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .single-library-item .ToolIcon_type",
+      "d": "background-color: rgb(255, 255, 255);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .single-library-item--remove .ToolIcon__icon:hover",
+      "d": "background-color: rgb(240, 62, 62);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .dropdown-menu.manual-hover .dropdown-menu-item:hover",
+      "d": "background-color: transparent;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .dropdown-menu .dropdown-menu-item:hover",
+      "d": "background-color: var(--button-hover-bg); text-decoration: none;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .dropdown-menu-button:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .dropdown-menu-button.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw.theme--dark.excalidraw .dropdown-menu-button:hover",
+      "d": "--background: #363541;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .dropdown-menu-button:hover",
+      "d": "--background: var(--color-surface-high); background-color: var(--background); text-decoration: none;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .library-unit:active:not(:has(.library-unit__checkbox:hover)), .excalidraw .lib",
+      "d": "background-color: var(--color-surface-high);"
+    },
+    {
+      "s": ".excalidraw .library-unit__checkbox-container, [data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .library-unit__checkbox-containe",
+      "d": "align-items: center; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--icon-fill-color); display: flex; justify-content: center; "
+    },
+    {
+      "s": ".excalidraw .library-unit__checkbox-container input, [data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .library-unit__checkbox-co",
+      "d": "cursor: pointer;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .library-unit__checkbox.Checkbox:hover .Checkbox-box",
+      "d": "background-color: var(--color-primary-light);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .excalidraw-button:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .excalidraw-button.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcTextField__input:not(.excalidraw .ExcTextField__input--readonly):hover",
+      "d": "border-color: var(--ExcTextField--border-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcTextField__input input:not(:focus):hover",
+      "d": "background-color: initial;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .publish-library-success-close.ToolIcon_type_button:hover",
+      "d": "background-color: rgb(25, 113, 194);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .library-menu-browse-button:hover",
+      "d": "background-color: var(--color-brand-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .Dialog__close:hover",
+      "d": "color: var(--color-gray-60);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .compact-shape-actions .ToolIcon .ToolIcon__icon:hover",
+      "d": "background-color: transparent;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .context-menu-item:hover",
+      "d": "color: var(--popup-bg-color); background-color: var(--select-highlight-color);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .context-menu-item:hover.dangerous",
+      "d": "background-color: rgb(250, 82, 82);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .context-menu-item:hover.dangerous .context-menu-item__label",
+      "d": "color: var(--popup-bg-color);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .follow-mode__disconnect-btn:hover",
+      "d": "background-color: var(--color-primary-darker);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .mobile-toolbar .ToolIcon .ToolIcon__icon:hover",
+      "d": "background-color: transparent;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .PasteChartDialog .ChartPreview:hover",
+      "d": "padding: 0px; border: 2px solid rgb(51, 154, 240);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .sidebar-trigger:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .sidebar-trigger.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .sidebar__header__buttons button:hover",
+      "d": "background-color: var(--button-hover-bg, var(--island-bg-color)); border-color: var(--button-hover-border, var(--button-border, var(--default-border-color))); color: var(--button-hover-color, var(--bu"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .sidebar__header__buttons button.active:hover",
+      "d": "background-color: var(--button-selected-hover-bg, var(--color-surface-primary-container));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .sidebar__header__buttons button:hover",
+      "d": "background: var(--button-hover-bg, var(--island-bg-color));"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .RadioGroup__choice:hover",
+      "d": "color: var(--RadioGroup-choice-color-off-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .RadioGroup__choice.active:hover",
+      "d": "background: var(--RadioGroup-choice-background-on-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton:hover",
+      "d": "transition: 0.15s ease-out;"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-primary.ExcButton--variant-filled:hover",
+      "d": "--back-color: var(--color-brand-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-primary.ExcButton--variant-outlined:hover, [data-whatintent]:",
+      "d": "--text-color: var(--color-brand-hover); --border-color: var(--color-brand-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-danger.ExcButton--variant-filled:hover",
+      "d": "--back-color: var(--color-danger-darker);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-danger.ExcButton--variant-outlined:hover, [data-whatintent]:n",
+      "d": "--text-color: var(--color-danger-darkest); --border-color: var(--color-danger-darkest);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-success.ExcButton--variant-filled:hover",
+      "d": "--back-color: var(--color-success-darker);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-success.ExcButton--variant-outlined:hover, [data-whatintent]:",
+      "d": "--text-color: var(--color-success-contrast-hover); --border-color: var(--color-success-contrast-hover);"
+    },
+    {
+      "s": "[data-whatintent]:not([data-whatintent=\"touch\"]) .excalidraw .ExcButton--color-muted.ExcButton--variant-filled:hover",
+      "d": "--back-color: var(--color-gray-60);"
+    }
+  ],
+  "darkRules": [],
+  "motionRules": [],
+  "keyframes": [
+    "rotate",
+    "dash",
+    "library-unit__adder-animation",
+    "library-unit__skeleton-opacity-animation",
+    "Modal__background__fade-in",
+    "Modal__content_fade-in",
+    "speaking-indicator-anim",
+    "successStatusAnimation",
+    "fade-in",
+    "fadeIn",
+    "fadeOut",
+    "slideFromBottom",
+    "slideToBottom",
+    "slideFromTop",
+    "slideToTop",
+    "slideFromLeft",
+    "slideToLeft",
+    "slideFromRight",
+    "slideToRight",
+    "eqMXiz1675478712",
+    "cstNsr1675478712"
+  ],
+  "transitions": {}
+}

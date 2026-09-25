@@ -15,7 +15,7 @@ export function DailyNotesList({ groups }: DailyNotesListProps) {
       {groups.map((group) =>
         group.notes.length === 0 ? null : (
           <section key={group.label}>
-            <h2 className="mb-2 text-sm font-medium text-muted-foreground">
+            <h2 className="mb-2 text-sec font-semibold text-foreground/55">
               {group.label}
             </h2>
             <div className="flex flex-col">
@@ -24,23 +24,23 @@ export function DailyNotesList({ groups }: DailyNotesListProps) {
                   key={note.id}
                   href={`/documents/${note.id}`}
                   className={cn(
-                    'group flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors',
-                    'hover:bg-muted/60'
+                    'group flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors duration-150',
+                    'hover:bg-foreground/4'
                   )}
                 >
                   {note.icon ? (
                     <span className="mt-0.5 text-lg leading-none">{note.icon}</span>
                   ) : (
-                    <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                    <CalendarDays className="mt-0.5 size-4 shrink-0 text-foreground/40" />
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="truncate text-sm font-medium">
+                      <span className="truncate text-body font-medium">
                         {note.title}
                       </span>
                     </div>
                     {note.plainText && (
-                      <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                      <p className="mt-0.5 truncate text-meta text-foreground/55">
                         {note.plainText.length > 100
                           ? note.plainText.slice(0, 100) + '…'
                           : note.plainText}

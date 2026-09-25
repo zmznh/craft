@@ -51,7 +51,7 @@ export function SharedDocView({
           style={{ background: washiGradient }}
         />
       )}
-      <div className="mx-auto max-w-[720px] px-12 pb-32 pt-12">
+      <div className="mx-auto max-w-[720px] px-5 pb-32 pt-12 md:px-12">
         {isColorCover && (
           <div className="mb-6 h-48 w-full rounded-lg" style={{ backgroundColor: coverImage! }} />
         )}
@@ -63,10 +63,10 @@ export function SharedDocView({
         )}
         <div className="mb-6">
           <div className="flex items-start gap-3">
-            <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-md text-2xl">
+            <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-md text-2xl transition-colors duration-150 ease-craft hover:bg-foreground/4">
               {icon || '📄'}
             </span>
-            <h1 className="flex-1 font-serif text-3xl font-normal">{title}</h1>
+            <h1 className="flex-1 text-doctitle font-bold text-[#1F2225] dark:text-[#F9F9F9]">{title}</h1>
           </div>
         </div>
         <Editor documentId={documentId} initialContent={content} readOnly />

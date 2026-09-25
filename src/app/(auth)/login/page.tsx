@@ -50,20 +50,20 @@ function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm rounded-2xl border border-border bg-card py-6 shadow-lg ring-0">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-semibold tracking-tight">登录 Crafty</CardTitle>
-        <CardDescription>输入你的账号信息以继续</CardDescription>
+        <CardTitle className="text-title font-semibold">登录 Crafty</CardTitle>
+        <CardDescription className="text-ui text-foreground/40">输入你的账号信息以继续</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-ui text-destructive">
               {error}
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="email">邮箱</Label>
+            <Label htmlFor="email" className="text-ui font-medium">邮箱</Label>
             <Input
               id="email"
               type="email"
@@ -72,10 +72,11 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">密码</Label>
+            <Label htmlFor="password" className="text-ui font-medium">密码</Label>
             <Input
               id="password"
               type="password"
@@ -83,16 +84,21 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
+        <CardFooter className="flex flex-col gap-4 rounded-b-2xl border-0 bg-transparent pb-2">
+          <Button
+            type="submit"
+            className="h-8 w-full rounded-lg bg-craft-accent text-ui font-medium text-white transition-colors duration-150 hover:bg-craft-accent-hover"
+            disabled={loading}
+          >
             {loading ? '登录中...' : '登录'}
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-ui text-foreground/40">
             还没有账号？{' '}
-            <Link href="/register" className="font-medium text-primary hover:underline">
+            <Link href="/register" className="text-ui text-foreground/40 transition-colors duration-150 hover:text-foreground hover:underline">
               注册
             </Link>
           </p>

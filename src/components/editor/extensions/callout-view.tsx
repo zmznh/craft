@@ -9,33 +9,33 @@ import type { CalloutType } from './callout';
 const calloutConfig: Record<CalloutType, { icon: typeof Info; color: string; bg: string; border: string }> = {
   info: {
     icon: Info,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-950/30',
-    border: 'border-l-blue-500',
+    color: 'text-[var(--callout-info-border)]',
+    bg: 'bg-[var(--callout-info-bg)]',
+    border: 'border-l-[var(--callout-info-border)]',
   },
   warning: {
     icon: AlertTriangle,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-950/30',
-    border: 'border-l-amber-500',
+    color: 'text-[var(--callout-warn-border)]',
+    bg: 'bg-[var(--callout-warn-bg)]',
+    border: 'border-l-[var(--callout-warn-border)]',
   },
   error: {
     icon: AlertCircle,
-    color: 'text-red-600 dark:text-red-400',
-    bg: 'bg-red-50 dark:bg-red-950/30',
-    border: 'border-l-red-500',
+    color: 'text-[var(--callout-error-border)]',
+    bg: 'bg-[var(--callout-error-bg)]',
+    border: 'border-l-[var(--callout-error-border)]',
   },
   success: {
     icon: CheckCircle,
-    color: 'text-green-600 dark:text-green-400',
-    bg: 'bg-green-50 dark:bg-green-950/30',
-    border: 'border-l-green-500',
+    color: 'text-[var(--callout-success-border)]',
+    bg: 'bg-[var(--callout-success-bg)]',
+    border: 'border-l-[var(--callout-success-border)]',
   },
   note: {
     icon: StickyNote,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-950/30',
-    border: 'border-l-purple-500',
+    color: 'text-[var(--callout-note-border)]',
+    bg: 'bg-[var(--callout-note-bg)]',
+    border: 'border-l-[var(--callout-note-border)]',
   },
 };
 
@@ -48,7 +48,7 @@ export function CalloutView({ node, updateAttributes }: NodeViewProps) {
     <NodeViewWrapper as="div" className="my-3">
       <div
         className={cn(
-          'flex gap-3 rounded-lg border-l-4 p-4',
+          'flex gap-3 rounded-lg border-l-4 p-4 transition-shadow duration-150 ease-craft',
           config.bg,
           config.border
         )}

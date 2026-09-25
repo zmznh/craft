@@ -53,7 +53,7 @@ export function ImageGalleryView({ node, updateAttributes }: NodeViewProps) {
               <img
                 src={img.src}
                 alt={img.caption ?? ''}
-                className="h-40 w-full rounded-md object-cover"
+                className="h-40 w-full rounded-lg object-cover"
               />
               <button
                 type="button"
@@ -64,20 +64,20 @@ export function ImageGalleryView({ node, updateAttributes }: NodeViewProps) {
                 <X className="size-3.5" />
               </button>
               {img.caption && (
-                <figcaption className="mt-1 truncate text-center text-xs text-muted-foreground">
+                <figcaption className="mt-1 truncate text-center text-meta text-foreground/40">
                   {img.caption}
                 </figcaption>
               )}
             </figure>
           ))}
           {uploading && (
-            <div className="flex h-40 items-center justify-center rounded-md border border-dashed bg-muted/30">
+            <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-foreground/15 bg-foreground/4">
               <Loader2 className="size-6 animate-spin text-muted-foreground" />
             </div>
           )}
         </div>
         {count === 0 && !uploading && (
-          <p className="mb-2 text-center text-sm text-muted-foreground">
+          <p className="mb-2 text-center text-ui text-foreground/40">
             图片网格 - 点击下方按钮添加图片
           </p>
         )}
@@ -85,7 +85,7 @@ export function ImageGalleryView({ node, updateAttributes }: NodeViewProps) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-50"
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-foreground/15 py-1.5 text-meta text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/70 disabled:opacity-50"
         >
           <Plus className="size-3.5" />
           添加图片

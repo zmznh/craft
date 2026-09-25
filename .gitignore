@@ -55,3 +55,11 @@ dist/
 /docs/craft-ref/ref-*.png
 /docs/craft-ref/ref/
 /docs/craft-ref/tokens.json
+
+# e2e artifacts
+/logs/
+/test-results/
+/playwright-report/
+
+# craft.do 参照截图采自已登录会话，含个人内容，只留本地对照，不入库
+/docs/craft-ref/screens/

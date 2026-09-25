@@ -48,7 +48,7 @@ export function ListView({ collection }: ListViewProps) {
         {collection.items.map((item: any) => (
           <div
             key={item.id}
-            className="group rounded-lg border border-border bg-background p-4 transition-shadow hover:shadow-md"
+            className="group rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow duration-150 hover:shadow-md"
           >
             <div className="mb-3 flex items-start justify-between gap-3">
               <div className="flex-1 space-y-2">
@@ -57,7 +57,7 @@ export function ListView({ collection }: ListViewProps) {
 
                   return (
                     <div key={property.id} className="flex items-start gap-3">
-                      <span className="w-24 shrink-0 text-xs font-medium text-muted-foreground">
+                      <span className="w-24 shrink-0 text-meta font-medium text-foreground/40">
                         {property.name}
                       </span>
                       <div className="flex-1">
@@ -76,7 +76,7 @@ export function ListView({ collection }: ListViewProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="shrink-0 opacity-0 group-hover:opacity-100"
+                className="shrink-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100 hover:bg-foreground/4"
                 onClick={() => handleDeleteItem(item.id)}
               >
                 <Trash2 className="size-4 text-muted-foreground" />
@@ -87,7 +87,7 @@ export function ListView({ collection }: ListViewProps) {
       </div>
 
       <div className="mx-auto mt-4 max-w-3xl">
-        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleAddItem}>
+        <Button variant="ghost" size="sm" className="w-full justify-start text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground" onClick={handleAddItem}>
           <Plus className="mr-2 size-4" />
           新建
         </Button>

@@ -35,24 +35,29 @@ export function GroupMenu({ collection, groupBy, onGroupByChange }: GroupMenuPro
 
   if (!isOpen) {
     return (
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)}>
-        <Group className="mr-2 size-4" />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+        onClick={() => setIsOpen(true)}
+      >
+        <Group className="mr-1.5 size-3.5" />
         {selectedProperty ? `按 ${selectedProperty.name} 分组` : '分组'}
       </Button>
     );
   }
 
   return (
-    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3">
+    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3 text-ui">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">分组方式</span>
-        <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+        <span className="text-ui font-medium">分组方式</span>
+        <Button variant="ghost" size="sm" className="h-7 rounded-md hover:bg-foreground/4" onClick={() => setIsOpen(false)}>
           <X className="size-4" />
         </Button>
       </div>
 
       {groupableProperties.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-ui text-foreground/40">
           没有可分组的属性。分组需要单选、多选或复选框类型的属性。
         </p>
       ) : (
@@ -61,6 +66,7 @@ export function GroupMenu({ collection, groupBy, onGroupByChange }: GroupMenuPro
             <Button
               variant="outline"
               size="sm"
+              className="h-7 rounded-md border-border text-ui hover:bg-foreground/4"
               onClick={handleClearGroup}
             >
               取消分组
@@ -71,6 +77,7 @@ export function GroupMenu({ collection, groupBy, onGroupByChange }: GroupMenuPro
               key={property.id}
               variant={groupBy === property.id ? 'default' : 'outline'}
               size="sm"
+              className="h-7 rounded-md border-border text-ui transition-colors duration-150 hover:bg-foreground/4 data-active:bg-foreground/4 data-active:text-foreground"
               onClick={() => handleSelectGroup(property.id)}
             >
               {property.name}

@@ -69,7 +69,7 @@ export function DrawingView({ node, updateAttributes, deleteNode }: NodeViewProp
     <NodeViewWrapper as="div" className="my-4">
       <div
         ref={wrapperRef}
-        className="group relative h-[400px] w-full overflow-hidden rounded-lg border"
+        className="group relative h-[400px] w-full overflow-hidden rounded-lg border border-foreground/8 transition-shadow duration-150 ease-craft hover:shadow-sm"
       >
         {TldrawComp ? (
           <TldrawComp onMount={handleMount} />
@@ -78,7 +78,7 @@ export function DrawingView({ node, updateAttributes, deleteNode }: NodeViewProp
             {loading ? (
               <>
                 <Loader2 className="size-6 animate-spin" />
-                <span className="text-sm">载入画板...</span>
+                <span className="text-ui">载入画板...</span>
               </>
             ) : (
               <>
@@ -86,12 +86,12 @@ export function DrawingView({ node, updateAttributes, deleteNode }: NodeViewProp
                 <button
                   type="button"
                   onClick={startEditing}
-                  className="rounded-md border bg-background px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+                  className="rounded-lg border border-foreground/10 bg-background px-3 py-1.5 text-ui text-foreground/85 transition-colors duration-150 ease-craft hover:bg-foreground/4"
                 >
                   {hasSnapshot ? '编辑绘图' : '开始绘图'}
                 </button>
                 {hasSnapshot && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-meta text-foreground/40">
                     该块包含绘图内容,点击上方按钮编辑
                   </span>
                 )}

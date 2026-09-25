@@ -52,7 +52,7 @@ export function TableToolbar({ editor }: TableToolbarProps) {
       options={{ placement: 'top' }}
       shouldShow={({ editor: ed }) => ed.isActive('table')}
     >
-      <div className="flex flex-wrap items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-md">
+      <div className="flex flex-wrap items-center gap-0.5 rounded-md bg-[rgb(250,250,250)] p-1 shadow-md transition-colors duration-150 ease-craft dark:bg-[#242424]">
         <ToolButton
           title="左侧插入列"
           onClick={() => editor.chain().focus().addColumnBefore().run()}
@@ -101,7 +101,7 @@ export function TableToolbar({ editor }: TableToolbarProps) {
             <path d="M5 19v-2a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2" />
           </svg>
         </ToolButton>
-        <div className="mx-0.5 h-5 w-px bg-border" />
+        <div className="mx-0.5 h-5 w-px bg-foreground/8" />
         <ToolButton
           title="切换表头行"
           active={checkHeaderRow(editor)}
@@ -124,7 +124,7 @@ export function TableToolbar({ editor }: TableToolbarProps) {
         >
           <TableCellsSplit className="size-4" />
         </ToolButton>
-        <div className="mx-0.5 h-5 w-px bg-border" />
+        <div className="mx-0.5 h-5 w-px bg-foreground/8" />
         <ToolButton
           title="按首列升序排序"
           onClick={() => sortTable(editor, 'asc')}
@@ -143,7 +143,7 @@ export function TableToolbar({ editor }: TableToolbarProps) {
         >
           <Equal className="size-4" />
         </ToolButton>
-        <div className="mx-0.5 h-5 w-px bg-border" />
+        <div className="mx-0.5 h-5 w-px bg-foreground/8" />
         <ColorSwatchPicker
           title="单元格背景色(双击取消)"
           onPick={(c) => applyCellAttr(editor, 'backgroundColor', c)}
@@ -171,10 +171,10 @@ function ToolButton({ title, active, onClick, children }: ToolButtonProps) {
       title={title}
       onClick={onClick}
       className={cn(
-        'flex size-7 items-center justify-center rounded-md transition-colors',
+        'flex size-7 items-center justify-center rounded-md transition-colors duration-150 ease-craft',
         active
-          ? 'bg-accent text-accent-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          ? 'bg-foreground/8 text-foreground'
+          : 'text-foreground/55 hover:bg-foreground/4 hover:text-foreground/85'
       )}
     >
       {children}
@@ -203,7 +203,7 @@ function ColorSwatchPicker({
         input.oninput = () => onPick(input.value);
         input.click();
       }}
-      className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="flex size-7 items-center justify-center rounded-md text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
     >
       <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="9" />

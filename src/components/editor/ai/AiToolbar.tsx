@@ -35,10 +35,10 @@ export function AiToolbar({ editor }: AiToolbarProps) {
       onClick={handleToggle}
       title="AI 助手 (⌘J)"
       className={cn(
-        'flex size-7 items-center justify-center rounded-md transition-colors',
+        'flex size-7 items-center justify-center rounded-md transition-colors duration-150 ease-craft',
         isOpen
-          ? 'bg-primary text-primary-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          ? 'bg-craft-accent text-white'
+          : 'text-foreground/55 hover:bg-foreground/4 hover:text-foreground/85'
       )}
     >
       <Sparkles className="size-4" />

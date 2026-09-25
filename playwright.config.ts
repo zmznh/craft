@@ -35,12 +35,12 @@ export default defineConfig({
       use: { viewport: { width: 768, height: 1024 } },
       // Only the visual matrix needs the smaller shells; functional specs are
       // viewport-independent and would triple the runtime.
-      testMatch: /visual\.spec\.ts/,
+      testMatch: /(visual|responsive).spec.ts/,
     },
     {
       name: 'mobile',
       use: { ...devices['iPhone 12'] },
-      testMatch: /visual\.spec\.ts/,
+      testMatch: /(visual|responsive).spec.ts/,
     },
   ],
   webServer: [

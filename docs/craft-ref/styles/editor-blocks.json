@@ -1,0 +1,156 @@
+{
+  "page": "editor-blocks",
+  "blocks": [
+    {
+      "tag": "DIV",
+      "t": "Watch: how to videos | Learn Craft fast with our short 'h",
+      "cls": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "c": "rgb(26, 28, 30)",
+      "ff": "Inter",
+      "fs": "16px",
+      "fw": "400",
+      "lh": "19.2px",
+      "ls": "normal",
+      "pad": "0px",
+      "mar": "0px/0px",
+      "rad": "0px",
+      "bd": "0px none rgb(26, 28, 30)",
+      "x": 358,
+      "w": 800,
+      "h": 3501
+    }
+  ],
+  "sizeHistogram": {
+    "16px/400/19.2px/rgb(26, 28, 30)": {
+      "n": 630,
+      "sample": "Watch: how to videos | Learn C",
+      "tag": "DIV"
+    },
+    "23px/700/28px/rgb(31, 34, 37)": {
+      "n": 10,
+      "sample": "Watch: how to videos",
+      "tag": "DIV"
+    },
+    "13px/500/16px/rgba(26, 28, 30, 0.4)": {
+      "n": 4,
+      "sample": "",
+      "tag": "BUTTON"
+    },
+    "13px/500/0px/rgba(26, 28, 30, 0.4)": {
+      "n": 6,
+      "sample": "",
+      "tag": "DIV"
+    },
+    "20px/700/24px/rgb(31, 34, 37)": {
+      "n": 12,
+      "sample": "Learn Craft fast with our shor",
+      "tag": "DIV"
+    },
+    "20px/700/24px/rgb(49, 121, 206)": {
+      "n": 2,
+      "sample": "'how to videos'",
+      "tag": "SPAN"
+    },
+    "15px/400/23px/rgb(31, 34, 37)": {
+      "n": 104,
+      "sample": "Note: clicking the links below",
+      "tag": "DIV"
+    },
+    "15px/400/23px/rgb(39, 72, 135)": {
+      "n": 2,
+      "sample": "Craft's YouTube channel",
+      "tag": "A"
+    },
+    "18px/600/22px/rgb(31, 34, 37)": {
+      "n": 36,
+      "sample": "Craft - An introduction",
+      "tag": "DIV"
+    },
+    "18px/600/22px/rgb(49, 121, 206)": {
+      "n": 12,
+      "sample": "Craft - An introduction",
+      "tag": "SPAN"
+    },
+    "15px/700/23px/rgb(31, 34, 37)": {
+      "n": 2,
+      "sample": "Get going with this short intr",
+      "tag": "SPAN"
+    },
+    "16px/400/19.2px/rgb(31, 34, 37)": {
+      "n": 77,
+      "sample": "Craft Docs | 2:13 min | 71,723",
+      "tag": "DIV"
+    },
+    "10px/500/10px/rgb(31, 34, 37)": {
+      "n": 28,
+      "sample": "Craft Docs | 2:13 min | 71,723",
+      "tag": "DIV"
+    },
+    "10px/500/10px/rgb(93, 89, 91)": {
+      "n": 95,
+      "sample": "Craft Docs | 2:13 min | 71,723",
+      "tag": "DIV"
+    },
+    "10px/400/10px/rgb(93, 89, 91)": {
+      "n": 15,
+      "sample": "min",
+      "tag": "SPAN"
+    },
+    "12px/500/15.6px/rgb(31, 34, 37)": {
+      "n": 12,
+      "sample": "",
+      "tag": "DIV"
+    },
+    "12px/500/15.6px/rgb(93, 89, 91)": {
+      "n": 5,
+      "sample": "Data is Outdated",
+      "tag": "DIV"
+    },
+    "13px/500/16px/rgb(26, 28, 30)": {
+      "n": 54,
+      "sample": "",
+      "tag": "BUTTON"
+    },
+    "13px/500/0px/rgb(26, 28, 30)": {
+      "n": 81,
+      "sample": "",
+      "tag": "DIV"
+    },
+    "15px/500/21px/rgb(31, 34, 37)": {
+      "n": 2,
+      "sample": "Craft - Docs and Notes Editor",
+      "tag": "DIV"
+    },
+    "13px/400/18.2px/rgb(143, 145, 146)": {
+      "n": 2,
+      "sample": "\"Craft is a next-generation do",
+      "tag": "DIV"
+    },
+    "12px/400/15.6px/rgb(92, 97, 99)": {
+      "n": 1,
+      "sample": "www.youtube.com/channel/UC8OIJ",
+      "tag": "DIV"
+    },
+    "12px/500/15.6px/rgb(92, 97, 99)": {
+      "n": 1,
+      "sample": "Data is Outdated",
+      "tag": "DIV"
+    },
+    "16px/400/19.2px/rgb(143, 145, 146)": {
+      "n": 1,
+      "sample": "",
+      "tag": "DIV"
+    },
+    "17px/400/21.25px/rgb(143, 145, 146)": {
+      "n": 3,
+      "sample": "",
+      "tag": "DIV"
+    },
+    "17px/400/21.25px/rgb(26, 28, 30)": {
+      "n": 5,
+      "sample": "​",
+      "tag": "DIV"
+    }
+  }
+}

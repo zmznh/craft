@@ -185,13 +185,13 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
   return (
     <div className="p-3">
       {/* Sub-tab switcher */}
-      <div className="mb-4 flex rounded-lg border border-border p-0.5">
+      <div className="mb-4 flex rounded-lg border border-foreground/8 bg-foreground/4 p-0.5">
         <button
           type="button"
           onClick={() => setSubTab('info')}
           className={cn(
-            'flex-1 rounded-md px-3 py-1.5 text-[12px] font-medium transition-colors',
-            subTab === 'info' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            'flex-1 rounded-md px-3 py-1.5 text-meta font-medium transition-colors duration-150 ease-craft',
+            subTab === 'info' ? 'bg-card text-foreground shadow-sm' : 'text-foreground/55 hover:text-foreground/85'
           )}
         >
           页面信息
@@ -200,8 +200,8 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           type="button"
           onClick={() => setSubTab('actions')}
           className={cn(
-            'flex-1 rounded-md px-3 py-1.5 text-[12px] font-medium transition-colors',
-            subTab === 'actions' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            'flex-1 rounded-md px-3 py-1.5 text-meta font-medium transition-colors duration-150 ease-craft',
+            subTab === 'actions' ? 'bg-card text-foreground shadow-sm' : 'text-foreground/55 hover:text-foreground/85'
           )}
         >
           动作
@@ -212,19 +212,19 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
         <div className="space-y-4">
           {/* Properties */}
           <section>
-            <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">属性</h4>
+            <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">属性</h4>
             <div className="space-y-2.5">
-              <div className="flex items-center gap-2.5 text-[13px]">
+              <div className="flex items-center gap-2.5 text-ui">
                 <Calendar className="size-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">已创建：</span>
                 <span>今天</span>
               </div>
-              <div className="flex items-center gap-2.5 text-[13px]">
+              <div className="flex items-center gap-2.5 text-ui">
                 <Calendar className="size-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">已更新：</span>
                 <span>刚刚</span>
               </div>
-              <div className="flex items-center gap-2.5 text-[13px]">
+              <div className="flex items-center gap-2.5 text-ui">
                 <User className="size-3.5 text-muted-foreground" />
                 <span className="text-muted-foreground">作者：</span>
                 <span>你</span>
@@ -241,7 +241,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           {/* Backlinks */}
           {backlinks.length > 0 && (
             <section>
-              <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+              <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">
                 反向链接 ({backlinks.length})
               </h4>
               <div className="space-y-1">
@@ -249,7 +249,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
                   <Link
                     key={link.id}
                     href={`/documents/${link.id}`}
-                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-muted"
+                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-ui transition-colors hover:bg-foreground/4"
                   >
                     <FileText className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="truncate">{link.icon} {link.title || '未命名'}</span>
@@ -261,8 +261,8 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
 
           {/* Stats */}
           <section>
-            <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">统计</h4>
-            <div className="text-[13px] text-muted-foreground">{wordCount.toLocaleString()} 字</div>
+            <h4 className="mb-2 text-caption font-medium uppercase tracking-wider text-foreground/40">统计</h4>
+            <div className="text-ui text-muted-foreground">{wordCount.toLocaleString()} 字</div>
           </section>
 
           <CommentSection documentId={documentId} editor={editor} />
@@ -270,19 +270,19 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
       ) : (
         <div className="space-y-1">
           {actionError && (
-            <div className="rounded-md bg-destructive/10 px-2 py-1.5 text-[12px] text-destructive">
+            <div className="rounded-md bg-destructive/10 px-2 py-1.5 text-meta text-destructive">
               {actionError}
             </div>
           )}
 
           {moving && (
-            <div className="mb-2 rounded-lg border border-border p-2">
+            <div className="mb-2 rounded-lg border border-foreground/10 p-2">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-[12px] font-medium">移动到...</span>
+                <span className="text-meta font-medium">移动到...</span>
                 <button
                   type="button"
                   onClick={() => setMoving(false)}
-                  className="text-[11px] text-muted-foreground hover:text-foreground"
+                  className="text-meta text-muted-foreground hover:text-foreground"
                 >
                   取消
                 </button>
@@ -292,7 +292,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
                   type="button"
                   disabled={busy}
                   onClick={() => handleMove({ folderId: null, parentId: null })}
-                  className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[12px] text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
+                  className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-meta text-muted-foreground transition-colors hover:bg-foreground/4 disabled:opacity-50"
                 >
                   📄 独立文档（根目录）
                 </button>
@@ -302,13 +302,13 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
                     type="button"
                     disabled={busy}
                     onClick={() => handleMove({ folderId: folder.id, parentId: null })}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[12px] transition-colors hover:bg-muted disabled:opacity-50"
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-meta transition-colors hover:bg-foreground/4 disabled:opacity-50"
                   >
                     <span>{folder.icon || '📁'}</span>
                     <span className="truncate">{folder.name}</span>
                   </button>
                 ))}
-                <div className="mt-1 border-t border-border pt-1" />
+                <div className="mt-1 border-t border-foreground/10 pt-1" />
                 {docs
                   .filter((d) => !d.parentId)
                   .map((doc) => (
@@ -317,7 +317,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
                       type="button"
                       disabled={busy}
                       onClick={() => handleMove({ parentId: doc.id, folderId: null })}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[12px] transition-colors hover:bg-muted disabled:opacity-50"
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-meta transition-colors hover:bg-foreground/4 disabled:opacity-50"
                     >
                       <span>{doc.icon || '📄'}</span>
                       <span className="truncate">{doc.title || '未命名'}</span>
@@ -342,7 +342,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
               }
             }}
             disabled={busy}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4 disabled:opacity-50"
           >
             <Play className="size-3.5 text-muted-foreground" />
             <span>展示</span>
@@ -350,7 +350,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           <button
             type="button"
             onClick={openMoveMenu}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4"
           >
             <Folder className="size-3.5 text-muted-foreground" />
             <span>移动到...</span>
@@ -359,7 +359,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
             type="button"
             onClick={handleDuplicate}
             disabled={busy}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4 disabled:opacity-50"
           >
             <Copy className="size-3.5 text-muted-foreground" />
             <span>创建副本</span>
@@ -368,7 +368,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
             type="button"
             onClick={handleToggleFavorite}
             disabled={busy}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4 disabled:opacity-50"
           >
             <Star className={cn('size-3.5', isFavorite ? 'fill-current text-amber-500' : 'text-muted-foreground')} />
             <span>{isFavorite ? '取消收藏' : '收藏文档'}</span>
@@ -376,7 +376,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           <button
             type="button"
             onClick={handleSaveAsTemplate}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4"
           >
             <LayoutTemplate className="size-3.5 text-muted-foreground" />
             <span>{templateSaved ? '已保存为模板' : '另存为模板'}</span>
@@ -384,7 +384,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           <button
             type="button"
             onClick={() => setVersionsOpen(true)}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4"
           >
             <Clock className="size-3.5 text-muted-foreground" />
             <span>查看备份</span>
@@ -392,13 +392,13 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           <button
             type="button"
             onClick={() => setShowExport((prev) => !prev)}
-            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui transition-colors hover:bg-foreground/4"
           >
             <Download className="size-3.5 text-muted-foreground" />
             <span>导出</span>
           </button>
           {showExport && (
-            <div className="mb-2 rounded-lg border border-border p-2">
+            <div className="mb-2 rounded-lg border border-foreground/10 p-2">
               <div className="mb-1 grid grid-cols-2 gap-1">
                 {(['markdown', 'html', 'text', 'json'] as const).map((format) => (
                   <button
@@ -406,7 +406,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
                     type="button"
                     disabled={busy}
                     onClick={() => handleExport(format)}
-                    className="rounded-md border border-border px-2 py-1.5 text-[12px] transition-colors hover:bg-muted disabled:opacity-50"
+                    className="rounded-md border border-foreground/10 px-2 py-1.5 text-meta transition-colors hover:bg-foreground/4 disabled:opacity-50"
                   >
                     {format === 'markdown' ? 'Markdown' : format === 'html' ? 'HTML' : format === 'text' ? '纯文本' : 'JSON'}
                   </button>
@@ -417,20 +417,20 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
           <div className="my-2 h-px bg-border" />
           {confirmDelete ? (
             <div className="rounded-md bg-destructive/10 p-2">
-              <p className="mb-2 text-[12px] text-destructive">移入回收站？可在回收站恢复。</p>
+              <p className="mb-2 text-meta text-destructive">移入回收站？可在回收站恢复。</p>
               <div className="flex gap-1.5">
                 <button
                   type="button"
                   disabled={busy}
                   onClick={handleDelete}
-                  className="flex-1 rounded-md bg-destructive px-2 py-1 text-[12px] text-white disabled:opacity-50"
+                  className="flex-1 rounded-md bg-destructive px-2 py-1 text-meta text-white disabled:opacity-50"
                 >
                   确认删除
                 </button>
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(false)}
-                  className="flex-1 rounded-md border border-border px-2 py-1 text-[12px]"
+                  className="flex-1 rounded-md border border-foreground/10 px-2 py-1 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4"
                 >
                   取消
                 </button>
@@ -440,7 +440,7 @@ export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps
             <button
               type="button"
               onClick={() => setConfirmDelete(true)}
-              className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-[13px] text-destructive transition-colors hover:bg-destructive/10"
+              className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-ui text-destructive transition-colors hover:bg-destructive/10"
             >
               <Trash2 className="size-3.5" />
               <span>删除</span>
