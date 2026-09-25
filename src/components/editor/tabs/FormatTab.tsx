@@ -93,6 +93,36 @@ export function FormatTab({ editor }: FormatTabProps) {
         </div>
       </section>
 
+      {/* Block font size */}
+      <section>
+        <h4 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">字号</h4>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            aria-label="减小字号"
+            onClick={() => editor.chain().focus().stepFontSize(-1).run()}
+            className="flex-1 rounded-md border border-border py-1.5 text-[13px] transition-colors hover:bg-muted"
+          >
+            A−
+          </button>
+          <span className="w-14 text-center text-xs tabular-nums text-muted-foreground">
+            {(editor.getAttributes('paragraph').fontSize as number | null)
+              ?? (editor.getAttributes('heading').fontSize as number | null)
+              ?? (editor.getAttributes('blockquote').fontSize as number | null)
+              ?? 16}
+            px
+          </span>
+          <button
+            type="button"
+            aria-label="增大字号"
+            onClick={() => editor.chain().focus().stepFontSize(1).run()}
+            className="flex-1 rounded-md border border-border py-1.5 text-[13px] transition-colors hover:bg-muted"
+          >
+            A＋
+          </button>
+        </div>
+      </section>
+
       {/* Format tools */}
       <section>
         <div className="grid grid-cols-4 gap-1">

@@ -114,7 +114,7 @@ export function KanbanView({ collection }: KanbanViewProps) {
   }
 
   return (
-    <div className="flex flex-1 gap-4 overflow-x-auto p-4">
+    <div className="flex flex-1 gap-4 overflow-x-auto p-4 max-md:flex-col max-md:overflow-x-hidden max-md:overflow-y-auto">
       {options.map(option => {
         const items = groupedItems.get(option.id) ?? [];
         return (
@@ -157,7 +157,7 @@ function KanbanColumn({ option, items, onAddItem, onDeleteItem, onMoveItem, opti
   const [movingItemId, setMovingItemId] = useState<string | null>(null);
 
   return (
-    <div className="flex w-72 shrink-0 flex-col rounded-lg bg-muted/30">
+    <div className="flex w-72 shrink-0 flex-col rounded-lg bg-muted/30 max-md:w-full">
       <div className="flex items-center gap-2 border-b border-border px-3 py-2">
         <span
           className="size-2.5 rounded-full"

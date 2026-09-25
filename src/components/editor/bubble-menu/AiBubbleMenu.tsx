@@ -145,6 +145,7 @@ export function AiBubbleMenu({ editor }: AiBubbleMenuProps) {
     <TiptapBubbleMenu
       editor={editor}
       pluginKey={aiBubbleKey}
+      className="crafty-bubble-menu"
       options={{ placement: 'top' }}
       shouldShow={({ state, from, to }) =>
         useAiBubbleStore.getState().isOpen && state.selection.from === from && from !== to

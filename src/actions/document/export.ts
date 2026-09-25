@@ -1,6 +1,8 @@
 'use server';
 
 import { auth } from '@/lib/auth/auth';
+import { requireUserId } from '@/lib/authz/guard';
+import { requireDocumentAccess } from '@/lib/authz/document-access';
 import { getDb } from '@/prisma/db';
 import { serializeDocument } from '@/lib/document-codec';
 
@@ -21,14 +23,9 @@ const extensionByFormat: Record<ExportFormat, string> = {
 };
 
 export async function exportDocument(documentId: string, format: ExportFormat) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
-
-  const db = await getDb();
-  const document = await db.orm.public.Document.first({ id: documentId });
-  if (!document || (document as { userId: string }).userId !== session.user.id) {
-    throw new Error('文档不存在');
-  }
+  const userId = await requireUserId();
+  const access = await requireDocumentAccess(documentId, userId, 'viewer');
+  const document = access.document;
 
   const doc = document as { title: string; content: unknown };
   const body = serializeDocument(doc.content ?? { type: 'doc', content: [] }, format);

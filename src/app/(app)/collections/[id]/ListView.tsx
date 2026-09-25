@@ -52,9 +52,8 @@ export function ListView({ collection }: ListViewProps) {
           >
             <div className="mb-3 flex items-start justify-between gap-3">
               <div className="flex-1 space-y-2">
-                {visibleProperties.map((property: any, index: number) => {
+                {visibleProperties.map((property: any) => {
                   const value = getCellValue(item, property.id);
-                  const isFirst = index === 0;
 
                   return (
                     <div key={property.id} className="flex items-start gap-3">
@@ -62,19 +61,13 @@ export function ListView({ collection }: ListViewProps) {
                         {property.name}
                       </span>
                       <div className="flex-1">
-                        {isFirst ? (
-                          <PropertyCell
-                            property={property}
-                            value={value}
-                            onChange={(newValue) => handleSetValue(item.id, property.id, newValue)}
-                          />
-                        ) : (
-                          <PropertyCell
-                            property={property}
-                            value={value}
-                            onChange={(newValue) => handleSetValue(item.id, property.id, newValue)}
-                          />
-                        )}
+                        <PropertyCell
+                          property={property}
+                          value={value}
+                          onChange={(newValue) => handleSetValue(item.id, property.id, newValue)}
+                          item={item}
+                          properties={collection.properties as any}
+                        />
                       </div>
                     </div>
                   );

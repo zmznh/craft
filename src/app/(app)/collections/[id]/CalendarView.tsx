@@ -94,7 +94,7 @@ export function CalendarView({ collection }: CalendarViewProps) {
 
   const days = [];
   for (let i = 0; i < firstDay; i++) {
-    days.push(<div key={`empty-${i}`} className="min-h-[100px] bg-muted/10" />);
+    days.push(<div key={`empty-${i}`} className="min-h-[100px] bg-muted/10 max-md:min-h-[64px]" />);
   }
 
   const today = new Date();
@@ -109,7 +109,7 @@ export function CalendarView({ collection }: CalendarViewProps) {
       <div
         key={day}
         className={cn(
-          'min-h-[100px] border border-border p-2 transition-colors hover:bg-muted/20 cursor-pointer',
+          'min-h-[100px] cursor-pointer border border-border p-2 transition-colors hover:bg-muted/20 max-md:min-h-[64px] max-md:p-1',
           isToday(day) && 'bg-accent/10'
         )}
         onClick={() => handleDateClick(day)}
@@ -172,10 +172,10 @@ export function CalendarView({ collection }: CalendarViewProps) {
         <div className="w-[140px]" />
       </div>
 
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-4 max-md:p-2">
         <div className="grid grid-cols-7 gap-px bg-border">
           {dayNames.map(day => (
-            <div key={day} className="bg-background px-2 py-2 text-center text-sm font-medium text-muted-foreground">
+            <div key={day} className="bg-background px-1 py-2 text-center text-sm font-medium text-muted-foreground max-md:px-0 max-md:text-xs">
               {day}
             </div>
           ))}

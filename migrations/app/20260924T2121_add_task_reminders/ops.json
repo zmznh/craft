@@ -1,0 +1,170 @@
+[
+  {
+    "id": "column.public.tasks.completedAt",
+    "label": "Add column \"completedAt\" to \"tasks\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "completedAt",
+        "table": "tasks"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"completedAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "completedAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"completedAt\"",
+        "sql": "ALTER TABLE \"public\".\"tasks\" ADD COLUMN \"completedAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"completedAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "completedAt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.tasks.recurrence",
+    "label": "Add column \"recurrence\" to \"tasks\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "recurrence",
+        "table": "tasks"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"recurrence\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "recurrence"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"recurrence\"",
+        "sql": "ALTER TABLE \"public\".\"tasks\" ADD COLUMN \"recurrence\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"recurrence\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "recurrence"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.tasks.recurrenceEnd",
+    "label": "Add column \"recurrenceEnd\" to \"tasks\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "recurrenceEnd",
+        "table": "tasks"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"recurrenceEnd\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "recurrenceEnd"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"recurrenceEnd\"",
+        "sql": "ALTER TABLE \"public\".\"tasks\" ADD COLUMN \"recurrenceEnd\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"recurrenceEnd\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "recurrenceEnd"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.tasks.remindAt",
+    "label": "Add column \"remindAt\" to \"tasks\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "remindAt",
+        "table": "tasks"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"remindAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "remindAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"remindAt\"",
+        "sql": "ALTER TABLE \"public\".\"tasks\" ADD COLUMN \"remindAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"remindAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "tasks",
+          "remindAt"
+        ]
+      }
+    ]
+  }
+]

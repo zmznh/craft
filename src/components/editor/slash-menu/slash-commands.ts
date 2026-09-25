@@ -22,13 +22,19 @@ import {
   AtSign,
   CreditCard,
   LayoutGrid,
+  Columns2,
+  Copy,
   Globe,
   Sparkles,
   PenLine,
+  Sigma,
+  Video,
+  Presentation,
 } from 'lucide-react';
 import type { Editor } from '@tiptap/react';
 import type { ComponentType } from 'react';
 import { uploadFile } from '@/lib/upload-client';
+import { createWhiteboard } from '@/actions/whiteboard/whiteboard';
 import { requestImageGen } from '@/components/editor/ai/ImageGenDialog';
 
 export interface SlashCommand {
@@ -168,12 +174,12 @@ export const slashCommands: SlashCommand[] = [
   },
   {
     name: '分隔线',
-    description: '水平分隔线',
+    description: '水平分隔线（也可输入 --- / ..- / .-- / =- 快速插入）',
     icon: Minus,
     keywords: ['divider', 'separator', 'hr', 'line', '分隔线', '分割线'],
     category: '高级块',
     command: (editor, range) => {
-      editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+      editor.chain().focus().deleteRange(range).setDivider('thin').run();
     },
   },
 
@@ -333,6 +339,101 @@ export const slashCommands: SlashCommand[] = [
     category: '嵌入',
     command: (editor, range) => {
       editor.chain().focus().deleteRange(range).setParagraph().run();
+    },
+  },
+  {
+    name: '目录',
+    description: '列出文档标题，点击可跳转',
+    icon: List,
+    keywords: ['toc', 'table of contents', 'outline', '目录', '大纲'],
+    category: '高级块',
+    command: (editor, range) => {
+      editor.chain().focus().deleteRange(range).insertTableOfContents().run();
+    },
+  },
+  {
+    name: '分栏',
+    description: '把内容并排分成两栏',
+    icon: Columns2,
+    keywords: ['columns', 'column', 'layout', '分栏', '栏', '两栏'],
+    category: '布局',
+    command: (editor, range) => {
+      editor.chain().focus().deleteRange(range).insertColumns(2).run();
+    },
+  },
+  {
+    name: '公式',
+    description: '独立一行的 LaTeX 公式',
+    icon: Sigma,
+    keywords: ['math', 'latex', 'katex', 'formula', '公式', '数学'],
+    category: '高级块',
+    command: (editor, range) => {
+      editor.chain().focus().deleteRange(range).setMathBlock({ latex: '' }).run();
+    },
+  },
+  {
+    name: '行内公式',
+    description: '嵌在文字里的 LaTeX 公式',
+    icon: Sigma,
+    keywords: ['math', 'inline', 'latex', '行内公式', '公式'],
+    category: '高级块',
+    command: (editor, range) => {
+      editor.chain().focus().deleteRange(range).setInlineMath({ latex: '' }).run();
+    },
+  },
+  {
+    name: '镜像块',
+    description: '只读引用另一篇文档里的块',
+    icon: Copy,
+    keywords: ['mirror', 'copy', 'reference', '镜像', '引用', '同步'],
+    category: '高级块',
+    command: (editor, range) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertMirrorBlock({ sourceDocumentId: null, title: null })
+        .run();
+    },
+  },
+  {
+    name: '视频嵌入',
+    description: '嵌入 YouTube / Vimeo 视频',
+    icon: Video,
+    keywords: ['video', 'youtube', 'vimeo', '视频', '嵌入'],
+    category: '嵌入',
+    command: (editor, range) => {
+      const src = window.prompt('输入视频 URL:');
+      editor.chain().focus().deleteRange(range);
+      if (src) {
+        editor.chain().setVideoEmbed({ src }).run();
+      } else {
+        editor.chain().setParagraph().run();
+      }
+    },
+  },
+  {
+    name: '白板',
+    description: '在文档里嵌入一块可缩放的白板',
+    icon: Presentation,
+    keywords: ['whiteboard', 'board', 'canvas', '白板', '画布'],
+    category: '嵌入',
+    command: async (editor, range) => {
+      editor.chain().focus().deleteRange(range).run();
+      try {
+        const board = (await createWhiteboard()) as {
+          id: string;
+          name: string;
+          icon: string | null;
+        };
+        editor
+          .chain()
+          .focus()
+          .setWhiteboardEmbed({ whiteboardId: board.id, title: board.name, icon: board.icon })
+          .run();
+      } catch (err) {
+        alert(err instanceof Error ? err.message : '创建白板失败');
+      }
     },
   },
 ];

@@ -1,6 +1,7 @@
 'use server';
 
-import { auth } from '@/lib/auth/auth';
+import { requireUserId } from '@/lib/authz/guard';
+import { requireDocumentAccess } from '@/lib/authz/document-access';
 import { getDb } from '@/prisma/db';
 
 export async function updateDocument(id: string, data: {
@@ -16,11 +17,11 @@ export async function updateDocument(id: string, data: {
   width?: string | null;
   pageStyle?: unknown;
 }) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await requireDocumentAccess(id, userId, 'editor');
 
   const db = await getDb();
-  const doc = await db.orm.public.Document.where({ id, userId: session.user.id }).update(data as Record<string, unknown>);
+  const doc = await db.orm.public.Document.where({ id }).update(data as Record<string, unknown>);
 
   // Auto version snapshot: at most one per 10 minutes per document
   try {
@@ -34,7 +35,7 @@ export async function updateDocument(id: string, data: {
     if (stale && data.content !== undefined) {
       const current = await db.orm.public.Document.first({ id });
       const c = current as any;
-      if (c && c.userId === session.user.id) {
+      if (c) {
         await db.orm.public.DocumentVersion.create({
           id: crypto.randomUUID(),
           documentId: id,

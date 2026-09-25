@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth/auth';
 import { getDeletedDocuments } from '@/actions/document/get';
 import { TrashList } from '@/components/document/TrashList';
+import { AppPageContainer } from '@/components/app/AppPageContainer';
+import { AppPageHeader } from '@/components/app/AppPageHeader';
 
 export default async function TrashPage() {
   const session = await auth();
@@ -11,10 +13,10 @@ export default async function TrashPage() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-5xl px-8 py-8">
-        <h1 className="mb-6 text-2xl font-semibold">回收站</h1>
+      <AppPageHeader title="回收站" />
+      <AppPageContainer>
         <TrashList documents={deletedDocs} />
-      </div>
+      </AppPageContainer>
     </div>
   );
 }

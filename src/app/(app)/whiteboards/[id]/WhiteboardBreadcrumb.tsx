@@ -23,11 +23,11 @@ export function WhiteboardBreadcrumb({ id, name, icon }: WhiteboardBreadcrumbPro
   };
 
   return (
-    <nav className="flex items-center gap-2 text-sm">
-      <Link href="/whiteboards" className="text-muted-foreground hover:text-foreground">
+    <nav className="flex min-w-0 items-center gap-2 text-sm">
+      <Link href="/whiteboards" className="shrink-0 text-muted-foreground hover:text-foreground">
         白板
       </Link>
-      <span className="text-muted-foreground">/</span>
+      <span className="shrink-0 text-muted-foreground">/</span>
       <span className="text-base leading-none">{icon ?? '🎨'}</span>
       <input
         value={value}
@@ -36,7 +36,7 @@ export function WhiteboardBreadcrumb({ id, name, icon }: WhiteboardBreadcrumbPro
         onKeyDown={(e) => {
           if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
         }}
-        className="bg-transparent font-medium outline-none"
+        className="min-w-0 flex-1 truncate bg-transparent font-medium outline-none"
         aria-label="白板名称"
       />
     </nav>

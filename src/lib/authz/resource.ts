@@ -18,16 +18,24 @@ const roleRank: Record<ResourceRole, number> = {
   owner: 4,
 };
 
+export function resolveResourceRole(
+  actor: { id: string } | null | undefined,
+  resource: ResourceAccess,
+): ResourceRole | null {
+  if (!actor) return null;
+  if (actor.id === resource.ownerId) return 'owner';
+  return resource.members?.find((member) => member.userId === actor.id)?.role ?? null;
+}
+
+export function roleSatisfies(role: ResourceRole, required: AccessLevel): boolean {
+  return roleRank[role] >= roleRank[required];
+}
+
 export function canAccessResource(
   actor: { id: string } | null | undefined,
   resource: ResourceAccess,
   required: AccessLevel,
 ): boolean {
-  if (!actor) return false;
-
-  const role = actor.id === resource.ownerId
-    ? 'owner'
-    : resource.members?.find((member) => member.userId === actor.id)?.role;
-
-  return role !== undefined && roleRank[role] >= roleRank[required];
+  const role = resolveResourceRole(actor, resource);
+  return role !== null && roleRank[role] >= roleRank[required];
 }

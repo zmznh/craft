@@ -8,7 +8,7 @@ export async function createView(
   collectionId: string,
   data: {
     name: string;
-    type: 'table' | 'kanban' | 'calendar' | 'list';
+    type: 'table' | 'kanban' | 'calendar' | 'list' | 'gallery' | 'form';
     config?: any;
   }
 ) {

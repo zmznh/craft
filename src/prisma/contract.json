@@ -40,6 +40,10 @@
       "model": "DailyNotesConfig",
       "namespace": "public"
     },
+    "document_members": {
+      "model": "DocumentMember",
+      "namespace": "public"
+    },
     "document_shares": {
       "model": "DocumentShare",
       "namespace": "public"
@@ -78,6 +82,10 @@
     },
     "whiteboards": {
       "model": "Whiteboard",
+      "namespace": "public"
+    },
+    "yjs_document_states": {
+      "model": "YjsDocumentState",
       "namespace": "public"
     }
   },
@@ -1379,6 +1387,22 @@
                   "namespace": "public"
                 }
               },
+              "collabState": {
+                "cardinality": "1:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "documentId"
+                  ]
+                },
+                "to": {
+                  "model": "YjsDocumentState",
+                  "namespace": "public"
+                }
+              },
               "favorites": {
                 "cardinality": "1:N",
                 "on": {
@@ -1422,6 +1446,21 @@
                 },
                 "to": {
                   "model": "Backlink",
+                  "namespace": "public"
+                }
+              },
+              "members": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "documentId"
+                  ]
+                },
+                "to": {
+                  "model": "DocumentMember",
                   "namespace": "public"
                 }
               },
@@ -1597,6 +1636,120 @@
               "table": "documents"
             }
           },
+          "DocumentMember": {
+            "fields": {
+              "addedBy": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "documentId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "userId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "document": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "documentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Document",
+                  "namespace": "public"
+                }
+              },
+              "user": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "addedBy": {
+                  "column": "addedBy"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "documentId": {
+                  "column": "documentId"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "role": {
+                  "column": "role"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "userId": {
+                  "column": "userId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "document_members"
+            }
+          },
           "DocumentShare": {
             "fields": {
               "createdAt": {
@@ -1628,6 +1781,13 @@
                 }
               },
               "passcode": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "slug": {
                 "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
@@ -1683,6 +1843,9 @@
                 },
                 "passcode": {
                   "column": "passcode"
+                },
+                "slug": {
+                  "column": "slug"
                 },
                 "token": {
                   "column": "token"
@@ -2277,6 +2440,13 @@
                   "kind": "scalar"
                 }
               },
+              "completedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "createdAt": {
                 "nullable": false,
                 "type": {
@@ -2316,6 +2486,27 @@
                 "nullable": false,
                 "type": {
                   "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "recurrence": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "recurrenceEnd": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "remindAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
                   "kind": "scalar"
                 }
               },
@@ -2387,6 +2578,9 @@
                 "blockId": {
                   "column": "blockId"
                 },
+                "completedAt": {
+                  "column": "completedAt"
+                },
                 "createdAt": {
                   "column": "createdAt"
                 },
@@ -2404,6 +2598,15 @@
                 },
                 "order": {
                   "column": "order"
+                },
+                "recurrence": {
+                  "column": "recurrence"
+                },
+                "recurrenceEnd": {
+                  "column": "recurrenceEnd"
+                },
+                "remindAt": {
+                  "column": "remindAt"
                 },
                 "status": {
                   "column": "status"
@@ -2524,6 +2727,21 @@
                 },
                 "to": {
                   "model": "DailyNotesConfig",
+                  "namespace": "public"
+                }
+              },
+              "documentMembers": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "userId"
+                  ]
+                },
+                "to": {
+                  "model": "DocumentMember",
                   "namespace": "public"
                 }
               },
@@ -2720,6 +2938,27 @@
                   "kind": "scalar"
                 }
               },
+              "sharePermission": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "shareToken": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "shareVersion": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "updatedAt": {
                 "nullable": false,
                 "type": {
@@ -2798,6 +3037,15 @@
                 "order": {
                   "column": "order"
                 },
+                "sharePermission": {
+                  "column": "sharePermission"
+                },
+                "shareToken": {
+                  "column": "shareToken"
+                },
+                "shareVersion": {
+                  "column": "shareVersion"
+                },
                 "updatedAt": {
                   "column": "updatedAt"
                 },
@@ -2807,6 +3055,84 @@
               },
               "namespaceId": "public",
               "table": "whiteboards"
+            }
+          },
+          "YjsDocumentState": {
+            "fields": {
+              "bytes": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "documentId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "state": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bytea@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "document": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "documentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Document",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "bytes": {
+                  "column": "bytes"
+                },
+                "documentId": {
+                  "column": "documentId"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "state": {
+                  "column": "state"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "yjs_document_states"
             }
           }
         }
@@ -3732,6 +4058,120 @@
                 }
               ]
             },
+            "document_members": {
+              "columns": {
+                "addedBy": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "documentId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "editor"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "userId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "documentId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "document_members"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "documents"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "document_members"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "documentId"
+                  ],
+                  "name": "document_members_documentId_idx_825ef746",
+                  "prefix": "document_members_documentId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "userId"
+                  ],
+                  "name": "document_members_userId_idx_a489d58a",
+                  "prefix": "document_members_userId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "documentId",
+                    "userId"
+                  ]
+                }
+              ]
+            },
             "document_shares": {
               "columns": {
                 "createdAt": {
@@ -3763,6 +4203,11 @@
                   "nullable": false
                 },
                 "passcode": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "slug": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": true
@@ -3816,6 +4261,11 @@
                 {
                   "columns": [
                     "token"
+                  ]
+                },
+                {
+                  "columns": [
+                    "slug"
                   ]
                 }
               ]
@@ -4586,6 +5036,11 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "completedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "default": {
@@ -4627,6 +5082,21 @@
                   },
                   "nativeType": "float8",
                   "nullable": false
+                },
+                "recurrence": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "recurrenceEnd": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "remindAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
                 },
                 "status": {
                   "codecId": "pg/text@1",
@@ -4888,6 +5358,29 @@
                   "nativeType": "float8",
                   "nullable": false
                 },
+                "sharePermission": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "off"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "shareToken": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "shareVersion": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "nativeType": "timestamptz",
@@ -4958,7 +5451,78 @@
                   "id"
                 ]
               },
-              "uniques": []
+              "uniques": [
+                {
+                  "columns": [
+                    "shareToken"
+                  ]
+                }
+              ]
+            },
+            "yjs_document_states": {
+              "columns": {
+                "bytes": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "documentId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "state": {
+                  "codecId": "pg/bytea@1",
+                  "nativeType": "bytea",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "documentId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "yjs_document_states"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "documents"
+                  }
+                }
+              ],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "documentId"
+                  ]
+                }
+              ]
             }
           }
         },
@@ -4966,10 +5530,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "cacdcda91e2a553a3428b56c1abe9efea74036f876cca8d3e02c2f4e2463cc53"
+    "storageHash": "51be9e5814c7452c0e68fbdced58486c8ae38ac94b9c2c27575376c622d09d6f"
   },
   "execution": {
-    "executionHash": "0ff31c916f2b66546d2378795ff2490f84ad618adcc70f4b1a9318e6971ada54",
+    "executionHash": "980ddcd2812657c86e600b2499dbc3eae9d2dde1891c970544bc5970c85ade5c",
     "mutations": {
       "defaults": [
         {
@@ -5199,6 +5763,32 @@
           "ref": {
             "column": "id",
             "namespace": "public",
+            "table": "document_members"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "document_members"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
             "table": "document_shares"
           }
         },
@@ -5378,6 +5968,32 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "whiteboards"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "yjs_document_states"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "yjs_document_states"
           }
         }
       ]

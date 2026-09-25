@@ -58,7 +58,7 @@ export function InsertTab({ editor }: InsertTabProps) {
             <h4 className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
               {categoryLabels[category] || category}
             </h4>
-            <div className="space-y-0.5">
+            <div className="space-y-2">
               {cmds.map((cmd) => (
                 <button
                   key={cmd.name}
@@ -68,18 +68,15 @@ export function InsertTab({ editor }: InsertTabProps) {
                   onDragEnd={handleDragEnd}
                   onClick={() => handleInsert(cmd)}
                   className={cn(
-                    'group flex w-full items-center gap-2.5 rounded-lg px-2 py-2',
-                    'text-sm text-foreground transition-colors',
+                    'group flex w-full items-center gap-2.5 rounded-lg border border-border/70 bg-card px-2.5 py-2',
+                    'text-[13px] text-foreground shadow-xxs transition-colors',
                     'hover:bg-muted cursor-grab active:cursor-grabbing'
                   )}
                 >
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-card">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-background">
                     <cmd.icon className="size-3.5 text-muted-foreground" />
                   </span>
-                  <span className="flex-1 text-left">
-                    <span className="block text-[13px] leading-tight">{cmd.name}</span>
-                    <span className="text-[11px] text-muted-foreground">{cmd.description}</span>
-                  </span>
+                  <span className="flex-1 truncate text-left leading-tight">{cmd.name}</span>
                   <GripVertical className="size-4 shrink-0 text-muted-foreground/40" />
                 </button>
               ))}

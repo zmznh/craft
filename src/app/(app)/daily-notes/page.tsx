@@ -4,6 +4,8 @@ import { getDailyNotes } from '@/actions/daily-notes/daily-notes';
 import type { DailyNoteItem } from '@/actions/daily-notes/daily-notes';
 import { TodayNoteButton } from './TodayNoteButton';
 import { DailyNotesList } from './DailyNotesList';
+import { AppPageContainer } from '@/components/app/AppPageContainer';
+import { AppPageHeader } from '@/components/app/AppPageHeader';
 
 export default async function DailyNotesPage() {
   const session = await auth();
@@ -39,11 +41,8 @@ export default async function DailyNotesPage() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl px-8 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">日记</h1>
-          <TodayNoteButton />
-        </div>
+      <AppPageHeader title="日记" actions={<TodayNoteButton />} />
+      <AppPageContainer className="max-w-3xl">
 
         {notes.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-8 text-center">
@@ -54,7 +53,7 @@ export default async function DailyNotesPage() {
         ) : (
           <DailyNotesList groups={groups} />
         )}
-      </div>
+      </AppPageContainer>
     </div>
   );
 }

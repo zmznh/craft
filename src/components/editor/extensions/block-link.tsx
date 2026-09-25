@@ -5,7 +5,12 @@ import { BlockLinkView } from './block-link-view';
 declare module '@tiptap/react' {
   interface Commands<ReturnType> {
     blockLink: {
-      setBlockLink: (attributes: { documentId: string; title: string }) => ReturnType;
+      setBlockLink: (attributes: {
+        documentId: string;
+        title: string;
+        blockId?: string | null;
+        blockIndex?: number | null;
+      }) => ReturnType;
     };
   }
 }
@@ -27,6 +32,23 @@ export const BlockLink = Node.create({
         default: null,
         parseHTML: (element) => element.getAttribute('data-title'),
         renderHTML: (attributes) => ({ 'data-title': attributes.title }),
+      },
+      blockId: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-block-target'),
+        renderHTML: (attributes) =>
+          attributes.blockId ? { 'data-block-target': attributes.blockId } : {},
+      },
+      blockIndex: {
+        default: null,
+        parseHTML: (element) => {
+          const raw = element.getAttribute('data-block-index');
+          return raw === null ? null : Number(raw);
+        },
+        renderHTML: (attributes) =>
+          typeof attributes.blockIndex === 'number'
+            ? { 'data-block-index': String(attributes.blockIndex) }
+            : {},
       },
     };
   },

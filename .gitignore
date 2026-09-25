@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/test-results
+/.pw-out
+/playwright-report
+/blob-report
+/e2e/.visual-state.json
 
 # next.js
 /.next/
@@ -45,3 +50,8 @@ dist/
 
 # uploads (local file storage)
 /uploads
+
+# craft.do 基准截图采自用户已登录会话，含个人内容，只留本地对照，不入库
+/docs/craft-ref/ref-*.png
+/docs/craft-ref/ref/
+/docs/craft-ref/tokens.json

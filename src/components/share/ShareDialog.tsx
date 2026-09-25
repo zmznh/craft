@@ -22,6 +22,7 @@ import {
   getOrCreateShare,
   setSharePasscode,
   setSharePublished,
+  setShareSlug,
 } from '@/actions/document/share';
 
 interface ShareDialogProps {
@@ -35,6 +36,10 @@ export function ShareDialog({ documentId, open, onClose }: ShareDialogProps) {
   const [isPublished, setIsPublished] = useState(false);
   const [hasPasscode, setHasPasscode] = useState(false);
   const [passcode, setPasscode] = useState('');
+  const [token, setToken] = useState('');
+  const [slug, setSlug] = useState<string | null>(null);
+  const [slugDraft, setSlugDraft] = useState('');
+  const [slugError, setSlugError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -44,9 +49,12 @@ export function ShareDialog({ documentId, open, onClose }: ShareDialogProps) {
     getOrCreateShare(documentId)
       .then((share) => {
         if (!cancelled) {
+          setToken(share.token);
           setLink(`${window.location.origin}/s/${share.token}`);
           setIsPublished(share.isPublished);
           setHasPasscode(share.hasPasscode);
+          setSlug(share.slug);
+          setSlugDraft(share.slug ?? '');
         }
       })
       .catch(() => {});
@@ -54,6 +62,19 @@ export function ShareDialog({ documentId, open, onClose }: ShareDialogProps) {
       cancelled = true;
     };
   }, [open, link, documentId]);
+
+  const handleSaveSlug = () => {
+    setSlugError(null);
+    startTransition(async () => {
+      const result = await setShareSlug(documentId, slugDraft);
+      if ('error' in result && result.error) {
+        setSlugError(result.error);
+        return;
+      }
+      setSlug(result.slug);
+      setSlugDraft(result.slug ?? '');
+    });
+  };
 
   const handlePublishedChange = (checked: boolean) => {
     setIsPublished(checked);
@@ -133,6 +154,36 @@ export function ShareDialog({ documentId, open, onClose }: ShareDialogProps) {
                   aria-label="发布为公开页面"
                 />
               </div>
+              {isPublished && (
+                <div className="mt-3 rounded-md border border-border px-3 py-2.5">
+                  <p className="text-sm">公开页面地址</p>
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    {link?.replace(/\/s\/.*$/, '')}/p/{slug || token}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={slugDraft}
+                      onChange={(event) => setSlugDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') handleSaveSlug();
+                      }}
+                      placeholder={token.slice(0, 8)}
+                      aria-label="自定义地址"
+                      className="h-8 min-w-0 flex-1 rounded-md border border-input bg-transparent px-2 text-xs outline-none transition-colors focus:border-ring"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleSaveSlug}
+                      disabled={slugDraft === (slug ?? '')}
+                    >
+                      保存
+                    </Button>
+                  </div>
+                  {slugError && <p className="mt-1.5 text-xs text-destructive">{slugError}</p>}
+                </div>
+              )}
               <div className="mt-3 rounded-md border border-border px-3 py-2.5">
                 <div className="flex items-center gap-2">
                   <KeyRound className="size-4 text-muted-foreground" />

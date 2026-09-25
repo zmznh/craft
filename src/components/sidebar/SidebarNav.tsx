@@ -10,6 +10,7 @@ import {
   FileText,
   Home,
   LayoutTemplate,
+  Trash2,
 } from 'lucide-react';
 import { cn } from 'cn';
 
@@ -21,13 +22,14 @@ const navItems = [
   { href: '/tasks', label: '任务', icon: CheckSquare },
   { href: '/calendar', label: '日历', icon: CalendarDays },
   { href: '/templates', label: '模板', icon: LayoutTemplate },
+  { href: '/trash', label: '回收站', icon: Trash2 },
 ];
 
 export function SidebarNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-0.5 px-2 py-2">
+    <nav className="flex flex-col gap-1 px-2 py-2">
       {navItems.map((item) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
         return (
@@ -35,9 +37,9 @@ export function SidebarNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              'flex h-8 items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors',
+              'flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors',
               isActive
-                ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                ? 'bg-sidebar-active text-sidebar-accent-foreground font-medium shadow-sm'
                 : 'text-sidebar-foreground/70 hover:bg-sidebar-hover hover:text-sidebar-foreground'
             )}
           >

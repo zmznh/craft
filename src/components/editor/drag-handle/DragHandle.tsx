@@ -35,13 +35,24 @@ export function DragHandle({ editor }: { editor: Editor }) {
   } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  /**
+   * `posAtDOM(el, 0)` resolves to depth 0 for the first top-level block, which used to
+   * make the very first block undraggable. Walking the document by child index keeps
+   * the range correct for every block.
+   */
   const getTopLevelRange = useCallback(
     (el: HTMLElement): { from: number; to: number } | null => {
       const view = editor.view;
-      const pos = view.posAtDOM(el, 0);
-      const $pos = editor.state.doc.resolve(pos);
-      if ($pos.depth < 1) return null;
-      return { from: $pos.before(1), to: $pos.after(1) };
+      const index = Array.prototype.indexOf.call(view.dom.children, el);
+      if (index < 0) return null;
+
+      let pos = 0;
+      for (let child = 0; child < view.state.doc.childCount; child += 1) {
+        const node = view.state.doc.child(child);
+        if (child === index) return { from: pos, to: pos + node.nodeSize };
+        pos += node.nodeSize;
+      }
+      return null;
     },
     [editor]
   );
@@ -72,7 +83,12 @@ export function DragHandle({ editor }: { editor: Editor }) {
       }
     };
 
-    const handleMouseLeave = () => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      // The handle renders in the gutter, outside the editor's own box, so the pointer
+      // has to leave `dom` to reach it. Without this guard it hides the moment you
+      // move onto it and the block can never be dragged.
+      const to = e.relatedTarget as HTMLElement | null;
+      if (to?.closest?.('[data-drag-handle]')) return;
       if (!dragStateRef.current) setHandle(null);
     };
 
@@ -115,19 +131,18 @@ export function DragHandle({ editor }: { editor: Editor }) {
         const rect = child.getBoundingClientRect();
         if (clientY >= rect.top && clientY <= rect.bottom) {
           const before = clientY < rect.top + rect.height / 2;
-          const pos = editor.view.posAtDOM(child, 0);
-          const $pos = editor.state.doc.resolve(pos);
-          if ($pos.depth < 1) return null;
+          const range = getTopLevelRange(child);
+          if (!range) return null;
           return {
             el: child,
-            pos: before ? $pos.before(1) : $pos.after(1),
+            pos: before ? range.from : range.to,
             before,
           };
         }
       }
       return null;
     },
-    [editor]
+    [editor, getTopLevelRange]
   );
 
   const performMove = useCallback(
@@ -158,14 +173,25 @@ export function DragHandle({ editor }: { editor: Editor }) {
     (e: React.PointerEvent) => {
       if (!handle) return;
       e.preventDefault();
+
+      // ProseMirror replaces block elements whenever the Yjs echo or the autosave
+      // transaction lands, so the element captured at hover time can already be
+      // detached by the time the pointer goes down. Re-resolve it from the handle's
+      // own offset, or the drag silently refuses to arm.
+      const dom = editor.view.dom as HTMLElement;
+      const wantedTop = dom.getBoundingClientRect().top + handle.top;
+      const blockEl = (Array.from(dom.children) as HTMLElement[]).find((child) => {
+        const rect = child.getBoundingClientRect();
+        return rect.top <= wantedTop && rect.bottom >= wantedTop;
+      });
+      if (!blockEl) return;
+
       dragStateRef.current = {
         startX: e.clientX,
         startY: e.clientY,
         pointerId: e.pointerId,
         range: null,
       };
-
-      const blockEl = handle.blockEl;
 
       const resolveDragRange = (): DragRange | null => {
         const base = getTopLevelRange(blockEl);
@@ -256,7 +282,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
     <>
       {handle && (
         <div
-          className="absolute z-50 flex cursor-grab items-center text-muted-foreground/50 transition-colors hover:text-foreground active:cursor-grabbing"
+          className="absolute z-50 flex cursor-grab items-center text-muted-foreground/50 transition-colors hover:text-foreground active:cursor-grabbing max-md:hidden"
           style={{
             top: handle.top,
             left: HANDLE_OFFSET,

@@ -10,7 +10,9 @@ function nodeText(node: any): string {
   if (Array.isArray(node.content)) {
     return node.content.map(nodeText).join('');
   }
-  return '';
+  // Atom nodes keep their label in an attribute, so a mention or a whiteboard link
+  // stays findable by the text it shows on screen.
+  return node.attrs?.title ?? node.attrs?.name ?? '';
 }
 
 export function pmNodeText(node: any): string {

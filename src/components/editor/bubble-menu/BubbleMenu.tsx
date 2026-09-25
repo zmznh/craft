@@ -25,6 +25,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
     <TiptapBubbleMenu
       editor={editor}
       pluginKey={mainBubbleKey}
+      className="crafty-bubble-menu"
       options={{
         placement: 'top-start',
       }}

@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth/auth';
 import { getWhiteboards } from '@/actions/whiteboard/whiteboard';
 import { CreateWhiteboardButton } from './CreateWhiteboardButton';
+import { AppPageContainer } from '@/components/app/AppPageContainer';
+import { AppPageHeader } from '@/components/app/AppPageHeader';
 
 export default async function WhiteboardsPage() {
   const session = await auth();
@@ -11,12 +13,8 @@ export default async function WhiteboardsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-5xl px-8 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">白板</h1>
-          <CreateWhiteboardButton />
-        </div>
-
+      <AppPageHeader title="白板" actions={<CreateWhiteboardButton />} />
+      <AppPageContainer>
         {boards.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-8 text-center">
             <p className="text-sm text-muted-foreground">
@@ -24,7 +22,7 @@ export default async function WhiteboardsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {boards.map((board) => (
               <a
                 key={board.id}
@@ -45,7 +43,7 @@ export default async function WhiteboardsPage() {
             ))}
           </div>
         )}
-      </div>
+      </AppPageContainer>
     </div>
   );
 }

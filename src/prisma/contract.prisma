@@ -20,6 +20,7 @@ model User {
   whiteboards   Whiteboard[]
   dailyNotesConfig DailyNotesConfig?
   tasks         Task[]
+  documentMembers DocumentMember[]
 
   @@map("users")
 }
@@ -92,6 +93,8 @@ model Document {
   versions      DocumentVersion[]
   tasks         Task[]
   shares        DocumentShare[]
+  members       DocumentMember[]
+  collabState   YjsDocumentState?
 
   @@index([userId])
   @@index([folderId])
@@ -218,6 +221,11 @@ model Whiteboard {
   userId      String
   isDeleted   Boolean  @default(false)
   deletedAt   TimestamptzString?
+
+  sharePermission String  @default("off") // "off" | "view" | "edit"
+  shareToken      String? @unique
+  shareVersion    Int     @default(0)
+
   createdAt   TimestamptzString @default(now())
   updatedAt   temporal.updatedAtString()
 
@@ -289,6 +297,10 @@ model Task {
   title       String
   isCompleted Boolean  @default(false)
   dueDate     TimestamptzString?
+  remindAt    TimestamptzString?
+  recurrence  String?
+  recurrenceEnd TimestamptzString?
+  completedAt TimestamptzString?
   status      String   @default("todo") // "todo" | "doing" | "done"
   order       Float    @default(0)
   createdAt   TimestamptzString @default(now())
@@ -307,6 +319,7 @@ model DocumentShare {
   id           String   @id @default(uuid())
   documentId   String
   token        String   @unique
+  slug         String?  @unique
   passcode     String?
   isPublished  Boolean  @default(false)
   createdAt    TimestamptzString @default(now())
@@ -361,4 +374,35 @@ model Comment {
 
   @@index([threadId])
   @@map("comments")
+}
+
+model DocumentMember {
+  id         String   @id @default(uuid())
+  documentId String
+  userId     String
+  role       String   @default("editor") // "editor" | "commenter" | "viewer"
+  addedBy    String?
+  createdAt  TimestamptzString @default(now())
+  updatedAt  temporal.updatedAtString()
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+  @@index([userId])
+  @@map("document_members")
+}
+
+// Binary Yjs room state, authoritative while a Hocuspocus room is live.
+// `Document.content` stays the dehydrated projection for rendering/search/export.
+model YjsDocumentState {
+  id         String   @id @default(uuid())
+  documentId String   @unique
+  state      Bytes
+  bytes      Int      @default(0)
+  updatedAt  temporal.updatedAtString()
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("yjs_document_states")
 }

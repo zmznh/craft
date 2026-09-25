@@ -7,6 +7,7 @@ interface EditorHeaderProps {
   documentId: string;
   title: string;
   icon: string | null;
+  readOnly?: boolean;
   onTitleChange: (title: string) => void;
   onIconChange: (icon: string | null) => void;
 }
@@ -14,6 +15,7 @@ interface EditorHeaderProps {
 export function EditorHeader({
   title,
   icon,
+  readOnly = false,
   onTitleChange,
   onIconChange,
 }: EditorHeaderProps) {
@@ -34,6 +36,15 @@ export function EditorHeader({
   return (
     <div className="mb-6 pt-8">
       <div className="flex items-start gap-3">
+        {readOnly ? (
+          <>
+            <span className="mt-1 flex size-10 shrink-0 items-center justify-center text-2xl">
+              {icon || '📄'}
+            </span>
+            <h1 className="flex-1 font-serif text-3xl font-normal italic break-words">{title}</h1>
+          </>
+        ) : (
+          <>
         <div className="relative shrink-0">
           <button
             type="button"
@@ -56,9 +67,11 @@ export function EditorHeader({
           type="text"
           value={draftTitle ?? ''}
           onChange={(e) => setDraftTitle(e.target.value)}
-          placeholder="无标题"
-          className="flex-1 bg-transparent font-serif text-3xl font-normal outline-none placeholder:text-muted-foreground/50"
+          placeholder="页面标题"
+          className="flex-1 bg-transparent font-serif text-3xl font-normal italic outline-none placeholder:text-muted-foreground/50"
         />
+          </>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { SharedDocView } from '@/components/share/SharedDocView';
 import { PublicDocBanner } from '@/components/share/PublicDocBanner';
 import { PasscodeGate } from '@/components/share/PasscodeGate';
 import { shareCookieName, verifyShareCookie } from '@/lib/share-passcode';
-import { getDb } from '@/prisma/db';
+import { findShare } from '@/lib/share/resolve';
 
 interface SharedPageProps {
   params: Promise<{ token: string }>;
@@ -23,8 +23,7 @@ export default async function SharedPage({ params }: SharedPageProps) {
   }
 
   if (doc.passcodeProtected) {
-    const db = await getDb();
-    const share = await db.orm.public.DocumentShare.first({ token });
+    const share = await findShare(token);
     const passcode = (share as any)?.passcode ?? null;
     const cookieStore = await cookies();
     const cookieValue = cookieStore.get(shareCookieName(token))?.value;

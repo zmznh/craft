@@ -4,12 +4,18 @@ import { useEffect, useState } from 'react';
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { IndexeddbPersistence } from 'y-indexeddb';
+import type { Awareness } from 'y-protocols/awareness';
+import { colorForUserId, initialPresenceState, type PresenceUser } from './presence';
 
 export type CollabState = 'idle' | 'connecting' | 'synced' | 'offline' | 'error';
+export type CollabRole = 'owner' | 'editor' | 'commenter' | 'viewer';
 
 export interface CollabSession {
   ydoc: Y.Doc | null;
   state: CollabState;
+  role: CollabRole | null;
+  readOnly: boolean;
+  awareness: Awareness | null;
 }
 
 const COLLAB_URL = process.env.NEXT_PUBLIC_COLLAB_URL || 'ws://localhost:3001';
@@ -24,11 +30,15 @@ export function useCollabSession(
   enabled: boolean,
 ): CollabSession {
   const [state, setState] = useState<CollabState>(enabled && ydoc ? 'connecting' : 'idle');
+  const [role, setRole] = useState<CollabRole | null>(null);
+  const [readOnly, setReadOnly] = useState(false);
+  const [awareness, setAwareness] = useState<Awareness | null>(null);
 
   useEffect(() => {
     if (!enabled || !ydoc) return;
     let cancelled = false;
     let provider: HocuspocusProvider | null = null;
+    let persistence: IndexeddbPersistence | null = null;
 
     void (async () => {
       try {
@@ -38,20 +48,38 @@ export function useCollabSession(
           body: JSON.stringify({ documentId }),
         });
         if (!res.ok) throw new Error('token failed');
-        const { token } = (await res.json()) as { token: string };
+        const granted = (await res.json()) as {
+          token: string;
+          role: CollabRole;
+          readOnly: boolean;
+          user: PresenceUser;
+        };
         if (cancelled) return;
+        setRole(granted.role);
+        setReadOnly(granted.readOnly);
 
-        new IndexeddbPersistence(documentId, ydoc);
+        persistence = new IndexeddbPersistence(documentId, ydoc);
         provider = new HocuspocusProvider({
           url: COLLAB_URL,
           name: documentId,
           document: ydoc,
-          token,
+          token: granted.token,
         });
 
+        const user: PresenceUser = { ...granted.user, color: colorForUserId(granted.user.id) };
+        provider.awareness?.setLocalState(initialPresenceState(user));
+        setAwareness(provider.awareness ?? null);
+
         provider.on('status', ({ status }: { status: string }) => {
-          if (status === 'connected') setState('synced');
+          // 'connected' only means the socket opened. Reporting 'synced' here would
+          // let the caller seed the stored JSON into a fragment that is about to
+          // receive the same content from the server, doubling the document on
+          // every mount.
+          if (status === 'connected') setState('connecting');
           if (status === 'disconnected') setState('offline');
+        });
+        provider.on('synced', () => {
+          if (!cancelled) setState('synced');
         });
         provider.on('authenticationFailed', () => setState('error'));
       } catch {
@@ -61,9 +89,12 @@ export function useCollabSession(
 
     return () => {
       cancelled = true;
+      provider?.awareness?.setLocalState(null);
+      setAwareness(null);
       provider?.destroy();
+      void persistence?.destroy();
     };
   }, [documentId, ydoc, enabled]);
 
-  return { ydoc, state };
+  return { ydoc, state, role, readOnly, awareness };
 }

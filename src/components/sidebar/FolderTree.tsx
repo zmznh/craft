@@ -36,7 +36,7 @@ export function FolderTree() {
   }, [treeVersion]);
 
   if (loading) {
-    return <div className="px-3 py-2 text-sm text-muted-foreground">加载中...</div>;
+    return <div className="px-3 py-2 text-[13px] text-muted-foreground">加载中...</div>;
   }
 
   const rootFolders = folders
@@ -45,7 +45,7 @@ export function FolderTree() {
 
   if (rootFolders.length === 0) {
     return (
-      <div className="px-3 py-2 text-sm text-muted-foreground">
+      <div className="px-3 py-2 text-[13px] text-muted-foreground">
         暂无文件夹
       </div>
     );

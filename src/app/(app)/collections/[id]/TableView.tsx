@@ -1,7 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Plus, SlidersHorizontal, Trash2 } from 'lucide-react';
+import { useIsMobile } from '@/lib/use-is-mobile';
 import { addItem, deleteItem, setItemValue } from '@/actions/collection/items';
 import { updateView } from '@/actions/collection/views';
 import { useRouter } from 'next/navigation';
@@ -22,6 +24,8 @@ interface TableViewProps {
 
 export function TableView({ collection, view }: TableViewProps) {
   const router = useRouter();
+  const isMobile = useIsMobile();
+  const [toolsOpen, setToolsOpen] = useState(false);
   const initialConfig = parseConfig((view as any).config);
   const [filters, setFilters] = useState<any[]>(initialConfig.filters ?? []);
   const [sorts, setSorts] = useState<any[]>(initialConfig.sorts ?? []);
@@ -68,33 +72,57 @@ export function TableView({ collection, view }: TableViewProps) {
     return v?.value ?? null;
   };
 
+  const tools = (
+    <>
+      <FilterBar
+        collection={collection}
+        filters={filters}
+        onFiltersChange={(next) => {
+          setFilters(next);
+          void persistConfig({ filters: next, sorts, groupBy });
+        }}
+      />
+      <SortMenu
+        collection={collection}
+        sorts={sorts}
+        onSortsChange={(next) => {
+          setSorts(next);
+          void persistConfig({ filters, sorts: next, groupBy });
+        }}
+      />
+      <GroupMenu
+        collection={collection}
+        groupBy={groupBy}
+        onGroupByChange={(next) => {
+          setGroupBy(next);
+          void persistConfig({ filters, sorts, groupBy: next });
+        }}
+      />
+    </>
+  );
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-border px-4 py-2">
-        <FilterBar
-          collection={collection}
-          filters={filters}
-          onFiltersChange={(next) => {
-            setFilters(next);
-            void persistConfig({ filters: next, sorts, groupBy });
-          }}
-        />
-        <SortMenu
-          collection={collection}
-          sorts={sorts}
-          onSortsChange={(next) => {
-            setSorts(next);
-            void persistConfig({ filters, sorts: next, groupBy });
-          }}
-        />
-        <GroupMenu
-          collection={collection}
-          groupBy={groupBy}
-          onGroupByChange={(next) => {
-            setGroupBy(next);
-            void persistConfig({ filters, sorts, groupBy: next });
-          }}
-        />
+      <div className="flex items-center gap-2 border-b border-border px-[var(--editor-pad-x)] py-2">
+        {isMobile ? (
+          <>
+            {/* Phones keep two icons only: the view tools move into a bottom sheet. */}
+            <Button variant="ghost" size="sm" onClick={() => setToolsOpen(true)} aria-label="视图工具">
+              <SlidersHorizontal className="size-4" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleAddItem} aria-label="新增条目">
+              <Plus className="size-4" />
+            </Button>
+            <Sheet open={toolsOpen} onOpenChange={setToolsOpen}>
+              <SheetContent side="bottom" className="max-h-[70dvh] gap-0 p-0">
+                <SheetTitle className="sr-only">视图工具</SheetTitle>
+                <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">{tools}</div>
+              </SheetContent>
+            </Sheet>
+          </>
+        ) : (
+          tools
+        )}
       </div>
 
       <div className="flex-1 overflow-auto">
@@ -118,12 +146,12 @@ export function TableView({ collection, view }: TableViewProps) {
                     {groupLabel} ({items.length})
                   </h3>
                   <table className="w-full border-collapse">
-                    <thead className="sticky top-0 z-10 bg-muted/50">
+                    <thead className="sticky top-0 z-10 bg-muted/50 max-md:bg-muted">
                       <tr>
                         {visibleProperties.map((property: any) => (
                           <th
                             key={property.id}
-                            className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l"
+                            className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l first:max-md:sticky first:max-md:left-0 first:max-md:z-20 first:max-md:bg-muted"
                           >
                             {property.name}
                           </th>
@@ -137,12 +165,14 @@ export function TableView({ collection, view }: TableViewProps) {
                           {visibleProperties.map((property: any) => (
                             <td
                               key={property.id}
-                              className="border-b border-r border-border px-0 py-0 first:border-l"
+                              className="border-b border-r border-border px-0 py-0 first:border-l first:max-md:sticky first:max-md:left-0 first:max-md:bg-background"
                             >
                               <PropertyCell
                                 property={property}
                                 value={getCellValue(item, property.id)}
                                 onChange={(value) => handleSetValue(item.id, property.id, value)}
+                                item={item}
+                                properties={collection.properties as any}
                               />
                             </td>
                           ))}
@@ -166,12 +196,12 @@ export function TableView({ collection, view }: TableViewProps) {
           </div>
         ) : (
           <table className="w-full border-collapse">
-            <thead className="sticky top-0 z-10 bg-muted/50">
+            <thead className="sticky top-0 z-10 bg-muted/50 max-md:bg-muted">
               <tr>
                 {visibleProperties.map((property: any) => (
                   <th
                     key={property.id}
-                    className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l"
+                    className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l first:max-md:sticky first:max-md:left-0 first:max-md:z-20 first:max-md:bg-muted"
                   >
                     {property.name}
                   </th>
@@ -185,12 +215,14 @@ export function TableView({ collection, view }: TableViewProps) {
                   {visibleProperties.map((property: any) => (
                     <td
                       key={property.id}
-                      className="border-b border-r border-border px-0 py-0 first:border-l"
+                      className="border-b border-r border-border px-0 py-0 first:border-l first:max-md:sticky first:max-md:left-0 first:max-md:bg-background"
                     >
                       <PropertyCell
                         property={property}
                         value={getCellValue(item, property.id)}
                         onChange={(value) => handleSetValue(item.id, property.id, value)}
+                        item={item}
+                        properties={collection.properties as any}
                       />
                     </td>
                   ))}

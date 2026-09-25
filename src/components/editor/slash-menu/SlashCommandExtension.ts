@@ -1,99 +1,101 @@
 import { Extension } from '@tiptap/react';
 import Suggestion from '@tiptap/suggestion';
+import { PluginKey } from '@tiptap/pm/state';
 import { ReactRenderer } from '@tiptap/react';
-import { filterCommands } from './slash-commands';
+import { filterCommands, type SlashCommand as Command } from './slash-commands';
 import { SlashCommandMenu } from './SlashCommandMenu';
 import type { Editor } from '@tiptap/react';
 import type { SuggestionProps } from '@tiptap/suggestion';
-import type { ReactRenderer as ReactRendererType } from '@tiptap/react';
 
-interface SlashCommandOptions {
-  suggestion: {
-    char: string;
-    items: (props: { query: string; editor: Editor }) => any[];
-    render: () => any;
-  };
-}
+type Props = SuggestionProps<Command, Command>;
 
-let currentRenderer: ReactRendererType | null = null;
-let unmountFn: (() => void) | null = null;
-
-export const SlashCommand = Extension.create<SlashCommandOptions>({
+export const SlashCommand = Extension.create({
   name: 'slashCommand',
 
-  addOptions() {
-    return {
-      suggestion: {
+  addProseMirrorPlugins() {
+    return [
+      Suggestion<Command, Command>({
+        editor: this.editor,
+        pluginKey: new PluginKey('slashCommand'),
         char: '/',
-        items: ({ query }: { query: string; editor: Editor }) => {
-          return filterCommands(query);
-        },
+        allowSpaces: false,
+        allowedPrefixes: null,
+        items: ({ query }) => filterCommands(query),
+        // The command has to run through the plugin, not a window listener: Enter
+        // reaches ProseMirror's split-block first, so a handler that runs later
+        // would insert into a document the caret has already left.
+        command: ({ editor, range, props }) => props.command(editor, range),
         render: () => {
+          let renderer: ReactRenderer<{
+            commands: Command[];
+            selectedIndex: number;
+            editor: Editor;
+            range: { from: number; to: number };
+          }> | null = null;
+          let unmount: (() => void) | null = null;
+          let latest: Props | null = null;
+          let selectedIndex = 0;
+
+          const cleanup = () => {
+            renderer?.destroy();
+            unmount?.();
+            renderer = null;
+            unmount = null;
+            latest = null;
+          };
+
+          const paint = () => {
+            if (!latest) return;
+            renderer?.updateProps({
+              commands: latest.items,
+              selectedIndex,
+              editor: latest.editor,
+              range: latest.range,
+            });
+          };
+
           return {
-            onStart: (props: SuggestionProps) => {
-              const component = new ReactRenderer(SlashCommandMenu, {
-                props: {
-                  ...props,
-                  onClose: () => {
-                    component.destroy();
-                    unmountFn?.();
-                    currentRenderer = null;
-                    unmountFn = null;
-                  },
-                },
+            onStart: (props) => {
+              latest = props as Props;
+              selectedIndex = 0;
+              renderer = new ReactRenderer(SlashCommandMenu, {
                 editor: props.editor,
-              });
-
-              currentRenderer = component;
-
-              if (props.clientRect) {
-                unmountFn = props.mount(component.element);
-              }
-            },
-
-            onUpdate(props: SuggestionProps) {
-              if (!currentRenderer) return;
-
-              currentRenderer.updateProps({
-                ...props,
-                onClose: () => {
-                  currentRenderer?.destroy();
-                  unmountFn?.();
-                  currentRenderer = null;
-                  unmountFn = null;
+                props: {
+                  commands: (props as Props).items,
+                  selectedIndex,
+                  editor: props.editor,
+                  range: props.range,
                 },
               });
+              unmount = props.mount ? props.mount(renderer.element) : null;
             },
-
-            onExit() {
-              currentRenderer?.destroy();
-              unmountFn?.();
-              currentRenderer = null;
-              unmountFn = null;
+            onUpdate: (props) => {
+              latest = props as Props;
+              paint();
             },
-
-            onKeyDown(props: { event: KeyboardEvent }) {
-              if (props.event.key === 'Escape') {
-                currentRenderer?.destroy();
-                unmountFn?.();
-                currentRenderer = null;
-                unmountFn = null;
+            onExit: cleanup,
+            onKeyDown: ({ event }) => {
+              if (event.key === 'Escape') {
+                cleanup();
                 return true;
               }
+              const items = latest?.items ?? [];
+              if (!latest || items.length === 0) return false;
 
+              if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                const delta = event.key === 'ArrowDown' ? 1 : -1;
+                selectedIndex = (selectedIndex + delta + items.length) % items.length;
+                paint();
+                return true;
+              }
+              if (event.key === 'Enter' || event.key === 'Tab') {
+                latest.command(items[selectedIndex]);
+                return true;
+              }
               return false;
             },
           };
         },
-      },
-    };
-  },
-
-  addProseMirrorPlugins() {
-    return [
-      Suggestion({
-        editor: this.editor,
-        ...this.options.suggestion,
       }),
     ];
   },

@@ -2,6 +2,8 @@
 
 import { cn } from 'cn';
 import { X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { useIsCompact } from '@/lib/use-is-mobile';
 import { InsertTab } from './InsertTab';
 import { FormatTab } from './FormatTab';
 import { StyleTab } from './StyleTab';
@@ -19,6 +21,9 @@ const tabs: { id: RightTabId; label: string }[] = [
 ];
 
 interface RightPanelProps {
+  /** Controls the compact bottom sheet; the desktop rail mounts only while open.
+      Keeping the sheet mounted and flipping this avoids racing a menu's own dismiss. */
+  open: boolean;
   activeTab: RightTabId;
   onTabChange: (tab: RightTabId) => void;
   onClose: () => void;
@@ -31,6 +36,9 @@ interface RightPanelProps {
   width: string | null;
   pageStyle: PageStyle;
   wordCount: number;
+  /** Only the owner manages collaborators, and only editors see the styling tabs. */
+  isOwner: boolean;
+  canEdit: boolean;
   onUpdate: (data: {
     title?: string;
     icon?: string | null;
@@ -42,6 +50,7 @@ interface RightPanelProps {
 }
 
 export function RightPanel({
+  open,
   activeTab,
   onTabChange,
   onClose,
@@ -54,25 +63,31 @@ export function RightPanel({
   width,
   pageStyle,
   wordCount,
+  isOwner,
+  canEdit,
   onUpdate,
 }: RightPanelProps) {
-  return (
-    <aside className="flex h-full w-full shrink-0 flex-col border-l border-border bg-background sm:w-[300px]" aria-label="编辑器工具面板">
+  const isCompact = useIsCompact();
+  const visibleTabs = canEdit ? tabs : tabs.filter((tab) => tab.id === 'info');
+  const visibleActiveTab = visibleTabs.some((tab) => tab.id === activeTab) ? activeTab : 'info';
+
+  const body = (
+    <>
       {/* Tab bar */}
-      <div className="flex items-center border-b border-border" role="tablist" aria-label="编辑器工具">
-        {tabs.map((tab) => (
+      <div className="flex shrink-0 items-center border-b border-border" role="tablist" aria-label="编辑器工具">
+        {visibleTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             role="tab"
-            aria-selected={activeTab === tab.id}
+            aria-selected={visibleActiveTab === tab.id}
             aria-controls={`editor-panel-${tab.id}`}
             id={`editor-tab-${tab.id}`}
             onClick={() => onTabChange(tab.id)}
             className={cn(
               'flex-1 px-1 py-2.5 text-xs font-medium text-muted-foreground transition-colors',
               'hover:text-foreground',
-              activeTab === tab.id && 'text-foreground'
+              visibleActiveTab === tab.id && 'text-foreground'
             )}
           >
             {tab.label}
@@ -90,18 +105,18 @@ export function RightPanel({
 
       {/* Tab content */}
       <div
-        className="flex-1 overflow-y-auto"
+        className="min-h-0 flex-1 overflow-y-auto"
         role="tabpanel"
-        id={`editor-panel-${activeTab}`}
-        aria-labelledby={`editor-tab-${activeTab}`}
+        id={`editor-panel-${visibleActiveTab}`}
+        aria-labelledby={`editor-tab-${visibleActiveTab}`}
       >
         {!editor ? (
           <div className="p-4 text-xs text-muted-foreground">加载中...</div>
         ) : (
           <>
-            {activeTab === 'insert' && <InsertTab editor={editor} />}
-            {activeTab === 'format' && <FormatTab editor={editor} />}
-            {activeTab === 'style' && (
+            {visibleActiveTab === 'insert' && <InsertTab editor={editor} />}
+            {visibleActiveTab === 'format' && <FormatTab editor={editor} />}
+            {visibleActiveTab === 'style' && (
               <StyleTab
                 editor={editor}
                 documentId={documentId}
@@ -114,12 +129,40 @@ export function RightPanel({
                 onUpdate={onUpdate}
               />
             )}
-            {activeTab === 'info' && (
-              <InfoTab documentId={documentId} editor={editor} wordCount={wordCount} onClose={onClose} />
+            {visibleActiveTab === 'info' && (
+              <InfoTab
+                documentId={documentId}
+                editor={editor}
+                wordCount={wordCount}
+                isOwner={isOwner}
+                onClose={onClose}
+              />
             )}
           </>
         )}
       </div>
+    </>
+  );
+
+  // Tablets and phones have no horizontal room left of the editor, so the same
+  // four tabs arrive as a bottom sheet instead.
+  if (isCompact) {
+    return (
+      <Sheet open={open} onOpenChange={(next) => (!next ? onClose() : undefined)}>
+        <SheetContent side="bottom" className="h-[60dvh] max-h-[60dvh] gap-0 p-0">
+          <SheetTitle className="sr-only">编辑器工具</SheetTitle>
+          {body}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <aside
+      className="flex h-full w-[var(--panel-w)] shrink-0 flex-col border-l border-border bg-background"
+      aria-label="编辑器工具面板"
+    >
+      {body}
     </aside>
   );
 }

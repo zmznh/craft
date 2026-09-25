@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: crafty
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/crafty?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ci-only-secret-please-rotate-1234567890
+      COLLAB_SECRET: ci-only-collab-secret-1234567890abcdef
+      TLDRAW_INTERNAL_SECRET: ci-only-tldraw-internal-secret-1234567890
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Contract-first: emit the types, then replay the migration packages that
+      # already live in the repo. Never `db init` against a populated database.
+      - run: npx prisma contract emit
+      - run: npx prisma db migrate
+      - run: npx prisma db verify
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    needs: quality
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: crafty
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/crafty?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ci-only-secret-please-rotate-1234567890
+      AUTH_SECRET: ci-only-secret-please-rotate-1234567890
+      COLLAB_SECRET: ci-only-collab-secret-1234567890abcdef
+      TLDRAW_INTERNAL_SECRET: ci-only-tldraw-internal-secret-1234567890
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma contract emit
+      - run: npx prisma db migrate
+      # playwright.config.ts starts `npm run dev`, the Hocuspocus server and the
+      # tldraw sync service itself; reuseExistingServer is off when CI=1.
+      - run: npx playwright install --with-deps chromium webkit
+      # The functional specs are the gate.
+      - run: >-
+          npx playwright test --project=desktop
+          e2e/authz.spec.ts e2e/core.spec.ts e2e/collab.spec.ts e2e/whiteboard-collab.spec.ts
+      # Visual baselines carry the capturing platform in their filename (…-win32.png),
+      # so a Linux runner has nothing to compare against. It captures the current
+      # pixels for review instead of failing on missing snapshots.
+      - run: npx playwright test e2e/visual.spec.ts --update-snapshots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-snapshots
+          path: e2e/visual.spec.ts-snapshots/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7

@@ -1,6 +1,8 @@
 'use client';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AddViewMenu } from '@/components/collection/AddViewMenu';
+import { AddPropertyMenu } from '@/components/collection/AddPropertyMenu';
 import { setActiveView } from '@/actions/collection/views';
 import { useRouter } from 'next/navigation';
 import type { getCollection } from '@/actions/collection/collection';
@@ -21,17 +23,17 @@ export function CollectionHeader({ collection }: CollectionHeaderProps) {
   };
 
   return (
-    <div className="border-b border-border bg-background px-8 py-4">
+    <div className="border-b border-border bg-background px-[var(--editor-pad-x)] py-4">
       <div className="mb-4 flex items-center gap-3">
         {collection.icon && (
           <span className="text-3xl">{collection.icon}</span>
         )}
-        <h1 className="text-2xl font-semibold">{collection.name}</h1>
+        <h1 className="min-w-0 truncate text-2xl font-semibold">{collection.name}</h1>
       </div>
 
-      <div className="flex items-center justify-between">
-        <Tabs value={activeView?.id} onValueChange={handleViewChange}>
-          <TabsList>
+      <div className="flex items-center justify-between gap-2">
+        <Tabs value={activeView?.id} onValueChange={handleViewChange} className="min-w-0">
+          <TabsList className="max-w-full overflow-x-auto">
             {collection.views.map((view: { id: string; name: string }) => (
               <TabsTrigger key={view.id} value={view.id}>
                 {view.name}
@@ -39,6 +41,10 @@ export function CollectionHeader({ collection }: CollectionHeaderProps) {
             ))}
           </TabsList>
         </Tabs>
+        <div className="flex shrink-0 items-center gap-1">
+          <AddPropertyMenu collectionId={collection.id} />
+          <AddViewMenu collectionId={collection.id} />
+        </div>
       </div>
     </div>
   );

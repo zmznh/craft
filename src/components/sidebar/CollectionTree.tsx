@@ -28,11 +28,11 @@ export function CollectionTree() {
   }, [pathname]);
 
   if (loading) {
-    return <div className="px-3 py-2 text-sm text-muted-foreground">加载中...</div>;
+    return <div className="px-3 py-2 text-[13px] text-muted-foreground">加载中...</div>;
   }
 
   if (collections.length === 0) {
-    return <div className="px-3 py-2 text-sm text-muted-foreground">暂无集合</div>;
+    return <div className="px-3 py-2 text-[13px] text-muted-foreground">暂无集合</div>;
   }
 
   return (
@@ -44,7 +44,7 @@ export function CollectionTree() {
             key={collection.id}
             href={`/collections/${collection.id}`}
             className={cn(
-              'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-sidebar-hover',
+              'flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] transition-colors hover:bg-sidebar-hover',
               isActive && 'bg-sidebar-active text-sidebar-fg font-medium'
             )}
           >

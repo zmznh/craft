@@ -1,16 +1,16 @@
 import { createHmac, timingSafeEqual } from 'crypto';
+import { requireSecret } from '@/lib/env/secret';
 
-const SECRET =
-  process.env['AUTH_SECRET'] ??
-  process.env['NEXTAUTH_SECRET'] ??
-  'crafty-dev-secret';
+function secret() {
+  return requireSecret(['AUTH_SECRET', 'NEXTAUTH_SECRET', 'COLLAB_SECRET']);
+}
 
 export function shareCookieName(token: string) {
   return `crafty_share_${token}`;
 }
 
 export function shareCookieValue(token: string, passcode: string) {
-  return createHmac('sha256', SECRET).update(`${token}:${passcode}`).digest('hex');
+  return createHmac('sha256', secret()).update(`${token}:${passcode}`).digest('hex');
 }
 
 export function verifyShareCookie(

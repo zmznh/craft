@@ -1,12 +1,23 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ChevronRight, Folder } from 'lucide-react';
 import { cn } from 'cn';
 import { moveFolder } from '@/actions/folder/move';
+import { updateFolder } from '@/actions/folder/update';
+import { deleteFolder } from '@/actions/folder/delete';
+import { createDocument } from '@/actions/document/create';
 import { moveDocument } from '@/actions/document/move';
 import { useSidebarStore } from '@/lib/store/use-sidebar-store';
 import { SIDEBAR_DOC_MIME, sidebarDragState } from '@/lib/dnd/sidebar-drag';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 import type { Folder as FolderType } from './FolderTree';
 import type { Document } from './DocumentTree';
 import { DocumentTreeItem } from './DocumentTreeItem';
@@ -39,8 +50,36 @@ function isDescendantOf(
 export function FolderTreeItem({ folder, allFolders, allDocuments, level }: FolderTreeItemProps) {
   const [expanded, setExpanded] = useState(false);
   const [zone, setZone] = useState<DropZone>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [draftName, setDraftName] = useState(folder.name);
   const expandTimerRef = useRef<number | null>(null);
   const bumpTree = useSidebarStore((s) => s.bumpTree);
+  const router = useRouter();
+
+  function startRename() {
+    setDraftName(folder.name);
+    setRenaming(true);
+  }
+
+  async function commitRename() {
+    setRenaming(false);
+    const next = draftName.trim();
+    if (!next || next === folder.name) return;
+    await updateFolder(folder.id, { name: next });
+    bumpTree();
+  }
+
+  async function createDocumentInFolder() {
+    const doc = await createDocument({ folderId: folder.id });
+    setExpanded(true);
+    bumpTree();
+    router.push(`/documents/${doc.id}`);
+  }
+
+  async function moveToTrash() {
+    await deleteFolder(folder.id);
+    bumpTree();
+  }
 
   const childFolders = allFolders
     .filter(f => f.parentId === folder.id)
@@ -186,41 +225,97 @@ export function FolderTreeItem({ folder, allFolders, allDocuments, level }: Fold
     }
   }
 
+  const rowClass = cn(
+    'relative flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-sidebar-hover',
+    'text-sidebar-fg',
+    zone === 'into' && 'bg-primary/10'
+  );
+  const rowStyle = { paddingLeft: `${level * 16 + 8}px` };
+
+  const rowInner = (
+    <>
+      {zone === 'before' && (
+        <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 rounded-full bg-primary" />
+      )}
+      {zone === 'after' && (
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 rounded-full bg-primary" />
+      )}
+      {hasChildren && (
+        <ChevronRight
+          className={cn(
+            'size-3.5 shrink-0 transition-transform',
+            expanded && 'rotate-90'
+          )}
+        />
+      )}
+      {!hasChildren && <span className="w-3.5" />}
+      <Folder className="size-4 shrink-0 text-muted-foreground" />
+      {renaming ? (
+        <input
+          autoFocus
+          value={draftName}
+          onChange={(e) => setDraftName(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              void commitRename();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              setRenaming(false);
+            }
+          }}
+          onBlur={() => void commitRename()}
+          className="min-w-0 flex-1 rounded border border-input bg-background px-1 text-[13px] outline-none focus:border-ring"
+        />
+      ) : (
+        <span className="truncate">{folder.name}</span>
+      )}
+    </>
+  );
+
+  const rowButton = renaming ? (
+    <div className={rowClass} style={rowStyle}>
+      {rowInner}
+    </div>
+  ) : (
+    <button
+      className={rowClass}
+      style={rowStyle}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={() => hasChildren && setExpanded(!expanded)}
+    >
+      {rowInner}
+    </button>
+  );
+
   return (
     <div>
-      <button
-        className={cn(
-          'relative flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-hover',
-          'text-sidebar-fg',
-          zone === 'into' && 'bg-primary/10'
-        )}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
-        draggable
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={() => hasChildren && setExpanded(!expanded)}
-      >
-        {zone === 'before' && (
-          <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 rounded-full bg-primary" />
-        )}
-        {zone === 'after' && (
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 rounded-full bg-primary" />
-        )}
-        {hasChildren && (
-          <ChevronRight
-            className={cn(
-              'size-3.5 shrink-0 transition-transform',
-              expanded && 'rotate-90'
-            )}
-          />
-        )}
-        {!hasChildren && <span className="w-3.5" />}
-        <Folder className="size-4 shrink-0 text-muted-foreground" />
-        <span className="truncate">{folder.name}</span>
-      </button>
+      {renaming ? (
+        rowButton
+      ) : (
+        <ContextMenu>
+          <ContextMenuTrigger render={<div className="w-full" />}>
+            {rowButton}
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem onClick={startRename}>重命名</ContextMenuItem>
+            <ContextMenuItem onClick={() => void createDocumentInFolder()}>
+              新建文档
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive" onClick={() => void moveToTrash()}>
+              移入回收站
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      )}
 
       {expanded && hasChildren && (
         <div className="flex flex-col gap-0.5">

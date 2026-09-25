@@ -3,7 +3,10 @@ export type ExportFormat = 'markdown' | 'html' | 'text' | 'json';
 function textContent(node: any): string {
   if (!node) return '';
   if (node.type === 'text') return node.text ?? '';
-  return Array.isArray(node.content) ? node.content.map(textContent).join('') : '';
+  const inner = Array.isArray(node.content) ? node.content.map(textContent).join('') : '';
+  // Atom nodes keep their label in an attribute, so an attachment or a whiteboard
+  // link still says something in the plain-text export.
+  return inner || node.attrs?.title || node.attrs?.name || '';
 }
 
 function escapeHtml(value: string): string {
@@ -14,6 +17,23 @@ function escapeHtml(value: string): string {
     '"': '&quot;',
     "'": '&#39;',
   })[character] ?? character);
+}
+
+function blockTargetHref(node: any): string {
+  const base = `/documents/${node.attrs?.documentId ?? ''}`;
+  if (node.attrs?.blockId) return `${base}#b-${node.attrs.blockId}`;
+  if (typeof node.attrs?.blockIndex === 'number') return `${base}#i-${node.attrs.blockIndex}`;
+  return base;
+}
+
+function mirrorTargetHref(node: any): string {
+  return blockTargetHref({
+    attrs: {
+      documentId: node.attrs?.sourceDocumentId,
+      blockId: node.attrs?.sourceBlockId,
+      blockIndex: node.attrs?.sourceBlockIndex,
+    },
+  });
 }
 
 function renderInlineMarkdown(node: any): string {
@@ -27,6 +47,13 @@ function renderInlineMarkdown(node: any): string {
       if (mark.type === 'link') value = `[${value}](${mark.attrs?.href ?? ''})`;
     }
     return value;
+  }
+  if (node.type === 'inlineMath') return `$${node.attrs?.latex ?? ''}$`;
+  if (node.type === 'mention' || node.type === 'blockLink') {
+    return `[${node.attrs?.title ?? '链接'}](${blockTargetHref(node)})`;
+  }
+  if (node.type === 'whiteboardLink') {
+    return `[白板：${node.attrs?.title ?? ''}](/whiteboards/${node.attrs?.whiteboardId ?? ''})`;
   }
   return Array.isArray(node.content) ? node.content.map(renderInlineMarkdown).join('') : '';
 }
@@ -53,9 +80,62 @@ function renderMarkdown(node: any): string {
     case 'horizontalRule':
     case 'divider':
       return '---';
+    case 'mathBlock':
+      return `$$\n${node.attrs?.latex ?? ''}\n$$`;
+    case 'columns':
+      // Markdown has no columns; the content survives as sequential blocks.
+      return (node.content ?? [])
+        .map((column: any) => (column.content ?? []).map(renderMarkdown).filter(Boolean).join('\n\n'))
+        .filter(Boolean)
+        .join('\n\n');
+    case 'callout':
+      return (node.content ?? [])
+        .map(renderMarkdown)
+        .filter(Boolean)
+        .join('\n')
+        .split('\n')
+        .map((line: string) => `> ${line}`)
+        .join('\n');
+    case 'cardBlock':
+    case 'toggleBlock':
+      return (node.content ?? []).map(renderMarkdown).filter(Boolean).join('\n\n');
+    case 'table':
+      return renderMarkdownTable(node);
+    case 'imageGallery':
+      return (node.attrs?.images ?? [])
+        .map((image: { url?: string; src?: string; alt?: string }) =>
+          `![${image.alt ?? ''}](${image.url ?? image.src ?? ''})`)
+        .join('\n\n');
+    case 'attachment':
+      return `[📎 ${node.attrs?.name ?? '附件'}](${node.attrs?.url ?? ''})`;
+    case 'linkPreview':
+      return `[${node.attrs?.title || node.attrs?.url || '链接'}](${node.attrs?.url ?? ''})`;
+    case 'videoEmbed':
+      return `[视频](${node.attrs?.src ?? ''})`;
+    case 'whiteboardLink':
+    case 'whiteboardEmbed':
+      return `[白板：${node.attrs?.title || '未命名'}](/whiteboards/${node.attrs?.whiteboardId ?? ''})`;
+    case 'mirrorBlock':
+      // A mirror is a pointer, so the export keeps the source address.
+      return `> 镜像：[${node.attrs?.title || '未命名'}](${mirrorTargetHref(node)})`;
+    case 'drawing':
+      return '_(手绘板)_';
     default:
       return textContent(node);
   }
+}
+
+function renderMarkdownTable(node: any): string {
+  const rows = (node.content ?? []).map((row: any) =>
+    (row.content ?? []).map((cell: any) =>
+      textContent(cell).replace(/\|/g, '\\|').replace(/\n+/g, ' ').trim()));
+  if (rows.length === 0) return '';
+
+  const [head, ...body] = rows;
+  const divider = head.map(() => '---');
+  return [head, divider, ...body]
+    .map((cells) => `| ${cells.join(' | ')} |`)
+    .join('\n');
 }
 
 function renderHtmlInline(node: any): string {
@@ -87,8 +167,30 @@ function renderHtml(node: any): string {
     case 'codeBlock': return `<pre><code>${escapeHtml(textContent(node))}</code></pre>`;
     case 'horizontalRule':
     case 'divider': return '<hr>';
+    case 'columns': return `<div data-type="columns">${(node.content ?? []).map((column: any) => renderHtml(column)).join('')}</div>`;
+    case 'column': return `<div data-type="column">${(node.content ?? []).map(renderHtml).join('')}</div>`;
     case 'image':
     case 'imageBlock': return `<img src="${escapeHtml(node.attrs?.src ?? node.attrs?.url ?? '')}" alt="${escapeHtml(node.attrs?.alt ?? '')}">`;
+    case 'mathBlock': return `<div data-type="math-block" data-latex="${escapeHtml(node.attrs?.latex ?? '')}">$$${escapeHtml(node.attrs?.latex ?? '')}$$</div>`;
+    case 'inlineMath': return `<span data-type="inline-math" data-latex="${escapeHtml(node.attrs?.latex ?? '')}">$${escapeHtml(node.attrs?.latex ?? '')}$</span>`;
+    case 'callout': return `<blockquote data-type="callout" data-style="${escapeHtml(node.attrs?.type ?? 'info')}">${(node.content ?? []).map(renderHtml).join('')}</blockquote>`;
+    case 'cardBlock': return `<div data-type="cardBlock">${(node.content ?? []).map(renderHtml).join('')}</div>`;
+    case 'toggleBlock': {
+      const children = node.content ?? [];
+      const [first, ...rest] = children;
+      return `<details${node.attrs?.open ? ' open' : ''}><summary>${escapeHtml(textContent(first))}</summary>${rest.map(renderHtml).join('')}</details>`;
+    }
+    case 'table': return `<table>${(node.content ?? []).map((row: any, index: number) => `<tr>${(row.content ?? []).map((cell: any) => `<${index === 0 ? 'th' : 'td'}>${(cell.content ?? []).map(renderHtml).join('')}</${index === 0 ? 'th' : 'td'}>`).join('')}</tr>`).join('')}</table>`;
+    case 'imageGallery': return `<div data-type="imageGallery">${(node.attrs?.images ?? []).map((image: { url?: string; src?: string; alt?: string }) => `<img src="${escapeHtml(image.url ?? image.src ?? '')}" alt="${escapeHtml(image.alt ?? '')}">`).join('')}</div>`;
+    case 'attachment': return `<a href="${escapeHtml(node.attrs?.url ?? '')}" data-type="attachment">📎 ${escapeHtml(node.attrs?.name ?? '附件')}</a>`;
+    case 'linkPreview': return `<a href="${escapeHtml(node.attrs?.url ?? '')}" data-type="linkPreview">${escapeHtml(node.attrs?.title || node.attrs?.url || '')}</a>`;
+    case 'videoEmbed': return `<iframe src="${escapeHtml(node.attrs?.src ?? '')}" data-type="videoEmbed" allowFullScreen></iframe>`;
+    case 'whiteboardLink': return `<a href="/whiteboards/${escapeHtml(node.attrs?.whiteboardId ?? '')}" data-type="whiteboardLink">🎨 ${escapeHtml(node.attrs?.title ?? '白板')}</a>`;
+    case 'whiteboardEmbed': return `<div data-type="whiteboard-embed" data-whiteboard-id="${escapeHtml(node.attrs?.whiteboardId ?? '')}" data-title="${escapeHtml(node.attrs?.title ?? '白板')}">🎨 ${escapeHtml(node.attrs?.title ?? '白板')}</div>`;
+    case 'mirrorBlock': return `<div data-type="mirrorBlock"><a href="${escapeHtml(mirrorTargetHref(node))}">镜像：${escapeHtml(node.attrs?.title ?? '未命名')}</a></div>`;
+    case 'mention':
+    case 'blockLink': return `<a href="${escapeHtml(blockTargetHref(node))}" data-type="${node.type}">${escapeHtml(node.attrs?.title ?? '链接')}</a>`;
+    case 'drawing': return `<div data-type="drawing">_(手绘板)_</div>`;
     default: return content || escapeHtml(textContent(node));
   }
 }

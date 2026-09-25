@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, Plus, Search, Type } from 'lucide-react';
+import { Database, FileText, Plus, Search, Type } from 'lucide-react';
 import {
   CommandDialog,
   CommandEmpty,
@@ -14,15 +14,17 @@ import {
 } from '@/components/ui/command';
 import { useCommandPaletteStore } from '@/lib/store/use-command-palette-store';
 import { searchAll } from '@/actions/document/search';
-import type { SearchResultDoc, SearchResultBlock } from '@/actions/document/search';
+import type { SearchResultDoc, SearchResultBlock, SearchResultRow } from '@/actions/document/search';
 import { createDocument } from '@/actions/document/create';
 
 export function CommandPalette() {
   const router = useRouter();
-  const { isOpen, close, open } = useCommandPaletteStore();
+  const { isOpen, close, open, seedQuery } = useCommandPaletteStore();
   const [query, setQuery] = useState('');
   const [docs, setDocs] = useState<SearchResultDoc[]>([]);
   const [blocks, setBlocks] = useState<SearchResultBlock[]>([]);
+  const [rows, setRows] = useState<SearchResultRow[]>([]);
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
   const [searching, setSearching] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -38,12 +40,18 @@ export function CommandPalette() {
   }, [open]);
 
   useEffect(() => {
+    if (isOpen && seedQuery) setQuery(seedQuery);
+  }, [isOpen, seedQuery]);
+
+  useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     const q = query.trim();
     timerRef.current = setTimeout(async () => {
       if (!q) {
         setDocs([]);
         setBlocks([]);
+        setRows([]);
+        setNextOffset(null);
         setSearching(false);
         return;
       }
@@ -52,6 +60,8 @@ export function CommandPalette() {
         const result = await searchAll(q);
         setDocs(result.documents);
         setBlocks(result.blocks);
+        setRows(result.rows);
+        setNextOffset(result.nextOffset);
       } finally {
         setSearching(false);
       }
@@ -60,6 +70,22 @@ export function CommandPalette() {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [query]);
+
+  const loadMore = async () => {
+    const q = query.trim();
+    if (!q || nextOffset === null) return;
+    setSearching(true);
+    try {
+      const result = await searchAll(q, nextOffset);
+      setDocs((current) => {
+        const seen = new Set(current.map((doc) => doc.id));
+        return [...current, ...result.documents.filter((doc) => !seen.has(doc.id))];
+      });
+      setNextOffset(result.nextOffset);
+    } finally {
+      setSearching(false);
+    }
+  };
 
   const handleOpenDocument = (id: string) => {
     close();
@@ -82,7 +108,7 @@ export function CommandPalette() {
       onOpenChange={(v) => (v ? open() : close())}
       title="搜索"
       description="搜索文档与内容"
-      className="max-w-xl"
+      className="max-w-xl max-md:w-[calc(100vw-1.5rem)]"
     >
       <CommandInput value={query} onValueChange={setQuery} placeholder="搜索文档、内容…" />
 
@@ -96,11 +122,11 @@ export function CommandPalette() {
           </CommandGroup>
         )}
 
-        {hasQuery && searching && docs.length === 0 && blocks.length === 0 && (
+        {hasQuery && searching && docs.length === 0 && blocks.length === 0 && rows.length === 0 && (
           <CommandEmpty>搜索中…</CommandEmpty>
         )}
 
-        {hasQuery && !searching && docs.length === 0 && blocks.length === 0 && (
+        {hasQuery && !searching && docs.length === 0 && blocks.length === 0 && rows.length === 0 && (
           <CommandEmpty>未找到与 “{query.trim()}” 相关的结果</CommandEmpty>
         )}
 
@@ -138,6 +164,36 @@ export function CommandPalette() {
               ))}
             </CommandGroup>
           </>
+        )}
+        {rows.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="集合条目">
+              {rows.map((row, i) => (
+                <CommandItem
+                  key={`row-${row.itemId}-${i}`}
+                  value={`row-${row.itemId}-${i}`}
+                  onSelect={() => {
+                    close();
+                    setQuery('');
+                    router.push(`/collections/${row.collectionId}`);
+                  }}
+                >
+                  <Database className="size-4 shrink-0 text-muted-foreground" />
+                  <div className="min-w-0 flex flex-col">
+                    <span className="truncate text-xs text-muted-foreground">{row.collectionName}</span>
+                    <span className="truncate">{row.text || '未命名条目'}</span>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+
+        {nextOffset !== null && (
+          <CommandItem value="load-more" onSelect={loadMore} className="justify-center text-muted-foreground">
+            加载更多
+          </CommandItem>
         )}
       </CommandList>
 

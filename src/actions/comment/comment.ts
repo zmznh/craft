@@ -1,15 +1,16 @@
 'use server';
 
 import { auth } from '@/lib/auth/auth';
+import { requireDocumentAccess } from '@/lib/authz/document-access';
 import { getDb } from '@/prisma/db';
 import { revalidatePath } from 'next/cache';
 
-async function assertDocumentOwner(db: any, documentId: string, userId: string) {
-  const document = await db.orm.public.Document.first({ id: documentId });
-  if (!document || (document as { userId: string }).userId !== userId) {
-    throw new Error('未授权');
-  }
-  return document;
+async function assertDocumentAccess(
+  documentId: string,
+  userId: string,
+  need: 'viewer' | 'commenter' | 'editor',
+) {
+  await requireDocumentAccess(documentId, userId, need);
 }
 
 export async function createThread(
@@ -22,7 +23,7 @@ export async function createThread(
   if (!body) throw new Error('评论不能为空');
 
   const db = await getDb();
-  await assertDocumentOwner(db, documentId, session.user.id);
+  await assertDocumentAccess(documentId, session.user.id, 'commenter');
 
   const threadId = crypto.randomUUID();
   await db.orm.public.CommentThread.create({
@@ -46,7 +47,7 @@ export async function getThreads(documentId: string) {
   if (!session?.user?.id) throw new Error('未授权');
 
   const db = await getDb();
-  await assertDocumentOwner(db, documentId, session.user.id);
+  await assertDocumentAccess(documentId, session.user.id, 'viewer');
 
   const threads = await db.orm.public.CommentThread
     .where({ documentId })
@@ -87,7 +88,7 @@ export async function addReply(threadId: string, body: string) {
   const db = await getDb();
   const thread = await db.orm.public.CommentThread.first({ id: threadId });
   if (!thread) throw new Error('评论不存在');
-  await assertDocumentOwner(db, (thread as { documentId: string }).documentId, session.user.id);
+  await assertDocumentAccess((thread as { documentId: string }).documentId, session.user.id, 'commenter');
 
   await db.orm.public.Comment.create({
     id: crypto.randomUUID(),
@@ -105,7 +106,7 @@ export async function setThreadResolved(threadId: string, resolved: boolean) {
   const db = await getDb();
   const thread = await db.orm.public.CommentThread.first({ id: threadId });
   if (!thread) throw new Error('评论不存在');
-  await assertDocumentOwner(db, (thread as { documentId: string }).documentId, session.user.id);
+  await assertDocumentAccess((thread as { documentId: string }).documentId, session.user.id, 'commenter');
 
   await db.orm.public.CommentThread.where({ id: threadId }).update({ resolved });
 }

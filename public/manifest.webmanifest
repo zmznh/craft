@@ -4,7 +4,11 @@
   "description": "本地的 Craft 风格文档与白板工作区",
   "start_url": "/documents",
   "display": "standalone",
-  "background_color": "#fcf9f7",
-  "theme_color": "#030302",
-  "icons": []
+  "background_color": "#fbf9f5",
+  "theme_color": "#0f0d09",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }

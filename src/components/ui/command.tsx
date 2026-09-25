@@ -60,7 +60,10 @@ function CommandDialog({
         )}
         showCloseButton={showCloseButton}
       >
-        <Command>{children}</Command>
+        {/* Results come from the server already filtered by relevance; cmdk's own
+            text filter would drop hits whose title does not contain the query
+            (a tag match, for example). */}
+        <Command shouldFilter={false}>{children}</Command>
       </DialogContent>
     </Dialog>
   )

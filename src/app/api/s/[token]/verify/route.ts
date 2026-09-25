@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDb } from '@/prisma/db';
+import { findShare } from '@/lib/share/resolve';
 import { shareCookieName, shareCookieValue } from '@/lib/share-passcode';
 
 export async function POST(
@@ -18,8 +18,7 @@ export async function POST(
   const passcode = typeof body.passcode === 'string' ? body.passcode : '';
   const path = body.path === `/s/${token}` || body.path === `/p/${token}` ? body.path : `/s/${token}`;
 
-  const db = await getDb();
-  const share = await db.orm.public.DocumentShare.first({ token });
+  const share = await findShare(token);
   if (!share) {
     return Response.json({ error: '链接无效' }, { status: 404 });
   }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import 'katex/dist/katex.min.css';
 import './globals.css';
 import { Providers } from '@/components/providers/Providers';
 
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
   title: 'Crafty',
   description: '你的智能笔记空间',
   manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  appleWebApp: { capable: true, statusBarStyle: 'default' },
 };
 
 const swRegister = typeof window !== 'undefined'

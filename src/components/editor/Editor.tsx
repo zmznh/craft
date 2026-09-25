@@ -1,19 +1,15 @@
 'use client';
 
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, ReactNodeViewRenderer } from '@tiptap/react';
 import type { Editor as TiptapEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-import Link from '@tiptap/extension-link';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';
 import CharacterCount from '@tiptap/extension-character-count';
 import Typography from '@tiptap/extension-typography';
-import Dropcursor from '@tiptap/extension-dropcursor';
-import Gapcursor from '@tiptap/extension-gapcursor';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
@@ -49,17 +45,27 @@ import { ImageGallery } from './extensions/image-gallery';
 import { Drawing } from './extensions/drawing';
 import { VideoEmbed } from './extensions/video-embed';
 import { Divider } from './extensions/divider';
+import { CodeBlockView } from './extensions/code-block-view';
 import { MathBlock } from './extensions/math-block';
 import { InlineMath } from './extensions/math-inline';
 import { Mention } from './extensions/mention';
 import { BlockLink } from './extensions/block-link';
+import { BlockId } from './extensions/block-id';
+import { MirrorBlock } from './extensions/mirror-block';
 import { BlockLinkSuggestion } from './extensions/block-link-suggestion';
+import { EmojiSuggestion } from './extensions/emoji-suggestion';
+import { FontSize } from './extensions/font-size';
+import { Columns, Column } from './extensions/columns';
+import { TableOfContents } from './extensions/toc';
 import { WhiteboardLink } from './extensions/whiteboard-link';
+import { WhiteboardEmbed } from './extensions/whiteboard-embed';
 import { SidebarDrop } from './extensions/sidebar-drop';
 import { CardBlock } from './extensions/card-block';
 import { CommentMark } from './extensions/comment-mark';
 import { saveDraft, getDraft, deleteDraft } from '@/lib/offline/draft-store';
+import { jumpToAnchor, readAnchorHash } from '@/lib/editor/block-anchor';
 import { useCollabSession } from '@/lib/collaboration/use-collab-session';
+import { CursorLayer } from './collab/CursorLayer';
 import Collaboration from '@tiptap/extension-collaboration';
 
 const lowlight = createLowlight(common);
@@ -69,10 +75,10 @@ function collectLinkedDocIds(content: unknown): string[] {
   const walk = (node: any) => {
     if (!node || typeof node !== 'object') return;
     if (
-      (node.type === 'mention' || node.type === 'blockLink') &&
-      typeof node.attrs?.documentId === 'string'
+      (node.type === 'mention' || node.type === 'blockLink' || node.type === 'mirrorBlock') &&
+      typeof (node.attrs?.documentId ?? node.attrs?.sourceDocumentId) === 'string'
     ) {
-      ids.add(node.attrs.documentId);
+      ids.add(node.attrs.documentId ?? node.attrs.sourceDocumentId);
     }
     if (Array.isArray(node.content)) node.content.forEach(walk);
   };
@@ -127,9 +133,18 @@ export function Editor({
   onSaveStateChange,
   onSaveNowReady,
 }: EditorProps) {
-  const ydocRef = useRef<Y.Doc | null>(null);
-  if (collaborative && !ydocRef.current) ydocRef.current = new Y.Doc();
-  const { ydoc: collabDoc, state: collabState } = useCollabSession(documentId, ydocRef.current, collaborative);
+  // Created during the first render so the Collaboration extension can be built
+  // synchronously; a ref write here would violate the rules of hooks.
+  const [collabYdoc] = useState<Y.Doc | null>(() => (collaborative ? new Y.Doc() : null));
+  const {
+    ydoc: collabDoc,
+    state: collabState,
+    readOnly: collabReadOnly,
+    awareness: collabAwareness,
+  } = useCollabSession(documentId, collabYdoc, collaborative);
+  // Server-side collab grants can arrive after mount, so every write path keys off
+  // `locked` rather than the `readOnly` prop alone.
+  const locked = readOnly || collabReadOnly;
 
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingRef = useRef<{
@@ -204,23 +219,53 @@ export function Editor({
     }, delay);
   };
 
+  const savePendingRef = useRef(savePending);
+  useEffect(() => {
+    savePendingRef.current = savePending;
+  });
+  // The room keeps its own copy of the content, but `Document.content` — which the
+  // public page, export, search and version snapshots read — only moves when this
+  // debounced write lands. Leaving the editor inside the debounce window used to drop
+  // it, so flush instead of clearing the timer.
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      void savePendingRef.current();
+    };
+  }, []);
+
   const editor = useEditor({
+    // The editor only ever mounts client-side; opting out avoids a hydration mismatch.
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        // Our divider carries four weights; StarterKit's plain <hr> would compete
+        // for the `---` input rule and produce a second, featureless node.
+        horizontalRule: false,
         heading: {
           levels: [1, 2, 3, 4],
         },
+        underline: {},
+        link: {
+          openOnClick: false,
+          HTMLAttributes: {
+            class: 'text-primary underline-offset-4 hover:underline',
+          },
+        },
+        dropcursor: {
+          width: 2,
+          class: 'ProseMirror-dropcursor',
+        },
+        // Yjs owns history in collaborative rooms; its own undo would revert
+        // another editor's changes.
+        undoRedo: collaborative ? false : {},
       }),
-      Underline,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
-      }),
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-primary underline-offset-4 hover:underline',
-        },
       }),
       TaskList.configure({
         HTMLAttributes: {
@@ -254,14 +299,13 @@ export function Editor({
       }),
       CharacterCount,
       Typography,
-      Dropcursor.configure({
-        width: 2,
-        class: 'ProseMirror-dropcursor',
-      }),
-      Gapcursor,
       TextStyle,
       Color,
-      CodeBlockLowlight.configure({
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(CodeBlockView);
+        },
+      }).configure({
         lowlight,
       }),
       Table.configure({
@@ -309,8 +353,16 @@ export function Editor({
       InlineMath,
       Mention,
       BlockLink,
+      BlockId,
+      MirrorBlock.configure({ hostDocumentId: documentId }),
       BlockLinkSuggestion,
+      EmojiSuggestion,
+      FontSize,
+      Columns,
+      Column,
+      TableOfContents,
       WhiteboardLink,
+      WhiteboardEmbed,
       SidebarDrop,
       CardBlock,
       MarkdownShortcuts,
@@ -325,7 +377,7 @@ export function Editor({
         : []),
     ],
     content: collaborative ? '' : initialContent || '',
-    editable: !readOnly,
+    editable: !locked,
     editorProps: {
       attributes: {
         class: 'prose prose-sm max-w-none focus:outline-none',
@@ -374,7 +426,7 @@ export function Editor({
       },
     },
     onUpdate: ({ editor }) => {
-      if (readOnly) return;
+      if (locked) return;
       const rawContent = editor.getJSON();
       const content = JSON.parse(JSON.stringify(rawContent));
       const plainText = editor.getText();
@@ -394,6 +446,26 @@ export function Editor({
   });
 
   useEffect(() => {
+    editor?.setEditable(!locked);
+  }, [editor, locked]);
+
+  useEffect(() => {
+    if (!editor) return;
+    let stop: (() => void) | undefined;
+    const jump = () => {
+      stop?.();
+      const anchor = readAnchorHash(window.location.hash);
+      if (anchor) stop = jumpToAnchor(editor, anchor);
+    };
+    jump();
+    window.addEventListener('hashchange', jump);
+    return () => {
+      window.removeEventListener('hashchange', jump);
+      stop?.();
+    };
+  }, [editor, documentId]);
+
+  useEffect(() => {
     if (editor) onEditorReady?.(editor);
     return () => {
       onEditorReady?.(null);
@@ -401,7 +473,7 @@ export function Editor({
   }, [editor, onEditorReady]);
 
   useEffect(() => {
-    if (!editor || readOnly) return;
+    if (!editor || locked) return;
     if (collaborative && collabState === 'synced' && collabDoc && initialContent) {
       const fragment = collabDoc.getXmlFragment('default');
       if (fragment.length === 0 && editor.isEmpty) {
@@ -425,15 +497,15 @@ export function Editor({
     return () => {
       cancelled = true;
     };
-  }, [editor, readOnly, documentId, setSaveState, collaborative, collabState, collabDoc, initialContent]);
+  }, [editor, locked, documentId, setSaveState, collaborative, collabState, collabDoc, initialContent]);
 
   useEffect(() => {
-    if (editor && !readOnly) onSaveNowReady?.(() => void savePending());
+    if (editor && !locked) onSaveNowReady?.(() => { void savePending(); });
     return () => onSaveNowReady?.(null);
-  }, [editor, onSaveNowReady, readOnly]);
+  }, [editor, onSaveNowReady, locked, savePending]);
 
   useEffect(() => {
-    if (!editor || readOnly) return;
+    if (!editor || locked) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
         event.preventDefault();
@@ -443,7 +515,7 @@ export function Editor({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [editor, readOnly, savePending]);
+  }, [editor, locked, savePending]);
 
   useEffect(() => {
     // DOM-level intercept for slash-command drag-and-drop.
@@ -501,9 +573,10 @@ export function Editor({
 
   if (!editor) return null;
 
-  if (readOnly) {
+  if (locked) {
     return (
       <div className="relative">
+        <CursorLayer editor={editor} awareness={collabAwareness} />
         <EditorContent editor={editor} />
       </div>
     );
@@ -511,6 +584,7 @@ export function Editor({
 
   return (
     <div className="relative">
+      <CursorLayer editor={editor} awareness={collabAwareness} />
       <DragHandle editor={editor} />
       <EditorBubbleMenu editor={editor} />
       <AiBubbleMenu editor={editor} />

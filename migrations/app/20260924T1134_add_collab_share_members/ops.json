@@ -1,0 +1,536 @@
+[
+  {
+    "id": "table.document_members",
+    "label": "Create table \"document_members\"",
+    "summary": "Creates table \"document_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"document_members\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"document_members\"",
+        "sql": "CREATE TABLE \"public\".\"document_members\" (\n  \"addedBy\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"documentId\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"role\" text DEFAULT 'editor' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"document_members\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.yjs_document_states",
+    "label": "Create table \"yjs_document_states\"",
+    "summary": "Creates table \"yjs_document_states\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "yjs_document_states"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"yjs_document_states\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"yjs_document_states\"",
+        "sql": "CREATE TABLE \"public\".\"yjs_document_states\" (\n  \"bytes\" int4 DEFAULT 0 NOT NULL,\n  \"documentId\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"state\" bytea NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"yjs_document_states\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.whiteboards.sharePermission",
+    "label": "Add column \"sharePermission\" to \"whiteboards\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sharePermission",
+        "table": "whiteboards"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sharePermission\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "sharePermission"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"sharePermission\"",
+        "sql": "ALTER TABLE \"public\".\"whiteboards\" ADD COLUMN \"sharePermission\" text DEFAULT 'off' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sharePermission\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "sharePermission"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.whiteboards.shareToken",
+    "label": "Add column \"shareToken\" to \"whiteboards\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "shareToken",
+        "table": "whiteboards"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"shareToken\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "shareToken"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"shareToken\"",
+        "sql": "ALTER TABLE \"public\".\"whiteboards\" ADD COLUMN \"shareToken\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"shareToken\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "shareToken"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.whiteboards.shareVersion",
+    "label": "Add column \"shareVersion\" to \"whiteboards\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "shareVersion",
+        "table": "whiteboards"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"shareVersion\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "shareVersion"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"shareVersion\"",
+        "sql": "ALTER TABLE \"public\".\"whiteboards\" ADD COLUMN \"shareVersion\" int4 DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"shareVersion\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "whiteboards",
+          "shareVersion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.document_members.document_members_documentId_userId_key",
+    "label": "Add unique constraint on \"document_members\" (documentId, userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "document_members_documentId_userId_key",
+        "table": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"document_members_documentId_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_documentId_userId_key",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"document_members_documentId_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"document_members\" ADD CONSTRAINT \"document_members_documentId_userId_key\" UNIQUE (\"documentId\", \"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"document_members_documentId_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_documentId_userId_key",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.whiteboards.whiteboards_shareToken_key",
+    "label": "Add unique constraint on \"whiteboards\" (shareToken)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "whiteboards_shareToken_key",
+        "table": "whiteboards"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"whiteboards_shareToken_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "whiteboards_shareToken_key",
+          "public",
+          "\"public\".\"whiteboards\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"whiteboards_shareToken_key\"",
+        "sql": "ALTER TABLE \"public\".\"whiteboards\" ADD CONSTRAINT \"whiteboards_shareToken_key\" UNIQUE (\"shareToken\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"whiteboards_shareToken_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "whiteboards_shareToken_key",
+          "public",
+          "\"public\".\"whiteboards\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.yjs_document_states.yjs_document_states_documentId_key",
+    "label": "Add unique constraint on \"yjs_document_states\" (documentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "yjs_document_states_documentId_key",
+        "table": "yjs_document_states"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"yjs_document_states_documentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "yjs_document_states_documentId_key",
+          "public",
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"yjs_document_states_documentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"yjs_document_states\" ADD CONSTRAINT \"yjs_document_states_documentId_key\" UNIQUE (\"documentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"yjs_document_states_documentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "yjs_document_states_documentId_key",
+          "public",
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.document_members.document_members_documentId_idx_825ef746",
+    "label": "Create index \"document_members_documentId_idx_825ef746\" on \"document_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "document_members_documentId_idx_825ef746",
+        "table": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"document_members_documentId_idx_825ef746\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members_documentId_idx_825ef746\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"document_members_documentId_idx_825ef746\"",
+        "sql": "CREATE INDEX \"document_members_documentId_idx_825ef746\" ON \"public\".\"document_members\" (\"documentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"document_members_documentId_idx_825ef746\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members_documentId_idx_825ef746\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.document_members.document_members_userId_idx_a489d58a",
+    "label": "Create index \"document_members_userId_idx_a489d58a\" on \"document_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "document_members_userId_idx_a489d58a",
+        "table": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"document_members_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"document_members_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"document_members_userId_idx_a489d58a\" ON \"public\".\"document_members\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"document_members_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"document_members_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.document_members.document_members_documentId_fkey",
+    "label": "Add foreign key \"document_members_documentId_fkey\" on \"document_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "document_members_documentId_fkey",
+        "table": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"document_members_documentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_documentId_fkey",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"document_members_documentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"document_members\"\nADD CONSTRAINT \"document_members_documentId_fkey\"\nFOREIGN KEY (\"documentId\")\nREFERENCES \"public\".\"documents\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"document_members_documentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_documentId_fkey",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.document_members.document_members_userId_fkey",
+    "label": "Add foreign key \"document_members_userId_fkey\" on \"document_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "document_members_userId_fkey",
+        "table": "document_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"document_members_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_userId_fkey",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"document_members_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"document_members\"\nADD CONSTRAINT \"document_members_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"document_members_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "document_members_userId_fkey",
+          "public",
+          "\"public\".\"document_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.yjs_document_states.yjs_document_states_documentId_fkey",
+    "label": "Add foreign key \"yjs_document_states_documentId_fkey\" on \"yjs_document_states\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "yjs_document_states_documentId_fkey",
+        "table": "yjs_document_states"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"yjs_document_states_documentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "yjs_document_states_documentId_fkey",
+          "public",
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"yjs_document_states_documentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"yjs_document_states\"\nADD CONSTRAINT \"yjs_document_states_documentId_fkey\"\nFOREIGN KEY (\"documentId\")\nREFERENCES \"public\".\"documents\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"yjs_document_states_documentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "yjs_document_states_documentId_fkey",
+          "public",
+          "\"public\".\"yjs_document_states\""
+        ]
+      }
+    ]
+  }
+]

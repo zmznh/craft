@@ -10,6 +10,8 @@ import { getTasks, toggleTask } from '@/actions/task/task';
 import type { TaskItem } from '@/actions/task/task';
 import { getDailyNotes } from '@/actions/daily-notes/daily-notes';
 import type { DailyNoteItem } from '@/actions/daily-notes/daily-notes';
+import { AppPageContainer } from '@/components/app/AppPageContainer';
+import { AppPageHeader } from '@/components/app/AppPageHeader';
 
 export default function CalendarPage() {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
@@ -54,7 +56,7 @@ export default function CalendarPage() {
   }, [notes]);
 
   const handleToggle = async (id: string) => {
-    await toggleTask(id);
+    await toggleTask(id, Intl.DateTimeFormat().resolvedOptions().timeZone);
     await load();
   };
 
@@ -64,9 +66,8 @@ export default function CalendarPage() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-4xl px-8 py-8">
-        <h1 className="mb-6 text-2xl font-semibold">日历</h1>
-
+      <AppPageHeader title="日历" />
+      <AppPageContainer className="max-w-4xl">
         {loading ? (
           <p className="text-sm text-muted-foreground">加载中…</p>
         ) : (
@@ -162,7 +163,7 @@ export default function CalendarPage() {
             </div>
           </div>
         )}
-      </div>
+      </AppPageContainer>
     </div>
   );
 }

@@ -17,10 +17,21 @@ export interface SearchResultBlock {
   text: string;
 }
 
+export interface SearchResultRow {
+  collectionId: string;
+  collectionName: string;
+  itemId: string;
+  text: string;
+}
+
 export interface SearchResult {
   documents: SearchResultDoc[];
   blocks: SearchResultBlock[];
+  rows: SearchResultRow[];
+  nextOffset: number | null;
 }
+
+const PAGE_SIZE = 20;
 
 export interface LinkCandidate {
   id: string;
@@ -56,12 +67,12 @@ export async function searchDocumentsForLink(query: string): Promise<LinkCandida
   return matches.map((d: any) => ({ id: d.id, title: d.title, icon: d.icon }));
 }
 
-export async function searchAll(query: string): Promise<SearchResult> {
+export async function searchAll(query: string, offset = 0): Promise<SearchResult> {
   const session = await auth();
   if (!session?.user?.id) throw new Error('未授权');
 
   const q = query.trim();
-  if (!q) return { documents: [], blocks: [] };
+  if (!q) return { documents: [], blocks: [], rows: [], nextOffset: null };
 
   const db = await getDb();
   const uid = session.user.id;
@@ -71,22 +82,55 @@ export async function searchAll(query: string): Promise<SearchResult> {
     .where({ userId: uid, isDeleted: false })
     .where((d: any) => d.title.ilike(pattern))
     .orderBy((d: any) => d.updatedAt.desc())
-    .limit(8)
+    .limit(PAGE_SIZE)
+    .offset(offset)
     .all();
 
   const contentMatches = await db.orm.public.Document
     .where({ userId: uid, isDeleted: false })
     .where((d: any) => d.plainText.ilike(pattern))
     .orderBy((d: any) => d.updatedAt.desc())
-    .limit(10)
+    .limit(PAGE_SIZE)
+    .offset(offset)
     .all();
 
-  const documents: SearchResultDoc[] = titleMatches.map((d: any) => ({
-    id: d.id,
-    title: d.title,
-    icon: d.icon,
-    updatedAt: d.updatedAt,
-  }));
+  // Tag hits are document matches too — Craft folds them into the same list.
+  const taggedDocs: SearchResultDoc[] = [];
+  const tagMatches = await db.orm.public.Tag
+    .where({ userId: uid })
+    .where((t: any) => t.name.ilike(pattern))
+    .limit(5)
+    .all();
+  for (const tag of tagMatches) {
+    const links = await db.orm.public.DocumentTag.where({ tagId: (tag as any).id }).all();
+    for (const link of links) {
+      // `first()` with a boolean in the filter silently misses, so the flag is
+      // checked after loading.
+      const doc = await db.orm.public.Document.first({
+        id: (link as any).documentId,
+        userId: uid,
+      });
+      if (doc && doc.isDeleted !== true) {
+        taggedDocs.push({
+          id: (doc as any).id,
+          title: (doc as any).title,
+          icon: (doc as any).icon,
+          updatedAt: (doc as any).updatedAt,
+        });
+      }
+    }
+  }
+
+  const seen = new Set<string>();
+  const documents: SearchResultDoc[] = [
+    ...titleMatches.map((d: any) => ({
+      id: d.id,
+      title: d.title,
+      icon: d.icon,
+      updatedAt: d.updatedAt,
+    })),
+    ...taggedDocs,
+  ].filter((doc) => (seen.has(doc.id) ? false : (seen.add(doc.id), true)));
 
   const matchedIds = new Set(documents.map((d) => d.id));
 
@@ -118,5 +162,45 @@ export async function searchAll(query: string): Promise<SearchResult> {
     if (blocks.length >= 12) break;
   }
 
-  return { documents, blocks };
+  const rows = offset === 0 ? await searchCollectionRows(db, uid, pattern) : [];
+
+  const hasMore = titleMatches.length === PAGE_SIZE || contentMatches.length === PAGE_SIZE;
+
+  return { documents, blocks, rows, nextOffset: hasMore ? offset + PAGE_SIZE : null };
+}
+
+/** Collection rows are searched by their stored cell text. */
+async function searchCollectionRows(db: any, userId: string, pattern: string): Promise<SearchResultRow[]> {
+  const values = await db.orm.public.CollectionValue
+    .where({})
+    .where((v: any) => v.value.ilike(pattern))
+    .limit(8)
+    .all();
+
+  const rows: SearchResultRow[] = [];
+  const seen = new Set<string>();
+  for (const entry of values) {
+    const item = await db.orm.public.CollectionItem.first({ id: (entry as any).itemId });
+    if (!item) continue;
+    const collection = await db.orm.public.Collection.first({ id: (item as any).collectionId });
+    if (!collection || (collection as any).userId !== userId || (collection as any).isDeleted) continue;
+    if (seen.has((entry as any).itemId)) continue;
+    seen.add((entry as any).itemId);
+    let text: unknown = (entry as any).value;
+    if (typeof text === 'string') {
+      try {
+        text = JSON.parse(text);
+      } catch {
+        /* keep the raw string */
+      }
+    }
+    rows.push({
+      collectionId: (collection as any).id,
+      collectionName: (collection as any).name,
+      itemId: (item as any).id,
+      text: Array.isArray(text) ? text.join(', ') : String(text ?? ''),
+    });
+    if (rows.length >= 6) break;
+  }
+  return rows;
 }

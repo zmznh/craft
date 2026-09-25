@@ -5,11 +5,22 @@ import { useRouter } from 'next/navigation';
 import { ChevronRight, File } from 'lucide-react';
 import { cn } from 'cn';
 import { moveDocument } from '@/actions/document/move';
+import { createDocument } from '@/actions/document/create';
+import { deleteDocument } from '@/actions/document/delete';
+import { isDocumentFavorite, toggleFavorite } from '@/actions/document/favorite';
+import { updateDocument } from '@/actions/document/update';
 import { useSidebarStore } from '@/lib/store/use-sidebar-store';
 import {
   SIDEBAR_DOC_MIME,
   sidebarDragState,
 } from '@/lib/dnd/sidebar-drag';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 import type { Document } from './DocumentTree';
 
 type DropZone = 'before' | 'after' | 'into' | null;
@@ -35,6 +46,9 @@ function isDescendantOf(targetId: string, ancestorId: string, allDocuments: Docu
 export function DocumentTreeItem({ document: doc, allDocuments, level }: DocumentTreeItemProps) {
   const [expanded, setExpanded] = useState(false);
   const [zone, setZone] = useState<DropZone>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [draftTitle, setDraftTitle] = useState(doc.title);
+  const [favorite, setFavorite] = useState<boolean | null>(null);
   const router = useRouter();
   const bumpTree = useSidebarStore((s) => s.bumpTree);
 
@@ -46,6 +60,62 @@ export function DocumentTreeItem({ document: doc, allDocuments, level }: Documen
 
   function handleClick() {
     router.push(`/documents/${doc.id}`);
+  }
+
+  function startRename() {
+    setDraftTitle(doc.title);
+    setRenaming(true);
+  }
+
+  async function commitRename() {
+    setRenaming(false);
+    const next = draftTitle.trim();
+    if (!next || next === doc.title) return;
+    await updateDocument(doc.id, { title: next });
+    bumpTree();
+  }
+
+  // Favourite state is not part of the tree payload, so it is read when the menu opens.
+  async function handleMenuOpen(open: boolean) {
+    if (!open) return;
+    try {
+      setFavorite(await isDocumentFavorite(doc.id));
+    } catch {
+      setFavorite(null);
+    }
+  }
+
+  async function createChild() {
+    const child = await createDocument({ parentId: doc.id });
+    setExpanded(true);
+    bumpTree();
+    router.push(`/documents/${child.id}`);
+  }
+
+  async function duplicateSelf() {
+    const copy = await createDocument({
+      duplicateFrom: doc.id,
+      parentId: doc.parentId ?? null,
+      folderId: doc.folderId ?? null,
+    });
+    bumpTree();
+    router.push(`/documents/${copy.id}`);
+  }
+
+  async function toggleFavoriteSelf() {
+    const added = await toggleFavorite(doc.id);
+    setFavorite(added);
+    bumpTree();
+  }
+
+  async function copyLink() {
+    await navigator.clipboard.writeText(`${window.location.origin}/documents/${doc.id}`);
+  }
+
+  async function moveToTrash() {
+    await deleteDocument(doc.id);
+    bumpTree();
+    if (window.location.pathname.startsWith(`/documents/${doc.id}`)) router.push('/documents');
   }
 
   function handleDragStart(e: React.DragEvent) {
@@ -136,53 +206,113 @@ export function DocumentTreeItem({ document: doc, allDocuments, level }: Documen
     }
   }
 
+  const rowClass = cn(
+    'relative flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-sidebar-hover',
+    'text-sidebar-fg',
+    zone === 'into' && 'bg-primary/10'
+  );
+  const rowStyle = { paddingLeft: `${level * 16 + 8}px` };
+
+  const rowInner = (
+    <>
+      {zone === 'before' && (
+        <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 rounded-full bg-primary" />
+      )}
+      {zone === 'after' && (
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 rounded-full bg-primary" />
+      )}
+      {hasChildren && (
+        <span
+          className="flex size-3.5 shrink-0 items-center justify-center"
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded(!expanded);
+          }}
+        >
+          <ChevronRight
+            className={cn(
+              'size-3.5 transition-transform',
+              expanded && 'rotate-90'
+            )}
+          />
+        </span>
+      )}
+      {!hasChildren && <span className="w-3.5" />}
+      {doc.icon ? (
+        <span className="text-base">{doc.icon}</span>
+      ) : (
+        <File className="size-4 shrink-0 text-muted-foreground" />
+      )}
+      {renaming ? (
+        <input
+          autoFocus
+          value={draftTitle}
+          onChange={(e) => setDraftTitle(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              void commitRename();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              setRenaming(false);
+            }
+          }}
+          onBlur={() => void commitRename()}
+          className="min-w-0 flex-1 rounded border border-input bg-background px-1 text-[13px] outline-none focus:border-ring"
+        />
+      ) : (
+        <span className="truncate">{doc.title}</span>
+      )}
+    </>
+  );
+
+  const rowButton = renaming ? (
+    <div className={rowClass} style={rowStyle}>
+      {rowInner}
+    </div>
+  ) : (
+    <button
+      className={rowClass}
+      style={rowStyle}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={handleClick}
+    >
+      {rowInner}
+    </button>
+  );
+
   return (
     <div>
-      <button
-        className={cn(
-          'relative flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-hover',
-          'text-sidebar-fg',
-          zone === 'into' && 'bg-primary/10'
-        )}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
-        draggable
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleClick}
-      >
-        {zone === 'before' && (
-          <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 rounded-full bg-primary" />
-        )}
-        {zone === 'after' && (
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 rounded-full bg-primary" />
-        )}
-        {hasChildren && (
-          <span
-            className="flex size-3.5 shrink-0 items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              setExpanded(!expanded);
-            }}
-          >
-            <ChevronRight
-              className={cn(
-                'size-3.5 transition-transform',
-                expanded && 'rotate-90'
-              )}
-            />
-          </span>
-        )}
-        {!hasChildren && <span className="w-3.5" />}
-        {doc.icon ? (
-          <span className="text-base">{doc.icon}</span>
-        ) : (
-          <File className="size-4 shrink-0 text-muted-foreground" />
-        )}
-        <span className="truncate">{doc.title}</span>
-      </button>
+      {renaming ? (
+        rowButton
+      ) : (
+        <ContextMenu onOpenChange={handleMenuOpen}>
+          <ContextMenuTrigger render={<div className="w-full" />}>
+            {rowButton}
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem onClick={startRename}>重命名</ContextMenuItem>
+            <ContextMenuItem onClick={() => void createChild()}>新建子文档</ContextMenuItem>
+            <ContextMenuItem onClick={() => void duplicateSelf()}>创建副本</ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem onClick={() => void toggleFavoriteSelf()}>
+              {favorite ? '取消收藏' : '添加到收藏'}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => void copyLink()}>复制链接</ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive" onClick={() => void moveToTrash()}>
+              移入回收站
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      )}
 
       {expanded && hasChildren && (
         <div className="flex flex-col gap-0.5">

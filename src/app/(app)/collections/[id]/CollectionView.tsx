@@ -4,6 +4,8 @@ import { TableView } from './TableView';
 import { KanbanView } from './KanbanView';
 import { CalendarView } from './CalendarView';
 import { ListView } from './ListView';
+import { GalleryView } from './GalleryView';
+import { FormView } from './FormView';
 import type { getCollection } from '@/actions/collection/collection';
 
 type Collection = Awaited<ReturnType<typeof getCollection>>;
@@ -24,6 +26,10 @@ export function CollectionView({ collection, activeView }: CollectionViewProps) 
       return <CalendarView collection={collection} view={activeView} />;
     case 'list':
       return <ListView collection={collection} view={activeView} />;
+    case 'gallery':
+      return <GalleryView collection={collection} view={activeView} />;
+    case 'form':
+      return <FormView collection={collection} view={activeView} />;
     default:
       return <div className="flex flex-1 items-center justify-center text-muted-foreground">未知视图类型</div>;
   }

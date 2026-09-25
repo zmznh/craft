@@ -1,6 +1,7 @@
 'use server';
 
-import { auth } from '@/lib/auth/auth';
+import { requireUserId } from '@/lib/authz/guard';
+import { requireDocumentAccess } from '@/lib/authz/document-access';
 import { getDb } from '@/prisma/db';
 
 export interface OutgoingLink {
@@ -15,12 +16,10 @@ export interface BacklinkItem {
 }
 
 export async function syncBacklinks(sourceDocumentId: string, linkedDocumentIds: string[]) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await requireDocumentAccess(sourceDocumentId, userId, 'editor');
 
   const db = await getDb();
-  const source = await db.orm.public.Document.first({ id: sourceDocumentId });
-  if (!source || (source as any).userId !== session.user.id) throw new Error('未授权');
 
   const existing = await db.orm.public.Backlink
     .where({ sourceDocumentId })
@@ -46,8 +45,8 @@ export async function syncBacklinks(sourceDocumentId: string, linkedDocumentIds:
 }
 
 export async function getBacklinks(documentId: string): Promise<BacklinkItem[]> {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await requireDocumentAccess(documentId, userId, 'viewer');
 
   const db = await getDb();
   const rows = await db.orm.public.Backlink
@@ -60,6 +59,12 @@ export async function getBacklinks(documentId: string): Promise<BacklinkItem[]> 
     const r = row as any;
     const source = await db.orm.public.Document.first({ id: r.sourceDocumentId });
     if (!source || (source as any).isDeleted) continue;
+    // Only surface backlinks the actor is allowed to open.
+    const link = await db.orm.public.DocumentMember.first({
+      documentId: r.sourceDocumentId,
+      userId,
+    });
+    if (!link && (source as any).userId !== userId) continue;
     items.push({
       sourceDocumentId: r.sourceDocumentId,
       sourceTitle: (source as any).title,

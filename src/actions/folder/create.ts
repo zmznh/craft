@@ -1,20 +1,20 @@
 'use server';
 
-import { auth } from '@/lib/auth/auth';
+import { assertOwned, requireUserId } from '@/lib/authz/guard';
 import { getDb } from '@/prisma/db';
 
 export async function createFolder(input: {
   name?: string;
   parentId?: string | null;
 }) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  if (input.parentId) await assertOwned('Folder', input.parentId, userId, '父文件夹不存在');
 
   const db = await getDb();
   const folder = await db.orm.public.Folder.create({
     id: crypto.randomUUID(),
     name: input.name ?? '未命名文件夹',
-    userId: session.user.id,
+    userId,
     parentId: input.parentId ?? null,
   });
 

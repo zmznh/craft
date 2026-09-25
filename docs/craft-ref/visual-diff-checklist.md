@@ -40,3 +40,24 @@ chrome-devtools MCP 补充存入本目录。
 - 改动仅涉及 `src/app/globals.css` tokens、`EditorHeader.tsx`、`SharedDocView.tsx`
   三处,无结构性重构。
 - 视觉回归:阶段 5 全场景测试对每个路由截图留档,人工复核暖色调过渡是否自然。
+
+## 截图留档状态（2026-09-25 更新）
+
+| 项 | 状态 | 位置 |
+|---|---|---|
+| 本地三档截图（documents / document / whiteboard × 1440/768/390） | ✅ 已存 9 张 | `docs/craft-ref/local-<screen>-<w>.png` |
+| craft.do 登录后基准截图 `ref-<screen>-<w>.png` | ⛔ 未采集：本机无外网（`app.craft.do` DNS 失败、`google.com` 超时），需网络恢复后按 `scripts/capture-ref.mjs` 补 | — |
+| `tokens.md`（ref 值 / local 值 / Δ / 是否有意偏差） | ⛔ 同上阻塞，暂以本仓 `src/app/globals.css` tokens 与上表为准 | — |
+| 自动化视觉基线（回归用，非对照用） | ✅ 96 张，三档 × 明暗 × 全路由 + 四 tab + 集合 + 白板 | `e2e/visual.spec.ts-snapshots/` |
+
+结论：像素级对照仍缺 craft.do 侧基准图，属外部依赖未清；本仓侧的视觉一致性已由 96 张
+自动化基线锁住，任何后续样式漂移都会在 `npm run test:e2e` 里失败。
+
+## 本轮新增界面的偏差登记
+
+| 界面 | 处理 | 理由 |
+|---|---|---|
+| 文档内白板块 | 自绘头部条（图标+标题+「只读预览」+跳转）+ tldraw 只读画布，工具条隐藏 | craft.do 的嵌入白板卡为专有位图风格，此处用本仓 token 自绘 |
+| 侧栏树右键菜单 | 用本仓 `ui/context-menu`（Base UI）+ 现有 popover token | 菜单项文案按 Craft 语义（重命名/创建副本/移入回收站），样式沿用本仓圆角与间距 |
+| 协作者区块 | 放在「信息」tab 内，与标签/反向链接同列 | Craft 的分享面板为弹窗；本仓分享语义在 ShareDialog，成员是文档级权限，归信息面板更一致 |
+| 集合画廊/表单视图 | 卡片与表单均用现有 `PropertyCell` | 避免为视图新增一套控件 |

@@ -16,5 +16,5 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 
   if (!doc) redirect('/documents');
 
-  return <DocumentEditor document={doc} />;
+  return <DocumentEditor document={doc} role={doc.role} />;
 }

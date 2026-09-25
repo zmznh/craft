@@ -8,7 +8,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
   --font-heading: var(--font-sans);
   --font-serif: Georgia, 'Times New Roman', 'Noto Serif SC', 'Songti SC', serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -40,52 +41,53 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 28px;
 }
 
 /* ═══════════════════════════════════════════
    Craft Design System — Light Theme
    ═══════════════════════════════════════════ */
 :root {
-  /* Base — Craft warm paper white / warm ink */
-  --background: oklch(0.982 0.005 85);
-  --foreground: oklch(0.16 0.008 85);
+  /* Base — craft.do `[data-theme=light]`: --base 252 253 254, --foreground 26 28 30.
+     Neutral-cool, not the marketing site's warm paper white. */
+  --background: oklch(0.9936 0.0017 247.8);
+  --foreground: oklch(0.2252 0.0049 248);
 
-  /* Card / Popover */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.008 85);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.008 85);
+  /* Card / Popover — --base-overlay rgb(252 252 252) */
+  --card: oklch(0.9911 0 0);
+  --card-foreground: oklch(0.2252 0.0049 248);
+  --popover: oklch(0.9911 0 0);
+  --popover-foreground: oklch(0.2252 0.0049 248);
 
-  /* Primary — Craft near-black warm ink */
-  --primary: oklch(0.18 0.008 85);
-  --primary-foreground: oklch(0.985 0.005 85);
+  /* Primary — Craft's near-black ink */
+  --primary: oklch(0.2252 0.0049 248);
+  --primary-foreground: oklch(0.9936 0.0017 247.8);
 
   /* Secondary */
-  --secondary: oklch(0.968 0.004 85);
-  --secondary-foreground: oklch(0.18 0.008 85);
+  --secondary: oklch(0.965 0.002 248);
+  --secondary-foreground: oklch(0.2252 0.0049 248);
 
   /* Muted */
-  --muted: oklch(0.968 0.004 85);
-  --muted-foreground: oklch(0.556 0.006 85);
+  --muted: oklch(0.965 0.002 248);
+  --muted-foreground: oklch(0.4698 0.0205 248.3);
 
   /* Accent — Craft blue-violet */
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
 
-  /* Destructive */
-  --destructive: oklch(0.577 0.245 27.325);
+  /* Destructive — --red 255 56 60 */
+  --destructive: oklch(0.637 0.238 25.3);
 
   /* Border / Input / Ring */
-  --border: oklch(0.92 0.004 85);
-  --input: oklch(0.92 0.004 85);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.925 0.002 248);
+  --input: oklch(0.925 0.002 248);
+  --ring: oklch(0.5668 0.199 262);
 
   /* Charts */
   --chart-1: oklch(0.87 0 0);
@@ -94,34 +96,36 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
 
-  /* Radius — Craft cards are generously rounded (16px) */
+  /* Radius — craft.do: --radius-sm 4px, -md 8px, -lg 12px, -xl 16px, -full 9999px
+     (the utilities themselves are declared in @theme above) */
   --radius: 0.75rem;
 
-  /* Sidebar — warm gray, matching Craft's paper sidebar */
-  --sidebar: oklch(0.962 0.004 85);
-  --sidebar-foreground: oklch(0.16 0.008 85);
-  --sidebar-primary: oklch(0.18 0.008 85);
-  --sidebar-primary-foreground: oklch(0.985 0.005 85);
-  --sidebar-accent: oklch(0.94 0.004 85);
-  --sidebar-accent-foreground: oklch(0.18 0.008 85);
-  --sidebar-border: oklch(0.92 0.004 85);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Sidebar — Craft's rail sits on the base colour, not a tinted panel */
+  --sidebar: oklch(0.9936 0.0017 247.8);
+  --sidebar-foreground: oklch(0.2252 0.0049 248);
+  --sidebar-primary: oklch(0.2252 0.0049 248);
+  --sidebar-primary-foreground: oklch(0.9936 0.0017 247.8);
+  --sidebar-accent: oklch(0.965 0.002 248);
+  --sidebar-accent-foreground: oklch(0.2252 0.0049 248);
+  --sidebar-border: oklch(0.925 0.002 248);
+  --sidebar-ring: oklch(0.5668 0.199 262);
 
   /* ── Craft-specific tokens ── */
 
   /* Sidebar */
-  --sidebar-bg: oklch(0.962 0.004 85);
-  --sidebar-hover: oklch(0.94 0.004 85);
-  --sidebar-active: oklch(0.91 0.005 85);
+  --sidebar-bg: oklch(0.9936 0.0017 247.8);
+  --sidebar-hover: oklch(0.965 0.002 248);
+  --sidebar-active: oklch(0.94 0.003 248);
 
-  /* Editor */
-  --editor-bg: oklch(1 0 0);
-  --editor-border: oklch(0.92 0.004 85);
-  --editor-muted: oklch(0.556 0.006 85);
+  /* Editor — --base-overlay surface with --editor-text ink at 90% */
+  --editor-bg: oklch(0.9911 0 0);
+  --editor-fg: oklch(0.2501 0.0072 248 / 0.9);
+  --editor-border: oklch(0.925 0.002 248);
+  --editor-muted: oklch(0.4698 0.0205 248.3);
 
-  /* Craft accent blue-violet */
-  --craft-accent: oklch(0.55 0.238 296);
-  --craft-accent-hover: oklch(0.48 0.238 296);
+  /* Craft accent blue — --accent-blue 46 109 233 */
+  --craft-accent: oklch(0.5668 0.199 262);
+  --craft-accent-hover: oklch(0.5 0.199 262);
 
   /* Callout colors */
   --callout-info-bg: oklch(0.96 0.02 250);
@@ -153,46 +157,80 @@
   --focus-purple: oklch(0.55 0.24 295);
   --focus-pink: oklch(0.6 0.22 350);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.07), 0 2px 4px -2px oklch(0 0 0 / 0.05);
+  /* Shadows — craft.do's layered `--shadow-*` set (light) */
+  --shadow-xxs: 0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 1.5px rgb(0 0 0 / 0.06), 0 2.5px 4px rgb(0 0 0 / 0.06);
+  --shadow-sm: 0 2px 4px rgb(0 0 0 / 0.07), 0 8px 8px rgb(0 0 0 / 0.06), 0 18px 11px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 9px rgb(0 0 0 / 0.07), 0 16px 16px rgb(0 0 0 / 0.06), 0 36px 22px rgb(0 0 0 / 0.04);
   --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.08), 0 4px 6px -4px oklch(0 0 0 / 0.04);
+  /* The document surface: a hairline ring plus a wide, soft drop. */
+  --shadow-doc: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 1px -0.5px rgb(0 0 0 / 0.06), 0 3px 3px -1.5px rgb(0 0 0 / 0.06), 0 6px 6px -3px rgb(0 0 0 / 0.06), 0 12px 12px -6px rgb(0 0 0 / 0.04), 0 24px 24px -12px rgb(0 0 0 / 0.03);
 
-  /* Transitions */
-  --transition-fast: 100ms ease;
-  --transition-base: 150ms ease;
-  --transition-slow: 250ms ease;
+  /* Transitions — --transition-duration-fast .15s / -medium .2s / -slow .5s */
+  --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms var(--transition-easing);
+  --transition-base: 200ms var(--transition-easing);
+  --transition-slow: 500ms var(--transition-easing);
+
+  /* ── Layout & density ───────────────────────
+     The only place shell widths live. Container components read these; nothing
+     else in the app writes them, so a breakpoint change is one edit.
+     `--editor-max-w` is absent above 767px on purpose: the editor falls back to
+     the reader's own measure, and only phones force it to the full column. */
+  /* Measured against the logged-in craft.do web app (2026-09-25): the rail is 288px
+     wide (`--header-height: 48px` for the top bar); the right panel is ~360px. */
+  --layout-sidebar-w: 288px;
+  --layout-header-h: 48px;
+  --panel-w: 360px;
+  --editor-measure: 720px;
+  --editor-pad-x: 3rem;
+}
+
+/* Tablet: gutters tighten; a block's max-width already caps the measure at 100%. */
+@media (max-width: 1023px) {
+  :root {
+    --editor-pad-x: 2rem;
+  }
+}
+
+/* Phone: single column. The rail becomes a drawer and the panel a bottom sheet. */
+@media (max-width: 767px) {
+  :root {
+    --layout-sidebar-w: min(20rem, 88vw);
+    --editor-max-w: 100%;
+    --editor-pad-x: 1rem;
+  }
 }
 
 /* ═══════════════════════════════════════════
    Craft Design System — Dark Theme
    ═══════════════════════════════════════════ */
 .dark {
-  --background: oklch(0.17 0.005 260);
-  --foreground: oklch(0.93 0 0);
+  /* craft.do `[data-theme=dark]`: --base 30 30 30, --base-overlay 35 35 35, --foreground 249 249 249 */
+  --background: oklch(0.235 0 0);
+  --foreground: oklch(0.9821 0 0);
 
-  --card: oklch(0.22 0.005 260);
-  --card-foreground: oklch(0.93 0 0);
-  --popover: oklch(0.22 0.005 260);
-  --popover-foreground: oklch(0.93 0 0);
+  --card: oklch(0.2562 0 0);
+  --card-foreground: oklch(0.9821 0 0);
+  --popover: oklch(0.2562 0 0);
+  --popover-foreground: oklch(0.9821 0 0);
 
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.9821 0 0);
+  --primary-foreground: oklch(0.235 0 0);
 
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.3 0 0);
   --secondary-foreground: oklch(0.985 0 0);
 
-  --muted: oklch(0.269 0 0);
+  --muted: oklch(0.3 0 0);
   --muted-foreground: oklch(0.708 0 0);
 
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.3 0 0);
   --accent-foreground: oklch(0.985 0 0);
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: oklch(0.28 0.005 260);
-  --input: oklch(0.28 0.005 260);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.32 0 0);
+  --input: oklch(0.32 0 0);
+  --ring: oklch(0.63 0.19 262);
 
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -201,28 +239,29 @@
   --chart-5: oklch(0.269 0 0);
 
   /* Sidebar */
-  --sidebar: oklch(0.14 0.005 260);
-  --sidebar-foreground: oklch(0.9 0 0);
-  --sidebar-primary: oklch(0.922 0 0);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.2 0.005 260);
-  --sidebar-accent-foreground: oklch(0.93 0 0);
-  --sidebar-border: oklch(0.28 0.005 260);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.235 0 0);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-primary: oklch(0.9821 0 0);
+  --sidebar-primary-foreground: oklch(0.235 0 0);
+  --sidebar-accent: oklch(0.3 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.32 0 0);
+  --sidebar-ring: oklch(0.63 0.19 262);
 
   /* Sidebar tokens */
-  --sidebar-bg: oklch(0.14 0.005 260);
-  --sidebar-hover: oklch(0.2 0.005 260);
-  --sidebar-active: oklch(0.24 0.005 260);
+  --sidebar-bg: oklch(0.235 0 0);
+  --sidebar-hover: oklch(0.3 0 0);
+  --sidebar-active: oklch(0.34 0 0);
 
   /* Editor */
-  --editor-bg: oklch(0.19 0.005 260);
-  --editor-border: oklch(0.28 0.005 260);
-  --editor-muted: oklch(0.55 0 0);
+  --editor-bg: oklch(0.2562 0 0);
+  --editor-fg: oklch(0.9821 0 0 / 0.9);
+  --editor-border: oklch(0.32 0 0);
+  --editor-muted: oklch(0.7 0 0);
 
-  /* Craft accent */
-  --craft-accent: oklch(0.65 0.22 296);
-  --craft-accent-hover: oklch(0.72 0.22 296);
+  /* Craft accent — --accent-blue 113 178 255 */
+  --craft-accent: oklch(0.72 0.15 250);
+  --craft-accent-hover: oklch(0.78 0.15 250);
 
   /* Callout colors (dark) */
   --callout-info-bg: oklch(0.25 0.03 250);
@@ -278,7 +317,7 @@
 .tiptap {
   font-size: 16px;
   line-height: 1.7;
-  color: var(--foreground);
+  color: var(--editor-fg, var(--foreground));
 
   &:focus {
     outline: none;
@@ -504,16 +543,6 @@
     background: var(--craft-accent);
     vertical-align: text-bottom;
     pointer-events: none;
-  }
-
-  /* ── Share passcode gate shake ── */
-  @keyframes crafty-shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
-  }
-  .animate-shake {
-    animation: crafty-shake 0.4s ease-in-out;
   }
 
   /* ── Focus Style (left colored bar) ── */
@@ -783,4 +812,196 @@
   height: 4px;
   border-radius: 9999px;
   background: var(--color-chart-2, #f97316);
+}
+
+/* ═══════════════════════════════════════════
+   Share passcode gate shake
+   (top level: @keyframes cannot live inside .tiptap)
+   ═══════════════════════════════════════════ */
+@keyframes crafty-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: crafty-shake 0.4s ease-in-out;
+}
+
+/* ═══════════════════════════════════════════
+   Block anchor jump highlight (overlay positioned by block-anchor.ts)
+   ═══════════════════════════════════════════ */
+@keyframes crafty-anchor-flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.block-anchor-flash {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--color-primary) 22%, transparent);
+  animation: crafty-anchor-flash 1.4s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .block-anchor-flash {
+    animation-duration: 0.01s;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Collaboration remote carets
+   ═══════════════════════════════════════════ */
+.crafty-remote-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity var(--transition-fast) ease;
+}
+
+.crafty-remote-cursor__caret {
+  width: 2px;
+  height: 1.35em;
+  border-radius: 1px;
+  background: var(--cursor-color);
+  animation: crafty-cursor-blink 1.2s steps(2, start) infinite;
+}
+
+.crafty-remote-cursor__label {
+  margin-top: -0.95em;
+  margin-left: -1px;
+  padding: 1px 5px;
+  border-radius: 4px 4px 4px 0;
+  background: var(--cursor-color);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+@keyframes crafty-cursor-blink {
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crafty-remote-cursor__caret {
+    animation: none;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Selection toolbar
+   ═══════════════════════════════════════════ */
+/* Phones: the TipTap bubble menu floats over the selection and is unreachable
+   under the thumb, so it becomes a bottom bar. The positioner writes left/top/
+   transform inline, hence the overrides. */
+@media (max-width: 767px) {
+  .crafty-bubble-menu {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: max-content;
+    max-width: calc(100vw - 1.5rem);
+    margin-inline: auto;
+    transform: none !important;
+    overflow-x: auto;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Columns
+   ═══════════════════════════════════════════ */
+.tiptap [data-type="columns"] {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-block: 0.5rem;
+}
+
+.tiptap [data-type="column"] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Two columns of body text do not fit a phone; they stack instead. */
+@media (max-width: 767px) {
+  .tiptap [data-type="columns"] {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Mirror block
+   ═══════════════════════════════════════════ */
+/* The body is exported HTML, so it needs the editor's paragraph rhythm back. */
+.mirror-block-body {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.mirror-block-body > *:first-child {
+  margin-block-start: 0;
+}
+
+.mirror-block-body > *:last-child {
+  margin-block-end: 0;
+}
+
+.mirror-block-body p,
+.mirror-block-body h1,
+.mirror-block-body h2,
+.mirror-block-body h3,
+.mirror-block-body ul,
+.mirror-block-body ol,
+.mirror-block-body blockquote {
+  margin-block: 0.35rem;
+}
+
+.mirror-block-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   Math
+   ═══════════════════════════════════════════ */
+/* KaTeX's own line-height fights the editor's rhythm; the inline variant has to
+   sit on the text baseline without stretching the paragraph. */
+.crafty-math .katex-display {
+  margin: 0;
+}
+
+.crafty-math-inline {
+  display: inline-block;
+  line-height: 1.4;
+  vertical-align: -0.1em;
+}
+
+/* ═══════════════════════════════════════════
+   Whiteboard
+   ═══════════════════════════════════════════ */
+/* Phones get the canvas to themselves: the minimap and the style panel both
+   cover drawing area without adding anything a touch user can aim at. */
+@media (max-width: 767px) {
+  .tl-container .tlui-minimap,
+  .tl-container .tlui-style-panel {
+    display: none;
+  }
 }

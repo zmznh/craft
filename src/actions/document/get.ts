@@ -2,17 +2,28 @@
 
 import { auth } from '@/lib/auth/auth';
 import { getDb } from '@/prisma/db';
+import { requireUserId } from '@/lib/authz/guard';
+import { resolveDocumentAccess } from '@/lib/authz/document-access';
+import type { ResourceRole } from '@/lib/authz/resource';
 
-export async function getDocument(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+export interface AuthorizedDocument {
+  [key: string]: unknown;
+  id: string;
+  title: string;
+  icon: string | null;
+  coverImage: string | null;
+  coverType: string | null;
+  width: string | null;
+  pageStyle: unknown;
+  content: unknown;
+  role: ResourceRole;
+}
 
-  const db = await getDb();
-  const document = await db.orm.public.Document.first({ id });
-  if (!document || (document as { userId: string }).userId !== session.user.id) {
-    return null;
-  }
-  return document;
+export async function getDocument(id: string): Promise<AuthorizedDocument | null> {
+  const userId = await requireUserId();
+  const access = await resolveDocumentAccess(id, userId);
+  if (!access) return null;
+  return { ...access.document, role: access.role } as AuthorizedDocument;
 }
 
 export async function getDocuments() {
@@ -124,22 +135,39 @@ export async function getRecentDocuments(limit = 20) {
   if (!session?.user?.id) throw new Error('未授权');
 
   const db = await getDb();
-  const docs: Array<{
+  type RecentDoc = {
     id: string;
     title: string;
     icon: string | null;
     updatedAt: string;
-  }> = [];
+    role: string;
+  };
 
-  const result = await db.orm.public.Document
+  const docs: RecentDoc[] = [];
+
+  const own = await db.orm.public.Document
     .where({ userId: session.user.id, isDeleted: false })
     .orderBy((m: any) => m.updatedAt.desc())
-    .limit(limit)
     .all();
 
-  for (const doc of result) {
-    docs.push(doc as typeof docs[number]);
+  for (const doc of own) {
+    docs.push({ ...(doc as unknown as RecentDoc), role: 'owner' });
   }
 
-  return docs;
+  // Documents shared with me by a collaborator grant.
+  const grants = await db.orm.public.DocumentMember
+    .where({ userId: session.user.id })
+    .all();
+
+  for (const grant of grants) {
+    const doc = await db.orm.public.Document.first({
+      id: (grant as { documentId: string }).documentId,
+    });
+    if (!doc || (doc as { isDeleted: boolean }).isDeleted) continue;
+    if ((doc as { userId: string }).userId === session.user.id) continue;
+    docs.push({ ...(doc as unknown as RecentDoc), role: (grant as { role: string }).role });
+  }
+
+  docs.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+  return docs.slice(0, limit);
 }

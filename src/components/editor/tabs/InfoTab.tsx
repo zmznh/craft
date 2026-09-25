@@ -20,12 +20,15 @@ import { getOrCreateShare, setSharePublished } from '@/actions/document/share';
 import { exportDocument, type ExportFormat } from '@/actions/document/export';
 import { VersionDialog } from './VersionDialog';
 import { CommentSection } from '../comments/CommentSection';
+import { TagsSection } from './TagsSection';
+import { MembersSection } from './MembersSection';
 import type { Editor } from '@tiptap/react';
 
 interface InfoTabProps {
   documentId: string;
   editor: import('@tiptap/react').Editor | null;
   wordCount: number;
+  isOwner: boolean;
   onClose: () => void;
 }
 
@@ -48,7 +51,7 @@ interface DocItem {
   parentId: string | null;
 }
 
-export function InfoTab({ documentId, editor, wordCount }: InfoTabProps) {
+export function InfoTab({ documentId, editor, wordCount, isOwner }: InfoTabProps) {
   const router = useRouter();
   const [subTab, setSubTab] = useState<'info' | 'actions'>('info');
   const [backlinks, setBacklinks] = useState<Backlink[]>([]);
@@ -228,6 +231,12 @@ export function InfoTab({ documentId, editor, wordCount }: InfoTabProps) {
               </div>
             </div>
           </section>
+
+          {/* Tags */}
+          <TagsSection documentId={documentId} />
+
+          {/* Collaborators */}
+          <MembersSection documentId={documentId} canManage={isOwner} />
 
           {/* Backlinks */}
           {backlinks.length > 0 && (

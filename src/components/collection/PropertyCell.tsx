@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Check, X, ChevronDown, Calendar as CalendarIcon } from 'lucide-react';
+import { Check, X, ChevronDown, Calendar as CalendarIcon, Link2, Paperclip } from 'lucide-react';
 import { cn } from 'cn';
+import { evaluateFormula } from '@/lib/collection/formula';
+import { getCollection } from '@/actions/collection/collection';
+import { uploadFile } from '@/lib/upload-client';
 
 interface Property {
   id: string;
@@ -17,6 +20,10 @@ interface PropertyCellProps {
   property: Property;
   value: any;
   onChange: (value: any) => void;
+  /** The row this cell belongs to; carries the timestamps formula and date columns read. */
+  item?: { createdAt?: string; updatedAt?: string; values?: { propertyId: string; value: unknown }[] };
+  /** Needed to turn `{属性名}` references into values. */
+  properties?: Property[];
 }
 
 function parseValue(raw: any): any {
@@ -29,7 +36,7 @@ function parseValue(raw: any): any {
   }
 }
 
-export function PropertyCell({ property, value, onChange }: PropertyCellProps) {
+export function PropertyCell({ property, value, onChange, item, properties }: PropertyCellProps) {
   const parsed = parseValue(value);
 
   switch (property.type) {
@@ -47,6 +54,16 @@ export function PropertyCell({ property, value, onChange }: PropertyCellProps) {
       return <URLCell value={parsed} onChange={onChange} />;
     case 'email':
       return <EmailCell value={parsed} onChange={onChange} />;
+    case 'formula':
+      return <FormulaCell property={property} item={item} properties={properties} />;
+    case 'created_at':
+      return <TimestampCell value={item?.createdAt} />;
+    case 'updated_at':
+      return <TimestampCell value={item?.updatedAt} />;
+    case 'file':
+      return <FileCell value={parsed} onChange={onChange} />;
+    case 'relation':
+      return <RelationCell property={property} value={parsed} onChange={onChange} />;
     default:
       return <TextCell value={parsed} onChange={onChange} />;
   }
@@ -394,19 +411,223 @@ function EmailCell({ value, onChange }: { value: any; onChange: (v: any) => void
   );
 }
 
-// ─── Helpers ─────────────────────────────────────────
+// ─── Formula ─────────────────────────────────────────
+function FormulaCell({
+  property,
+  item,
+  properties,
+}: {
+  property: Property;
+  item?: PropertyCellProps['item'];
+  properties?: Property[];
+}) {
+  const expression = readConfig(property.config)?.expression ?? '';
+  const row: Record<string, unknown> = {};
+  for (const value of item?.values ?? []) {
+    const named = properties?.find((candidate) => candidate.id === value.propertyId);
+    if (named) row[named.name] = parseValue(value.value);
+  }
+
+  const result = expression ? evaluateFormula(expression, row) : { ok: false as const, error: '未设置公式' };
+
+  return (
+    <div className="min-h-[32px] px-2 py-1 text-sm tabular-nums">
+      {result.ok ? (
+        <span>{formatNumber(result.value)}</span>
+      ) : (
+        <span className="text-muted-foreground/60">{result.error}</span>
+      )}
+    </div>
+  );
+}
+
+function formatNumber(value: number): string {
+  return Number.isInteger(value) ? String(value) : String(Math.round(value * 10000) / 10000);
+}
+
+// ─── Created / Updated ───────────────────────────────
+function TimestampCell({ value }: { value?: string }) {
+  const date = value ? new Date(value) : null;
+  return (
+    <div className="min-h-[32px] px-2 py-1 text-sm">
+      {date && !Number.isNaN(date.getTime()) ? (
+        <span className="text-muted-foreground">{date.toLocaleDateString('zh-CN')}</span>
+      ) : (
+        <span className="text-muted-foreground/50">-</span>
+      )}
+    </div>
+  );
+}
+
+// ─── File ────────────────────────────────────────────
+interface FileValue {
+  name: string;
+  url: string;
+  size?: number;
+}
+
+function FileCell({ value, onChange }: { value: any; onChange: (v: any) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const file: FileValue | null =
+    value && typeof value === 'object' ? (value as FileValue) : null;
+
+  return (
+    <div className="flex min-h-[32px] items-center gap-1 px-2 py-1">
+      <input
+        ref={inputRef}
+        type="file"
+        className="hidden"
+        onChange={async (event) => {
+          const picked = event.target.files?.[0];
+          if (!picked) return;
+          setBusy(true);
+          try {
+            const { url } = await uploadFile(picked);
+            onChange({ name: picked.name, url, size: picked.size });
+          } finally {
+            setBusy(false);
+            event.target.value = '';
+          }
+        }}
+      />
+      {file ? (
+        <>
+          <a
+            href={file.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-w-0 items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
+          >
+            <Paperclip className="size-3.5 shrink-0" />
+            <span className="truncate">{file.name}</span>
+          </a>
+          <button
+            className="ml-auto text-muted-foreground hover:text-destructive"
+            aria-label="移除附件"
+            onClick={() => onChange(null)}
+          >
+            <X className="size-3.5" />
+          </button>
+        </>
+      ) : (
+        <button
+          className="text-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+        >
+          {busy ? '上传中…' : '添加文件'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Relation ────────────────────────────────────────
+function RelationCell({
+  property,
+  value,
+  onChange,
+}: {
+  property: Property;
+  value: any;
+  onChange: (v: any) => void;
+}) {
+  const targetId = readConfig(property.config)?.collectionId ?? null;
+  const selected: string[] = Array.isArray(value) ? value : [];
+  const [options, setOptions] = useState<{ id: string; label: string }[]>([]);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!targetId) return;
+    let alive = true;
+    getCollection(targetId)
+      .then((collection) => {
+        if (!alive || !collection) return;
+        const properties = collection.properties as any[];
+        const items = collection.items as any[];
+        const primary = properties.find((candidate) => candidate.type === 'text') ?? properties[0];
+        setOptions(
+          items.map((item) => ({
+            id: item.id,
+            label:
+              String(
+                parseValue(item.values?.find((entry: any) => entry.propertyId === primary?.id)?.value) ?? ''
+              ) || '未命名',
+          }))
+        );
+      })
+      .catch(() => setOptions([]));
+    return () => {
+      alive = false;
+    };
+  }, [targetId]);
+
+  const toggle = (id: string) => {
+    const next = selected.includes(id) ? selected.filter((entry) => entry !== id) : [...selected, id];
+    onChange(next.length ? next : null);
+  };
+
+  return (
+    <div className="relative min-h-[32px] px-2 py-1">
+      <button
+        className="flex w-full flex-wrap items-center gap-1 text-left text-sm"
+        disabled={!targetId}
+        onClick={() => setOpen(!open)}
+      >
+        {selected.length ? (
+          selected.map((id) => (
+            <span key={id} className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+              {options.find((option) => option.id === id)?.label ?? '已链接项'}
+            </span>
+          ))
+        ) : (
+          <span className="text-muted-foreground/50">{targetId ? '-' : '未配置关联集合'}</span>
+        )}
+      </button>
+
+      {open && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute left-0 top-full z-20 max-h-60 w-56 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md">
+            {options.length === 0 && (
+              <p className="px-2 py-1.5 text-sm text-muted-foreground">目标集合还没有条目</p>
+            )}
+            {options.map((option) => (
+              <button
+                key={option.id}
+                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-muted"
+                onClick={() => toggle(option.id)}
+              >
+                <Link2 className="size-3.5 shrink-0 text-muted-foreground" />
+                <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                {selected.includes(option.id) && <Check className="size-3.5" />}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Helpers ────────────────────────────────────────
 interface SelectOption {
   id: string;
   label: string;
   color: string;
 }
 
-function getSelectOptions(config: string | null): SelectOption[] {
-  if (!config) return [];
+function readConfig(config: string | null): Record<string, any> | null {
+  if (!config) return null;
   try {
     const parsed = typeof config === 'string' ? JSON.parse(config) : config;
-    return parsed.options ?? [];
+    return parsed && typeof parsed === 'object' ? parsed : null;
   } catch {
-    return [];
+    return null;
   }
+}
+
+function getSelectOptions(config: string | null): SelectOption[] {
+  return readConfig(config)?.options ?? [];
 }

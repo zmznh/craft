@@ -16,7 +16,7 @@ export function SidebarHeader() {
   }
 
   return (
-    <div className="flex items-center gap-1 px-3 py-2">
+    <div className="flex items-center gap-1.5 px-3 py-3">
       <Button
         variant="ghost"
         size="icon-sm"
@@ -24,7 +24,7 @@ export function SidebarHeader() {
         onClick={openPalette}
       >
         <Search className="size-4 shrink-0" />
-        <span className="text-sm">搜索</span>
+        <span className="text-[13px]">搜索</span>
         <kbd className="ml-auto rounded border border-border px-1 text-[10px] text-muted-foreground">
           ⌘K
         </kbd>

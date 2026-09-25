@@ -2,17 +2,16 @@ import { getCollections } from '@/actions/collection/collection';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { CreateCollectionButton } from './CreateCollectionButton';
+import { AppPageContainer } from '@/components/app/AppPageContainer';
+import { AppPageHeader } from '@/components/app/AppPageHeader';
 
 export default async function CollectionsPage() {
   const collections = await getCollections();
 
   return (
     <div className="flex-1 overflow-auto">
-      <div className="mx-auto max-w-5xl px-8 py-8">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">集合</h1>
-          <CreateCollectionButton />
-        </div>
+      <AppPageHeader title="集合" actions={<CreateCollectionButton />} />
+      <AppPageContainer>
 
         {collections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -26,7 +25,7 @@ export default async function CollectionsPage() {
             <CreateCollectionButton />
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {collections.map((collection: any) => (
               <Link
                 key={collection.id}
@@ -54,7 +53,7 @@ export default async function CollectionsPage() {
             ))}
           </div>
         )}
-      </div>
+      </AppPageContainer>
     </div>
   );
 }

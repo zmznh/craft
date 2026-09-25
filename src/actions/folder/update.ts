@@ -1,12 +1,10 @@
 'use server';
 
-import { auth } from '@/lib/auth/auth';
-import { getDb } from '@/prisma/db';
+import { assertOwned, getTable, requireUserId } from '@/lib/authz/guard';
 
 export async function updateFolder(id: string, data: { name?: string; icon?: string | null }) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await assertOwned('Folder', id, userId, '文件夹不存在');
 
-  const db = await getDb();
-  await db.orm.public.Folder.where({ id }).update(data as Record<string, unknown>);
+  await (await getTable('Folder')).where({ id, userId }).update(data as Record<string, unknown>);
 }

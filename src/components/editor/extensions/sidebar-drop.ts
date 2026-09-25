@@ -90,8 +90,9 @@ export const SidebarDrop = Extension.create({
                 title: payload.title,
               });
             } else if (payload.type === 'whiteboard') {
-              if (!schema.nodes.whiteboardLink) return false;
-              node = schema.nodes.whiteboardLink.create({
+              const type = schema.nodes.whiteboardEmbed ?? schema.nodes.whiteboardLink;
+              if (!type) return false;
+              node = type.create({
                 whiteboardId: payload.whiteboardId,
                 title: payload.title,
                 icon: payload.icon,

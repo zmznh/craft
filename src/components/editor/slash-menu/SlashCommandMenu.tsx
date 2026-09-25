@@ -1,68 +1,38 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
-import { filterCommands, type SlashCommand } from './slash-commands';
+import { useCallback, useRef, useLayoutEffect } from 'react';
+import type { SlashCommand } from './slash-commands';
 import type { Editor } from '@tiptap/react';
 import { cn } from 'cn';
 
 interface SlashCommandMenuProps {
+  commands: SlashCommand[];
+  selectedIndex: number;
   editor: Editor;
-  query: string;
   range: { from: number; to: number };
-  onClose: () => void;
 }
 
-export function SlashCommandMenu({ editor, query, range, onClose }: SlashCommandMenuProps) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const commands = filterCommands(query);
-  const activeIndex = Math.min(selectedIndex, Math.max(commands.length - 1, 0));
-  const containerRef = useRef<HTMLDivElement>(null);
+/**
+ * Presentational only. Arrow/Enter/Escape are handled by the suggestion plugin so
+ * that they run before ProseMirror's own bindings; this renders the list and
+ * serves clicks.
+ */
+export function SlashCommandMenu({ commands, selectedIndex, editor, range }: SlashCommandMenuProps) {
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useLayoutEffect(() => {
-    const selected = itemRefs.current[activeIndex];
-    if (selected) {
-      selected.scrollIntoView({ block: 'nearest' });
-    }
-  }, [activeIndex]);
+    itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+  }, [selectedIndex]);
+
+  const activeIndex = Math.min(selectedIndex, Math.max(commands.length - 1, 0));
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const selectItem = useCallback(
     (index: number) => {
-      const cmd = commands[index];
-      if (cmd) {
-        cmd.command(editor, range);
-        onClose();
-      }
+      commands[index]?.command(editor, range);
     },
-    [commands, editor, range, onClose]
+    [commands, editor, range]
   );
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!editor.view.hasFocus() && !containerRef.current?.contains(document.activeElement)) return;
-      switch (e.key) {
-        case 'ArrowUp':
-          e.preventDefault();
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : commands.length - 1));
-          break;
-        case 'ArrowDown':
-          e.preventDefault();
-          setSelectedIndex((prev) => (prev < commands.length - 1 ? prev + 1 : 0));
-          break;
-        case 'Enter':
-          e.preventDefault();
-          selectItem(activeIndex);
-          break;
-        case 'Escape':
-          e.preventDefault();
-          onClose();
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [commands.length, activeIndex, selectItem, onClose]);
 
   if (commands.length === 0) {
     return (
