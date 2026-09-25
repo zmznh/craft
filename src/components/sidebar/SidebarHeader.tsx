@@ -16,22 +16,23 @@ export function SidebarHeader() {
   }
 
   return (
-    <div className="flex items-center gap-1 px-3 py-2">
+    <div className="flex items-center gap-1 px-2.5 py-2">
       <Button
         variant="ghost"
         size="icon-sm"
-        className="flex-1 justify-start gap-2 text-muted-foreground"
+        className="flex-1 justify-start gap-2 rounded-md text-ui text-foreground/85 hover:bg-foreground/4 hover:text-foreground"
         onClick={openPalette}
       >
         <Search className="size-4 shrink-0" />
-        <span className="text-sm">搜索</span>
-        <kbd className="ml-auto rounded border border-border px-1 text-[10px] text-muted-foreground">
+        <span className="text-ui">搜索</span>
+        <kbd className="ml-auto rounded-md border border-border px-1 text-caption text-foreground/40">
           ⌘K
         </kbd>
       </Button>
       <Button
         variant="ghost"
         size="icon-sm"
+        className="rounded-md hover:bg-foreground/4"
         onClick={handleNewDoc}
         aria-label="新建文档"
       >

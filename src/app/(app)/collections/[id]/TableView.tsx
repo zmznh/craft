@@ -70,7 +70,7 @@ export function TableView({ collection, view }: TableViewProps) {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-border px-4 py-2">
+      <div className="flex items-center gap-2 border-b border-border px-4 py-2 text-ui">
         <FilterBar
           collection={collection}
           filters={filters}
@@ -114,16 +114,16 @@ export function TableView({ collection, view }: TableViewProps) {
 
               return (
                 <div key={groupKey}>
-                  <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+                  <h3 className="mb-2 text-ui font-semibold text-foreground/40">
                     {groupLabel} ({items.length})
                   </h3>
-                  <table className="w-full border-collapse">
-                    <thead className="sticky top-0 z-10 bg-muted/50">
+                  <table className="w-full min-w-[720px] border-collapse">
+                    <thead className="sticky top-0 z-10 bg-background">
                       <tr>
                         {visibleProperties.map((property: any) => (
                           <th
                             key={property.id}
-                            className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l"
+                            className="border-b border-border px-3 py-2 text-left text-meta font-medium text-foreground/40 first:border-l"
                           >
                             {property.name}
                           </th>
@@ -133,11 +133,11 @@ export function TableView({ collection, view }: TableViewProps) {
                     </thead>
                     <tbody>
                       {items.map((item: any) => (
-                        <tr key={item.id} className="group hover:bg-muted/30">
+                        <tr key={item.id} className="group h-9 transition-colors duration-150 hover:bg-foreground/[0.03]">
                           {visibleProperties.map((property: any) => (
                             <td
                               key={property.id}
-                              className="border-b border-r border-border px-0 py-0 first:border-l"
+                              className="min-h-9 border-b border-border px-0 py-0 first:border-l"
                             >
                               <PropertyCell
                                 property={property}
@@ -165,13 +165,13 @@ export function TableView({ collection, view }: TableViewProps) {
             })}
           </div>
         ) : (
-          <table className="w-full border-collapse">
-            <thead className="sticky top-0 z-10 bg-muted/50">
+          <table className="w-full min-w-[720px] border-collapse">
+            <thead className="sticky top-0 z-10 bg-background">
               <tr>
                 {visibleProperties.map((property: any) => (
                   <th
                     key={property.id}
-                    className="border-b border-r border-border px-3 py-2 text-left text-sm font-medium text-muted-foreground first:border-l"
+                    className="border-b border-border px-3 py-2 text-left text-meta font-medium text-foreground/40 first:border-l"
                   >
                     {property.name}
                   </th>
@@ -181,11 +181,11 @@ export function TableView({ collection, view }: TableViewProps) {
             </thead>
             <tbody>
               {processedItems.map((item: any) => (
-                <tr key={item.id} className="group hover:bg-muted/30">
+                <tr key={item.id} className="group h-9 transition-colors duration-150 hover:bg-foreground/[0.03]">
                   {visibleProperties.map((property: any) => (
                     <td
                       key={property.id}
-                      className="border-b border-r border-border px-0 py-0 first:border-l"
+                      className="min-h-9 border-b border-border px-0 py-0 first:border-l"
                     >
                       <PropertyCell
                         property={property}
@@ -212,7 +212,7 @@ export function TableView({ collection, view }: TableViewProps) {
       </div>
 
       <div className="border-t border-border p-2">
-        <Button variant="ghost" size="sm" onClick={handleAddItem}>
+        <Button variant="ghost" size="sm" className="text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground" onClick={handleAddItem}>
           <Plus className="mr-2 size-4" />
           新建
         </Button>

@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: '文档不存在' }, { status: 404 });
   }
 
-  const secret = process.env.NEXTAUTH_SECRET || 'dev-secret';
+  // 与 src/collab/server.mjs 的校验密钥优先级保持一致（COLLAB_SECRET 优先），
+  // 否则两值不同时 HMAC 必然不匹配、协作鉴权永远失败
+  const secret = process.env.COLLAB_SECRET || process.env.NEXTAUTH_SECRET || 'dev-secret';
   const expires = Date.now() + 30 * 60 * 1000;
   const payload = Buffer.from(
     JSON.stringify({ docId: documentId, userId: session.user.id, exp: expires }),

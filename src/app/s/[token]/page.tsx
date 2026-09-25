@@ -17,7 +17,7 @@ export default async function SharedPage({ params }: SharedPageProps) {
   if (!doc) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">链接无效或文档已删除</p>
+        <p className="text-ui text-foreground/40">链接无效或文档已删除</p>
       </div>
     );
   }

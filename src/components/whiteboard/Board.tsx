@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tldraw } from 'tldraw';
 import 'tldraw/tldraw.css';
+import { useTheme } from 'next-themes';
 import { saveWhiteboardData } from '@/actions/whiteboard/whiteboard';
 
 interface BoardProps {
@@ -14,6 +15,12 @@ export function Board({ whiteboardId, initialData }: BoardProps) {
   const [editor, setEditor] = useState<any>(null);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastSavedRef = useRef<string>('');
+  const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    if (!editor) return;
+    editor.updateUserPreferences({ colorScheme: resolvedTheme === 'dark' ? 'dark' : 'light' });
+  }, [editor, resolvedTheme]);
 
   const handleMount = useCallback(
     (ed: any) => {

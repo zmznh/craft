@@ -1,22 +1,13 @@
 import { expect, test } from '@playwright/test';
-
-const email = 'craft-test@example.com';
-const password = 'test1234';
+import { login } from './helpers';
 
 test('login redirects to documents', async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
+  await login(page);
   await expect(page).toHaveURL(/\/documents/);
 });
 
 test('create document, edit, and persist content', async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await expect(page).toHaveURL(/\/documents/);
+  await login(page);
 
   // 新建文档
   await page.goto('/documents');
@@ -35,11 +26,7 @@ test('create document, edit, and persist content', async ({ page }) => {
 });
 
 test('settings persist preference selection', async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await expect(page).toHaveURL(/\/documents/);
+  await login(page);
 
   await page.goto('/settings');
   await expect(page.getByRole('heading', { name: '设置' })).toBeVisible();

@@ -82,12 +82,12 @@ export function BlockLinkMenu({ editor, query, range, onClose }: BlockLinkMenuPr
   }, [candidates.length, selectedIndex, selectItem, onClose]);
 
   return (
-    <div className="max-h-64 w-72 overflow-y-auto rounded-lg border border-border bg-popover p-1.5 shadow-md">
-      <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="max-h-64 w-72 overflow-y-auto rounded-lg bg-popover p-1.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-150">
+      <div className="px-2 py-1.5 text-caption font-semibold uppercase tracking-wider text-foreground/40">
         链接到文档
       </div>
       {candidates.length === 0 && (
-        <div className="px-2 py-3 text-sm text-muted-foreground">
+        <div className="px-2 py-3 text-ui text-foreground/40">
           {loading ? '搜索中…' : '无匹配文档'}
         </div>
       )}
@@ -98,18 +98,18 @@ export function BlockLinkMenu({ editor, query, range, onClose }: BlockLinkMenuPr
           type="button"
           onClick={() => selectItem(idx)}
           className={cn(
-            'flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors',
+            'flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-left text-ui transition-colors duration-150 ease-craft',
             idx === selectedIndex
-              ? 'bg-accent text-accent-foreground'
-              : 'text-foreground hover:bg-muted'
+              ? 'bg-foreground/4 text-foreground/85'
+              : 'text-foreground/85 hover:bg-foreground/4'
           )}
         >
           {candidate.icon ? (
             <span className="text-base leading-none">{candidate.icon}</span>
           ) : (
-            <FileText className="size-4 shrink-0 text-muted-foreground" />
+            <FileText className="size-4 shrink-0 text-foreground/55" />
           )}
-          <span className="min-w-0 flex-1 truncate text-sm">{candidate.title}</span>
+          <span className="min-w-0 flex-1 truncate text-ui">{candidate.title}</span>
           <Link2 className="size-3.5 shrink-0 text-muted-foreground" />
         </button>
       ))}

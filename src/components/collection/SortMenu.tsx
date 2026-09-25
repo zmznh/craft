@@ -48,18 +48,23 @@ export function SortMenu({ collection, sorts, onSortsChange }: SortMenuProps) {
 
   if (!isOpen) {
     return (
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)}>
-        <ArrowUpDown className="mr-2 size-4" />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+        onClick={() => setIsOpen(true)}
+      >
+        <ArrowUpDown className="mr-1.5 size-3.5" />
         排序
       </Button>
     );
   }
 
   return (
-    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3">
+    <div className="space-y-2 border-b border-border bg-muted/30 px-4 py-3 text-ui">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">排序规则</span>
-        <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+        <span className="text-ui font-medium">排序规则</span>
+        <Button variant="ghost" size="sm" className="h-7 rounded-md hover:bg-foreground/4" onClick={() => setIsOpen(false)}>
           <X className="size-4" />
         </Button>
       </div>
@@ -70,7 +75,7 @@ export function SortMenu({ collection, sorts, onSortsChange }: SortMenuProps) {
             <select
               value={sort.propertyId}
               onChange={(e) => handleUpdateSort(sort.id, { propertyId: e.target.value })}
-              className="rounded border border-border bg-background px-2 py-1 text-sm"
+              className="h-7 rounded-md border border-border bg-background px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               {properties.map((p: any) => (
                 <option key={p.id} value={p.id}>
@@ -82,7 +87,7 @@ export function SortMenu({ collection, sorts, onSortsChange }: SortMenuProps) {
             <select
               value={sort.direction}
               onChange={(e) => handleUpdateSort(sort.id, { direction: e.target.value as 'asc' | 'desc' })}
-              className="rounded border border-border bg-background px-2 py-1 text-sm"
+              className="h-7 rounded-md border border-border bg-background px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               <option value="asc">升序</option>
               <option value="desc">降序</option>
@@ -91,6 +96,7 @@ export function SortMenu({ collection, sorts, onSortsChange }: SortMenuProps) {
             <Button
               variant="ghost"
               size="sm"
+              className="h-7 rounded-md hover:bg-foreground/4"
               onClick={() => handleRemoveSort(sort.id)}
             >
               <X className="size-4" />
@@ -99,8 +105,8 @@ export function SortMenu({ collection, sorts, onSortsChange }: SortMenuProps) {
         ))}
       </div>
 
-      <Button variant="ghost" size="sm" onClick={handleAddSort}>
-        <Plus className="mr-2 size-4" />
+      <Button variant="ghost" size="sm" className="h-7 rounded-md text-ui hover:bg-foreground/4" onClick={handleAddSort}>
+        <Plus className="mr-1.5 size-3.5" />
         添加排序
       </Button>
     </div>

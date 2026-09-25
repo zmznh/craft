@@ -23,9 +23,9 @@ export function BlockLinkView({ node }: NodeViewProps) {
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/60 px-1.5 py-0.5 text-sm text-foreground transition-colors hover:bg-muted"
+        className="inline-flex items-center gap-1 rounded-md border border-foreground/8 bg-foreground/4 px-1.5 py-0.5 text-ui text-foreground/85 transition-colors duration-150 ease-craft hover:bg-foreground/8"
       >
-        <Link2 className="size-3.5 text-muted-foreground" />
+        <Link2 className="size-3.5 text-foreground/40" />
         <span>{title || '未命名'}</span>
       </button>
     </NodeViewWrapper>

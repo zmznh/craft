@@ -256,7 +256,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
     <>
       {handle && (
         <div
-          className="absolute z-50 flex cursor-grab items-center text-muted-foreground/50 transition-colors hover:text-foreground active:cursor-grabbing"
+          className="absolute z-50 flex cursor-grab items-center rounded-md px-0.5 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/6 hover:text-foreground active:cursor-grabbing"
           style={{
             top: handle.top,
             left: HANDLE_OFFSET,
@@ -265,15 +265,15 @@ export function DragHandle({ editor }: { editor: Editor }) {
           onPointerDown={onHandlePointerDown}
           data-drag-handle=""
         >
-          <GripVertical className="size-4" />
+          <GripVertical className="size-[18px]" />
         </div>
       )}
       {indicator.visible && (
         <div
-          className="pointer-events-none absolute left-0 right-0 z-40 h-0.5 rounded-full bg-primary/70"
+          className="pointer-events-none absolute left-0 right-0 z-40 h-0.5 rounded-full bg-craft-accent"
           style={{ top: indicator.top - 1 }}
         >
-          <div className="absolute -left-1 -top-[3px] size-2 rounded-full bg-primary/70" />
+          <div className="absolute -left-1 -top-[3px] size-2 rounded-full bg-craft-accent" />
         </div>
       )}
     </>

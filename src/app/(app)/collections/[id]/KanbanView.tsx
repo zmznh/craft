@@ -104,8 +104,8 @@ export function KanbanView({ collection }: KanbanViewProps) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center">
-          <p className="mb-2 text-lg font-medium">看板视图需要单选属性</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="mb-2 text-body font-medium">看板视图需要单选属性</p>
+          <p className="text-ui text-foreground/40">
             请添加一个「单选」类型的属性来启用看板视图
           </p>
         </div>
@@ -132,7 +132,7 @@ export function KanbanView({ collection }: KanbanViewProps) {
 
       {ungroupedItems.length > 0 && (
         <KanbanColumn
-          option={{ id: '__ungrouped__', label: '未分组', color: '#6b7280' }}
+          option={{ id: '__ungrouped__', label: '未分组', color: '#8b9095' }}
           items={ungroupedItems}
           onAddItem={() => handleAddItem()}
           onDeleteItem={handleDeleteItem}
@@ -157,14 +157,14 @@ function KanbanColumn({ option, items, onAddItem, onDeleteItem, onMoveItem, opti
   const [movingItemId, setMovingItemId] = useState<string | null>(null);
 
   return (
-    <div className="flex w-72 shrink-0 flex-col rounded-lg bg-muted/30">
-      <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+    <div className="flex w-72 shrink-0 flex-col rounded-lg bg-muted/40">
+      <div className="flex items-center gap-2 px-3 py-2">
         <span
           className="size-2.5 rounded-full"
           style={{ backgroundColor: option.color }}
         />
-        <span className="flex-1 text-sm font-medium">{option.label}</span>
-        <span className="text-xs text-muted-foreground">{items.length}</span>
+        <span className="flex-1 text-ui font-medium">{option.label}</span>
+        <span className="text-meta text-foreground/40">{items.length}</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2">
@@ -182,8 +182,8 @@ function KanbanColumn({ option, items, onAddItem, onDeleteItem, onMoveItem, opti
         ))}
       </div>
 
-      <div className="border-t border-border p-2">
-        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={onAddItem}>
+      <div className="p-2">
+        <Button variant="ghost" size="sm" className="w-full justify-start text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground" onClick={onAddItem}>
           <Plus className="mr-2 size-4" />
           新建
         </Button>
@@ -205,13 +205,13 @@ interface KanbanCardProps {
 function KanbanCard({ item, onDelete, onMove, options, isMoving, onStartMove, onCancelMove }: KanbanCardProps) {
   if (isMoving) {
     return (
-      <div className="rounded-md border border-border bg-background p-3">
-        <p className="mb-2 text-xs text-muted-foreground">移动到：</p>
+      <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
+        <p className="mb-2 text-meta text-foreground/40">移动到：</p>
         <div className="flex flex-wrap gap-1">
           {options.map(opt => (
             <button
               key={opt.id}
-              className="rounded-full px-2 py-0.5 text-xs hover:bg-muted"
+              className="h-7 rounded-md px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
               style={{ backgroundColor: opt.color + '20', color: opt.color }}
               onClick={() => onMove(opt.id)}
             >
@@ -219,7 +219,7 @@ function KanbanCard({ item, onDelete, onMove, options, isMoving, onStartMove, on
             </button>
           ))}
           <button
-            className="rounded-full px-2 py-0.5 text-xs text-muted-foreground hover:bg-muted"
+            className="h-7 rounded-md px-2 text-ui text-foreground/40 transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
             onClick={() => onMove(null)}
           >
             未分组
@@ -228,7 +228,7 @@ function KanbanCard({ item, onDelete, onMove, options, isMoving, onStartMove, on
         <Button
           variant="ghost"
           size="sm"
-          className="mt-2 w-full"
+          className="mt-2 w-full text-ui hover:bg-foreground/4"
           onClick={onCancelMove}
         >
           取消
@@ -238,25 +238,25 @@ function KanbanCard({ item, onDelete, onMove, options, isMoving, onStartMove, on
   }
 
   return (
-    <div className="group relative rounded-md border border-border bg-background p-3 shadow-sm transition-shadow hover:shadow-md">
+    <div className="group relative rounded-lg bg-card p-3 shadow-sm transition-shadow duration-150 hover:shadow-md">
       <div className="mb-1 flex items-start justify-between gap-2">
-        <p className="flex-1 text-sm font-medium">
+        <p className="flex-1 text-ui font-medium">
           {item.id.slice(0, 8)}
         </p>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100">
+        <div className="flex gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
           <button
-            className="rounded p-1 hover:bg-muted"
+            className="rounded-md p-1 transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
             onClick={onStartMove}
             title="移动"
           >
-            <GripVertical className="size-3 text-muted-foreground" />
+            <GripVertical className="size-3 text-foreground/40" />
           </button>
           <button
-            className="rounded p-1 hover:bg-destructive/10"
+            className="rounded-md p-1 transition-colors duration-150 hover:bg-destructive/10 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
             onClick={onDelete}
             title="删除"
           >
-            <Trash2 className="size-3 text-muted-foreground" />
+            <Trash2 className="size-3 text-foreground/40" />
           </button>
         </div>
       </div>

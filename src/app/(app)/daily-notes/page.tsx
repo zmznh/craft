@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { ViewTransition } from 'react';
 import { auth } from '@/lib/auth/auth';
 import { getDailyNotes } from '@/actions/daily-notes/daily-notes';
 import type { DailyNoteItem } from '@/actions/daily-notes/daily-notes';
@@ -38,16 +39,17 @@ export default async function DailyNotesPage() {
   }
 
   return (
+    <ViewTransition>
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl px-8 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">日记</h1>
+      <div className="px-4 pt-4 pb-8">
+        <div className="mb-5 flex items-center justify-between">
+          <h1 className="text-title font-semibold">日记</h1>
           <TodayNoteButton />
         </div>
 
         {notes.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center">
-            <p className="text-sm text-muted-foreground">
+          <div className="flex min-h-[180px] items-center justify-center rounded-[15px] bg-foreground/[0.03] px-6 text-center">
+            <p className="text-ui font-medium text-foreground/40">
               还没有日记，点击右上角按钮开始今天的第一篇
             </p>
           </div>
@@ -56,6 +58,7 @@ export default async function DailyNotesPage() {
         )}
       </div>
     </div>
+    </ViewTransition>
   );
 }
 

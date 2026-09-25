@@ -5,10 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Craft 主断点 748px（原版 (max-width:747px) 抽屉化） */
+  --breakpoint-md: 47.75rem;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
   --font-heading: var(--font-sans);
   --font-serif: Georgia, 'Times New Roman', 'Noto Serif SC', 'Songti SC', serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -19,6 +21,17 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  /* Craft sidebar 扩展（修复：未映射导致 hover/active 类失效） */
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-active: var(--sidebar-active);
+  /* Craft 品牌强调色 #2E6DE9（原蓝紫 hue296 已按实测替换） */
+  --color-craft-accent: var(--craft-accent);
+  --color-craft-accent-hover: var(--craft-accent-hover);
+  /* Craft 编辑器扩展 */
+  --color-editor-bg: var(--editor-bg);
+  --color-editor-border: var(--editor-border);
+  --color-editor-muted: var(--editor-muted);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -40,6 +53,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* Craft 圆角阶梯：基准 10px（sm6 / md8 / lg10 / xl14 / 2xl18） */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -47,81 +61,109 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* Craft 语义字号阶梯（design-spec §2，替代 71 处 text-[10~13px]） */
+  --text-title: 1.375rem; /* 22px 页面 H1 */
+  --text-title--line-height: 1.65rem; /* 26.4 */
+  --text-doctitle: 1.4375rem; /* 23px 文档标题 */
+  --text-doctitle--line-height: 1.75rem; /* 28 */
+  --text-h2: 1.25rem; /* 20px */
+  --text-h2--line-height: 1.5rem;
+  --text-h3: 1.125rem; /* 18px */
+  --text-h3--line-height: 1.375rem;
+  --text-body: 0.9375rem; /* 15px 正文 */
+  --text-body--line-height: 1.4375rem; /* 23 */
+  --text-card-title: 0.9375rem; /* 15px 卡片标题 */
+  --text-card-title--line-height: 1.125rem;
+  --text-sec: 0.875rem; /* 14px 面包屑 */
+  --text-sec--line-height: 1rem;
+  --text-ui: 0.8125rem; /* 13px UI 主规格 */
+  --text-ui--line-height: 1rem;
+  --text-meta: 0.75rem; /* 12px meta */
+  --text-meta--line-height: 0.9375rem;
+  --text-caption: 0.625rem; /* 10px 极小 */
+  --text-caption--line-height: 0.75rem;
+  /* Craft 控件高度 */
+  --control-height: 2rem; /* 32px */
+  --control-height-sm: 1.75rem; /* 28px */
+  /* Craft 过渡曲线（原版统一 cubic-bezier(.4,0,.2,1)） */
+  --ease-craft: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════
    Craft Design System — Light Theme
    ═══════════════════════════════════════════ */
 :root {
-  /* Base — Craft warm paper white / warm ink */
-  --background: oklch(0.982 0.005 85);
-  --foreground: oklch(0.16 0.008 85);
+  /* Base — Craft 产品实测冷白 rgb(252,253,254) / shell 墨色 rgb(26,28,30) */
+  --background: oklch(0.995 0.002 230); /* #FCFDFE */
+  --foreground: oklch(0.216 0.005 240); /* #1A1C1E */
 
-  /* Card / Popover */
+  /* Card / Popover — 纯白 */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.008 85);
+  --card-foreground: oklch(0.228 0.005 240); /* 文档文本 #1F2225 */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.008 85);
+  --popover-foreground: oklch(0.216 0.005 240);
 
-  /* Primary — Craft near-black warm ink */
-  --primary: oklch(0.18 0.008 85);
-  --primary-foreground: oklch(0.985 0.005 85);
+  /* Primary — Craft 近黑墨色（区别于 Accent 蓝） */
+  --primary: oklch(0.216 0.005 240);
+  --primary-foreground: oklch(0.995 0.002 230);
 
   /* Secondary */
-  --secondary: oklch(0.968 0.004 85);
-  --secondary-foreground: oklch(0.18 0.008 85);
+  --secondary: oklch(0.978 0.002 240);
+  --secondary-foreground: oklch(0.216 0.005 240);
 
   /* Muted */
-  --muted: oklch(0.968 0.004 85);
-  --muted-foreground: oklch(0.556 0.006 85);
+  --muted: oklch(0.978 0.002 240);
+  --muted-foreground: oklch(0.55 0.006 250); /* rgba(26,28,30,.55) 近似 */
 
-  /* Accent — Craft blue-violet */
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Accent — Craft 主强调蓝 #2E6DE9（实测 rgb(46,109,233)） */
+  --accent: oklch(0.965 0.012 250);
+  --accent-foreground: oklch(0.216 0.005 240);
 
-  /* Destructive */
-  --destructive: oklch(0.577 0.245 27.325);
+  /* Destructive — Craft #FF383C */
+  --destructive: oklch(0.63 0.21 25);
 
-  /* Border / Input / Ring */
-  --border: oklch(0.92 0.004 85);
-  --input: oklch(0.92 0.004 85);
-  --ring: oklch(0.708 0 0);
+  /* Border / Input / Ring — rgba(26,28,30,.08) 近似 */
+  --border: oklch(0.925 0.003 240);
+  --input: oklch(0.925 0.003 240);
+  --ring: oklch(0.574 0.172 262); /* #2E6DE9 */
 
-  /* Charts */
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Charts — Craft 强调色系（原零饱和灰阶已替换） */
+  --chart-1: #2e6de9;
+  --chart-2: #00c2a6;
+  --chart-3: #e4c011;
+  --chart-4: #d6179b;
+  --chart-5: #525c66;
 
-  /* Radius — Craft cards are generously rounded (16px) */
-  --radius: 0.75rem;
+  /* Radius — Craft 卡片/按钮基准 10px */
+  --radius: 0.625rem;
 
-  /* Sidebar — warm gray, matching Craft's paper sidebar */
-  --sidebar: oklch(0.962 0.004 85);
-  --sidebar-foreground: oklch(0.16 0.008 85);
-  --sidebar-primary: oklch(0.18 0.008 85);
-  --sidebar-primary-foreground: oklch(0.985 0.005 85);
-  --sidebar-accent: oklch(0.94 0.004 85);
-  --sidebar-accent-foreground: oklch(0.18 0.008 85);
-  --sidebar-border: oklch(0.92 0.004 85);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Sidebar — 与页面同族的极浅冷灰 */
+  --sidebar: oklch(0.975 0.002 240);
+  --sidebar-foreground: oklch(0.216 0.005 240);
+  --sidebar-primary: oklch(0.216 0.005 240);
+  --sidebar-primary-foreground: oklch(0.995 0.002 230);
+  --sidebar-accent: oklch(0.958 0.003 240);
+  --sidebar-accent-foreground: oklch(0.216 0.005 240);
+  --sidebar-border: oklch(0.925 0.003 240);
+  --sidebar-ring: oklch(0.574 0.172 262);
 
   /* ── Craft-specific tokens ── */
 
-  /* Sidebar */
-  --sidebar-bg: oklch(0.962 0.004 85);
-  --sidebar-hover: oklch(0.94 0.004 85);
-  --sidebar-active: oklch(0.91 0.005 85);
+  /* Sidebar — 选中底 rgba(26,28,30,.06)，hover .04 */
+  --sidebar-bg: oklch(0.975 0.002 240);
+  --sidebar-hover: rgb(26 28 30 / 0.04);
+  --sidebar-active: rgb(26 28 30 / 0.06);
 
   /* Editor */
   --editor-bg: oklch(1 0 0);
-  --editor-border: oklch(0.92 0.004 85);
-  --editor-muted: oklch(0.556 0.006 85);
+  --editor-border: oklch(0.925 0.003 240);
+  --editor-muted: oklch(0.55 0.006 250);
+  --code-bg: oklch(0.2 0.003 240);
+  --code-fg: oklch(0.92 0 0);
 
-  /* Craft accent blue-violet */
-  --craft-accent: oklch(0.55 0.238 296);
-  --craft-accent-hover: oklch(0.48 0.238 296);
+  /* Craft accent — 实测 #2E6DE9 / hover #2B61CB */
+  --craft-accent: #2e6de9;
+  --craft-accent-hover: #2b61cb;
 
   /* Callout colors */
   --callout-info-bg: oklch(0.96 0.02 250);
@@ -153,76 +195,93 @@
   --focus-purple: oklch(0.55 0.24 295);
   --focus-pink: oklch(0.6 0.22 350);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.07), 0 2px 4px -2px oklch(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.08), 0 4px 6px -4px oklch(0 0 0 / 0.04);
+  /* Shadows — 原版实测：菜单多层浅影 / 卡片描边+软影 */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-md:
+    0 1px 1px rgb(0 0 0 / 0.04), 0 3px 3px rgb(0 0 0 / 0.04),
+    0 6px 4px rgb(0 0 0 / 0.02);
+  --shadow-lg:
+    0 0 0 1px rgb(26 28 30 / 0.08), 0 2px 4px rgb(0 0 0 / 0.07),
+    0 8px 16px rgb(0 0 0 / 0.06);
 
-  /* Transitions */
-  --transition-fast: 100ms ease;
-  --transition-base: 150ms ease;
-  --transition-slow: 250ms ease;
+  /* Transitions — 原版统一 .15s cubic-bezier(.4,0,.2,1) */
+  --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 透明度棋盘格（封面选择器） */
+  --checker-a: #e5e5e5;
+  --checker-b: #ffffff;
 }
 
 /* ═══════════════════════════════════════════
    Craft Design System — Dark Theme
    ═══════════════════════════════════════════ */
 .dark {
-  --background: oklch(0.17 0.005 260);
-  --foreground: oklch(0.93 0 0);
+  /* Craft 暗色实测：底 rgb(18,19,20)、文本 rgb(249,249,249)、卡 rgb(34,34,34) */
+  --background: oklch(0.161 0.003 240);
+  --foreground: oklch(0.977 0 0);
 
-  --card: oklch(0.22 0.005 260);
-  --card-foreground: oklch(0.93 0 0);
-  --popover: oklch(0.22 0.005 260);
-  --popover-foreground: oklch(0.93 0 0);
+  --card: oklch(0.238 0 0);
+  --card-foreground: oklch(0.977 0 0);
+  --popover: oklch(0.238 0 0);
+  --popover-foreground: oklch(0.977 0 0);
 
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.977 0 0);
+  --primary-foreground: oklch(0.187 0 0);
 
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.29 0 0);
   --secondary-foreground: oklch(0.985 0 0);
 
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted: oklch(0.29 0 0);
+  --muted-foreground: oklch(0.72 0 0);
 
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* 暗色 Accent — 提亮蓝 rgb(113,178,255) */
+  --accent: oklch(0.29 0 0);
+  --accent-foreground: oklch(0.977 0 0);
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: oklch(0.28 0.005 260);
-  --input: oklch(0.28 0.005 260);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.3 0.003 240);
+  --input: oklch(0.3 0.003 240);
+  --ring: oklch(0.72 0.14 262);
 
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Charts — 暗色强调色 */
+  --chart-1: #71b2ff;
+  --chart-2: #4dffdd;
+  --chart-3: #ffe97b;
+  --chart-4: #ff6ad1;
+  --chart-5: #bcc2c9;
 
-  /* Sidebar */
-  --sidebar: oklch(0.14 0.005 260);
-  --sidebar-foreground: oklch(0.9 0 0);
-  --sidebar-primary: oklch(0.922 0 0);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.2 0.005 260);
-  --sidebar-accent-foreground: oklch(0.93 0 0);
-  --sidebar-border: oklch(0.28 0.005 260);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Sidebar — 比背景更深一档 */
+  --sidebar: oklch(0.139 0.003 240);
+  --sidebar-foreground: oklch(0.94 0 0);
+  --sidebar-primary: oklch(0.977 0 0);
+  --sidebar-primary-foreground: oklch(0.187 0 0);
+  --sidebar-accent: oklch(0.216 0.003 240);
+  --sidebar-accent-foreground: oklch(0.977 0 0);
+  --sidebar-border: oklch(0.3 0.003 240);
+  --sidebar-ring: oklch(0.72 0.14 262);
 
-  /* Sidebar tokens */
-  --sidebar-bg: oklch(0.14 0.005 260);
-  --sidebar-hover: oklch(0.2 0.005 260);
-  --sidebar-active: oklch(0.24 0.005 260);
+  /* Sidebar tokens — 选中底 rgba(249,249,249,.06) */
+  --sidebar-bg: oklch(0.139 0.003 240);
+  --sidebar-hover: rgb(249 249 249 / 0.04);
+  --sidebar-active: rgb(249 249 249 / 0.06);
 
   /* Editor */
-  --editor-bg: oklch(0.19 0.005 260);
-  --editor-border: oklch(0.28 0.005 260);
-  --editor-muted: oklch(0.55 0 0);
+  --editor-bg: oklch(0.204 0.003 240);
+  --editor-border: oklch(0.3 0.003 240);
+  --editor-muted: oklch(0.7 0 0);
+  --code-bg: oklch(0.26 0.003 240);
+  --code-fg: oklch(0.9 0 0);
 
-  /* Craft accent */
-  --craft-accent: oklch(0.65 0.22 296);
-  --craft-accent-hover: oklch(0.72 0.22 296);
+  /* Craft accent — 暗色提亮 #71B2FF */
+  --craft-accent: #71b2ff;
+  --craft-accent-hover: #8fc0ff;
+
+  /* 透明度棋盘格（暗色） */
+  --checker-a: #3a3a3a;
+  --checker-b: #2a2a2a;
 
   /* Callout colors (dark) */
   --callout-info-bg: oklch(0.25 0.03 250);
@@ -254,10 +313,14 @@
   --focus-purple: oklch(0.5 0.22 295);
   --focus-pink: oklch(0.55 0.2 350);
 
-  /* Shadows (dark) */
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
-  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.25), 0 2px 4px -2px oklch(0 0 0 / 0.2);
-  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.3), 0 4px 6px -4px oklch(0 0 0 / 0.2);
+  /* Shadows (dark) — 与亮色同构，提暗；描边环改亮色 */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md:
+    0 1px 1px rgb(0 0 0 / 0.3), 0 3px 3px rgb(0 0 0 / 0.3),
+    0 6px 4px rgb(0 0 0 / 0.2);
+  --shadow-lg:
+    0 0 0 1px rgb(249 249 249 / 0.08), 0 2px 4px rgb(0 0 0 / 0.4),
+    0 8px 16px rgb(0 0 0 / 0.3);
 }
 
 @layer base {
@@ -341,8 +404,8 @@
   }
 
   pre {
-    background: oklch(0.2 0.005 260);
-    color: oklch(0.92 0 0);
+    background: var(--code-bg);
+    color: var(--code-fg);
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin: 0.75rem 0;
@@ -783,4 +846,31 @@
   height: 4px;
   border-radius: 9999px;
   background: var(--color-chart-2, #f97316);
+}
+
+/* ═══════════════════════════════════════════
+   View Transitions — 路由转场（对齐原版 ~200ms）
+   ═══════════════════════════════════════════ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+
+/* ═══════════════════════════════════════════
+   Reduced motion — 可访问性降级
+   ═══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

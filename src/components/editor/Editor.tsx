@@ -127,9 +127,8 @@ export function Editor({
   onSaveStateChange,
   onSaveNowReady,
 }: EditorProps) {
-  const ydocRef = useRef<Y.Doc | null>(null);
-  if (collaborative && !ydocRef.current) ydocRef.current = new Y.Doc();
-  const { ydoc: collabDoc, state: collabState } = useCollabSession(documentId, ydocRef.current, collaborative);
+  const [initialYdoc] = useState<Y.Doc | null>(() => (collaborative ? new Y.Doc() : null));
+  const { ydoc: collabDoc, state: collabState } = useCollabSession(documentId, initialYdoc, collaborative);
 
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingRef = useRef<{
@@ -219,7 +218,7 @@ export function Editor({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-primary underline-offset-4 hover:underline',
+          class: 'text-craft-accent underline-offset-4 hover:underline',
         },
       }),
       TaskList.configure({

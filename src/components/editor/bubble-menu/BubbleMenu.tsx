@@ -32,7 +32,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         from !== to && !editor.isActive('table') && !useAiBubbleStore.getState().isOpen
       }
     >
-      <div className="flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-md">
+      <div className="flex min-h-9 items-center gap-0.5 rounded-md bg-[rgb(250,250,250)] p-1 shadow-md transition-colors duration-150 ease-craft dark:bg-[#242424]">
         <BubbleMenuButton
           label="加粗"
           active={editor.isActive('bold')}
@@ -61,7 +61,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         >
           <Strikethrough className="size-4" />
         </BubbleMenuButton>
-        <div className="mx-0.5 h-5 w-px bg-border" />
+        <div className="mx-0.5 h-5 w-px bg-foreground/8" />
         <BubbleMenuButton
           label="行内代码"
           active={editor.isActive('code')}
@@ -92,7 +92,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         >
           <Highlighter className="size-4" />
         </BubbleMenuButton>
-        <div className="mx-0.5 h-5 w-px bg-border" />
+        <div className="mx-0.5 h-5 w-px bg-foreground/8" />
         <AiToolbar editor={editor} />
       </div>
     </TiptapBubbleMenu>
@@ -115,10 +115,10 @@ function BubbleMenuButton({ active, onClick, label, children }: BubbleMenuButton
       title={label}
       onClick={onClick}
       className={cn(
-        'flex size-7 items-center justify-center rounded-md transition-colors',
+        'flex size-7 items-center justify-center rounded-md transition-colors duration-150 ease-craft',
         active
-          ? 'bg-accent text-accent-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          ? 'bg-foreground/8 text-foreground'
+          : 'text-foreground/55 hover:bg-foreground/4 hover:text-foreground/85'
       )}
     >
       {children}

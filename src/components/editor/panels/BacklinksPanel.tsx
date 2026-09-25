@@ -34,13 +34,13 @@ export function BacklinksPanel({ documentId, onClose }: BacklinksPanelProps) {
   return (
     <aside className="flex w-64 shrink-0 flex-col border-l border-border bg-sidebar">
       <div className="flex h-12 shrink-0 items-center justify-between px-3">
-        <span className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
-          <Link2 className="size-4" />
+        <span className="flex items-center gap-1.5 text-ui font-medium text-foreground/85">
+          <Link2 className="size-4 text-foreground/55" />
           反向链接
         </span>
         <button
           onClick={onClose}
-          className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="rounded-md p-1 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
           aria-label="关闭反向链接"
         >
           <X className="size-4" />
@@ -48,9 +48,9 @@ export function BacklinksPanel({ documentId, onClose }: BacklinksPanelProps) {
       </div>
       <div className="flex-1 overflow-y-auto px-2 pb-3">
         {loading ? (
-          <p className="px-2 py-2 text-sm text-muted-foreground">加载中…</p>
+          <p className="px-2 py-2 text-ui text-foreground/40">加载中…</p>
         ) : items.length === 0 ? (
-          <p className="px-2 py-2 text-sm text-muted-foreground">
+          <p className="px-2 py-2 text-ui text-foreground/40">
             还没有文档链接到此页
           </p>
         ) : (
@@ -59,7 +59,7 @@ export function BacklinksPanel({ documentId, onClose }: BacklinksPanelProps) {
               <Link
                 key={item.sourceDocumentId}
                 href={`/documents/${item.sourceDocumentId}`}
-                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-hover"
+                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-ui text-foreground/85 transition-colors duration-150 ease-craft hover:bg-foreground/4"
               >
                 {item.sourceIcon ? (
                   <span className="text-base leading-none">{item.sourceIcon}</span>

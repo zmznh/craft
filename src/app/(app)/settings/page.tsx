@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ViewTransition } from 'react';
 import { getPreferences, updatePreferences } from '@/actions/user/preferences';
 
 const themeOptions = [
@@ -45,43 +45,101 @@ export default function SettingsPage() {
   };
 
   if (error) {
-    return <div className="flex flex-1 items-center justify-center text-sm text-destructive">{error}</div>;
+    return (
+      <ViewTransition>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="min-h-[560px] w-full max-w-[960px] rounded-2xl border border-border bg-card p-8 shadow-lg">
+          <p className="text-ui text-destructive">{error}</p>
+        </div>
+      </div>
+      </ViewTransition>
+    );
   }
 
   if (!prefs) {
-    return <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">加载中...</div>;
+    return (
+      <ViewTransition>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="min-h-[560px] w-full max-w-[960px] rounded-2xl border border-border bg-card p-8 shadow-lg">
+          <p className="text-ui text-foreground/40">加载中...</p>
+        </div>
+      </div>
+      </ViewTransition>
+    );
   }
 
-  const groups = [
+  const sections = [
     { key: 'theme' as const, title: '主题', options: themeOptions, value: prefs.theme },
     { key: 'editorFont' as const, title: '编辑器字体', options: fontOptions, value: prefs.editorFont },
     { key: 'editorWidth' as const, title: '编辑器宽度', options: widthOptions, value: prefs.editorWidth },
   ];
 
+  const navGroups: { label: string; items: typeof sections }[] = [
+    { label: '通用', items: sections.filter(s => s.key === 'theme') },
+    { label: '编辑器', items: sections.filter(s => s.key !== 'theme') },
+  ];
+
   return (
-    <div className="mx-auto max-w-2xl flex-1 space-y-8 py-8">
-      <h1 className="text-2xl font-serif">设置</h1>
-      {saved && <p className="text-xs text-muted-foreground">已保存</p>}
-      {groups.map(({ key, title, options, value }) => (
-        <section key={key}>
-          <h2 className="mb-2 text-sm font-medium">{title}</h2>
-          <div className="flex flex-wrap gap-2">
-            {options.map(({ value: optionValue, label }) => (
-              <button
-                key={optionValue}
-                type="button"
-                onClick={() => handleUpdate({ [key]: optionValue })}
-                aria-pressed={value === optionValue}
-                className={`rounded-lg border border-border px-3 py-1.5 text-sm transition-colors hover:bg-muted ${
-                  value === optionValue ? 'bg-muted font-medium' : ''
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+    <ViewTransition>
+    <div className="flex flex-1 items-start justify-center p-6">
+      <div className="flex min-h-[560px] w-full max-w-[960px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+        {/* 左栏导航 */}
+        <aside className="hidden w-[232px] shrink-0 border-r border-border p-6 sm:block">
+          <h1 className="mb-4 px-2 text-title font-semibold">设置</h1>
+          {navGroups.map(({ label, items }) => (
+            <div key={label} className="mb-5">
+              <p className="mb-1.5 px-2 text-meta font-semibold text-foreground/40">{label}</p>
+              <nav className="flex flex-col gap-0.5">
+                {items.map(({ key, title }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    data-active={key === 'theme' ? 'true' : undefined}
+                    aria-current={key === 'theme' ? 'page' : undefined}
+                    className="h-8 rounded-lg px-2 py-1.5 text-left text-ui font-medium text-foreground/85 transition-colors duration-150 hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none data-[active=true]:bg-foreground/4"
+                  >
+                    {title}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          ))}
+        </aside>
+
+        {/* 右栏内容 */}
+        <div className="flex-1 overflow-y-auto p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <h1 className="text-title font-semibold sm:hidden">设置</h1>
+            <p className="ml-auto text-meta text-foreground/40 transition-opacity duration-150" style={{ opacity: saved ? 1 : 0 }}>
+              已保存
+            </p>
           </div>
-        </section>
-      ))}
+
+          {sections.map(({ key, title, options, value }) => (
+            <section key={key} className="mb-8">
+              <h2 className="mb-2 text-ui font-medium">{title}</h2>
+              <div className="flex flex-wrap gap-2">
+                {options.map(({ value: optionValue, label }) => (
+                  <button
+                    key={optionValue}
+                    type="button"
+                    onClick={() => handleUpdate({ [key]: optionValue })}
+                    aria-pressed={value === optionValue}
+                    className={`h-8 rounded-lg px-3 text-ui transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none ${
+                      value === optionValue
+                        ? 'bg-foreground/4 font-medium text-foreground'
+                        : 'text-foreground/55 hover:bg-foreground/4 hover:text-foreground'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
+    </ViewTransition>
   );
 }

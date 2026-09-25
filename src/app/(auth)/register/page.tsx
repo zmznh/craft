@@ -75,20 +75,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm rounded-2xl border border-border bg-card py-6 shadow-lg ring-0">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-semibold tracking-tight">创建账号</CardTitle>
-        <CardDescription>注册以开始使用 Crafty</CardDescription>
+        <CardTitle className="text-title font-semibold">创建账号</CardTitle>
+        <CardDescription className="text-ui text-foreground/40">注册以开始使用 Crafty</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-ui text-destructive">
               {error}
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="name">名称</Label>
+            <Label htmlFor="name" className="text-ui font-medium">名称</Label>
             <Input
               id="name"
               type="text"
@@ -96,10 +96,11 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">邮箱</Label>
+            <Label htmlFor="email" className="text-ui font-medium">邮箱</Label>
             <Input
               id="email"
               type="email"
@@ -107,10 +108,11 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">密码</Label>
+            <Label htmlFor="password" className="text-ui font-medium">密码</Label>
             <Input
               id="password"
               type="password"
@@ -118,10 +120,11 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">确认密码</Label>
+            <Label htmlFor="confirmPassword" className="text-ui font-medium">确认密码</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -129,16 +132,21 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="h-8 rounded-md border-border text-ui focus-visible:ring-2 focus-visible:ring-ring/50"
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
+        <CardFooter className="flex flex-col gap-4 rounded-b-2xl border-0 bg-transparent pb-2">
+          <Button
+            type="submit"
+            className="h-8 w-full rounded-lg bg-craft-accent text-ui font-medium text-white transition-colors duration-150 hover:bg-craft-accent-hover"
+            disabled={loading}
+          >
             {loading ? '注册中...' : '注册'}
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-ui text-foreground/40">
             已有账号？{' '}
-            <Link href="/login" className="font-medium text-primary hover:underline">
+            <Link href="/login" className="text-ui text-foreground/40 transition-colors duration-150 hover:text-foreground hover:underline">
               登录
             </Link>
           </p>

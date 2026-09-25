@@ -57,7 +57,10 @@ export function RightPanel({
   onUpdate,
 }: RightPanelProps) {
   return (
-    <aside className="flex h-full w-full shrink-0 flex-col border-l border-border bg-background sm:w-[300px]" aria-label="编辑器工具面板">
+    <aside
+      className="absolute inset-y-0 right-0 z-30 flex w-[300px] max-w-[85vw] flex-col border-l border-border bg-background shadow-lg md:static md:z-auto md:w-[300px] md:max-w-none md:shadow-none"
+      aria-label="编辑器工具面板"
+    >
       {/* Tab bar */}
       <div className="flex items-center border-b border-border" role="tablist" aria-label="编辑器工具">
         {tabs.map((tab) => (
@@ -70,9 +73,9 @@ export function RightPanel({
             id={`editor-tab-${tab.id}`}
             onClick={() => onTabChange(tab.id)}
             className={cn(
-              'flex-1 px-1 py-2.5 text-xs font-medium text-muted-foreground transition-colors',
-              'hover:text-foreground',
-              activeTab === tab.id && 'text-foreground'
+              'flex-1 px-1 py-2.5 text-ui font-medium text-foreground/40 transition-colors duration-150 ease-craft',
+              'hover:bg-foreground/4 hover:text-foreground/85',
+              activeTab === tab.id && 'text-foreground/85'
             )}
           >
             {tab.label}
@@ -82,7 +85,7 @@ export function RightPanel({
           type="button"
           onClick={onClose}
           aria-label="关闭编辑器工具面板"
-          className="px-2 py-2.5 text-muted-foreground hover:text-foreground"
+          className="rounded-md px-2 py-2.5 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
         >
           <X className="size-3.5" />
         </button>
@@ -96,7 +99,7 @@ export function RightPanel({
         aria-labelledby={`editor-tab-${activeTab}`}
       >
         {!editor ? (
-          <div className="p-4 text-xs text-muted-foreground">加载中...</div>
+          <div className="p-4 text-ui text-foreground/40">加载中...</div>
         ) : (
           <>
             {activeTab === 'insert' && <InsertTab editor={editor} />}

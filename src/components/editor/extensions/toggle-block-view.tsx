@@ -18,11 +18,11 @@ export function ToggleBlockView({ node, updateAttributes }: NodeViewProps) {
         <button
           type="button"
           onClick={toggle}
-          className="flex w-full items-center gap-1 rounded-md px-1 py-1 text-left hover:bg-muted/50"
+          className="flex w-full items-center gap-1 rounded-md px-1 py-1 text-left transition-colors duration-150 ease-craft hover:bg-foreground/4"
         >
           <ChevronRight
             className={cn(
-              'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
+              'size-4 shrink-0 text-foreground/40 transition-transform duration-150 ease-craft',
               isOpen && 'rotate-90'
             )}
           />
@@ -31,7 +31,7 @@ export function ToggleBlockView({ node, updateAttributes }: NodeViewProps) {
           </div>
         </button>
         {isOpen && (
-          <div className="ml-5 border-l-2 border-border pl-3">
+          <div className="ml-5 border-l-2 border-foreground/10 pl-3">
             <NodeViewContent as="div" />
           </div>
         )}

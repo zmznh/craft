@@ -109,14 +109,14 @@ export function CalendarView({ collection }: CalendarViewProps) {
       <div
         key={day}
         className={cn(
-          'min-h-[100px] border border-border p-2 transition-colors hover:bg-muted/20 cursor-pointer',
-          isToday(day) && 'bg-accent/10'
+          'min-h-[100px] border border-border p-2 transition-colors duration-150 hover:bg-foreground/[0.03] cursor-pointer',
+          isToday(day) && 'bg-craft-accent/10'
         )}
         onClick={() => handleDateClick(day)}
       >
         <div className={cn(
-          'mb-1 text-sm font-medium',
-          isToday(day) && 'text-accent'
+          'mb-1 inline-flex min-w-6 justify-center rounded-md px-1 text-meta font-medium',
+          isToday(day) && 'bg-craft-accent/10 text-craft-accent'
         )}>
           {day}
         </div>
@@ -124,13 +124,13 @@ export function CalendarView({ collection }: CalendarViewProps) {
           {dayItems.slice(0, 3).map((item: any) => (
             <div
               key={item.id}
-              className="truncate rounded bg-primary/10 px-1.5 py-0.5 text-xs text-primary"
+              className="truncate rounded-md bg-craft-accent/[0.12] px-1.5 py-0.5 text-meta text-craft-accent"
             >
               {item.id.slice(0, 8)}
             </div>
           ))}
           {dayItems.length > 3 && (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-meta text-foreground/40">
               +{dayItems.length - 3} 更多
             </div>
           )}
@@ -143,8 +143,8 @@ export function CalendarView({ collection }: CalendarViewProps) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center">
-          <p className="mb-2 text-lg font-medium">日历视图需要日期属性</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="mb-2 text-body font-medium">日历视图需要日期属性</p>
+          <p className="text-ui text-foreground/40">
             请添加一个「日期」类型的属性来启用日历视图
           </p>
         </div>
@@ -156,17 +156,32 @@ export function CalendarView({ collection }: CalendarViewProps) {
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={handlePrevMonth}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+            onClick={handlePrevMonth}
+          >
             <ChevronLeft className="size-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleNextMonth}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+            onClick={handleNextMonth}
+          >
             <ChevronRight className="size-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleToday}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 rounded-md border border-border px-2 text-ui font-medium text-foreground/55 hover:bg-foreground/4 hover:text-foreground"
+            onClick={handleToday}
+          >
             今天
           </Button>
         </div>
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-body font-semibold">
           {year}年 {monthNames[month]}
         </h2>
         <div className="w-[140px]" />
@@ -175,7 +190,7 @@ export function CalendarView({ collection }: CalendarViewProps) {
       <div className="flex-1 overflow-auto p-4">
         <div className="grid grid-cols-7 gap-px bg-border">
           {dayNames.map(day => (
-            <div key={day} className="bg-background px-2 py-2 text-center text-sm font-medium text-muted-foreground">
+            <div key={day} className="bg-background px-2 py-2 text-center text-meta font-medium text-foreground/40">
               {day}
             </div>
           ))}

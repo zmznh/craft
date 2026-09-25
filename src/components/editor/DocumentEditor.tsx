@@ -81,7 +81,7 @@ export function DocumentEditor({ document: doc }: DocumentEditorProps) {
   const isImageCover = coverType === 'image' && coverImage;
 
   return (
-    <div className="flex h-full flex-1 overflow-hidden">
+    <div className="relative flex h-full flex-1 overflow-hidden">
       <div className="flex min-w-0 flex-1 flex-col">
         {/* 顶栏：面包屑 + 右侧 tab 按钮 */}
         <div className="flex h-12 shrink-0 items-center justify-between px-4">
@@ -91,7 +91,7 @@ export function DocumentEditor({ document: doc }: DocumentEditorProps) {
               role="status"
               aria-live="polite"
               className={cn(
-                'shrink-0 text-[11px] transition-colors',
+                'shrink-0 text-meta transition-colors',
                 saveState === 'error' ? 'text-destructive' : 'text-muted-foreground/60'
               )}
             >
@@ -123,23 +123,24 @@ export function DocumentEditor({ document: doc }: DocumentEditorProps) {
                   aria-pressed={activeTab === tab}
                   title={labels[tab]}
                   className={cn(
-                    'rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                    activeTab === tab && 'bg-muted text-foreground'
+                    'flex size-8 items-center justify-center rounded-lg p-1 text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85',
+                    activeTab === tab && 'bg-foreground/4 text-foreground/85'
                   )}
                 >
                   <Icon className="size-4" />
                 </button>
               );
             })}
-            <div className="mx-0.5 h-4 w-px bg-border" />
+            <div className="mx-0.5 h-4 w-px bg-foreground/8" />
             <button
               onClick={() => setShareOpen(true)}
               type="button"
               aria-label="分享"
               title="分享"
-              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="flex h-8 items-center gap-1.5 rounded-lg px-[13px] text-ui font-medium text-foreground/85 shadow-[inset_0_0_0_1px_rgb(26_28_30_/_0.08)] transition-colors duration-150 ease-craft hover:bg-foreground/4 dark:shadow-[inset_0_0_0_1px_rgb(249_249_249_/_0.12)]"
             >
               <Share2 className="size-4" />
+              共享
             </button>
           </div>
         </div>
@@ -159,7 +160,7 @@ export function DocumentEditor({ document: doc }: DocumentEditorProps) {
                 style={{ background: washiGradient }}
               />
             )}
-            <div className={cn('mx-auto px-12 pb-32', maxWidth)}>
+            <div className={cn('mx-auto px-5 pb-32 md:px-12', maxWidth)}>
             {/* 封面 */}
             {isColorCover && (
               <div

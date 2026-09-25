@@ -23,9 +23,9 @@ export function MentionView({ node }: NodeViewProps) {
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-sm text-foreground transition-colors hover:bg-muted/80"
+        className="inline-flex items-center gap-1 rounded-md bg-foreground/4 px-1.5 py-0.5 text-ui text-foreground/85 transition-colors duration-150 ease-craft hover:bg-foreground/8"
       >
-        <FileText className="size-3.5 text-muted-foreground" />
+        <FileText className="size-3.5 text-foreground/40" />
         <span>{title || '未命名'}</span>
       </button>
     </NodeViewWrapper>

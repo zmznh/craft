@@ -87,12 +87,12 @@ export function PageStylePanel({
   };
 
   return (
-    <aside className="flex h-full w-72 shrink-0 flex-col border-l border-border bg-background">
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <span className="text-sm font-medium">页面样式</span>
+    <aside className="flex h-full w-72 shrink-0 flex-col border-l border-foreground/10 bg-background">
+      <div className="flex items-center justify-between border-b border-foreground/10 px-3 py-2">
+        <span className="text-ui font-medium">页面样式</span>
         <button
           onClick={onClose}
-          className="rounded p-1 text-muted-foreground hover:bg-muted"
+          className="rounded-md p-1 text-foreground/40 transition-colors duration-150 ease-craft hover:bg-foreground/4 hover:text-foreground/85"
         >
           <X className="size-4" />
         </button>
@@ -101,7 +101,7 @@ export function PageStylePanel({
       <div className="flex-1 space-y-6 overflow-y-auto p-3">
         {/* 标题 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">标题</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">标题</h3>
           <Input
             type="text"
             defaultValue={title}
@@ -114,9 +114,9 @@ export function PageStylePanel({
 
         {/* 图标 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">图标</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">图标</h3>
           <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-md border border-border text-2xl">
+            <div className="flex size-10 items-center justify-center rounded-md border border-foreground/10 text-2xl">
               {icon || '📄'}
             </div>
             <Button variant="outline" size="sm" onClick={setIcon}>
@@ -127,7 +127,7 @@ export function PageStylePanel({
 
         {/* 封面 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">封面</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">封面</h3>
           <div className="flex items-center gap-2">
             <Input
               type="text"
@@ -147,8 +147,8 @@ export function PageStylePanel({
               <button
                 key={color}
                 className={cn(
-                  'size-6 rounded border border-border transition-transform hover:scale-110',
-                  coverType === 'color' && coverImage === color && 'ring-2 ring-accent'
+                  'size-6 rounded-md border border-foreground/10 transition-transform hover:scale-110',
+                  coverType === 'color' && coverImage === color && 'ring-2 ring-craft-accent'
                 )}
                 style={{ backgroundColor: color }}
                 onClick={() => setCoverColor(color)}
@@ -170,14 +170,14 @@ export function PageStylePanel({
 
         {/* 页面宽度 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">页面宽度</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">页面宽度</h3>
           <div className="flex gap-1.5">
             {widthOptions.map((opt) => (
               <button
                 key={opt.value}
                 className={cn(
-                  'flex-1 rounded-md border border-border px-2 py-1.5 text-xs transition-colors hover:bg-muted',
-                  (width ?? 'default') === opt.value && 'border-accent bg-accent/10 text-accent'
+                  'flex-1 rounded-lg border border-foreground/10 px-2 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4',
+                  (width ?? 'default') === opt.value && 'border-craft-accent bg-craft-accent/12 text-craft-accent'
                 )}
                 onClick={() => setWidth(opt.value)}
               >
@@ -189,14 +189,14 @@ export function PageStylePanel({
 
         {/* 字体包 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">字体</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">字体</h3>
           <div className="grid grid-cols-2 gap-1.5">
             {fontPacks.map((font) => (
               <button
                 key={font.id}
                 className={cn(
-                  'rounded-md border border-border px-2 py-1.5 text-xs transition-colors hover:bg-muted',
-                  (pageStyle.fontPack ?? 'inter') === font.id && 'border-accent bg-accent/10 text-accent'
+                  'rounded-md border border-foreground/10 px-2 py-1.5 text-meta transition-colors duration-150 ease-craft hover:bg-foreground/4',
+                  (pageStyle.fontPack ?? 'inter') === font.id && 'border-craft-accent bg-craft-accent/12 text-craft-accent'
                 )}
                 style={{ fontFamily: font.stack }}
                 onClick={() => setPageStyle({ fontPack: font.id })}
@@ -209,21 +209,21 @@ export function PageStylePanel({
 
         {/* 页面主题 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">页面色调</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">页面色调</h3>
           <div className="grid grid-cols-6 gap-1.5">
             {pageThemes.map((theme) => (
               <button
                 key={theme.id}
                 title={theme.label}
                 className={cn(
-                  'flex size-8 items-center justify-center rounded-md border border-border transition-transform hover:scale-110',
-                  (pageStyle.theme ?? 'default') === theme.id && 'ring-2 ring-accent'
+                  'flex size-8 items-center justify-center rounded-md border border-foreground/10 transition-transform hover:scale-110',
+                  (pageStyle.theme ?? 'default') === theme.id && 'ring-2 ring-craft-accent'
                 )}
                 style={{
                   backgroundColor: theme.color === 'transparent' ? undefined : theme.color,
                   backgroundImage:
                     theme.color === 'transparent'
-                      ? 'repeating-conic-gradient(#e5e5e5 0% 25%, #fff 0% 50%)'
+                      ? 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)'
                       : undefined,
                   backgroundSize: theme.color === 'transparent' ? '8px 8px' : undefined,
                 }}
@@ -235,19 +235,19 @@ export function PageStylePanel({
 
         {/* Washi 胶带 */}
         <section className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">Washi 胶带</h3>
+          <h3 className="text-caption font-semibold uppercase tracking-wider text-foreground/40">Washi 胶带</h3>
           <div className="grid grid-cols-5 gap-1.5">
             {washiTapes.map((tape) => (
               <button
                 key={tape.id}
                 title={tape.label}
                 className={cn(
-                  'h-6 rounded-sm border border-border transition-transform hover:scale-110',
-                  (pageStyle.washi ?? 'none') === tape.id && 'ring-2 ring-accent'
+                  'h-6 rounded-sm border border-foreground/10 transition-transform hover:scale-110',
+                  (pageStyle.washi ?? 'none') === tape.id && 'ring-2 ring-craft-accent'
                 )}
                 style={{
                   background:
-                    tape.gradient || 'repeating-conic-gradient(#e5e5e5 0% 25%, #fff 0% 50%) 8px',
+                    tape.gradient || 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 8px',
                 }}
                 onClick={() => setPageStyle({ washi: tape.id })}
               />

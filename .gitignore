@@ -45,3 +45,8 @@ dist/
 
 # uploads (local file storage)
 /uploads
+
+# e2e artifacts
+/logs/
+/test-results/
+/playwright-report/

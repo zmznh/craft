@@ -82,7 +82,7 @@ export function CommandPalette() {
       onOpenChange={(v) => (v ? open() : close())}
       title="搜索"
       description="搜索文档与内容"
-      className="max-w-xl"
+      className="top-[56px] w-full max-w-[480px] translate-y-0 rounded-xl border border-border bg-popover shadow-lg"
     >
       <CommandInput value={query} onValueChange={setQuery} placeholder="搜索文档、内容…" />
 
@@ -92,8 +92,7 @@ export function CommandPalette() {
             <CommandItem onSelect={handleNewDocument}>
               <Plus className="size-4" />
               <span>新建文档</span>
-            </CommandItem>
-          </CommandGroup>
+            </CommandItem>          </CommandGroup>
         )}
 
         {hasQuery && searching && docs.length === 0 && blocks.length === 0 && (
@@ -129,9 +128,9 @@ export function CommandPalette() {
                   value={`block-${i}-${block.text}`}
                   onSelect={() => handleOpenDocument(block.documentId)}
                 >
-                  <Type className="size-4 shrink-0 text-muted-foreground" />
+                  <Type className="size-4 shrink-0 text-foreground/40" />
                   <div className="min-w-0 flex flex-col">
-                    <span className="truncate text-xs text-muted-foreground">{block.documentTitle}</span>
+                    <span className="truncate text-meta text-foreground/40">{block.documentTitle}</span>
                     <span className="truncate">{block.text}</span>
                   </div>
                 </CommandItem>
@@ -141,12 +140,12 @@ export function CommandPalette() {
         )}
       </CommandList>
 
-      <div className="flex items-center gap-3 border-t border-border px-3 py-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-3 border-t border-border px-3 py-2 text-caption text-foreground/40">
         <span className="inline-flex items-center gap-1">
           <Search className="size-3" /> 搜索文档与块
         </span>
         <span className="ml-auto inline-flex items-center gap-1">
-          <kbd className="rounded border border-border px-1">Esc</kbd> 关闭
+          <kbd className="rounded-md border border-border px-1 text-caption">Esc</kbd> 关闭
         </span>
       </div>
     </CommandDialog>

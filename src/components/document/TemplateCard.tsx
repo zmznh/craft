@@ -31,35 +31,37 @@ export function TemplateCard({ document: doc }: TemplateCardProps) {
   };
 
   return (
-    <div className="group flex flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted/50">
-      <Link href={`/documents/${doc.id}`} className="flex items-start gap-2">
-        {doc.icon ? (
-          <span className="text-2xl">{doc.icon}</span>
-        ) : (
-          <File className="size-5 shrink-0 text-muted-foreground" />
-        )}
-        <h3 className="flex-1 truncate font-medium">{doc.title}</h3>
-      </Link>
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {new Date(doc.updatedAt).toLocaleDateString('zh-CN', {
-            month: 'short',
-            day: 'numeric',
-          })}
-        </p>
-        <button
-          type="button"
-          onClick={handleUse}
-          disabled={creating}
-          className="flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors hover:bg-muted disabled:opacity-50"
-        >
-          {creating ? (
-            <Loader2 className="size-3 animate-spin" />
+    <div className="group flex flex-col rounded-lg px-1.5 pt-1.5 pb-2 transition-colors duration-300 hover:bg-foreground/[0.03]">
+      <div className="flex flex-1 flex-col rounded-lg bg-card px-2.5 pt-[7px] pb-2 shadow-sm">
+        <Link href={`/documents/${doc.id}`} className="flex items-start gap-2">
+          {doc.icon ? (
+            <span className="text-2xl leading-none">{doc.icon}</span>
           ) : (
-            <Play className="size-3" />
+            <File className="size-5 shrink-0 text-foreground/40" />
           )}
-          使用此模板
-        </button>
+          <h3 className="flex-1 truncate text-card-title font-semibold">{doc.title}</h3>
+        </Link>
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+          <p className="text-meta text-foreground/55">
+            {new Date(doc.updatedAt).toLocaleDateString('zh-CN', {
+              month: 'short',
+              day: 'numeric',
+            })}
+          </p>
+          <button
+            type="button"
+            onClick={handleUse}
+            disabled={creating}
+            className="flex h-7 shrink-0 items-center gap-1 rounded-md border border-border px-2 text-ui transition-colors duration-150 hover:bg-foreground/4 disabled:opacity-50"
+          >
+            {creating ? (
+              <Loader2 className="size-3 animate-spin" />
+            ) : (
+              <Play className="size-3" />
+            )}
+            使用此模板
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -24,11 +24,11 @@ export function WhiteboardLinkView({ node }: NodeViewProps) {
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/60 px-1.5 py-0.5 text-sm text-foreground transition-colors hover:bg-muted"
+        className="inline-flex items-center gap-1 rounded-md border border-foreground/8 bg-foreground/4 px-1.5 py-0.5 text-ui text-foreground/85 transition-colors duration-150 ease-craft hover:bg-foreground/8"
       >
         <span className="text-sm leading-none">{icon || '🎨'}</span>
         <span>{title || '未命名'}</span>
-        <Palette className="size-3.5 text-muted-foreground" />
+        <Palette className="size-3.5 text-foreground/40" />
       </button>
     </NodeViewWrapper>
   );

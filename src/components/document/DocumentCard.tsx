@@ -21,17 +21,19 @@ export function DocumentCard({ document: doc }: DocumentCardProps) {
   return (
     <Link
       href={`/documents/${doc.id}`}
-      className="group flex flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted/50"
+      className="group block rounded-lg px-1.5 pt-1.5 pb-0 transition-colors duration-300 hover:bg-foreground/[0.03]"
     >
-      <div className="flex items-start gap-2">
-        {doc.icon ? (
-          <span className="text-2xl">{doc.icon}</span>
-        ) : (
-          <File className="size-5 shrink-0 text-muted-foreground" />
-        )}
-        <h3 className="flex-1 truncate font-medium">{doc.title}</h3>
+      <div className="rounded-lg bg-card px-2.5 pt-[7px] pb-2 shadow-sm">
+        <div className="flex items-start gap-2">
+          {doc.icon ? (
+            <span className="text-2xl leading-none">{doc.icon}</span>
+          ) : (
+            <File className="size-5 shrink-0 text-foreground/40" />
+          )}
+          <h3 className="flex-1 truncate text-card-title font-semibold">{doc.title}</h3>
+        </div>
+        <p className="mt-1 text-meta text-foreground/55">{formattedDate}</p>
       </div>
-      <p className="text-xs text-muted-foreground">{formattedDate}</p>
     </Link>
   );
 }

@@ -28,11 +28,11 @@ export function CollectionTree() {
   }, [pathname]);
 
   if (loading) {
-    return <div className="px-3 py-2 text-sm text-muted-foreground">加载中...</div>;
+    return <div className="px-1.5 py-2 text-ui text-foreground/40">加载中...</div>;
   }
 
   if (collections.length === 0) {
-    return <div className="px-3 py-2 text-sm text-muted-foreground">暂无集合</div>;
+    return <div className="px-1.5 py-2 text-ui text-foreground/40">暂无集合</div>;
   }
 
   return (
@@ -44,8 +44,8 @@ export function CollectionTree() {
             key={collection.id}
             href={`/collections/${collection.id}`}
             className={cn(
-              'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-sidebar-hover',
-              isActive && 'bg-sidebar-active text-sidebar-fg font-medium'
+              'flex h-8 items-center gap-2 rounded-md py-[7px] pl-1.5 pr-[11px] text-ui text-foreground/85 transition-colors duration-150 [transition-timing-function:var(--ease-craft)] hover:bg-sidebar-hover',
+              isActive && 'bg-sidebar-active'
             )}
           >
             {collection.icon && <span className="text-base">{collection.icon}</span>}

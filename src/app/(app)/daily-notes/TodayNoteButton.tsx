@@ -21,7 +21,12 @@ export function TodayNoteButton() {
   }
 
   return (
-    <Button size="sm" onClick={handleClick} disabled={loading}>
+    <Button
+      size="sm"
+      className="h-8 rounded-lg bg-craft-accent px-4 text-ui font-medium text-white hover:bg-craft-accent-hover"
+      onClick={handleClick}
+      disabled={loading}
+    >
       <CalendarDays className="size-4" />
       {loading ? '打开中…' : '打开今天的日记'}
     </Button>

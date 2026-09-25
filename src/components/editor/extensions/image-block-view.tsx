@@ -60,7 +60,7 @@ export function ImageBlockView({ node, updateAttributes }: NodeViewProps) {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex h-48 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/60"
+            className="flex h-48 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-foreground/15 bg-foreground/4 text-foreground/55 transition-colors duration-150 ease-craft hover:bg-foreground/8"
           >
             {uploading ? (
               <>
@@ -115,12 +115,12 @@ export function ImageBlockView({ node, updateAttributes }: NodeViewProps) {
           </>
         )}
         {caption && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+          <figcaption className="mt-2 text-center text-ui text-foreground/55">
             {caption}
           </figcaption>
         )}
         {error && (
-          <div className="mt-1 text-center text-xs text-destructive">{error}</div>
+          <div className="mt-1 text-center text-meta text-destructive">{error}</div>
         )}
       </figure>
       <input

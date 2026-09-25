@@ -11,11 +11,11 @@ interface SidebarState {
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
-  isOpen: true,
-  width: 260,
+  isOpen: typeof window === 'undefined' || window.innerWidth >= 748,
+  width: 288,
   treeVersion: 0,
   toggle: () => set((s) => ({ isOpen: !s.isOpen })),
   setOpen: (open) => set({ isOpen: open }),
-  setWidth: (width) => set({ width: Math.max(200, Math.min(400, width)) }),
+  setWidth: (width) => set({ width: Math.max(240, Math.min(420, width)) }),
   bumpTree: () => set((s) => ({ treeVersion: s.treeVersion + 1 })),
 }));

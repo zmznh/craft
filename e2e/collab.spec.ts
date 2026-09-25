@@ -4,11 +4,8 @@ const email = 'craft-test@example.com';
 const password = 'test1234';
 
 async function login(page: import('@playwright/test').Page) {
-  await page.goto('/login');
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await expect(page).toHaveURL(/\/documents/);
+  const { login: doLogin } = await import('./helpers');
+  await doLogin(page);
 }
 
 test('two sessions sync edits in real time', async ({ browser }) => {

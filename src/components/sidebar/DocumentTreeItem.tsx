@@ -140,11 +140,11 @@ export function DocumentTreeItem({ document: doc, allDocuments, level }: Documen
     <div>
       <button
         className={cn(
-          'relative flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-hover',
-          'text-sidebar-fg',
+          'relative flex h-8 w-full items-center gap-1.5 rounded-md py-[7px] pr-2 text-ui transition-colors duration-150 [transition-timing-function:var(--ease-craft)] hover:bg-sidebar-hover',
+          'text-foreground/85',
           zone === 'into' && 'bg-primary/10'
         )}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
+        style={{ paddingLeft: `${level * 16 + 6}px` }}
         draggable
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
@@ -179,7 +179,7 @@ export function DocumentTreeItem({ document: doc, allDocuments, level }: Documen
         {doc.icon ? (
           <span className="text-base">{doc.icon}</span>
         ) : (
-          <File className="size-4 shrink-0 text-muted-foreground" />
+          <File className="size-4 shrink-0 text-foreground/55" />
         )}
         <span className="truncate">{doc.title}</span>
       </button>

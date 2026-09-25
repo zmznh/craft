@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { ViewTransition } from 'react';
 import { auth } from '@/lib/auth/auth';
 import { getDocument } from '@/actions/document/get';
 import { DocumentEditor } from '@/components/editor/DocumentEditor';
@@ -16,5 +17,9 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 
   if (!doc) redirect('/documents');
 
-  return <DocumentEditor document={doc} />;
+  return (
+    <ViewTransition>
+      <DocumentEditor document={doc} />
+    </ViewTransition>
+  );
 }

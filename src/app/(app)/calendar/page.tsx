@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, ViewTransition } from 'react';
 import Link from 'next/link';
 import { Calendar as CalendarIcon, CheckSquare, FileText } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
@@ -63,12 +63,13 @@ export default function CalendarPage() {
   const selectedNote = selectedKey ? notesByDay.get(selectedKey) : undefined;
 
   return (
+    <ViewTransition>
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-4xl px-8 py-8">
-        <h1 className="mb-6 text-2xl font-semibold">日历</h1>
+      <div className="px-4 pt-4 pb-8">
+        <h1 className="mb-5 text-title font-semibold">日历</h1>
 
         {loading ? (
-          <p className="text-sm text-muted-foreground">加载中…</p>
+          <p className="text-ui text-foreground/40">加载中…</p>
         ) : (
           <div className="flex flex-col gap-6 lg:flex-row">
             <div className="shrink-0 rounded-lg border border-border p-3">
@@ -90,7 +91,7 @@ export default function CalendarPage() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+              <h2 className="mb-3 text-sec font-medium text-foreground/55">
                 {selected
                   ? selected.toLocaleDateString('zh-CN', {
                       month: 'long',
@@ -101,28 +102,28 @@ export default function CalendarPage() {
               </h2>
 
               {!selectedNote && selectedTasks.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-border p-8 text-center">
-                  <CalendarIcon className="mx-auto mb-2 size-5 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">这一天暂无任务或日记</p>
+                <div className="flex min-h-[180px] flex-col items-center justify-center rounded-[15px] bg-foreground/[0.03] px-6 text-center">
+                  <CalendarIcon className="mx-auto mb-2 size-5 text-foreground/40" />
+                  <p className="text-ui font-medium text-foreground/40">这一天暂无任务或日记</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
                   {selectedNote && (
                     <Link
                       href={`/documents/${selectedNote.id}`}
-                      className="flex items-center gap-3 rounded-lg border border-border px-3 py-2.5 transition-colors hover:bg-muted/60"
+                      className="flex items-center gap-3 rounded-lg border border-border px-3 py-2.5 transition-colors duration-150 hover:bg-foreground/4"
                     >
                       {selectedNote.icon ? (
                         <span className="text-lg leading-none">{selectedNote.icon}</span>
                       ) : (
-                        <FileText className="size-4 text-muted-foreground" />
+                        <FileText className="size-4 shrink-0 text-foreground/40" />
                       )}
                       <div className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium">
+                        <span className="block truncate text-body font-medium">
                           {selectedNote.title}
                         </span>
                         {selectedNote.plainText && (
-                          <span className="block truncate text-xs text-muted-foreground">
+                          <span className="block truncate text-meta text-foreground/55">
                             {selectedNote.plainText.slice(0, 60)}
                           </span>
                         )}
@@ -133,7 +134,7 @@ export default function CalendarPage() {
                   {selectedTasks.map((task) => (
                     <div
                       key={task.id}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/60"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors duration-150 hover:bg-foreground/4"
                     >
                       <Checkbox
                         checked={task.isCompleted}
@@ -141,8 +142,8 @@ export default function CalendarPage() {
                       />
                       <span
                         className={cn(
-                          'flex-1 truncate text-sm',
-                          task.isCompleted && 'text-muted-foreground line-through'
+                          'flex-1 truncate text-body',
+                          task.isCompleted && 'text-foreground/40 line-through'
                         )}
                       >
                         {task.title}
@@ -150,7 +151,7 @@ export default function CalendarPage() {
                       {task.documentId && (
                         <Link
                           href={`/documents/${task.documentId}`}
-                          className="shrink-0 text-muted-foreground hover:text-foreground"
+                          className="shrink-0 text-foreground/40 transition-colors duration-150 hover:text-foreground"
                         >
                           <CheckSquare className="size-4" />
                         </Link>
@@ -164,5 +165,6 @@ export default function CalendarPage() {
         )}
       </div>
     </div>
+    </ViewTransition>
   );
 }

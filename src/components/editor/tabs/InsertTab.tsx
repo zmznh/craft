@@ -48,14 +48,14 @@ export function InsertTab({ editor }: InsertTabProps) {
 
   return (
     <div className="p-3">
-      <p className="mb-3 text-[11px] text-muted-foreground">将任何项目拖放到文档中</p>
+      <p className="mb-3 text-meta text-muted-foreground">将任何项目拖放到文档中</p>
 
       {categories.map((category) => {
         const cmds = slashCommands.filter((c) => c.category === category);
         if (!cmds.length) return null;
         return (
           <div key={category} className="mb-3">
-            <h4 className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+            <h4 className="mb-1.5 text-caption font-medium uppercase tracking-wider text-foreground/40">
               {categoryLabels[category] || category}
             </h4>
             <div className="space-y-0.5">
@@ -68,17 +68,17 @@ export function InsertTab({ editor }: InsertTabProps) {
                   onDragEnd={handleDragEnd}
                   onClick={() => handleInsert(cmd)}
                   className={cn(
-                    'group flex w-full items-center gap-2.5 rounded-lg px-2 py-2',
-                    'text-sm text-foreground transition-colors',
-                    'hover:bg-muted cursor-grab active:cursor-grabbing'
+                    'group flex w-full items-center gap-2.5 rounded-md px-2 py-1.5',
+                    'text-ui text-foreground/85 transition-colors duration-150 ease-craft',
+                    'hover:bg-foreground/4 cursor-grab active:cursor-grabbing'
                   )}
                 >
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-card">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-foreground/8 bg-card">
                     <cmd.icon className="size-3.5 text-muted-foreground" />
                   </span>
                   <span className="flex-1 text-left">
-                    <span className="block text-[13px] leading-tight">{cmd.name}</span>
-                    <span className="text-[11px] text-muted-foreground">{cmd.description}</span>
+                    <span className="block text-ui leading-tight">{cmd.name}</span>
+                    <span className="text-meta text-muted-foreground">{cmd.description}</span>
                   </span>
                   <GripVertical className="size-4 shrink-0 text-muted-foreground/40" />
                 </button>

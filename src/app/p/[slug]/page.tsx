@@ -17,7 +17,7 @@ export default async function PublishPage({ params }: PublishPageProps) {
   if (!doc || !doc.isPublished) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">页面不存在或未发布</p>
+        <p className="text-ui text-foreground/40">页面不存在或未发布</p>
       </div>
     );
   }

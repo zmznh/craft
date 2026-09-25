@@ -23,19 +23,19 @@ export function QuickActions() {
     <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
       <Button
         variant="outline"
-        className="flex h-20 flex-col items-center justify-center gap-2"
+        className="flex h-20 flex-col items-center justify-center gap-2 border-transparent bg-craft-accent text-white hover:bg-craft-accent-hover hover:text-white"
         onClick={handleNewDoc}
       >
         <FileText className="size-5" />
-        <span className="text-xs">新建文档</span>
+        <span className="text-ui font-medium">新建文档</span>
       </Button>
       <Button
         variant="outline"
-        className="flex h-20 flex-col items-center justify-center gap-2"
+        className="flex h-20 flex-col items-center justify-center gap-2 hover:bg-foreground/4"
         onClick={handleNewFolder}
       >
         <FolderPlus className="size-5" />
-        <span className="text-xs">新建文件夹</span>
+        <span className="text-ui">新建文件夹</span>
       </Button>
       <Button
         variant="outline"
@@ -43,7 +43,7 @@ export function QuickActions() {
         disabled
       >
         <Database className="size-5" />
-        <span className="text-xs">新建集合</span>
+        <span className="text-ui">新建集合</span>
       </Button>
       <Button
         variant="outline"
@@ -51,7 +51,7 @@ export function QuickActions() {
         disabled
       >
         <PenTool className="size-5" />
-        <span className="text-xs">新建白板</span>
+        <span className="text-ui">新建白板</span>
       </Button>
     </div>
   );

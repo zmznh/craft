@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, ViewTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CheckSquare, FileText, Plus, Trash2 } from 'lucide-react';
@@ -59,9 +59,10 @@ export default function TasksPage() {
   const completed = tasks.filter((t) => t.isCompleted);
 
   return (
+    <ViewTransition>
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl px-8 py-8">
-        <h1 className="mb-6 text-2xl font-semibold">任务收件箱</h1>
+      <div className="px-4 pt-4 pb-8">
+        <h1 className="mb-5 text-title font-semibold">任务收件箱</h1>
 
         <div className="mb-6 flex gap-2">
           <Input
@@ -75,7 +76,7 @@ export default function TasksPage() {
           <button
             onClick={handleAdd}
             disabled={adding || !newTitle.trim()}
-            className="flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground transition-opacity disabled:opacity-50"
+            className="flex h-8 shrink-0 items-center gap-1 rounded-lg bg-craft-accent px-4 text-ui font-medium text-white transition-colors duration-150 hover:bg-craft-accent-hover disabled:opacity-50"
           >
             <Plus className="size-4" />
             添加
@@ -83,14 +84,14 @@ export default function TasksPage() {
         </div>
 
         {loading ? (
-          <p className="text-sm text-muted-foreground">加载中…</p>
+          <p className="text-ui text-foreground/40">加载中…</p>
         ) : (
           <>
             <section className="mb-8">
               {active.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-border p-8 text-center">
-                  <CheckSquare className="mx-auto mb-2 size-5 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
+                <div className="flex min-h-[180px] flex-col items-center justify-center rounded-[15px] bg-foreground/[0.03] px-6 text-center">
+                  <CheckSquare className="mx-auto mb-2 size-5 text-foreground/40" />
+                  <p className="text-ui font-medium text-foreground/40">
                     全部完成！在文档中使用任务列表，勾选的任务会同步到这里
                   </p>
                 </div>
@@ -101,7 +102,7 @@ export default function TasksPage() {
 
             {completed.length > 0 && (
               <section>
-                <h2 className="mb-2 text-sm font-medium text-muted-foreground">
+                <h2 className="mb-2 text-sec font-semibold text-foreground/55">
                   已完成 · {completed.length}
                 </h2>
                 <TaskList items={completed} onToggle={handleToggle} onDelete={handleDelete} />
@@ -111,6 +112,7 @@ export default function TasksPage() {
         )}
       </div>
     </div>
+    </ViewTransition>
   );
 }
 
@@ -128,7 +130,7 @@ function TaskList({
       {items.map((task) => (
         <div
           key={task.id}
-          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/60"
+          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors duration-150 hover:bg-foreground/4"
         >
           <Checkbox
             checked={task.isCompleted}
@@ -136,8 +138,8 @@ function TaskList({
           />
           <span
             className={cn(
-              'flex-1 truncate text-sm',
-              task.isCompleted && 'text-muted-foreground line-through'
+              'flex-1 truncate text-body',
+              task.isCompleted && 'text-foreground/40 line-through'
             )}
           >
             {task.title}
@@ -145,14 +147,14 @@ function TaskList({
           {task.documentId && task.documentTitle && (
             <Link
               href={`/documents/${task.documentId}`}
-              className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="flex h-7 shrink-0 items-center gap-1 rounded-md bg-foreground/4 px-2 text-ui text-foreground/40 transition-colors duration-150 hover:bg-foreground/8 hover:text-foreground"
             >
               <FileText className="size-3.5" />
               <span className="max-w-32 truncate">{task.documentTitle}</span>
             </Link>
           )}
           {task.dueDate && (
-            <span className="shrink-0 text-xs text-muted-foreground">
+            <span className="flex h-7 shrink-0 items-center rounded-md bg-craft-accent/10 px-2 text-ui text-craft-accent">
               {new Date(task.dueDate).toLocaleDateString('zh-CN', {
                 month: 'short',
                 day: 'numeric',
@@ -161,7 +163,7 @@ function TaskList({
           )}
           <button
             onClick={() => onDelete(task.id)}
-            className="shrink-0 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+            className="shrink-0 rounded-md p-1 text-foreground/40 opacity-0 transition-colors duration-150 hover:text-destructive group-hover:opacity-100"
             aria-label="删除任务"
           >
             <Trash2 className="size-4" />
