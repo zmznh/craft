@@ -8,7 +8,7 @@ export type FontPackId = 'inter' | 'serif' | 'mono' | 'rounded';
 
 export type PageThemeId = 'default' | 'cream' | 'mint' | 'sky' | 'lavender' | 'peach';
 
-export type WashiId = 'none' | 'sunset' | 'ocean' | 'forest' | 'candy';
+export type WashiId = 'none' | 'sunset' | 'ocean' | 'forest' | 'candy' | 'aurora';
 
 export const fontPacks: { id: FontPackId; label: string; stack: string }[] = [
   { id: 'inter', label: '默认', stack: 'var(--font-sans), system-ui, sans-serif' },
@@ -31,22 +31,27 @@ export const washiTapes: { id: WashiId; label: string; gradient: string }[] = [
   {
     id: 'sunset',
     label: '日落',
-    gradient: 'linear-gradient(100deg, #fbbf24, #f472b6, #a78bfa)',
+    gradient: 'var(--editor-gradient-orange)',
   },
   {
     id: 'ocean',
     label: '海洋',
-    gradient: 'linear-gradient(100deg, #22d3ee, #3b82f6, #6366f1)',
+    gradient: 'var(--editor-gradient-blue)',
   },
   {
     id: 'forest',
     label: '森林',
-    gradient: 'linear-gradient(100deg, #4ade80, #14b8a6, #0d9488)',
+    gradient: 'var(--editor-gradient-gold)',
   },
   {
     id: 'candy',
     label: '糖果',
-    gradient: 'linear-gradient(100deg, #f472b6, #c084fc, #818cf8)',
+    gradient: 'var(--editor-gradient-pink)',
+  },
+  {
+    id: 'aurora',
+    label: '极光',
+    gradient: 'var(--editor-gradient-purple)',
   },
 ];
 

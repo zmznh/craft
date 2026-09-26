@@ -44,8 +44,35 @@ test('settings persist preference selection', async ({ page }) => {
 
   await page.goto('/settings');
   await expect(page.getByRole('heading', { name: '设置' })).toBeVisible();
-  const mark = page.locator('button[aria-pressed="true"]').first();
-  await expect(mark).toBeVisible();
+  await page.getByRole('button', { name: '外观', exact: true }).click();
+
+  const themes = page.getByRole('button', { name: /^(系统|浅色|深色)$/ });
+  await expect(themes).toHaveCount(3);
+  // The panel loads preferences asynchronously; the pressed state only appears once they arrive.
+  const pressedTheme = page.getByRole('button', { name: /^(系统|浅色|深色)$/, pressed: true });
+  await expect(pressedTheme).toBeVisible();
+  const original = (await pressedTheme.textContent())?.trim() ?? '';
+
+  const next = original === '深色' ? '浅色' : '深色';
+  await page.getByRole('button', { name: next, exact: true }).click();
+  await expect(page.getByRole('button', { name: next, exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
+
+  // The preference is stored server-side, so a reload must restore the same choice.
+  await page.reload();
+  await page.getByRole('button', { name: '外观', exact: true }).click();
+  await expect(page.getByRole('button', { name: next, exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
+
+  await page.getByRole('button', { name: original, exact: true }).click();
+  await expect(page.getByRole('button', { name: original, exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
 });
 
 async function signIn(page: import('@playwright/test').Page) {

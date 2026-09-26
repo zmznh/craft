@@ -54,6 +54,8 @@ dist/
 # craft.do 基准截图采自用户已登录会话，含个人内容，只留本地对照，不入库
 /docs/craft-ref/ref-*.png
 /docs/craft-ref/ref/
+/docs/craft-ref/_scratch/
+/docs/craft-ref/local/
 /docs/craft-ref/tokens.json
 
 # e2e artifacts

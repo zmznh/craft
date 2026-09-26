@@ -44,9 +44,8 @@ const alignButtons = [
 ];
 
 const formatColors = [
-  '#1a1a1a', '#4a4a4a', '#9ca3af',
-  '#7c3aed', '#3b82f6', '#06b6d4',
-  '#22c55e', '#ec4899', '#f97316', '#78716c',
+  '#0300f5', '#2962f6', '#53b7e0', '#5bc78b', '#f09737',
+  '#db3035', '#b425f6', '#7e5019', '#687485', '#9fa4a9',
 ];
 
 function FormatButton({ icon: Icon, active, onClick, label }: {

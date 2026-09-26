@@ -44,7 +44,8 @@ async function shoot(page: Page, name: string) {
   await expect(page.getByText('加载中').first()).toBeHidden();
   await page.waitForTimeout(350);
   const dynamic = [
-    page.locator('[aria-label="导航侧栏"]'),
+    // Only the genuinely volatile nodes: dates and relative timestamps (the sidebar
+    // tree itself is seeded and stable, so masking it whole hid real regressions).
     page.locator('h2:has-text("19"), h2:has-text("20")'),
     page.locator('[class*="grid-cols-7"]'),
     page.locator('text=/\\d{4}-\\d{1,2}-\\d{1,2}/'),

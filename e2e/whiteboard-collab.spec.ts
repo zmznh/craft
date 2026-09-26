@@ -55,7 +55,10 @@ async function shapeMarkers(page: Page): Promise<string[]> {
 
 async function setPermission(page: Page, permission: 'off' | 'view' | 'edit') {
   await page.getByRole('button', { name: '分享白板' }).click();
-  await page.locator(`[data-share-permission="${permission}"]`).click();
+  const option = page.locator(`[data-share-permission="${permission}"]`);
+  // Permission options render disabled until the board's share state has been fetched.
+  await expect(option).toBeEnabled({ timeout: 30_000 });
+  await option.click();
 }
 
 async function openShareLink(page: Page): Promise<string> {
@@ -65,6 +68,9 @@ async function openShareLink(page: Page): Promise<string> {
 
 async function enableShare(page: Page, boardId: string, permission: 'view' | 'edit') {
   await page.goto(`/whiteboards/${boardId}`);
+  // The permission buttons stay disabled until the board data arrives; under full-suite
+  // load that window is long enough for a raw click to time out.
+  await editorReady(page);
   await setPermission(page, permission);
   const url = await openShareLink(page);
 

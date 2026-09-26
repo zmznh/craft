@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/sidebar/Sidebar';
 import { CommandPalette } from '@/components/search/CommandPalette';
+import { SettingsModal } from '@/components/settings/SettingsModal';
 import { AppShellHeader } from '@/components/app/AppPageHeader';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -11,6 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <CommandPalette />
+      <SettingsModal />
     </div>
   );
 }
