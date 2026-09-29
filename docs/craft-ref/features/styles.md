@@ -67,5 +67,24 @@
 1. 自定义样式的**条数上限数值**（`custom.limit.desc` 没给 `[0]`）。
 2. `dynamic.style`、`decoration.focus` 的实际行为。
 3. 行内公式（`inline.equation`）落到哪个块类型、编辑器如何渲染。
-4. 具名色与 CSS 变量的对应表（色名→色值只能从运行时或 token 表取，`tokens` 侧尚未覆盖 `style.color.*`）。
+4. 具名色与 CSS 变量的对应表（色名→色值只能从运行时或 token 表取，`tokens` 侧尚未覆盖 `style.color.*`）。✎ **第 97 批·尾记二＝本条部分清偿**：CSS 本体落盘后**通道层与 alpha 阶已全部拿到**（见 §九），⇒ 未清偿的只剩"`style.color.*` 那 24 个**具名色**→具体三元组"这一格（本轮只读到 `--accent-{blue,gray,green,pink,purple,yellow}` 六族的**存在与档位**，未逐色抄三元组值）。
 5. ~~样式面板的分区顺序~~ **已实屏结案（动态 V12）**：自定义样式 → 所有样式 → 颜色（背景 / 文档颜色 / 文本颜色）→ 封面（封面图片）→ 分隔符样式（线 / 和纸胶带 / 涂鸦）→ 字体（默认 / 高级）→ 宽页。全文见 `interactions.md` V12 与 `gap.md` G209。
+
+## 九、通道化配色与控件五态阶梯＝**本轮起官方值首次到手**（盘上 `@layer components` 实扫 第 97 批·尾记二 2026-09-29 22:0x–22:2x；原始读数在 `gap.md` §三点一〇四〇 G971–G974、机制解释在 `internals.md §三十四`）
+
+1. ★★★ **中性色是一张 20 档不透明度表、不是一组色值**：命名后缀→alpha＝`0→0%｜25→2%｜50→3%｜100→4%｜150→6%｜200→8%｜250→10%｜300→12%｜350→18%｜400→25%｜450→32%｜500→40%｜550→48%｜600→55%｜650→62%｜700→70%｜750→78%｜800→85%｜850→92%｜900→100%`；每条写作 `rgb(var(--foreground) / N%)`，而 `--foreground` 只有两值（亮 `26 28 30`／暗 `249 249 249`）。★★ **两处命名陷阱**：① **没有 `-050`、也没有 `-950`**（此前口径里出现过 `-050`，本轮全量枚举后确认实为不存在 ⇒ 就地作废）；② 阶梯**非等差**＝前段密（2／3／4／6／8／10／12）后段疏（18／25／32／40／48／55／62／70／78／85／92／100），`350→18%` 是个明显跳跃 ⇒ **按"后缀÷10＝百分比"心算是错的**（只有 `-900=100%` 与 `-500=40%` 附近凑巧接近）。
+2. ★★★ **官方有两套标度不同的 alpha 阶梯 ⇒ 同名后缀是两个值（本轮补测，会制造静默错色）**：前景族 `--foreground-{0,25,50,100,…,900}` **20 档**（满值 `-900=100%`），强调色族 `--accent-{blue,gray,green,pink,purple,yellow}-{50,100,150,200,250,300,350,400,450,500}` **各 10 档且六套逐字同构**＝`50=6%｜100=12%｜150=18%｜200=24%｜250=32%｜300=40%｜350=55%｜400=70%｜450=85%｜500=100%` ⇒ **`--foreground-100` 是 4%、`--accent-*-100` 是 12%**；强调色的满值后缀是 `-500` 而非 `-900`，`-600`～`-900` 在 accent 系里根本不存在。★ 切换机制＝**18 条别名重指**（消费方只读 `--accent-100`，而 `--accent-100: var(--accent-blue-100)`；`[data-accent=gray]` 整块把 18 条别名改指 `--accent-gray-*`）⇒ **语义层 ＋ 通道层两跳**，与中性色的"一跳"不同。☆ `--base-*` **只有 1 档**（`--base-900: rgb(var(--base) / 100%)`，亮 `252 253 254`／暗 `30 30 30`），且另有 `--base-overlay: rgb(252 252 252 / 100%)` **硬编码不跟随 `--base`**（暗档下它仍是 252 252 252）⇒ 复刻时别把 overlay 当 `--base` 的派生值。★ 对照本地＝本地按语义名取值（`--color-muted` 等 19 个），**不存在"后缀数字"这一层** ⇒ 本地任何 `-100/-150` 式的命名迁移都会撞上这个双标度陷阱，**必须按家族分别建表**。
+3. ★★★ **控件五态阶梯（官方 DS 的 action 组件 `_1j891_`，21 类名／6 变体）逐字到手**：
+
+   | 态 | `_variantActive_1j891_163`（选中／rail 当前档） | `_variantDefault_1j891_116`（普通） |
+   | --- | --- | --- |
+   | 静止 | `background: --foreground-100`（**4%**）＋ `color: -900` | **无背景**，只有 `color: --foreground-900` |
+   | hover ＋ `[data-popup-open]` ＋ 键盘焦点 ＋ `_forceHover_1j891_122` ＋ `[data-highlighted]`（**五种条件共用同一条规则**） | `--foreground-150`（**6%**） | `--foreground-100`（**4%**） |
+   | `@media (pointer: fine)` 下 `:active` | `--foreground-200`（**8%**） | `--foreground-200`（**8%**，⇒ **Default 从 4% 直接跳 8%、不经过 6%**） |
+
+   每条都带 `:not(._isStatic_1j891_31,[data-disabled])`；`_isStatic_1j891_31{cursor:default}`＝"长得像按钮但不是按钮"的静态变体；禁用是一条**全局**属性规则 `[data-disabled]{opacity:.4;cursor:default}`；图标比正文淡＝`._leftContent/_rightContent{color:var(--foreground-800)}`（85% vs 100%）。★★ **`--foreground-100` 与 `-150` 只差 2% 不透明度** ⇒ 这就是第 94–97 批"屏上选中态几乎看不出"的量测根据，也是**判据必须靠类名而不能靠肉眼**的官方侧解释。
+4. ★★ **hover 的门控写法值得照抄**＝`[data-whatintent]:not([data-whatintent=touch]) … :hover` ⇒ 只要意图属性存在且**不是 touch**，hover 就生效（pointer 与 keyboard 都算）；键盘焦点态另用 `[data-whatintent=keyboard] … :focus`，且 `._action_1j891_1:focus{outline:none}` ＝**官方在键盘态把描边换成背景加深**。☆ 对照本地＝`grep -rn 'whatintent\|hoverOnlyWhenSupported\|pointer: fine' src` ⇒ **0 命中**，本地 `hover:` 恒生效、键盘态用 `focus-visible:ring-3 ring-ring/50`（`src/components/ui/button.tsx:6`）⇒ **触屏上本地会把 hover 背景焊住，官方不会；键盘态本地多一圈 ring、官方没有**（两条都是可见差分，见 G972）。
+5. ★★ **圆角与间距的真实档位**＝圆角只有 **5 档**（`sm 4px｜md 8px｜lg 12px｜xl 16px｜full 9999px`，**没有 `2xl/3xl/4xl`**）；间距只有 **10 档、按 4 的倍数命名且非等差**（`1 .25rem｜2 .5rem｜3 .75rem｜4 1rem｜5 1.25rem｜6 1.5rem｜8 2rem｜10 2.5rem｜12 3rem｜16 4rem`，`-7/-9/-11/-13~-15` 均不存在）；阴影是一整条六段式阶梯，`--shadow-xxs` **亮档 `.04/.06/.06`、暗档 `.12/.14/.16`** ⇒ **暗档阴影更重**。☆ 本地对齐情况＝`src/app/globals.css:44-50` 的 `sm/md/lg/xl` 与官方逐字相同、`globals.css:99` 的注释已抄过官方五档，但**本地没有 `--radius-full` token**（胶囊形靠 `rounded-full` 工具类硬写，`button.tsx:11`），且本地多出官方没有的 `2xl/3xl/4xl` 三档。
+6. ☆ **快捷键面板的视觉规格首次可查**（承 G973）＝dialog `720×560` 上限（`min(720px,100vw-2rem)` × `min(560px,100dvh-spacing-8)`）、compact 覆盖为 `100vw-spacing-4` × `100dvh-spacing-6`、侧栏固定 **184px** ＋ `gap:2px` ＋ `1px solid --foreground-150` 右边线、行 `min-height:36px` ＋ `space-between`、键帽 **26px 高／最小宽 26px／`radius-sm`／底色 `base-900`／`shadow-xxs`／字色 `foreground-800`／`font-family:inherit`**、键帽组 `gap:spacing-1`、说明性文字统一 `foreground-500`（40%）。⇒ 与第 96 批的屏上几何读数互相咬合。
+
+**仍未采到（本节）**：其余 **12 份 CSS**（名册里 `.css` 共 13 个）未落盘 ⇒ 本表只覆盖快捷键面板与 action 组件所在那一份；`Filled/Danger/Accent/DangerSubtle` 四变体的静止值未逐一抄（只抄了与 rail 直接相关的 `Active`／`Default` 链）；`-25`/`-50` 这类低档的实际消费点未统计；官方是否存在 `--foreground-950` 的别处定义（本文件无）；强调色六套的**具体三元组值**未逐色抄。

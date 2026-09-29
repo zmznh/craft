@@ -934,3 +934,76 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 `type|key|code|ctrlshift|target|defaultPrevented` 六段式日志 ＋ `slice(<上次总条数>)` ＋ 同一次读回里带 `logLenTotal`、选中类名命中下标、`activeElement` 文本 ⇒ 一条读数同时回答：**送达了吗 / 目标是谁 / 状态改了吗 / 这轮能不能下结论**。本轮正是靠"目标是 `BODY`"这第四问把一次容易写错的因果（"官方抑制 `Enter`"）挡在产物之外。
 
 **仍未采到（本机制面）**：焦点栈是否在 `Enter` 的键定义表里放了"激活"（需满足 §1 的焦点前提）；`defaultPrevented` 在编辑器级键上的分布（承 §三十 的 `pd=false` 只覆盖面板级）；键表清空（`keyDefs:[]`）时**文档级**监听是否也一并失效（本轮证明它不依赖焦点，但未证明它不依赖栈顶）。
+
+## 三十三、**只读态真正的闸门＝`features.inlineEditing`（键定义注册层），`forcedViewOnlyMode` 在 web 构建里永不为真** ＋ `cne` 本体结案＝markdown 快捷输入分发器 ＋ 焦点栈 id 生命周期 ＋ **一条会让所有历史 `@` 偏移失效的资料卫生问题**（✓码路级 第 97 批 2026-09-29 20:12–21:14，盘上 `_harvest/js/index-DiTmKH3z.js`；⚠ **本节全部偏移＝盘上偏移**，与历史页内 `fetch().text()` 口径差约 ＋3,026，见 §5）
+
+### 1. ★★★ 只读三层的连接关系（把 §十四 的 `fYe` 与 §三十 的焦点栈第一次串起来）
+
+| 层 | 代码位置 | 语义 |
+| --- | --- | --- |
+| 键定义注册 | `updateKeyDefs(){if(!this.props.features.inlineEditing)return;…}` **@4,118,794**；`focus()` 同样先判 `inlineEditing` 才 `bn.pushIntoFocus({id:this.id,keyDefs:()=>this.keyDefs,allowPropagation:!1})` **@4,120,771** | 为假 ⇒ **块级键定义根本不进栈**（不是"进了栈被拦"，是压根没注册） |
+| `inlineEditing` 来源 | 块组件 `inlineEditing:C`，`C` 来自 `js()` 的 `canEdit`（**@5,280,808** `canEdit:C,canComment:x}=js()`）；`js()` **@903,281**；selector **@904,035** ⇒ **`canEdit = documentAccess.canEdit && !forcedViewOnlyMode`**；features 默认全假对象 `KGt` **@3,203,751** | ⇒ **`forcedViewOnlyMode` 一经为真，键定义层与派发层同时关** |
+| 派发层 | `isReadOnly: !documentAccess.canEdit \|\| forcedViewOnlyMode` **@6,441,443** → 管线 `uYe` 里 `n.isReadOnly ? pYe(…) : PT(…)` **@731,194** → **`fYe` 八项白名单 @735,470** | 八项＝`loadDocument`/`addStoredBlocks`/`syncUpdateComments`/`addPendingComment`/`setCommentResolved`/`setCommentState`/`syncUpdateContributors`/`updateRecordObjectProperty` ⇒ **只读仍允许评论与记录属性** |
+| 覆盖位 | reducer `PYn(t,e){t.forcedViewOnlyMode=e.isReadOnly}` **@6,395,384**（case 表 **@6,380,226**）；creator `Vze` **@616,569** | ★★★ 见下条 |
+
+★★★ **`forcedViewOnlyMode` 在当前 web 构建里永不为真**：实扫 `Vze(` 全文件命中 **2 处**＝定义 **@616,569** ＋ **唯一一个调用点 @6,460,111 `finally{this.uiDispatchBound(Vze(!1))}`**（传假）；且 `Vze`／`PYn` **都不在 `index` 的 export 表里**（export 块 @6,831,276）⇒ **任何 chunk 都无法把它设真**。⇒ 只读实际全走 `setDocumentAccess`（creator `ZR` @616,353；调用点 @6,438,817 全假、@6,450,116 全真、@6,460,912 由服务端 access 对象解构）。
+⇒ **这条直接解释屏上 G937**：我以 owner 身份打开带 `?s=` 的链接不会进只读态，**不是通路问题、是这条覆盖位在 web 侧没有触发源**；它的 true 侧应当是桌面 App／深链专有，**缺的是浏览器侧的触发源，无法从本地回溯**（不得据此判"官方 web 没有只读态"——`documentAccess.canEdit` 那条路仍然会造出只读）。
+
+### 2. ★★ `cne` 本体结案＝**"markdown 快捷输入分发器"，不是键定义表**（**@3,780,925–@3,781,453**，628 字符）
+
+签名 11 参＝`(t=key, e=KeyboardEvent, n=slateEditor, o=editorState, s=blockId, i=keyDefs[], l=当前 model, r=docDispatch, c=uiDispatch, d=blocksRef.current, u=toggleStates)` ⇒ **表是调用方当第 6 参传进来的**，`cne` 自己不带表。
+
+| 顺序 | 条件 | 结果 |
+| --- | --- | --- |
+| 1 | `o.length>0` 假 / `n.selection==null` / **选区非折叠（有选区）** / 键不在 `pln` 那 4 个 trigger 内 | **整条不执行** |
+| 2 | `mc(o,selection)==null` | return（拿不到光标文本节点） |
+| 3 | 逐条：`t!==g.trigger` 或 `prefix.match(g.pattern)==null` | 跳过（**前缀只取光标之前**的 `Sr(o).slice(0,p)`） |
+| 4 | `g.isApplicable(C)` 返回假 | 不触发**且不 `preventDefault`**（继续正常打字） |
+| 5 | 命中 | `setTimeout(0)` 跑 `g.callback({blockId,currentModel,cursor,m,slateEditor,slateState,docDispatch,uiDispatch,blockData,toggleStates})` ⇒ `preventDefault()` ⇒ **return ⇒ 只吃第一条命中** |
+
+★ 表格内/表外**不在 `cne` 里分**，在调用方：`this.props.tableId!=null ? [] : uF`（表格里传**空数组**）。
+★★ **`allowBlockStyling` 只门控 `cne`**（`this.props.allowBlockStyling && cne(...)`，`cne` 内部零引用）⇒ 本目录 §三十一 写的"为假 ⇒ 块级键定义整条不调用（`cne` 是唯一入口）"**过宽**，正确说法＝"为假 ⇒ markdown 快捷输入不跑"。★ 而它是**硬编码 JSX prop**＝普通块 `allowBlockStyling:!0` **@4,141,387**、**页面标题块 `!1` @5,284,081**（`isPageHeaderBlock:!0`、`data-testid="editor-title"`）⇒ **新事实：官方标题块永不做 markdown 快捷输入**（本地标题与正文共用同一套输入规则 ⇒ 差分）。另经 `{...this.props}` 灌进富文本→slate 转换器（`IY` @979,574，消费点 @982,170／@982,247／@982,556）。
+☆ 调用方两处（同一个 `bC` 类，本体 **@4,080,202**）＝① `setupOnTextInput` **@4,081,115**（用 `s.data` 当 key）；② `onKeyDownBound` **@4,094,473**，首行 `if(k2)return`，`k2=c4.indexOf("Android")>-1` **@13,822** ⇒ **Android 只走 ①**。
+
+### 3. ★★ 焦点栈的 id 生命周期（§三十 留的那个洞补完）
+
+栈与派发 **@14,214**＝`bn={initialize:eEe, pushIntoFocus:nEe, upsertIntoFocus:oEe, removeFromFocus:sEe}`；`eEe` ＝ **`document.addEventListener("keydown", tEe, opts, true)`（捕获阶段）**；栈是模块级数组 `d0=[]`。
+`tEe`（**@14,6xx**）流程＝**`if(t.keyCode!==229)`（跳过 IME 组字码）** → `for(e=d0.length-1;e>=0;e--)` **自顶向下** → `keyDefs` **可以是函数**（每次现算）→ `XI(t,l.matcher)` 命中即 `{preventDefault,stopPropagation}`（**返回对象可显式豁免**）→ `break`；**`i \|\| !n.allowPropagation` 则停止下沉**。matcher 谓词 `XI` **@14,290**＝**4 个修饰位逐位比 ＋ `key`/`keyCode`/`code`/`letter` 四类 ＋ `key` 兼容大小写**。
+★ **id 生成规则到手**＝块编辑器实例 **`this.id = \`textEditor-${++bC.instanceCount}\``**（**模块级自增计数器，非 `useId`、不跨会话稳定**）→ **`this.disabledId = this.id + "disabled-for-ime"`（字面拼接、无分隔符）**。生命周期＝`onCompositionStartBound` → `disableKeyDefs()` → `pushIntoFocus({id:disabledId, keyDefs:[], allowPropagation:!1})`（**空表＋吃掉传播＝压住整条栈**）；`onCompositionEndBound`／`onBlurBound` → `removeFromFocus(disabledId)`。
+☆ **出栈三条规则**＝带第二参 `aboveFocusStackId` ⇒ `d0.findIndex(s=>s.id.startsWith(aboveId))` 后 **`splice(o+1,0,entry)` 插到该宿主之上**（用 `startsWith`，所以 `BlockTask-<id>` 这类派生 id 能归位）；同 id 已存在 ⇒ `logger.warn("UIFocusRePushed")` ＋ **`splice(n,1,t)` 原地替换**；否则 `push`。`sEe(id)`＝按 id 精确 `splice`（**重复 remove 无害**）。全仓 `pushIntoFocus` **44 处**；同类 id＝`code_editor_${blockId}` @3,556,879、`EditorTableBlock-${s}` @3,763,252、`BlockTask-${id}` @5,379,480、`SideMenuPageCard-${renderKey}` @6,024,303。
+
+### 4. ★ `uF` 整表 18 条（**@3,778,414–@3,780,878**，2,464 字符，字面量数组）
+
+`pln = Array.from(new Set(uF.map(t=>t.trigger)))` **@3,780,889** ⇒ trigger 去重后**只有 4 个**＝**空格 12 条／`-` 4 条／`=` 1 条／`` ` `` 1 条**；18 条**全部没有 `key`/`code`/修饰位**，只有 `pattern`＋`trigger`＋`callback`（可选 `isApplicable`）。★ 尾部 6 条此前未记（逐条外观见 `longtail.md §十八`）：`--`→`$t.Regular`、`=-`→`$t.Strong`、`==`→**`$t.PageSeparator`**（trigger 是 `=`）、`.-`→`$t.Light`、`..`→`$t.ExtraLight`（这四条 `isApplicable` 均为 `textContent.length<4`）、`` `` ``→`hln(...)` 转代码块（action 标签 `"adoptFormatToInsertionPoint"` @3,781,80x）。辅助函数＝`od(t)`（剥触发串＋重放 runAttributes）**@3,781,453**、`Xb()`（分隔线）**≈@3,781,830**、`hln()`（代码块）。★ `P2(t,e)` 已裁＝`{type:"setDecorStyle",blockIds,decorations}` **@85,294** ⇒ `>`／`|` 那两条的 `focus:1` 是 **decor 字段**，**不是块类型**（这条会影响 markdown 族的实现判法）。
+
+### 5. ★★★ 资料卫生：盘上副本与历史偏移**不是同一坐标系**
+
+实扫＝`index-DiTmKH3z.js` **6,844,206 字符／6,864,717 字节／非 ASCII 字符 10,291 个**（无 astral ⇒ 不是代理对问题），而历史文档记的主包长度是 **6,841,180** ⇒ **盘上系统性偏长约 ＋3,026**，根因＝**非 ASCII 被二次编码（mojibake）撑长**。对照实测：`cne` 历史 @3,777,934 → 盘上 **@3,780,925**；`_categoryTitle_dm375_70` 历史 @2,116,956 → 盘上 **@2,119,926**。
+⇒ **纪律**：① 历史产物里的 `@` 数字**不得当作盘上定位符复用**，要复用必须先用 `indexOf('符号名')` 重测；② 新写入的偏移**必须注明"盘上"**；③ mojibake 还会**破坏可复刻性**——`uF` 第 9 条正则里的 `[x…]` 在盘上被吞成 `U+E543` ⇒ **该 pattern 不可逐字复刻**，要复刻得回原站取未损坏副本。
+
+### 6. ☆ `_dm375_`（快捷键面板自己的类名）**JS 侧已扫完、CSS 侧缺文件**
+
+18 处字面量／16 个类名全在 `index` **@2,119,694–@2,120,266**，消费方同一个组件（映射表 `Aa={…}` @2,120,309、`tJ="CategorizedShortcutsPanel"` @2,120,351、JSX @2,121,589–@2,122,830）。★ 净新增 4 项＝`_headerText_dm375_57`（header 里小标题＋大标题容器）、**`_scrollRoot_dm375_77`＝`ks.Root` 虚拟滚动容器**（子 `ks.Viewport` 带 `fadeout{vertical,size:24}` ＋ `ks.Scrollbar`）、`_section_dm375_82` 与 `_sections_82` **同 hash**、`_key_dm375_124` 与 `_keys_124` 同理。⇒ **几何／颜色一律拿不到＝本地没有任何 craft.do 官方 CSS**（全仓 `.css` 只有 Next.js 自己的 8 个；历史提到的 `index.css.CP00jDAy.css` 从未落盘）⇒ 这条尾巴**需要回站点取 CSS**，不是"没读"。✎ **第 97 批·尾记二 就地更正＝这条已经清偿**：CSS 本体已落盘 `_harvest/css/index.css.CP00jDAy.css`（**297,080 字符、非 ASCII 0 个 ⇒ 这份没有 mojibake、偏移与字符串可直接逐字引用**），几何／颜色**首次可读**，结果见 `styles.md §九` 与 `gap.md` G970–G974（20 档 alpha 阶／五态阶梯／`720×560`＋`184px`＋`26px` 键帽等）。☆ 顺带把两个"18 vs 16"的口径钉死＝**本行的"18 处字面量／16 个类名"是主包 JS 侧（消费方，@2,119,694–@2,120,266）**，而 CSS 文件侧（定义方）实测＝**18 个类名／16 个不同 hash 后缀／22 次字面量出现**（`_section_dm375_82` 与 `_sections_dm375_82` 共用 hash `82`、`_key`/`_keys` 共用 `124`，故"名 18／hash 16"）⇒ **两侧的 18 是同数不同义**（JS 侧指出现次数、CSS 侧指类名数），历次"剩余 18 处 `_dm375_` CSS"这条尾巴按 CSS 侧结案。⚠ 仍缺其余 **12 份 CSS**（名册 `.css` 共 13 个）⇒ `styles.md §九` 不是全量官方 token 表。
+
+**仍未采到（本机制面）**：`forcedViewOnlyMode` 的 true 侧触发源（App／深链，浏览器侧不可回溯）；`documentAccess.canEdit` 为假时的**屏上**只读渲染（本批只有码路，G937 仍无屏上证据）；`bn.pushIntoFocus` 在**编辑器内容级**键上的 `defaultPrevented` 分布（本轮只覆盖面板级）；栈是否给 `Enter` 放过"激活"定义（**已可判定为否**——`Enter` 的效果来自浏览器默认动作，见 `interactions.md V89`，但"栈内是否另有 `Enter` 条目"未逐条读）；`ks.*` 虚拟滚动组件的第三方身份（类名可读、包名未回溯）；`uF` 第 9 条 pattern 的逐字（需回原站）。
+
+
+## 三十四、**呈现层的三条实现约定首次可读＝通道化变量 ＋ `@layer` 三层 ＋ 自研清理信号 `jo`**，外加一条"官方也有实现重复"的反直觉证据（✓盘上 第 97 批·尾记二 2026-09-29 22:0x–22:2x，零写入＝CSS 本体首次落盘 ＋ `node -e` 定点读；原始读数在 `gap.md` §三点一〇四〇 G970–G979、`styles.md §九`）
+
+1. ★★★ **`rgb(var(--X) / N%)` 是官方整个中性色系统的承重结构**：`--foreground` / `--base` / `--accent` 各只存**一个空格分隔的三元组**（`--foreground: 26 28 30` 亮、`249 249 249` 暗），20 档 alpha 阶（`-0 … -900`，见 `styles.md §九` 全表）全部写成 `rgb(var(--foreground) / 4%)` 这种**通道 ＋ 百分比**形式 ⇒ 主题切换只翻一个声明、20 档无需重定义，强调色切换只再翻一枚 `[data-accent=…]` 块。⇒ 复刻口径：**别把官方的 `--foreground-150` 当"一个颜色"抄，它永远只是"当前前景色的 6%"**；任何按具体十六进制取色的做法都会把主题耦合死。★ 对照本地＝`src/app/globals.css:60/231` 用 oklch 直接存两个色值、半透明走 `color-mix`（同文件 21 处）与 `oklch(… / a)` ⇒ **两套都能工作，但本地语义名（`--muted`／`--border`／19 个）与官方阶梯名（`--foreground-550`）不是同一张表**，映射必须按 `styles.md §九` 的百分比走、不能按名字猜。
+2. ★★ **官方 CSS 自己分三层**＝`@layer base`／`@layer components`／`@layer utilities`（本文件内 86 处 `@layer` 声明）⇒ DS 类（`_dm375_`／`_1j891_`）在 `components` 层、可被 `utilities` 层覆写；☆ 本地只有一个 `globals.css`、无层结构 ⇒ **本地 Tailwind 工具类与自定义规则靠选择器权重打架**，官方靠层顺序解决。这是"为什么官方能在 `_variantActive` 之后再用一条 `utilities` 覆盖"的机制解释。
+3. ★★★ **`jo` 不是 `AbortController`**（@60,786）＝`class jo{constructor(){this.internalSignal=new I_e,this.signal=this.internalSignal}cleanupAll(){this.internalSignal.invokeAll();this.internalSignal.removeAll()}}`。它被直接当 `addEventListener` 的第 3 参用（形状兼容 `AbortSignal`），但 `cleanupAll()` 先 `invokeAll()` 再 `removeAll()` ⇒ **官方在"中断监听"之外还挂了一层自定义清理回调**。⇒ 复刻启示：这是"注册副作用时顺手登记撤销动作"的模式（本地靠 `useEffect` 返回函数，语义等价但登记处不同）；☆ 同段可见 `zn.window.addEventListener("storage", this.handleStorageEvent, this.storageCleanup.signal)`（@37,616 附近）⇒ **`zn.window` 是个 window 包装器、全仓统一走它，别按 `window.` 直接 grep 官方源码**。
+4. ★★ **官方的数字解析惯例＝Maybe 而非 NaN**：`function ti(t,e=10){const n=parseInt(t,e);return isNaN(n)?null:n}`（@53,972）＋兄弟 `s1`＝同形的 `parseFloat` ⇒ 全仓判失败一律写 `x!=null`（本轮在码面 handler 里连见三次：`ti(C,10)!=null`、`ti(y,10)==null`、`Cve(t)` 内）。⇒ 这条解释了为什么官方代码里满是 `!=null` 短路：**不是随意，是解析层约定把 `NaN` 换成了 `null`**。
+5. ★☆ **官方也存在"逐字同构的两份实现"**＝六格验证码面在包里是 `k8`（盘上 @6,560,4xx–6,563,3xx）与 `v8`（@6,613,2xx–6,615,5xx）两份独立代码，逻辑一致、只有压缩变量名不同；**两组共享的东西只有属性表 `Ba.noAutoFillInputAttributes`**。⇒ 反直觉但重要：**官方的复用做在"属性"层、没做在"组件"层** ⇒ 本地不必把官方当抽象完美的参照，遇到"官方这么写了"式的论据时，这条可以拿来平衡。
+6. ☆ **资料卫生（承 §三十三 的偏移口径）**：CSS 这份落盘文件**非 ASCII 0 个**（297,080 字符）⇒ **CSS 侧的偏移与字符串可逐字直接引用**；而主包副本（`_harvest/js/index-DiTmKH3z.js`，6,844,206 字符、非 ASCII 10,291）仍有 mojibake ⇒ **JS 侧一律写"盘上偏移"，与历史页内 `fetch` 口径差约 ＋3,02x～＋3,035、逐区段不同**（承 G968）。
+
+**仍未采到（本机制面）**：CSS 名册里其余 **12 份**（`.css` 共 13 个）未落盘 ⇒ `_1j891_` 的另四个变体（`Filled`／`Danger`／`Accent`／`DangerSubtle`）静止值、`--shadow-xs` 以上的完整阶梯、`--spacing-7` 之类缺档是否在别处定义，全部仍属未知；`I_e` 的 `invokeAll` 语义细节（回调从哪登记）未读；`zn` 包装器本体未定位。
+## 三十五、**拖拽的两条内部事实：负载靠 provider 内存、手柄是无名 styled-components 节点**＋一条 `isTrusted` 型闸门（✓屏上反推 第 98 批 2026-09-29 22:40–23:00；原始读数在 `gap.md` §三点一〇四一 G982／G984／G986、`interactions.md` V91；⚠ 本节全部为**行为反推**，未读官方源码相关段落）
+
+1. ★★ **负载不经过 `DataTransfer`**：官方 `dragstart` 只写入 `application/json` → 字符串 **`"[object Object]"`**（长度 15，`JSON.parse` 失败）⇒ drop 端不可能反序列化取回；结合懒加载 chunk 名 **`HTML5DnDProvider-C6oAI5bn.js`**（资源名册在册、本地未取回该 chunk ⇒ 未读其体）可判定＝**拖拽的"拖的是什么"存在 provider 的内存状态里，`DataTransfer` 只是用来满足 HTML5 规范的过场**。⇒ 复刻启示：**别照抄官方的 setData**（那是个 bug 形状的写法），要照抄的是"负载走内部状态、`dataTransfer` 只放 MIME 类型占位"这条**可达性设计**——它使跨窗口／外部粘贴天然失效，官方因此不必校验来源。
+2. ★★ **手柄＝`[draggable=true].sc-1iqnrwp-0` ＋ 内层图标 `sc-1iqnrwp-1`（`draggable=false`）**＝**styled-components 系**（`sc-` 前缀），**不是**快捷键面板那种 CSS Modules hash 类（`_dm375_`／`_1j891_`）⇒ 官方两套样式体系并存：DS 组件走 CSS Modules、编辑器内部件走 styled-components。⇒ 历次按 CSS Modules 类名找编辑器内部件都会落空，**编辑器侧要按 `sc-` 前缀 ＋ `data-block-id` 锚点找**。
+3. ★★★ **一条新形态的"静默失效"＝handler 跑了、`preventDefault` 了、预览画了，但模型不变**。三种合成 `DragEvent` 打法全部做到 `dragover:pd=true` ＋ `drop:pd=true`，数据面 0 变化 ⇒ 与"事件根本没送达"（第 80 批的键盘通路）**不是同一种失败**。⇒ 判据补条：**拖拽类结论只认数据面读回**（`blocks get`），屏上预览／`defaultPrevented` 都**不能**当"动作已提交"的证据；⚠ 且这条属**仪器边界（疑 `isTrusted` 闸）**，禁止写成官方缺陷。
+4. ☆ **手柄的可达性缺陷是双刃**：正因为它**没有任何可访问名**（`aria-label`/`role` 皆无，第七次印证 Craft 自有控件零 ARIA），既导致屏上"入口枚举"必须靠坐标或 `data-*`（承 G931 的"枚举入口要同时走可访问名与可见文本两条"），也给了取证一个**可利用的空位**＝临时 `setAttribute('aria-label', …)` 就能把它请进无障碍树，从而被 uid 型工具驱动。⇒ 手法登记（**采完必须还原并复核 `leftover:0`**）：这是本目录第一次**改写 DOM 属性**来做取证，属可接受范围（同生命周期内、零模型写入、当场撤销），但**只能在沙盒页面上做**，严禁在用户文档里做。
+5. ★☆ **撤销栈的焦点门槛在拖拽支上复现**：拖拽提交后 `hasFocus:true`／`rangeCount:0`，此时 `Ctrl+Z` 未测（我先补了焦点）；补焦点用**连接器 `click`**（承 G952"编辑焦点只能靠 trusted click"），拿到 `rangeCount:1` 后 `Ctrl+Z` 一步生效 ⇒ 与三档门槛一致＝**编辑器内容级键需 `hasFocus` ＋ `rangeCount>0`**。
+
+**仍未采到（本机制面）**：`HTML5DnDProvider` 本体（chunk 未取回）；落点判定的具体算法（中心／边缘／四分之一如何映射到"上／下／子级"）；provider 在 `drop` 里对 `isTrusted` 的判断点（本轮只能反推，读不到码）；手柄挂载是 CSS `:hover` 还是 JS 状态（未隔离，二者都能唤出）。

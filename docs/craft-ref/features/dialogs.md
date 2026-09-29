@@ -102,7 +102,7 @@
 
 - 删除账户要**输入邮箱地址**：`alert.account.delete.{message.confirmation,message.otherspaces,message.personal.only,type.email}` ⇒ 二次确认用文本匹配而非按钮；且区分"只删个人空间"与"连带其它空间"。
 - 失败次数过多 → `alert.account.locked`、`alert.too.many.attempts`（+`try.again.later`）。
-- 验证码四态：`alert.{expired,invalid}.code`、`alert.code.already.verified`、`alert.add.email`。
+- 验证码四态：`alert.{expired,invalid}.code`、`alert.code.already.verified`、`alert.add.email`。 ✎ **第 97 批·尾记更正＝该窗口的失效态至少六条**：在六位码确认屏邻接区还实扫到 **`alert.account.locked`** 与 **`alert.too.many.attempts`**（外加 `alert.error.occurred`／`alert.registration.is.unavailable`）⇒ 上面"四态"是早先按文案清单摘的、漏掉**限流与锁定**两类；逐字与判别子见 `longtail.md §十九/2`、`gap.md` **G967–G969**（★ 同批裁定：这两个六位码面属**登录／注册域**、应用内无入口 ⇒ **不是复刻缺口**，本域该补的账仍是 G307）。
 - 邮箱占用冲突：`alert.apple.id.already.used`、`alert.your.email.is.registered.to.a.team`、`alert.license.key.{already.used,already.subscribed,invalid.or.expired}`。
 - SSO 两条：`alert.use.sso`「此邮箱已绑定 SSO 认证，请使用 SSO 登录。」、`alert.error.sso.not.setup`。
 - 订阅侧（本地按有意偏差处理，只记不实现）：`alert.failed.to.{register,updated}.subscription`、`alert.subscription.provider...`、`alert.not.supported.team.upgrade`、`alert.team.setup.not.support.upgrades`、`alert.support.for.subscription.upgrade`。
