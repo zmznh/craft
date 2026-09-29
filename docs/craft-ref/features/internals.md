@@ -1007,3 +1007,22 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 5. ★☆ **撤销栈的焦点门槛在拖拽支上复现**：拖拽提交后 `hasFocus:true`／`rangeCount:0`，此时 `Ctrl+Z` 未测（我先补了焦点）；补焦点用**连接器 `click`**（承 G952"编辑焦点只能靠 trusted click"），拿到 `rangeCount:1` 后 `Ctrl+Z` 一步生效 ⇒ 与三档门槛一致＝**编辑器内容级键需 `hasFocus` ＋ `rangeCount>0`**。
 
 **仍未采到（本机制面）**：`HTML5DnDProvider` 本体（chunk 未取回）；落点判定的具体算法（中心／边缘／四分之一如何映射到"上／下／子级"）；provider 在 `drop` 里对 `isTrusted` 的判断点（本轮只能反推，读不到码）；手柄挂载是 CSS `:hover` 还是 JS 状态（未隔离，二者都能唤出）。
+
+## 三十六、**浮层 ARIA 要分两档：菜单类有、自绘面板类没有** ＋ 官方 testid 属性名 ＋ 三态复选框恒在 DOM（✓屏上 第 99 批 2026-09-29 23:4x–23:5x，零写入；原始读数在 `gap.md` §三点一〇四三 G996／G998、`interactions.md` V92）
+
+1. ★★★ **既有判据要收窄**：本目录此前四次记"Craft 自有浮层零 ARIA"（日期弹层／帮助浮层／快捷键面板／分享浮层），本批在**下拉菜单**上实测相反＝`[role=menu]:1`、`[role=group]:2`、`[role=menuitem]:2` 全都在（且第 96 批·尾记九那次帮助菜单也记过 `role=menu:1`／6 项，只是当时没提炼成规则）。⇒ **正确表述＝"菜单类浮层（Base UI Menu）有 ARIA 角色；非菜单类的自绘面板（日期／分享／快捷键／集合视图）零 ARIA"** ⇒ 判开合前要先问"这是哪一类浮层"，别拿一条覆盖全部（承"判据越界"同族）。
+2. ★★ **官方 testid 属性名＝`data-testid`（无连字符）**：本屏 26 个 testid 全部走这个属性（`header-root`／`sidebar-toggle`／`browse-header`／`browse-layout-toggle`／`browse-sort-button`／`document-list`／`browse-document-list` 等）；⇒ 探针只写 `[data-test-id="…"]` 会**静默 0 命中**（本批因此把 `browse-header` 读成 `null`、`browse-sort-button` 选择器抛 `TypeError`）；⇒ **写法固定为双属性回退**：`document.querySelector('[data-testid="X"],[data-test-id="X"]')`，并在取不到时**先枚举属性名再判"不存在"**。
+3. ★★ **三态复选框在 DOM 里的形态**＝选择条里是 `SPAN[role=checkbox]`（`18×18`）＋ 内层 `SPAN[role=img][aria-label]` 表达**状态**：半选态的图标名是 **`Minus Bold Icon`**（本批实测＝"已选 1 项／共 15 行"⇒ 部分选中）；⇒ 官方用**图标可访问名**编码三态，而不是 `aria-checked="mixed"` ⇒ **判"全选/半选/未选"要读内层图标的 `aria-label`**，读 `aria-checked` 会读不到东西（本目录第一次见这个形态，值得记）。
+4. ☆ **DS 菜单容器的类名家族＝`_content_16nf6_9`**（CSS Modules hash `16nf6`）⇒ 与已知的 `dm375`（快捷键面板）／`1j891`（action 按钮）／`6sjpd`／`1nu3o`／`v0ra3` 并列，**新增一个 hash 家族**；菜单项几何＝`248×32`、容器 `260×88`（左右内边距各 6、项间 12）；⇒ 本地若复刻下拉菜单，行高 32／容器宽 260 是官方值。
+5. ☆ **顶栏中央的「打开」搜索框常驻**（截图可见）＝quick-open 的**可见**入口 ⇒ 与 V1/V2 结论一致（`⌘K` 与这个框都是"跳转到"，**web 侧没有 189 条命令的全局命令面板**；命令只以**局部 ⋯ 菜单**形态出现）。⇒ 这条给"官方删了命令面板"之类的猜测画上句号：**web 构建里命令面板从未存在**，只有 `command-palette-button` 这个 testid 残留在 bundle（本批在屏上 26 个 testid 里**没找到它**＝未渲染，与 V7"注册方不在 web DOM"同族）。
+
+**仍未采到（本机制面）**：`_16nf6_` 家族其余类名与色值；菜单项 hover／键盘态样式；`Minus Bold Icon` 之外两态（全选／未选）的图标名；`command-palette-button` 的渲染条件（哪个开关或屏会挂它）。
+
+## 三十七、**破坏性确认框是"零 ARIA ＋ 文案即信号"的极端形态：按 `role` 判会把它读成"点击无效"，而"重试"在这里等于二次触发不可逆动作**（✓屏上 第 99 批·尾记 2026-09-30 00:0x–00:2x，**写入批＝12 条永久删除**；原始读数在 `gap.md` §三点一〇四四 G1002／G1003／G1004、`interactions.md` V93）
+
+1. ★★★ **机制**＝Craft 自有确认浮层（承 G622"既无 `role=dialog` 也无 `aria-modal`"）⇒ 打开后 `[role=dialog]`／`[role=alertdialog]`／`[role=menu]`／`[role=menuitem]`／`[role=group]` **全部为 0**，被删卡片仍在 DOM（删除尚未提交），`已选 12 项` 文案未变 ⇒ **三条常规指纹同时"没变"**。唯一变化是 `body.innerText` 多出「确定」与「无法撤销」两处。
+2. ★★★ **为什么这条比前四次"零 ARIA"更严重**＝此前零 ARIA 的面（日期弹层／插入面板／快捷键／分享）判废的后果是"白采一轮"，**这里判废的后果是"再按一次删除"** ⇒  ⇒ **纪律**＝**在破坏性动作之后，禁止用"指纹没变 ⇒ 换通路重试"这条常规推定**；改为"读新增文案集 → 有反馈文案就停手核对，没有才允许换通路"。这是本目录第一次给既有铁律**加例外**，例外方向是**更保守**，不是更宽松。
+3. ★★ **两代按钮 DS 的分工再获一证**＝同一屏上：⋯ 菜单项＝`BUTTON._action_1j891_1`（`_variantDefault`／`_variantActive` 族，承第 96 批 `1j891`）；选择条两枚图标按钮＝`_button_1bml7_1` ＋ `_variantPlain_1bml7_129`／**`_variantPlainDanger_1bml7_*`**（`1bml7` 族＝G622 已记的 `data-ds="button"` 那一族）；卡片复选框＝`_wrapper_1fgll_1` ＋ `_checkbox_1fgll_11`（`1fgll` 族）；菜单浮层内容壳＝`_content_16nf6_9`（`16nf6` 族）。⇒ ★ **一屏四族 hash 并存、各自负责一类控件** ⇒ 未来定位法＝**按控件类型选 hash 族**，不要指望一个前缀通吃。
+4. ★ **危险语义只存在于 class**＝`variantPlainDanger` 是"这枚按钮会毁数据"的**唯一机器可读标记**（本体无 `aria-label`、无文字、无 `title`；可访问名挂在内层 `img[aria-label="Trash Slash Icon"]`）⇒ 反爬／自动化侧要识别危险控件，只能读 variant class 名；⇒ 本地实现反向建议＝**保留 `variant: destructive`（`src/components/ui/button.tsx:9-21`）并额外给 `aria-label`**，两件事都别省。
+
+**仍未采到（本机制面）**：确认框本体的 class 族与它属于哪一代 DS（主动放弃，G1007）；`1bml7` 族的 variant 全集（只读到 `Plain`／`PlainDanger` 两枚）；`1fgll` 族是否有 `indeterminate` 专属类名（本轮只读到 `data-checked=""` 属性在 true 态出现）；`_content_16nf6_9` 家族其余类名。

@@ -582,3 +582,22 @@ const redraw = async (elements) => {
 5. ★ **文案长尾＝本批零新增 i18n 键**（拖拽全程无 toast／无菜单／无文案变化，唯一文本变化是顶栏时间戳从 `1 minute ago` 变 `刚刚`）⇒ ☆ 顺手记一条：**文档时间戳用相对时间、且随读取时刻改写**（`刚刚`／`6天前`／`1 周前`／`3 年前` 在同屏同时出现），本地 `task.documentTitle` 一类展示若也要相对时间，这是官方口径样例。
 
 **仍未采到（本节）**：手柄 hover 态的颜色／阴影（未量，要 `getComputedStyle` 再跑一轮）；暗档下的手柄与幽灵色值；手柄在 compact 档是否存在（本批桌面档）；幽灵副本的 z-index／透明度；跨容器（toggle 内／分栏内）拖拽的预览形态。
+
+## 二十二、**回收站屏的图标可访问名清单 ＋ 卡片预览会泄露已删文档正文 ＋ 一处第 97 批结论的意外印证**（第 99 批 2026-09-29 23:4x–23:5x，零写入＝暗档、网格档、桌面档 `innerWidth:1154`；截图 `_harvest/b99-trash-menu.png`；原始读数在 `gap.md` §三点一〇四三 G997、`interactions.md` V92）
+
+1. ★★ **本屏图标可访问名逐枚清单**（顶栏与头部，全部来自 `aria-label`，`role=img` 或 `role` 缺失）＝`Sidebar Left Icon Chevron Down Bold Icon`（侧栏开关）／`Bell Badge Icon`／`Question Mark Icon`／`Sidebar Right Icon Chevron Down Bold Icon`／`Doc Badge Plus Icon 新建文档`／`Doc On Doc Icon 所有文档`／`Checkmark Circle Icon 任务 Plus Icon`／`Calendar Icon 日历 Dot Viewfinder Icon`／`Cloud Icon 连接`／`Person Wave2 Fill Icon 与我共享`／`Doc Append Icon 我的模板`／`Tray Full Icon Expand 未分类`／`Plus Bold Icon`／`Chevron Down Icon`／视图三档＝`Rectangle Grid2x2 Icon`／`Rectangle3 Group Icon`／`Line3 Horizontal Icon`／`Ellipsis Icon`／选择条＝`Minus Bold Icon`／`Arrow Uturn Backward Icon`／`Trash Slash Icon`；左下 rail＝`Desktop Icon`／`Square And Arrow Down Icon`／`Person3 Fill Icon`／`Trash Icon`。⇒ ☆ **图标名是英文、界面文案是中文**（同一元素上并存两套语言）⇒ 本地做 i18n 时这类"图标名不参与翻译"是官方口径。
+2. ★★★ **回收站卡片预览会渲染已删文档正文**（网格档每张卡带内容摘要）：`QODER-HARVEST-B97-DRAG` 卡上次序 **`DRAG-A alpha / DRAG-C charlie / DRAG-B bravo / DRAG-D delta`** ＝ 我删除那一刻的最后状态（撤销后又 `Ctrl+Shift+Z` 重做过）⇒ **摘要反映服务端最后落库态**；`QODER-HARVEST-B96D` 卡上带 `QODER-HARVEST-B96D G1 task` ⇒ 任务块在摘要里以纯文本出现（含前缀的块文本）。
+3. ★★ **一处意外印证**＝`QODER-HARVEST-B97-INDENT` 卡上有一行 **`B97 A4 plain B97 D1 fully bold`**（两段文本**同行**）⇒ 第 97 批"块首 `Backspace` 把 D1 合并进 A4"这条**当场观测过的结论，拿到第二次独立印证**（这次是回收站卡片摘要，不是我读 `blocks get`）⇒ 方法学含义：**历次沙盒文档的卡片摘要是一个可回看的"行为留痕源"**，等价于免费的第二方证据。
+4. ★ **一处隐私边界**＝卡片摘要会把文档正文**明文渲染在列表屏**上（本批截图里能看到历次采集串的自我文本）⇒ 本目录的沙盒文本都是无意义标记，无外泄；但**这条对真实用户内容意味着"回收站列表屏会暴露正文片段"** ⇒ 产物里不复述用户文档正文的纪律，正是为了不在截图／摘要里带出它们（本批截图只含自建的 `QODER-HARVEST-*` 标记文本，且 `_harvest/` 被 gitignore）。
+5. ☆ **暗档观察（未量值）**＝本屏整体暗色（深底 ＋ 卡片描边 ＋ 菜单深灰底），属用户既有偏好，**本批未切主题、未点任何视图切换**（当前档＝网格，与进入前一致）；⇒ 若要 1:1 复刻选择条，暗档色值是下批的活。
+
+**仍未采到（本节）**：分组档／横线档下回收站的布局与是否有"删除日期分组"这类附加行；卡片摘要的**截断规则**（几行、多少字符、超出如何省略）；摘要是否实时（需改一篇已删文档再看，属禁区）；选择模式下卡片是否显示勾选框在右上还是左上（本批未逐枚量）。
+
+## 二十三、**回收站确认框的几何长尾（两枚 154×32 等宽并排）＋ 三处"坐标会自己动"的实测 ＋ 一屏四套 CSS Module hash 族**（第 99 批·尾记 2026-09-30 00:0x–00:2x，**写入批**；截图 `_harvest/b99-purge-selected.png`（前态）／`_harvest/b99-purge-after.png`（后态），两张均核看；原始读数在 `gap.md` §三点一〇四四 G1002／G1005／G1006、`internals.md` §三十七）
+
+1. ★★ **确认框几何**＝文案行「删除 12 个项目 你确定吗？你无法撤销此操作。」＋ 两枚按钮**等宽 154、等高 32、并排、间距 8**（`取消 419,311` ／ `删除 581,311`）⇒ 在 `innerWidth:1154` 下整组居中偏左（组宽 324）；☆ 与第 97 批量到的对话框 `width:min(720px, calc(100vw - 2rem))` **不是同一形状**（这个确认框明显更窄、无标题栏分隔）⇒ 属"轻确认浮层"而非 `dialog`。
+2. ★★ **三处坐标会自己动（都是同一次操作内发生的，不是跨重载）**＝① 全选框 mixed→true 时自身 x **822 → 815**（`Minus Bold Icon` vs `Checkmark Bold Icon` 宽度不同）；② 卡片复选框在 `scrollIntoView({block:'center'})` 后 y 从 `832/1533` 变成 `189`（列位 x 不变）；③ 确认框「删除」按钮 rect 与上一帧读到的可能不同 ⇒ **落刀前重新取 rect**。⇒ 汇总成一条＝**本目录所有坐标类判据只在"单次读→单次用"内有效**。
+3. ★ **一屏四套 hash 族**（枚举自本轮实际命中的节点）＝`1j891`（菜单项／rail 按钮，承第 96 批）／`16nf6`（菜单浮层壳与 group）／`1bml7`（DS 按钮，含 `variantPlainDanger`）／`1fgll`（复选框 wrapper 与本体）。☆ 另＝卡片标题「无标题文档」是**占位文案**、不是文档真名（MCP 侧 `Title` 为空串）⇒ ★ **判"这条是不是采集沙盒"只准用 id／前缀，不准用屏上标题**（无标题项在屏上看起来"像空的"，正是 G992 那类误判的来源）。
+4. ☆ **暗档观察（承前）**＝本轮全程在暗档：被选卡片＝蓝色描边＋右上实心圆勾（`Checkmark`），未选＝右上空圈（`aria-checked:"false"`）；全选框半选＝**实心圆底＋横线**（`Minus Bold Icon`）⇒ 三态在屏上是**实心圆／横线／勾**三种图形，本地若用 `src/components/ui/checkbox.tsx` 需自备第三态图形。
+
+**仍未采到（本节）**：确认框浮层本体的 class 族与阴影／圆角（主动放弃，G1007）；网格档下卡片封面缩略图的取图规则（本轮 12 张卡片里有 3 张带渐变封面、其余空白，未追因）；列表档／紧凑档下选择模式的形状（本轮只测网格档）；「已选 N 项」在 N>99 时是否换行；暗档下 `variantPlainDanger` 的具体色值（未 `getComputedStyle`）。
