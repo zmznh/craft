@@ -601,3 +601,14 @@ const redraw = async (elements) => {
 4. ☆ **暗档观察（承前）**＝本轮全程在暗档：被选卡片＝蓝色描边＋右上实心圆勾（`Checkmark`），未选＝右上空圈（`aria-checked:"false"`）；全选框半选＝**实心圆底＋横线**（`Minus Bold Icon`）⇒ 三态在屏上是**实心圆／横线／勾**三种图形，本地若用 `src/components/ui/checkbox.tsx` 需自备第三态图形。
 
 **仍未采到（本节）**：确认框浮层本体的 class 族与阴影／圆角（主动放弃，G1007）；网格档下卡片封面缩略图的取图规则（本轮 12 张卡片里有 3 张带渐变封面、其余空白，未追因）；列表档／紧凑档下选择模式的形状（本轮只测网格档）；「已选 N 项」在 N>99 时是否换行；暗档下 `variantPlainDanger` 的具体色值（未 `getComputedStyle`）。
+
+## 二十四、**按钮几何长尾（28／32／34 高三档、圆角 7／8／9、内边距只给横向）＋ 三处"正则少一个下划线就全空"的坑**（第 100 批·上半 2026-09-30 00:3x–00:5x，**盘上＝零浏览器、零写入**；原始读数在 `gap.md` §三点一〇四五 G1012／G1017、`styles.md §十一.三`）
+
+1. ★★ **三档尺寸的完整六元组**（height／radius／padding／`--icon-height`／`--chevron-size`／gap）＝`28px·7px·0 10px·18·13·2px`、`32px·8px·0 12px·20·14·2px`、`34px·9px·0 13px·22·15·2px` ⇒ ★ **圆角是 7／8／9 的连续小步**、不是第 97 批那套 `sm4/md8/lg12/xl16` 的通用 radius 阶 ⇒ **按钮 radius 走的是组件私有阶**（复刻时别套通用阶，会差 1～4px）。
+2. ★★ **`--icon-height` 与 `--chevron-size` 是"由尺寸档写入的局部变量"**＝图标高度 18／20／22、下拉箭头 13／14／15 ⇒ ★ 本地若只按 Tailwind `size-4` 写死图标，**三档尺寸下图标不会跟着变**（本地 `button.tsx` 的 `[&_svg:not([class*='size-'])]:size-4` 是单一档）。
+3. ★ **`isOnlyIcon` 只改 padding 不改 width**＝`padding:0 .3125rem`＋居中 ⇒ 方形外观来自"padding 对称＋内容等宽"，**不是 `aspect-ratio` 或固定 width**；☆ 本地把"只有图标"做成了 `icon`／`icon-xs`／`icon-sm`／`icon-lg` **四个尺寸档**（`button.tsx` size 变体）⇒ 轴不同，见 G1012。
+4. ★ **`fluid` 是"占满＋内容居中"两个声明**（`width:100%;justify-content:center`）⇒ 官方没有 `block` 型按钮 prop，只有这一个类。
+5. ★☆ **坑（工具层，值得记）**＝CSS Module 类名**自带前导下划线**（`_variantPlainDanger_1bml7_165`），所以：① 正则写 `[A-Za-z][A-Za-z0-9]*_1bml7_[0-9]+` 能**枚举到**类名，但拿它去搜 `.`＋名字会**全部 NOT FOUND**（因为选择器里是 `._variant…`）⇒ **枚举与检索要用同一个带下划线的形态**；② 本轮 36 个类名里 **33 个有独立基础规则、3 个只在组合选择器出现** ⇒ "搜不到基础规则"不等于"这个类不存在/没样式"。
+6. ☆ **一屏四套 hash 族的成员数（本轮实测）**＝`_1bml7_` **36**（DS 按钮）／`_1j891_` **21**（菜单项与 rail 按钮，承第 96 批）／`_16nf6_` **11**（菜单浮层壳：`searchField`／`scrollArea`／`header`／`group`／`item`／`groupLabel`／`groupLabelClickable`／`footer`／`searchList`／`content`／`scrollAreaViewport`）／`_1fgll_` **3**（复选框 `wrapper`／`checkbox`／`icon`）⇒ ★ **`_16nf6_` 里有 `searchField` 与 `searchList`** ⇒ 这套浮层是**带搜索框的命令菜单壳**（本轮未屏上验证，属"结构暗示"级，标 `~`）。
+
+**仍未采到（本节）**：`_16nf6_`／`_1fgll_` 两族的规则正文（本轮只枚举手类名）；`_1bml7_` 的 `:active` 态；暗档色阶映射表；`TaskViews.css` 等其余 12 份 CSS 里的第四／第五套族。

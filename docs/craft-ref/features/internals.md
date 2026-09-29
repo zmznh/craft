@@ -1026,3 +1026,16 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 4. ★ **危险语义只存在于 class**＝`variantPlainDanger` 是"这枚按钮会毁数据"的**唯一机器可读标记**（本体无 `aria-label`、无文字、无 `title`；可访问名挂在内层 `img[aria-label="Trash Slash Icon"]`）⇒ 反爬／自动化侧要识别危险控件，只能读 variant class 名；⇒ 本地实现反向建议＝**保留 `variant: destructive`（`src/components/ui/button.tsx:9-21`）并额外给 `aria-label`**，两件事都别省。
 
 **仍未采到（本机制面）**：确认框本体的 class 族与它属于哪一代 DS（主动放弃，G1007）；`1bml7` 族的 variant 全集（只读到 `Plain`／`PlainDanger` 两枚）；`1fgll` 族是否有 `indeterminate` 专属类名（本轮只读到 `data-checked=""` 属性在 true 态出现）；`_content_16nf6_9` 家族其余类名。
+
+## 三十八、**输入意图被做成 CSS 契约：`[data-whatintent]` 承担 `:focus-visible` 与"触屏无 hover"两件事，一处写入、349 处消费**（✓盘上 第 100 批·上半 2026-09-30 00:3x–00:5x，零浏览器；原始读数在 `gap.md` §三点一〇四五 G1011／G1014、`styles.md §十一`）
+
+1. ★★★ **机制**＝官方**不写 `:focus-visible`**，而是在 `document` 上写一个属性 `data-whatintent`（值域实测出现在 CSS 里的＝`keyboard`／`touch`，第三态＝属性存在但值既非 keyboard 也非 touch＝鼠标），然后：
+   - **焦点环**＝`[data-whatintent=keyboard] .X:focus{…}` ⇒ 只有键盘导航才画；
+   - **悬停态**＝`[data-whatintent]:not([data-whatintent=touch]) .X:hover{…}` ⇒ 触屏设备**永不进 hover 样式**（不是 `@media (hover:hover)`，是运行时判定）。
+   ⇒ CSS 内该属性出现 **349 次** ⇒ 这是**全仓级别的约定**，不是个别组件的补丁。
+2. ★★ **与既有静态读数的咬合**＝第 94 批读到 `Npe` 的 `dataset.whatintent==="touch"` → `navigator.vibrate(...)`（触觉反馈只在触屏触发）⇒ **同一个属性的第二个消费者** ⇒  ⇒ 该属性的**写入方是全局输入意图检测器**（本轮未定位写入点，属未采到），**读取方至少两处＝DS 样式表 ＋ 触觉反馈**。
+3. ★★ **第二道状态闸＝`isStatic`**＝所有 hover／focus 规则都写成 `:not(._isStatic_1bml7_134,[data-disabled])` ⇒ 官方把"**长得像被选中但不该响应**"（`isStatic`）与"**用户禁用**"（`data-disabled`）**分成两个类**，前者连常驻底色反馈也拿不到；★ 禁用态本体只有 `[data-disabled]{opacity:.4;cursor:default}`（**注意是 `cursor:default` 不是 `not-allowed`**）。
+4. ★ **对本地实现的含义（两条，方向不同）**＝① 焦点环：本地用 Tailwind `focus-visible:`（`src/components/ui/button.tsx:6`）达成同一目的 ⇒ **登记有意偏差、不要求改**；② 触屏无 hover：本地**没有等价机制**（`focus-visible` 管不着 hover）⇒ 若要对齐，要么自建 `data-whatintent` 检测器，要么退一步用 `@media (hover:hover)`（形状不同、效果接近，需注明）。
+5. ☆ **一条取证用法**＝DS 组件的"弹层开着"有 `[data-popup-open]` 属性 ⇒ 屏上判浮层开合时，**DS 族可读该属性**，零 ARIA 的自绘族仍只能读"新增文案集＋容器字节"（承第 96 批）。
+
+**仍未采到（本机制面）**：`data-whatintent` 的**写入点**（在哪个 chunk、用什么事件判定、是否有防抖）；`isStatic` 的赋值来源（哪个 prop）；属性是否同时驱动 JS 侧逻辑（除触觉外还有没有别的读取方）。
