@@ -2268,3 +2268,17 @@
 **沙盒还原（残留三连全做完）**：① `documents delete --document <objId:10>` → `moved to trash`，`documents list --location unsorted` 读回 **3 条**（`DFF43C2D`／`5376f8f3`／`74c0bb3d`，后两条非空、未动）；② 屏上 `/tasks/all` 无采集串（G934）；③ `reminders list --status all` ⇒ `No reminders found`。**分享状态**＝采完后当场改回「仅限有访问权限的协作者」并读回确认，文档随后删除 ⇒ 对外链接不残留。
 
 **仍未采到（三点一〇三五）**：**只读访客渲染态的一切屏上证据**（G937，含 `fYe` 八项动作白名单的屏上验证、评论与集合属性格在只读态是否可写）；`复制链接` 的真实实现（G935）；邀请协作的邮箱输入后续动线（是否发信／是否有 pending-requests 屏上态——网络层见过 `access/pending-requests` 端点但没点开）；「共享功能如何使用？」落地页；`/shared-with-me` 屏（侧栏有该入口、计数 0、本轮未进）。
+
+### 三点一〇三六、第 96 批·尾记十二〔★★★**分类导航不要求元素持焦＝`activeElement` 已是 `BODY` 时 `ArrowDown` 照样推进选中**＋ ★★★**G890 判为无效轮、恢复动作与硬门槛写死**（判"原生激活"必须断言 `activeElement === 目标按钮`，`visibilityState` 与 `hasFocus` 都不足以背书）＋ ★★**桌面档 rail 既无 `aria-selected` 也无 roving tabindex**〕（2026-09-29 17:31 读回，**零写入**＝2 次 `evaluate_script`，按键由用户在面板里手按 `↓`＋`Enter`，日志器新增 4 条）
+
+| ID | 官方事实（本轮实测） | 本地（本轮实扫） | 判定 | P |
+| --- | --- | --- | --- | --- |
+| G939 | ★★★ **分类导航的键处理不依赖元素焦点**：面板切到后台后 `document.activeElement` 已归 `BODY`（`visibilityState:hidden`、`hasFocus:false`），用户手按 `↓` ⇒ 页内捕获日志器读到 `keydown\|ArrowDown\|ArrowDown\|00\|BODY:You ne\|0` ＋ 对应 `keyup`，**同一周期内选中从「整理」（按钮下标 9）推进到「合集」（下标 10）**，且 `defaultPrevented=0`。⇒ 键分派确实挂在**文档／容器级**（与 `internals.md §三十二`、§十四 `pushIntoFocus` 的读法一致），选中是纯逻辑状态、焦点只是它的 DOM 副作用 ⇒ 也解释了尾记九"`hasFocus:false` 下 `press_key` 仍能驱动面板" | 本地快捷键类面板若把导航写成"从当前 `document.activeElement` 找下一个兄弟" ⇒ **焦点一漂移就静默失效**；正确写法＝从 `activeIndex` 推进、再单向同步焦点（`clamp`、不 modulo，承 V86） | **✓实测（键盘面）** | P1 |
+| G940 | ★★★ **G890（原生 `Enter`／`Space` 能否激活分类）本轮判为无效轮、不据此定案**：同一周期用户紧接着按 `Enter` ⇒ 日志 `keydown\|Enter\|Enter\|00\|BODY:You ne\|0` ＋ `keyup`，选中停在「合集」无变化。⚠ **但按下时焦点已经不在任何分类按钮上**（`activeElement=BODY`），而"Enter 激活聚焦 `<button>`"是**浏览器默认动作**、结构上以该按钮持焦为前提 ⇒ 前提缺失时的"没反应"零信息量，**严禁记成"官方不让 `Enter` 激活"**（铁律：指纹没变＝静默失效，不是官方没这个行为）。⇒ **新增硬门槛**＝凡"原生激活类"结论（`Enter`／`Space`／`dblclick` 默认动作），读回的指纹里必须同时含 `activeElement === 目标按钮`；`visibilityState:visible` 与 `document.hasFocus()` 都**不能**代替这条断言（本批与尾记九各证一次：`hasFocus:false` 下键仍送达 ⇒ `hasFocus` 不敏感） | 无（判据门槛） | **判据（自我设闸）＋本轮作废** | P0 |
+| G941 | ★★ **桌面档分类 rail 既不用 `aria-selected`、也不用 roving `tabindex`**：7 枚分类按钮（通用／文档／任务／编辑／样式／整理／合集）逐枚读回＝`aria-selected` **全 `null`**、`tabindex` **全 `"0"`**、选中仅由 `_variantActive_1j891_*` 类表达（第三次独立复现）。⇒ 补一条此前未记的**键盘可达面差分**：7 枚常聚焦按钮意味着 `Tab` 可逐枚走完整条 rail；而 compact 档的 Base UI Tabs（`x8v9o` 哈希）用 roving＋`aria-selected`、`Tab` 只会落在当前选中枚上 ⇒ **两档的 `Tab` 序列长度不同**，本地不可共用一套焦点管理 | 本地无快捷键面板实现 ⇒ 若补齐，桌面档按"7 枚常聚焦＋类名选中"建模，不要自造 roving | **✓实测（结构面）** | P2 |
+
+**⇒ 规模**：`gap.md` 930 → **933 条（最大 G941）**；`interactions.md` 新增 **V88**；`model.md` 新增 **§一之五十六**；`internals.md` 新增 **§三十二**；`longtail.md` **本批无新条目**（无效轮没有新的视觉或文案长尾可采，只有判据——已并入 G940／`internals §三十二`，不为此硬造一节）。
+
+**本批（尾记十二）零写入** ⇒ `manifest.jsonl` 不追加；沙盒零新建、零残留，无需还原三连。
+
+**仍未采到（三点一〇三六）**：**G890 原生激活**＝等一次"面板前台＋`activeElement` 落在分类按钮上"的窗口重按 `Enter`／`Space`（复测协议六步见 `interactions.md V88`，需用户手按）；F 只读灰态（改走应用内版本／备份预览，须与"访客态"分开标）；提醒子弹层字段回写映射（需新一轮写入授权）；装饰档真实触发条件（G914 两条候选）；`Ctrl+\` 类清格式动词；拖拽移动的撤销步数；桌面档 `Shift+Tab`／`Home`／`End` 的 rail 行为；`blocks get` 侧的缩进级联深度（>2 档）。

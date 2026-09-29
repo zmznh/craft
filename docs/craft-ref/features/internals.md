@@ -909,3 +909,28 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 `blocks add` 一次调用可用 `\n\n` 建 5 块并全部返回 id（G911）⇒ "一次调用"≠"一次操作"；MCP 分号批处理**不是事务**。⇒ 撤销步数的取证**只能在屏上真按键**，任何 MCP 侧代理都会把 5 步测成 1 步。
 
 **仍未采到（本机制面）**：`undoRedoPatchId` 的**融合边界**（隔多久／哪些字段会并进同一步）；`vQ` 去重是"末次胜出"还是"合并补丁"（屏上只见结果态）； redo 侧是否同构；装饰档触发条件（第 3 节三条候选）；拖拽移动的撤销步数（`drag` 通路未试）；全选删除是否单独占一步（本批样本里它与合并之间没有多余步）。
+
+## 三十二、键分派的**无焦点可达性**：文档级 handler 照改状态，但**浏览器默认动作仍以焦点为前提**——两类可达性必须分开断言（✓屏上 第 96 批·尾记十二 2026-09-29 17:31，零写入＝2 次 `evaluate_script` ＋ 用户手按；原始读数在 `gap.md` §三点一〇三六、`interactions.md` V88）
+
+### 1. ★★★ 同一次按键周期内，两条通路一条活一条死
+
+面板切后台后 `activeElement` 归 `BODY`。此后：
+
+| 键 | 事件是否进 `window` 捕获 | Craft 自有 handler 是否生效 | 浏览器默认动作 |
+| --- | --- | --- | --- |
+| `↓` | 是（`keydown`/`keyup` 各一条，`code` 正常、`defaultPrevented=0`） | **生效**＝选中 9 → 10 | 无（方向键默认动作对本页无效） |
+| `Enter` | 是（同上） | 无可见效果 | **不发生**＝激活聚焦按钮的默认动作要求 `activeElement` 就是那枚 `<button>` |
+
+⇒ 结论＝**"事件送达"与"默认动作可执行"是两个独立前提**。§二十九 的四道外部闸门（`k2` Android 短路／`tableId` 清表／`allowBlockStyling`／IME 摘键）讲的都是"Craft 自己的 handler 读不读这张键表"；本轮补上第五道、也是**仪器侧最容易踩的一道**：默认动作类结论还要 DOM 焦点在场。⇒ **凡"原生激活类"取证，指纹里必须含 `activeElement === 目标元素`**；`visibilityState` 与 `document.hasFocus()` 都替代不了（尾记九已证 `hasFocus:false` 下键仍送达 ⇒ `hasFocus` 对本通路不敏感）。
+
+### 2. ★★ 与 `pushIntoFocus` 文档级监听自洽
+
+`§十四`／`§二十九` 记的 `pushIntoFocus({keyDefs, allowPropagation})` 是把键表挂进**焦点栈**、由栈顶在文档级分派，而不是逐元素 `onKeyDown`。本轮的实测正好是它的可观测推论：**焦点已经不在栈内任何元素上，栈仍在工作**（选中照改）。⇒ 这既是官方设计，也解释了为什么本目录多次在 `hasFocus:false` 下用 `press_key` 驱动面板成功。
+
+⚠ 反向推论**不得**写成缺陷：`Enter` 无效果**不能**归因于"焦点栈吞掉了 `Enter`"，因为焦点栈里 `Enter` 的键定义是否存在，本轮的前置条件已经不满足、读不出来（G890 记为无效轮）。
+
+### 3. ☆ 日志器一次调用答四问（本机制面的采法沿用）
+
+`type|key|code|ctrlshift|target|defaultPrevented` 六段式日志 ＋ `slice(<上次总条数>)` ＋ 同一次读回里带 `logLenTotal`、选中类名命中下标、`activeElement` 文本 ⇒ 一条读数同时回答：**送达了吗 / 目标是谁 / 状态改了吗 / 这轮能不能下结论**。本轮正是靠"目标是 `BODY`"这第四问把一次容易写错的因果（"官方抑制 `Enter`"）挡在产物之外。
+
+**仍未采到（本机制面）**：焦点栈是否在 `Enter` 的键定义表里放了"激活"（需满足 §1 的焦点前提）；`defaultPrevented` 在编辑器级键上的分布（承 §三十 的 `pd=false` 只覆盖面板级）；键表清空（`keyDefs:[]`）时**文档级**监听是否也一并失效（本轮证明它不依赖焦点，但未证明它不依赖栈顶）。

@@ -1825,3 +1825,28 @@ if (type === "fixed") {
 **三条最硬的结论**：① **分享面从"禁区"变成"有第一方证据"**——浮层结构、三档逐字文案、选档反馈、`共享功能如何使用？` 帮助串全部到手，且**这个弹层同样零 ARIA 角色**（本目录第四次同类印证：日期弹层、帮助弹层、分享弹层）；② **任务读侧两套口径**＝MCP 含回收站文档的任务、屏上不含 ⇒ 本地读侧目前只把 `documentTitle` 置空而**不滤行**（`src/actions/task/task.ts:106/117`）⇒ **P1 差分**；③ **F 项仍然没拿到只读渲染证据，但原因改了**＝不是没授权，而是**两桥共享登录 cookie、我没有访客身份**（G937）；⇒ 下批优先试**应用内版本／备份预览**这条天然只读态作为替代证据源（注意它不是分享访客态，只能部分覆盖 `fYe` 白名单）。
 
 **仍未采到**：只读访客渲染态全部屏上证据；`复制链接` 真实实现；邀请邮箱提交后的动线与 `access/pending-requests` 的屏上态；「共享功能如何使用？」落地页；`/shared-with-me` 屏。
+
+## V88〔第 96 批·尾记十二〕快捷键面板分类 rail：**导航不要求持焦、原生激活要持焦**——两件事，判据必须分开断言（G890 本轮作废）
+
+**证据等级**：用户手按真键盘（`↓` ＋ `Enter`）＋ 页内 `window` 捕获级 `keydown`/`keyup` 日志器逐条记 `type|key|code|ctrlshift|target|defaultPrevented` ＋ 同一周期读回选中／属性／`activeElement`；**零写入**、无沙盒；2 次 `evaluate_script`。
+
+**规格**
+
+| # | 状态前提 | 动作 | 实测 | 结论 |
+| --- | --- | --- | --- | --- |
+| 1 | 面板开、桌面档（视口 ≥748）、**面板已切后台**：`visibilityState:hidden`、`document.hasFocus():false`、`activeElement`＝`BODY` | 用户按 `↓` | 日志 `keydown\|ArrowDown\|ArrowDown\|00\|BODY:You ne\|0` ＋ `keyup`；**选中从「整理」推进到「合集」**（`_variantActive_1j891_*` 下标 9 → 10）、`defaultPrevented=0` | **键处理在文档／容器级，选中是纯逻辑态、焦点只是副作用** ⇒ 导航不需要目标持焦；末档仍"夹紧不环绕"（复现 V86） |
+| 2 | 同上（焦点仍在 `BODY`） | 用户紧接着按 `Enter` | 日志 `keydown\|Enter\|Enter\|00\|BODY:You ne\|0` ＋ `keyup`；选中无变化、内容无变化 | **本轮不可判**＝"Enter 激活聚焦 `<button>`"是浏览器默认动作、结构上要求该按钮持焦；前提缺失 ⇒ 按下去必然无事 ⇒ 记为**无效轮**，不得写成"官方抑制 `Enter`" |
+| 3 | 同上 | 逐枚读 7 枚分类按钮属性 | `aria-selected` **全 `null`**、`tabindex` **全 `"0"`**、选中只由 `_variantActive_*` 类表达 | 桌面档**不做 roving tabindex** ⇒ `Tab` 可逐枚走完 7 枚；compact 档（Base UI Tabs，`x8v9o`）相反 ⇒ **两档 `Tab` 序列长度不同，判据与实现都不可跨档共用**（承接 V86） |
+
+**下次复测协议（六步，缺任何一步即判该轮作废）**
+
+1. 请用户把 Qoder 内置浏览器面板切前台，**并明确要求：不要点任何分类按钮**（点一下会把焦点与选中一起搬走，破坏"焦点≠选中"的前置态）。
+2. `evaluate_script` 断言 `document.visibilityState === 'visible'`。
+3. 若 `document.activeElement` 不是那 7 枚按钮之一 ⇒ 请用户按 `Tab` 把焦点送进 rail（或先看 `activeElement` 落在哪），**不做任何点击**。
+4. 记录 `(focus 文本, 选中文本)` 是否分离；不分离时**先按一次 `↓`**（本轮已证 `↓` 会推进选中），造出"焦点在 X、选中在 Y"。
+5. 用户按 `Enter`（随后另起一轮按 `Space`，两键不可同一轮混按）。
+6. 一次读回：日志器新增条目 ＋ `_variantActive` 命中的按钮文本 ＋ 内容区首行 ＋ **`activeElement` 标签与文本**。只有第 6 步里 `activeElement` 仍是按下前那枚按钮，`Enter` 的"有／无反应"才是可下结论的读数。
+
+**本地差分候选**：若实现快捷键面板，导航写成"从 `activeIndex` 推进再单向同步焦点"（`clamp`、不 modulo、不自造 roving），而不是"从 `document.activeElement` 找下一个"——后者在焦点漂移时会静默失效，与官方行为分歧（官方第 1 行实测就是在焦点已丢失的状态下照常推进）。
+
+**仍未采到**：`Enter`／`Space` 的原生激活真值（G890，等一次满足六步协议的窗口）；`Home`／`End`／`Shift+Tab` 在 rail 上的行为；分类内容区的**首次懒渲染时机**（选中态切换时内容是否同帧换）。
