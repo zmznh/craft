@@ -65,3 +65,7 @@ dist/
 
 # craft.do 参照截图采自已登录会话，含个人内容，只留本地对照，不入库
 /docs/craft-ref/screens/
+
+# 功能/交互采集产物（含登录态截图与导出物，不入库）
+/docs/craft-ref/features/_harvest/
+/docs/craft-ref/features/raw/
