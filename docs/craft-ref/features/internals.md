@@ -1401,3 +1401,43 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 3. ★☆ **选择器要按 CSS Module 的哈希段写，不要按语义前缀写**＝本批先按 `[class*="_col"]` 查列，结果整批命中 `_collectionName_*`（`_col` 前缀同名冲突），改按 `[class*="_1m9yz_"]` 才拿到真正的 22 枚列类；⇒ ☆ 顺带一条＝**一枚哈希可反查该组件全部类名册**（承 G1113 的方法），而语义前缀反查会跨组件串味。
 
 **仍未采到（本节）**：① `De("",isDark)` 这条空串路径的实际渲染后果（缺省主题到底等价于 `auto` 还是取不到色板）；② `pluginData` 会不会出现在 MCP `blocks get --format json` 的读回里（若出现＝主题对账可以走数据面，不必开屏）；③ `Ut` 这个 action 构造器的**真名与完整字段**（只读到调用点，未回到第 108 批那张 88 项分派表上定位它的 case 标签）；④ `nMe`（card 家族白名单）除 `Xa` 五档外还有没有别的成员；⑤ 框选矩形与落点判据（承 §七）；⑥ 档 A／B 的列数公式（只量到 308.5 与 268 两个值，没拿到 CSS 侧的 minmax 表达式）。
+
+## 五十、第 111 批＝两份主题名册的同一性证明、`settings` 键集不闭合、MCP 写主题的三条通路全否、桥的挂起形态（2026-09-30 20:3x–21:1x 本地＝UTC 12:3x–13:1x；★ 源＝`_harvest/js/CodeEditorWrapper-DB8UxA00.js`（59,843 字符，**两份名册都在这个 chunk 里**）＋ craft MCP 数据面实测；☆ 逐字表在 `longtail.md §三十七`，gap 在 G1141–G1159）
+
+### 一、★★★ 名册同一性的证明链（结掉第 110 批 §三十六 的开放项⑦）
+
+⇒ 选择器名册逐字（`V`，21 条）＝`{id:"materialdark",label:"Material Dark",keywords:[],isDark:!0,settings:Bo}`；工厂名册逐字（`ue`，21 键含 `auto:null`）＝`…materialdark:Mo,materiallight:jo…`；工厂体逐字＝`Lo=o=>{const{theme:t="dark",settings:a={},styles:r=[]}={};return I({theme:t,settings:{...Xe,...a},styles:[…36 条…]})}` 且 `Mo=Lo()`；★ **别名逐字**＝`,Bo=Xe,Lo=o=>{…`（`Bo` 就定义在工厂前一个逗号处）⇒ **两表 20/20 指向同一对象**，唯一一次改名＝`materialdark`；⇒ ☆ 上批列的"三种可能"里成立的是**第三种的一半**（同一对象、两个标识符），**不是**"settings 是入参／Mo 是产出的链条上下游"——链条那种读法会把 `a={}` 当成外部可注入，而本批复证：**解构源是字面量 `{}`、入参 `o` 恒被忽略**（承第 109 批"色板封闭"结论）。
+
+### 二、✎ 改判：工厂的**声明形状**有两种（上批"20 档全同"过强）
+
+⇒ 18 枚箭头＝`Xf=o=>{const{theme:t="…"`；★ 2 枚函数声明＝`function Oo(o){const{theme:t="dark",…}`（`sublime`，赋值处 `const Ho=Oo()`）与 `function qo(o){…}`（`vscodedark`，赋值处 `const $o=qo()`）；⇒ ☆ 返回形状（`I({theme,settings:{...SRC,...a},styles:[…]})`）**20/20 全同**；⇒ ★★ 方法论＝上批漏读 3 档的根因是**正则口径**两条：`\w` 不含 `$`（漏 `$o`／`$e`）、只认箭头形态（漏 `function`）⇒ 任何"全量枚举标识符"的脚本都要写 `[\w$]+` 并**同时认两种声明形态**。
+
+### 三、★★ `settings` 是**变长对象**（键集不闭合）
+
+⇒ 每档键数分布＝`{7:1, 8:1, 9:5, 10:7, 11:6}`；逐键出现档数＝`background`／`foreground`／`selection`／`selectionMatch` 20/20，`lineHighlight`／`gutterBackground`／`gutterForeground` 19/20，`caret`／`fontFamily` 18/20，`gutterBorder` 16/20，`gutterActiveForeground` **7/20**；⇒ 机制含义＝CM6 侧的 gutter 高亮前景**大多数档根本没给**，所以那档的 gutter 只能继承主题默认 ⇒ 本地若按定长结构建模会在 13 档上写出假值。
+
+### 四、★★★ MCP 写代码主题＝三条通路全否（本批最大的通路结论）
+
+⇒ ① **`--theme-id` 被页面名册吃掉**＝`blocks update --id <代码块> --theme-id dracula` 逐字回 `Error 1: Error: Theme "dracula" not found. Use "blocks explore-themes --type page" to see available themes, or apply style properties one-by-one (backdrop, colors, etc.).`；⇒ ② **`--json` 带 `theme`** ⇒ 调用挂起（`MCP tool invocation did not complete`），读回复核 `rawCode` 未变＝**没落库**；⇒ ③ **`--json` 带 `type`** ⇒ 一次挂起、一次 `Invalid JSON update payload at "root": Invalid input`；⇒ ★ 对照实验＝`--json {"id":…,"rawCode":…}`（不带 `type`／`theme`）**立即成功**（`Updated block <id>.`）⇒ 坏的是 payload 形状、不是桥；⇒ ☆☆ **推论**＝第 110 批盘上读到的那条 `Ut([blockId],{pluginData:{pluginConfigurationData:{themeId}}})` **只在 UI 通路上存在**，MCP 面没有等价写命令 ⇒ "主题对账走数据面"（队列②的通路收益）**不成立**，要证 `pluginData` 出现在读回里必须先经屏上改主题。
+
+### 五、★★ 官方两个面的名册不等长（19 对 21）
+
+⇒ MCP `blocks explore-themes --type code` 逐条回 19 档（`auto` ＋ 18 档第三方），**没有 `craftlight`／`craftdark`**；⇒ ★ 而界面名册 `V` 有 21 条、且 `auto` 的解析式 `De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]` **恰好落在这两档**上 ⇒ ☆ 机制＝craft 两档是"系统外观映射的目标"，官方**不给外部直接选**（外部只能选 `auto` 让它自己映射）；⇒ ⚠ 本批**未判**这是名单裁剪还是强制拒绝（想试 `--theme-id craftdark` 时桥已挂死；且 `--theme-id` 根本不吃代码名册，这条优先级下调）。
+
+### 六、★★ 桥的挂起形态与"写后读回"纪律
+
+⇒ 实测：`blocks get … --format json` **同一命令先成功后挂两次、第三次又成功**；`--format markdown` 全程正常；⇒ ★★ **一次挂起的写会把后续读与 `connection info` 一起拖挂**（本批最后 `connection info` 也不返回，等 30 s 无效）⇒ 桥**没有 per-call 超时隔离**；⇒ ☆☆ 纪律＝**写挂起后禁止重发写**，改"读回判状态"（本批据此判定 `rawCode=3` 那条没落库，屏上截图独立佐证＝块内显示 `var qoderB111 = 2`）；⇒ ☆ 顺带：`blocks add` 一次插 3 块**只回首个 id**（`Added 3 blocks. IDs: <133c06ea…>`）⇒ 要全部 id 只能读回。
+
+### 七、★★ 工具解锁两条（收窄既有结论）
+
+⇒ ① **`locator.evaluate()` 可用**（实测回 `{x:398,y:173,w:736,h:53.6,dpr:1.25,iw:1528}`）⇒ ★ 既有"evaluate 恒 null"要**收窄为"tab 级 `playwright.evaluate()` 恒 null"**；⇒ ☆ 影响＝量几何不必再靠"截图＋像素检测＋除 DPR"，可省大量屏幕预算；② **`screenshot()` 返回跨 realm 的 Uint8Array**＝`raw instanceof Uint8Array` 为 **false**（`constructor.name` 仍是 `Uint8Array`、`String(raw)` 是一串字节、首字节 137＝PNG 签名）⇒ 判形要用 `constructor.name` 或首字节，转换用 `Buffer.from(raw.buffer ?? Uint8Array.from(raw))`。
+
+### 八、★ 屏上否证：主题面板不在这三条路上
+
+⇒ 选中代码块（点块内文本 ⇒ `cm-focused` 出现、DOM ＋1,989 字节）＝全文 **0 处「主题」**、0 个 `<select>`；⇒ `cua.move` 悬停块头（几何由 `locator.evaluate` 给出）＝DOM 长度**一字不差**（179,058）⇒ **块头没有 hover 工具条**；⇒ 右侧栏四 tab（`插入／格式／样式／信息`）点「样式」＝面板是**页面级**（「封面」×2、「背景」×1），仍 0 处「主题」；⇒ ☆ 剩余候选＝块把手（`data-hover-only="true"` 静止态 8 枚）菜单／右键菜单／`⋯` 的「详情」；⚠ **本周期 tab 级命令已用掉 24 条（超 §预算的 ~14 条）** ⇒ 主动停手，不当"官方没有"下否定结论。
+
+### 九、★☆ 顺带采到的官方 HTML 内联注释（内部路径线索）
+
+⇒ 编辑器屏 HTML 的内联脚本里有逐字注释 `Mirrors the resolution logic in src/theme/theme-store.ts.` 与 `…matches the user's choice. Without this, ThemeProvider…`，另有 `parsed === "dark" || parsed === "light") theme = parsed;`；⇒ ☆ 含义＝官方**应用级**主题存储模块路径＝`src/theme/theme-store.ts`，档位字面量＝`dark`／`light`（外加持久化的其它值需回落），且解析发生在**首帧内联脚本**里（防 FOUC）；⇒ ⚠ 与代码块主题**无关**，别混用（同屏还有 `data-theme="light" data-accent="blue" data-whatinput="mouse"` 三个属性在同一元素上）。
+
+**仍未采到（本节）**：① 主题面板的真实入口（三条已否）；② `De("",isDark)` 空串路径的渲染后果；③ `pluginData` 是否会出现在 MCP 读回里（本批判为"写不进所以读不到"，若官方将来放开则需复测）；④ 19 与 21 的差异是名单裁剪还是强制拒绝；⑤ 内联脚本里 `src/theme/theme-store.ts` 的**完整**解析式（本批只读到两条注释与一段条件式，没读全函数体）；⑥ `gutterActiveForeground` 只有 7/20 给了值，其余 13 档 CM6 实际继承到什么未证。

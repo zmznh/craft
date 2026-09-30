@@ -297,8 +297,8 @@
   --callout-note-border: oklch(0.5 0.18 295);
 
   /* Highlight colors (dark — muted) */
-  --editor-blueDark: rgb(3 0 245);
-  --editor-blueLight: rgb(41 98 246);
+  --editor-blueDark: rgb(170 169 249);
+  --editor-blueLight: rgb(65 146 247);
   --editor-cyan: rgb(104 212 251);
   --editor-green: rgb(117 251 190);
   --editor-orange: rgb(240 151 55);

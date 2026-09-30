@@ -1170,3 +1170,55 @@ card 家族（逐字，序列化器 `S1e` 内）＝`{fontStyle,pageStyle,backgro
 **⇒ 本批另两处顺带**＝① 主题挑选面板有独立懒加载 chunk `themePreviews-BJcCJGmn.js`（⇒ 预览是异步取回，不是同步渲染 20 档）；② 浏览屏条目寻址属性是 **`data-item-id`**（实测当前档 8 枚、值为 uuid、挂在卡片 `_outerBox_` 上，同屏 `[data-block-id]` 为 0），而 `_isActive_1nu3o_62` 在静止态 8/8 全带 ⇒ **不能当选中判据**。
 
 **仍未采到（本节）**：① `y.current` 里那份"起手前的旧选择集"最后被怎么用（合并？shift 增选？取消时回滚？本批只读到写入点，没读到读取点）；② `shift`/`meta` 修饰键在框选中的分支（本批只读到无修饰路径）；③ `type` 的第四种取值有没有（`list`／`cards`／`waterfall` 之外）；④ 名册面板的展示序规则（§一 末条）；⑤ 表格档条目到底由哪个属性承载 id（本批未再切档复查）；⑥ `documentsGrid`／`columns` 两个几何模型的**更新时机**（`remeasure` 由谁调）；⑦ **本表 `settings` 名与上批 `ue` 名册值的对应链**（`Bo`→`Lo()`→`Mo`→`ue.materialdark` 是否成立）＝零预算盘上核对项，下批做。
+
+## 三十七、第 111 批＝20 档代码主题 `settings` 全字段逐字（底色一次闭合）＋ 名册同一性全表 ＋ MCP 名册 19 档逐字 ＋ 主题面板入口三条否证（2026-09-30 20:3x–21:1x；★ 源＝`_harvest/js/CodeEditorWrapper-DB8UxA00.js` 定点读＋craft MCP 实测；☆ 机制与判定在 `internals.md §五十`、gap 在 G1141–G1159；★ 逐字表由 `_harvest/b111-theme-scan.cjs` 直接生成、未手抄）
+
+### 一、★★★ 全表（21 行含 `auto`；`两表同一对象?`＝第 110 批 §三十六 的 `V.settings` 与第 109 批 §三十五.一 的工厂内 settings 源是否同一对象）
+
+
+| # | id | label | keywords | isDark | V.settings | 别名链 | 结果变量=工厂() | 工厂形状 | 工厂内 settings 源 | 两表同一对象? | theme 字面量 | tag 数 | background | foreground | caret | selection | gutterBackground | gutterForeground | gutterBorder | fontFamily | settings 键数 | 底色亮度 | 三者一致性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | auto | Auto | ["system"] | true | null | =自身 | null = ?() | - | - | auto→null | - | - | ? | ? | - | - | - | - | - | ? | - | - | auto 不入表 |
+| 2 | craftdark | Dark | [] | true | Ue | =自身 | uo = fo() | arrow | Ue | YES | "light" | 9 | #28292B | #CECFD0 | #fff | #385576 | #28292B | rgba(255,255,255,0.4) | #f4f4f41f | Roboto Mono, monospace | 11 | 40.9 | 不一致：底色暗／字面量亮／isDark暗 |
+| 3 | craftlight | Light | [] | false | We | =自身 | go = io() | arrow | We | YES | "light" | 9 | #FBFBFB | #3D3D3D | - | #BBDFFF | #FBFBFB | rgba(31,34,37,0.3) | - | Roboto Mono, monospace | 9 | 251.0 | 三者一致 |
+| 4 | atomone | Atom One | ["dark"] | true | Pe | =自身 | so = co() | arrow | Pe | YES | "dark" | 8 | #272C35 | #9d9b97 | #797977 | #ffffff30 | #272C35 | #465063 | transparent | Roboto Mono, monospace | 11 | 43.6 | 三者一致 |
+| 5 | aura | Aura | ["dark"] | true | Ke | =自身 | bo = mo() | arrow | Ke | YES | "dark" | 20 | #21202e | #edecee | #a277ff | #3d375e | #21202e | rgba(237,236,238,0.4) | transparent | Roboto Mono, monospace | 11 | 33.2 | 三者一致 |
+| 6 | bbedit | BBEdit | ["light"] | false | Ge | =自身 | ho = po() | arrow | Ge | YES | "light" | 13 | #FFFFFF | #000000 | #FBAC52 | #fffca5 | #f5f5f5 | #4D4D4C | transparent | Roboto Mono, monospace | 10 | 255.0 | 三者一致 |
+| 7 | darcula | Darcula | ["dark"] | true | _e | =自身 | lo = no() | arrow | _e | YES | "dark" | 9 | #2B2B2B | #f8f8f2 | #FFFFFF | rgba(255, 255, 255, 0.1) | #414040 | #999 | transparent | Roboto Mono, monospace | 10 | 43.0 | 三者一致 |
+| 8 | dracula | Dracula | ["dark"] | true | qe | =自身 | yo = ko() | arrow | qe | YES | "dark" | 8 | #282a36 | #f8f8f2 | #f8f8f0 | rgba(255, 255, 255, 0.2) | #282a36 | #6D8A88 | transparent | Roboto Mono, monospace | 10 | 42.4 | 三者一致 |
+| 9 | githubdark | GitHub Dark | ["dark"] | true | ze | =自身 | wo = vo() | arrow | ze | YES | "dark" | 14 | #0d1117 | #c9d1d9 | #c9d1d9 | #003d73 | - | - | #f4f4f41f | Roboto Mono, monospace | 8 | 16.6 | 三者一致 |
+| 10 | githublight | GitHub Light | [] | false | $e | =自身 | Co = xo() | arrow | $e | YES | "light" | 15 | #fff | #24292e | - | #BBDFFF | #fff | #6e7781 | - | Roboto Mono, monospace | 7 | 255.0 | 三者一致 |
+| 11 | gruvboxdark | Gruvbox Dark | ["dark"] | true | Ve | =自身 | Do = No() | arrow | Ve | YES | "dark" | 34 | #282828 | #ebdbb2 | #ebdbb2 | rgba(189,174,147,0.5) | #282828 | #7c6f64 | - | Roboto Mono, monospace | 9 | 40.0 | 三者一致 |
+| 12 | gruvboxlight | Gruvbox Light | [] | false | Ye | =自身 | Fo = So() | arrow | Ye | YES | "light" | 34 | #fbf1c7 | #3c3836 | #af3a03 | rgba(235,219,178) | #ebdbb2 | #665c54 | transparent | Roboto Mono, monospace | 10 | 240.1 | 三者一致 |
+| 13 | materialdark | Material Dark | [] | true | Bo | Bo→Xe | Mo = Lo() | arrow | Xe | YES | "dark" | 36 | #2e3235 | #bdbdbd | #a0a4ae | rgba(215,212,240,0.7) | #2e3235 | #999 | transparent | Roboto Mono, monospace | 11 | 49.4 | 三者一致 |
+| 14 | materiallight | Material Light | ["light"] | false | Qe | =自身 | jo = Ao() | arrow | Qe | YES | "dark" | 20 | #FAFAFA | #90A4AE | #272727 | #80CBC440 | #FAFAFA | #90A4AE | transparent | Roboto Mono, monospace | 10 | 250.0 | 不一致：底色亮／字面量暗／isDark亮 |
+| 15 | noctislilac | Noctis Lilac | ["light"] | false | Je | =自身 | Ro = Io() | arrow | Je | YES | "light" | 15 | #f2f1f8 | #0c006b | #5c49e9 | #d5d1f2 | #f2f1f8 | #0c006b70 | - | Roboto Mono, monospace | 9 | 241.7 | 三者一致 |
+| 16 | nord | Nord | ["dark"] | true | Ze | =自身 | To = Eo() | arrow | Ze | YES | "dark" | 36 | #2e3440 | #FFFFFF | #FFFFFF | #4c566a | #2e3440 | #4c566a | transparent | Roboto Mono, monospace | 11 | 51.6 | 三者一致 |
+| 17 | sublime | Sublime | ["dark"] | true | et | =自身 | Ho = Oo() | function | et | YES | "dark" | 11 | #303841 | #FFFFFF | #FBAC52 | #4C5964 | #303841 | #FFFFFF70 | transparent | Roboto Mono, monospace | 10 | 54.9 | 三者一致 |
+| 18 | tokyonight | Tokyo Night | ["dark"] | true | at | =自身 | Go = Ko() | arrow | at | YES | "dark" | 20 | #1a1b26 | #787c99 | #c0caf5 | #515c7e | #1a1b26 | #787c99 | transparent | ? | 9 | 27.6 | 三者一致 |
+| 19 | tokyonightday | Tokyo Night Day | ["light"] | false | tt | =自身 | Po = _o() | arrow | tt | YES | "dark" | 20 | #e1e2e7 | #3760bf | #3760bf | #99a7df | #e1e2e7 | #3760bf | transparent | Roboto Mono, monospace | 10 | 226.1 | 不一致：底色亮／字面量暗／isDark亮 |
+| 20 | tokyonightstorm | Tokyo Night Storm | ["dark"] | true | ot | =自身 | Uo = Wo() | arrow | ot | YES | "dark" | 20 | #24283b | #7982a9 | #c0caf5 | #6f7bb6 | #24283b | #7982a9 | transparent | ? | 9 | 40.5 | 三者一致 |
+| 21 | vscodedark | VS Code | ["dark"] | true | rt | =自身 | $o = qo() | function | rt | YES | "dark" | 17 | #1e1e1e | #9cdcfe | #c6c6c6 | #6199ff2f | #1e1e1e | #838383 | transparent | Roboto Mono, monospace | 11 | 30.0 | 三者一致 |
+
+### 聚合（20 档，auto 除外）
+⇒ gutterBorder 取值分布＝{"#f4f4f41f":2,"(无此键)":4,"transparent":14}
+⇒ fontFamily 取值分布＝{"Roboto Mono, monospace":18,"(无此键)":2}
+⇒ caret 分布＝{"#fff":1,"(无此键)":2,"#797977":1,"#a277ff":1,"#FBAC52":2,"#FFFFFF":2,"#f8f8f0":1,"#c9d1d9":1,"#ebdbb2":1,"#af3a03":1,"#a0a4ae":1,"#272727":1,"#5c49e9":1,"#c0caf5":2,"#3760bf":1,"#c6c6c6":1}
+⇒ 每档 settings 键数分布＝{"7":1,"8":1,"9":5,"10":7,"11":6}
+⇒ 每个键在 20 档里出现的档数＝background=20/20、foreground=20/20、selection=20/20、selectionMatch=20/20、lineHighlight=19/20、gutterBackground=19/20、gutterForeground=19/20、caret=18/20、fontFamily=18/20、gutterBorder=16/20、gutterActiveForeground=7/20
+
+⇒ ★ 判据公式（可复算）＝亮度 `0.2126R + 0.7152G + 0.0722B`（Rec.709 加权、0–255 域），阈值 **128**（小于判暗），三位十六进制（`githublight` 的 `#fff`）先展开成六位再算；⇒ ☆ 表里 `-` ＝该档 settings **没有这个键**，`?` ＝非字符串值或本脚本没解析（`auto` 行整行不适用）。
+
+### 二、★★★ 闭合结论
+
+⇒ **底色 20/20 闭合**（上批 14 档"未逐字"一次补完）；⇒ **暗标记错配＝恰好 3 档**＝`craftdark`（暗底、字面量 `"light"`）／`materiallight`（亮底、`"dark"`）／`tokyonightday`（亮底、`"dark"`），其余 **17 档三者一致**；⇒ ★ **两表同一对象 20/20 成立**（唯一别名＝`materialdark` 的 `Bo=Xe`）⇒ 第 110 批开放项⑦结案；⇒ ☆ **声明形状两种**（18 箭头＋2 `function`）＝`sublime`（`function Oo(o)`）与 `vscodedark`（`function qo(o)`）。
+
+### 三、★★ MCP 面的代码主题名册逐字（19 条，`blocks explore-themes --type code`）
+
+⇒ 逐条＝`auto`（Automatically match system appearance）、`atomone`（Atom One theme）、`aura`（Aura theme with soft colors）、`bbedit`（BBEdit classic theme）、`darcula`（JetBrains Darcula theme）、`dracula`（Popular Dracula color scheme）、`githubdark`（GitHub Dark theme）、`githublight`（GitHub Light theme）、`gruvboxdark`（Gruvbox Dark (retro colors)）、`gruvboxlight`（Gruvbox Light (retro colors)）、`materialdark`（Material Design Dark）、`materiallight`（Material Design Light）、`noctislilac`（Noctis Lilac purple theme）、`nord`（Nord polar-inspired theme）、`sublime`（Sublime Text Monokai-like）、`tokyonight`（Tokyo Night dark theme）、`tokyonightday`（Tokyo Night Day variant）、`tokyonightstorm`（Tokyo Night Storm variant）、`vscodedark`（VS Code Dark+ theme）；⇒ ★★ **缺 `craftlight`／`craftdark`**（界面名册有、且 `auto` 恰好解析到这两档）⇒ 名册 19 对 21；⇒ ⚠ 同一条输出末尾印的 Usage＝`These themes are used with code blocks via --theme-id` ＋ 例子 `blocks update --id <code-block-id> --theme-id dracula` —— **实测该例子必失败**（`--theme-id` 走页面名册），见 `internals.md §五十.四`。
+
+### 四、☆ 官方色值缺陷清单（本批增量）
+
+⇒ ①（承第 109／110 批）`deleted` 的 `backgroundColor:"ffeef0"` 缺前导 `#`＝**四档同串**，登记不修正；② ☆ 新登记一条**非缺陷但易踩**＝`githublight` 的 `background` 是**三位** `#fff`（其余 19 档全六位）⇒ 按"必须是六位"写的解析器会在这档静默失败；③ ☆ `gruvboxlight.selection`＝`rgba(235,219,178)`（**三个分量、无 alpha**，CSS 合法但看着像漏写）⇒ 登记为"官方写法不规范"，不判缺陷。
+
+**仍未采到（本节）**：① 20 档里 `styles`（token 色板）**仍只有第 109 批那 7 档逐字**，本批只闭合了 `settings` 一族；② `gutterActiveForeground` 缺的 13 档实际继承值；③ 主题面板屏上入口（三条已否，剩块把手菜单／右键菜单／`⋯` 详情）；④ `V` 名册的**展示序规则**（承第 110 批开放项④，本批仍未判：表里 `tokyonight` 排在 `tokyonightday` 之前，既非纯字母也非"亮前暗后"）；⑤ MCP 19 档与界面 21 档差值的**强制层**（拒绝还是只是不列）。

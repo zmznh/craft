@@ -33,7 +33,7 @@ export const CODE_LANGUAGES = [
 
 export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
   const [copied, setCopied] = useState(false);
-  const language = (node.attrs.language as string) || 'plaintext';
+  const language = (node.attrs.language as string) ?? '';
 
   const copy = async () => {
     try {

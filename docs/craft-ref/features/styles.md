@@ -922,3 +922,27 @@
 静止态 `[class*="_isActive_"]` 命中 **8/8 张卡** ⇒ **`_isActive_` 不是"被选中"**；卡片档的选中判据只能走 `role="checkbox"` 的 `aria-checked`（本批框选起手时确有 1 枚翻 true）或选择 store（`selectedIds`）。
 
 **仍未采到（本节）**：① 卡片环 `_focusRing_` 真正显示时的态（要 `:focus-visible` 或选中态，本轮静止）；② 框选矩形的屏上运行值（`top/left/width/height` 实数与是否被滚动改写）；③ 第二档与第三档下的 `--col-*-width`（本批只在表格档读到三条）；④ 具名容器在**更窄视口**下（<768）两列是否也一起消失；⑤ `_divider_1m9yz_56` 与 `_thumbnailCol_1m9yz_160` 的可见条件与实宽；⑥ `--radius-sm` 与框选圆角的实测值（未量）。
+
+## 十八、第 111 批＝20 档代码主题底色全表（暗标记错配闭合）＋ `settings` 键集分布 ＋ 本地暗档语法色已对齐（2026-09-30 20:3x–21:1x；★ 源＝`_harvest/js/CodeEditorWrapper-DB8UxA00.js` 逐字＋`locator.evaluate` 屏上实测；☆ 全表在 `longtail.md §三十七.一`，gap 在 G1143–G1147／G1159）
+
+### 一、★★★ 暗标记错配＝恰好 3 档（判据可复算）
+
+⇒ 判据＝亮度 `0.2126R + 0.7152G + 0.0722B`（Rec.709、0–255 域）、阈值 **128** 判暗、三位十六进制先展开；⇒ 逐档亮度（暗档侧）＝`githubdark 16.6`／`tokyonight 27.6`／`vscodedark 30.0`／`aura 33.2`／`craftdark 40.9`／`gruvboxdark 40.0`／`tokyonightstorm 40.5`／`darcula 43.0`／`atomone 43.6`／`dracula 42.4`／`materialdark 49.4`／`nord 51.6`／`sublime 54.9`；（亮档侧）`githublight 255.0`／`bbedit 255.0`／`craftlight 251.0`／`materiallight 250.0`／`noctislilac 241.7`／`gruvboxlight 240.1`／`tokyonightday 226.1`；⇒ ★ **错配三档**＝`craftdark`（暗底 40.9、工厂字面量 `"light"`）／`materiallight`（亮底 250.0、`"dark"`）／`tokyonightday`（亮底 226.1、`"dark"`）⇒ **CM6 只吃工厂字面量**（`li.theme(O,{dark:i==="dark"})`）⇒ 这三档的 CM6 侧暗标记是反的，而选择器 `isDark` 是对的 ⇒ ☆ 本地若做代码主题面：**以 `isDark` 为准**，并把这三档的官方错配登记为"不照抄"。
+
+### 二、★★ `settings` 键集分布（不是定长对象）
+
+⇒ 键数分布 `{7:1, 8:1, 9:5, 10:7, 11:6}`；⇒ 逐键出现档数＝`background`／`foreground`／`selection`／`selectionMatch` 20/20、`lineHighlight`／`gutterBackground`／`gutterForeground` 19/20、`caret`／`fontFamily` 18/20、`gutterBorder` 16/20、`gutterActiveForeground` **7/20**；⇒ ★ `gutterBorder` 三态＝14 档 `transparent` ＋ 2 档 `#f4f4f41f`（**只有 `craftdark` 与 `githubdark`**，逐字同串）＋ 4 档无键（`craftlight`／`githublight`／`gruvboxdark`／`noctislilac`）；⇒ ☆ `fontFamily` 缺 2 档（`tokyonight`／`tokyonightstorm`）＝这两档代码字体不落 settings；`caret` 也缺 2 档（`craftlight`／`githublight`）。
+
+### 三、★ 官方不规范写法两条（登记不修正）
+
+⇒ `githublight.background` ＝ **三位** `#fff`（其余 19 档六位）；⇒ `gruvboxlight.selection` ＝ `rgba(235,219,178)`（三分量、无 alpha，CSS 合法但看着像漏写）；⇒ ☆ 与既有缺陷（`deleted` 的 `"ffeef0"` 缺 `#`，四档同串）同族＝**官方色值串写法不统一**。
+
+### 四、☆ 屏上量到的应用级样式事实（本批顺带）
+
+⇒ 编辑器屏同一元素上并排 `data-theme="light"` `data-accent="blue"` `data-whatinput="mouse"` ⇒ ★ 应用级主题与强调色是**属性驱动**（与代码块主题无关，别混用）；⇒ ☆ 视口实测 `innerWidth 1528`、DPR 1.25、截图 1910×867 ⇒ 与第 110 批的 1204/916 是**不同窗口尺寸**，跨批几何不可直接比字节；⇒ ★ 右侧栏四 tab 的 label 在 DOM 里**各出现两次**（`sc-pdtez-1` ＋ `sc-pdtez-0` 两个 span）⇒ 按文本定位会命中不可作用元素（本批 `click()` 因此超时）。
+
+### 五、★★ 本地已对齐项（本批改的两行）
+
+⇒ `src/app/globals.css:300-301` 暗档 `--editor-blueDark` 由 `rgb(3 0 245)`→`rgb(170 169 249)`、`--editor-blueLight` 由 `rgb(41 98 246)`→`rgb(65 146 247)`（＝官方暗档逐字，G1068）⇒ ☆ 至此本地 `.dark` 的 `--editor-*` 一族**全部**与官方暗档一致（除 G1068 记的"缺 `--editor-text`／`--editor-spectrum`"与命名大小写差仍在）；⇒ ★ 测试守＝`src/lib/editor/dark-syntax-tokens.test.ts`（读 CSS 断言暗档两值＋亮档两值不被改动）。
+
+**仍未采到（本节）**：① 20 档的 `styles`（token 色板）仍只有第 109 批 7 档逐字；② `gutterActiveForeground` 缺的 13 档实际继承到什么值；③ 主题在屏上的**实际渲染底色**（本批全部来自盘上 settings，未做屏上底色对照，因主题面板入口未找到）；④ `--editor-spectrum` 与 `--editor-text` 在本地补齐（G1068 的缺失半条）。

@@ -2992,3 +2992,36 @@ HJe = (t, e) => { let n = {};
 ⇒ ☆ 三条门槛由此而来＝① 判"选中"不能看 `_isActive_1nu3o_62`（静止态 8/8 全带）；② 判"正在拖选"要读 store 而不是 DOM；③ 浏览屏行/卡 e2e 选择器应当用 `data-item-id`，别沿用编辑器屏的 `data-block-id`。
 
 **仍未采到（本节）**：① 除 `card`／`codeBlock`／`unknown` 之外的 `pluginName`（网页预览／图形块）；② `codeEditorState` 的完整字段（只读到 `blockId`）；③ 选择 store 的其余动作（有没有 `addToSelection`／`toggleSelection`，本批只读到 `replaceSelection`／`clearSelection`）；④ `waterfall` 型对应官方哪一屏（本批三枚按钮只证到两枚的类归属）；⑤ `items`／`documentsGrid`／`columns` 三份模型的构建处（谁算的、什么时机）。
+
+## 一之六十九、第 111 批＝代码块在 MCP 面上的读写契约（逐字段，含三条写通路全否）（2026-09-30 20:3x–21:1x；★ 源＝craft MCP 数据面实测（沙盒 `QODER-HARVEST-B111-THEME`，3 个代码块）；☆ 机制在 `internals.md §五十`、gap 在 G1148–G1156）
+
+### 一、★★ 读回字段（`blocks get --format json`，逐键）
+
+| 层 | 逐字键集 | 备注 |
+| --- | --- | --- |
+| 页面根 | `id, type:"page", textStyle:"page", markdown, content[]` | `markdown` 在根上＝**标题文本**（不是整篇） |
+| 代码块（有语言） | `id, type:"code", language, rawCode, markdown` | `rawCode`＝正文载体；`markdown`＝派生围栏串 |
+| 代码块（无语言） | `id, type:"code", rawCode, markdown` | ★ **`language` 键整个省略**（不是空串、不是 `null`）⇒ 与 G1105 同一条 |
+| 代码块（设过主题） | **不可达**（数据面写不进主题，见下节） | ⇒ ☆ 第 110 批盘上读到的 `pluginData.pluginConfigurationData.themeId` **在 MCP 读回里是否出现，本批判为"当前无法证"** |
+| 文本块（模板文档实测） | `id, type:"text"` ＋ 可选 `textStyle, textAlignment, decorations[], color, listStyle, taskInfo{state}, markdown` | ☆ `decorations:["callout"]` 与 `markdown` 里的 `<callout><caption>…` **同时出现**＝标记双向映射 |
+
+### 二、★★★ 写主题的三条通路（全部否定，逐字回包）
+
+| 通路 | 请求逐字 | 官方回包逐字 | 判定 |
+| --- | --- | --- | --- |
+| ① flag | `blocks update --id <代码块> --theme-id dracula` | `Error 1: Error: Theme "dracula" not found. Use "blocks explore-themes --type page" to see available themes, or apply style properties one-by-one (backdrop, colors, etc.).` | ✗ 该 flag 绑**页面**主题名册 |
+| ② `--json` 带 `theme` | `--json {"id":…,"rawCode":…,"theme":"dracula"}` | `MCP tool invocation did not complete`（读回复核＝`rawCode` 未变） | ✗ 未落库 |
+| ③ `--json` 带 `type` ＋ `theme` | `--json {"id":…,"type":"code","rawCode":…,"theme":…}` | 一次 `did not complete`、一次 `Invalid JSON update payload at "root": Invalid input` | ✗ 报错只到 root、不指字段 |
+| 对照（成功基线） | `--json {"id":…,"rawCode":"var qoderB111 = 2"}` | `Updated block <7ad87e09…>.` | ✓ 桥正常，坏的是 payload 形状 |
+
+⇒ ★★★ **结论**＝代码块主题**没有数据面写通路**；官方唯一的写路径是 UI 里那条 `Ut([blockId], {pluginType:"codeBlock", pluginName:"codeBlock", pluginConfigurationData:{themeId}, horizontalSizeClass:null, verticalSizeClass:null, surfaceShadowOpacity:1})`（第 110 批逐字）⇒ ☆ 本地建模时**不要**为"API 改主题"留接口。
+
+### 三、★ `blocks add`／`blocks get` 的接口信息量
+
+⇒ 一次 `blocks add --markdown` 插 3 个围栏块 ⇒ 回包 `Added 3 blocks. IDs: <只给第一个 id>`（★ 另两个 id 只能读回拿）；⇒ `blocks get --format json` **间歇挂起**（同命令先成功后挂两次再成功），`--format markdown` 全程正常；⇒ ★ **回收站里的文档两条通路都照样读得到**（`QODER-HARVEST-B109-CODEFIELD` 7 个块全回）；⇒ ☆ `documents list` 不带 `--location` 时**含回收站**（复证），且 `--filter` 在该命令上**不生效**（回全量 12 条）。
+
+### 四、☆ 数学公式在序列化层的形状（待与导出映射表对账）
+
+⇒ 第 109 批沙盒里那条公式块，MCP 读回＝`{type:"code", language:"math_formula", rawCode:"x^2", markdown:"```math_formula\nx^2\n```"}` ⇒ ★ **公式在数据面就是一种代码语言**；⇒ ⚠ 本地公式走独立 KaTeX 通路（`src/lib/math/render.ts`），`CODE_LANGUAGES`（`code-block-view.tsx:9-32`，22 条）里**没有** `math_formula` ⇒ 记为**有意偏差**（原因＝本地另有渲染器，把公式塞进代码语言会双轨）。
+
+**仍未采到（本节）**：① 设过主题的代码块在 MCP 读回里的键形状（当前不可达）；② `collections`／`richUrl`（link card）在写侧的字段形状（本批只证到读侧）；③ `math_formula` 与既有导出映射表（`model.md` 导出节）的逐档对账；④ `documents create --destination unsorted` 的回包同时给了 `rootBlockId` 与另一个 `documentId`（`craftdocs://` 深链里那个），**两者不等**⇒ 两者的作用域差别未判。

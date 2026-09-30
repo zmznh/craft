@@ -2404,3 +2404,46 @@ if (type === "fixed") {
 **⇒ 现场还原（本批末状态）**：布局遮罩 `F..`（＝开场值）；两属性 `mouse`/`mouse`；`activeElement=BODY`；⌘K 面板已关（`quick-search-input` 不存在）；`data-whatelement`/`data-whatclasses` 为空；无新建实体（`manifest.jsonl` 150 → **151 行**，仅追加一条"偏好切换＋还原"）；☆ 一次 `sessionStorage` 清理属**仪器自修**（只删 `what-input`/`what-intent` 两键，未碰任何鉴权或偏好键）。
 
 **仍未采到（本节）**：① 拖拽进行中的矩形视觉与 `position:fixed` 下的实际视口坐标（屏上未证，仅盘上）；② `shift`/`meta` 修饰键对框选命中集的分支；③ 起手前那份旧选择集 `y.current` 的用途；④ ⌘K 面板在 `Escape` 下的行为（本批改用重载关闭，未复测 V3 那条"Escape 关不掉「跳转到」"是否仍成立）；⑤ 第二枚按钮（档 B）的正式名称与"waterfall 是否就是它"（型制枚举里有 `waterfall`，三枚按钮的标签只有图标 `aria-label` 可读）；⑥ 键盘在浏览屏的完整 tab 序（只测到首枚落点）。
+
+## V105〔第 111 批 2026-09-30 20:3x–21:1x〕代码块主题的**数据面写入**与**屏上入口**探索（★ 混合批：craft MCP 数据面＋屏上只读；沙盒＝`QODER-HARVEST-B111-THEME`，**建了未清**）
+
+### 一、数据面写主题＝逐条操作与回包（六步协议里的"触发＋观测"）
+
+| 步 | 操作（逐字命令） | 观测／回包 | 判定 |
+| --- | --- | --- | --- |
+| 1 | `documents create --title QODER-HARVEST-B111-THEME --destination unsorted` | 回 `rootBlockId: e5696832…` ＋ 另一个 `documentId: 1847e8e5…`（★ 两值不等）＋ 一句 `Next: add body content, not the title…` | ✓ 建成功；☆ 祈使句只记"官方声明了 X" |
+| 2 | `blocks add --id <page> --markdown`（三个围栏块，块间空行） | `Added 3 blocks. IDs: <133c06ea…>` | ✓ 三块入库；★ 只回首个 id |
+| 3 | `blocks get <page> --format json` | 三块逐字 `{id,type:"code",language,rawCode,markdown}`，**无 pluginData／无 theme** | ✓ 基线键集到手 |
+| 4 | `blocks update --id <块B> --theme-id dracula` | `Theme "dracula" not found. Use "blocks explore-themes --type page"…` | ✗ flag 绑页面名册 |
+| 5 | `blocks update --id <块B> --json {"id":…,"rawCode":…,"theme":"dracula"}` | 调用挂起（`did not complete`） | 未落库（由步 7 复核） |
+| 6 | 同上去掉 `theme`、加 `type:"code"` | 一次挂起、一次 `Invalid JSON update payload at "root": Invalid input` | ✗ |
+| 6b | 对照 `--json {"id":…,"rawCode":"var qoderB111 = 2"}` | `Updated block <7ad87e09…>.` | ✓ 桥正常 |
+| 7 | 再 `blocks get --format json` | `rawCode` 仍是 `var qoderB111 = 2` ⇒ ★ 步 5 那条 `=3` **没落库** | ✓ 用读回代替重发 |
+| 8 | 屏上截图同一文档 | 第二块渲染出 `var qoderB111 = 2` ⇒ **独立佐证**步 7 | ✓ 双判据 |
+
+⇒ ★★ 桥的坏形态＝步 5 挂起之后，`blocks get --format json` 与 `connection info` **一起挂**（等 30 s 无效）⇒ 无 per-call 超时隔离；⇒ ☆☆ 纪律＝**写挂起后不要重发写**，改读回判状态（本批据此避免了一次可能的双写）。
+
+### 二、屏上入口探索＝三条路逐条否证（每步一个动作＋三连指纹）
+
+| 候选入口 | 手法 | 指纹（DOM 长度／关键词） | 判定 |
+| --- | --- | --- | --- |
+| ① 选中代码块后块头 | `getByText('qoder-b111-control').first().click()` | 182,314 → 184,303（＋1,989），`cm-focused` 8 处；「主题」0、「语言」0、`<select>` 0 | ✗ 无工具条 |
+| ② 悬停块头 | `locator.evaluate` 量到 `x398 y173 w736 h53.6`（DPR 1.25、`innerWidth 1528`）→ `cua.move({x:1098,y:181})` | DOM 长度 **179,058 一字不差** | ✗ 块头不随 hover 出内容 |
+| ③ 右侧栏「样式」tab | `getByRole('button',{name:/样式/}).last().click()`（★ 该 tab 的 label 在 DOM 里**出现两次**：`sc-pdtez-1` 与 `sc-pdtez-0` 两个 span ⇒ `getByText('样式').first()` 命中不可作用元素、`click()` 超时） | 面板出现「封面」×2、「背景」×1；「主题」0 | ✗ 该 tab 是**页面级**样式 |
+
+⇒ ☆ 剩余候选＝块把手（`data-hover-only="true"`，静止态 8 枚）菜单／右键菜单／`⋯` 的「详情」；⇒ ⚠ **本周期 tab 级命令已 24 条（超预算 ~14）** ⇒ 主动停手，**不当"官方没有主题面板"下否定结论**（面板与 `themePreviews-BJcCJGmn.js` 的 modulepreload 都在，只是入口没找到）。
+
+### 三、交付闸门（本批自设，逐条实测）
+
+| 闸门 | 实测 | 结论 |
+| --- | --- | --- |
+| 窗口可见才可按键 | 本批未按键位（`cua.move` 生效即证明前台） | 未触发 |
+| 一次一个动作 | 步 4～8 各一 cell；屏上每 cell 一个 mutation | ✓ 遵守 |
+| 派发后 ≥400 ms 才判静默 | 每步 `setTimeout` 1,200–2,500 ms | ✓ 遵守 |
+| 指纹三连 | DOM 长度＋关键词计数＋（步 8）截图 | ✓ 遵守 |
+
+### 四、现场状态与还原（★ 下批开场必读）
+
+⇒ ⚠ **沙盒 `QODER-HARVEST-B111-THEME` 未删**（MCP 桥挂死＋屏上预算用尽）；⇒ ⚠ **第 109 批残留 `QODER-HARVEST-B109-CODEFIELD` 仍在回收站**（未二次清空，用户已点头"清"，本批没来得及做）；⇒ ⚠ **用户的 Edge 标签页当前停在沙盒文档**（本批从「所有文档」点进去的），下批第一件事＝回「所有文档」并自证标题（★ 注意离开编辑器页的 `beforeunload` 原生弹窗形态＝停摆 #23）；⇒ ☆ 那 3 个无标题回收站文档**不是**我建的，未动。
+
+**仍未采到（本节）**：① 主题面板入口（三条已否）；② 面板内逐档预览与 `themePreviews` chunk 的实际拉取时机（modulepreload 已证，运行时是否再取未证）；③ `De("",isDark)` 空串路径的渲染后果；④ 沙盒删除后的**残留三连**（本批未做删除，三连未跑）。
