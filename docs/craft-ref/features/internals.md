@@ -1048,3 +1048,22 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 4. ☆ **顺带一条**＝临时注入的 `aria-label`／`role`／`tabindex` 会**跨行保留在同一个节点上**（因为节点是单例）⇒ 只需注入一次，也只需清理一次。
 
 **仍未采到（本机制面）**：手柄行的**写入方**（哪个 handler 监听沟槽 pointermove、是否节流）；幽灵预览与手柄是否共用同一 portal；`sc-1iqnrwp-*` 与 `sc-cyjsqg-*`／`sc-1yfn40-*` 三个 styled 组件的分工；沙盒删除后手柄节点是否残留（本轮未查，属屏上卫生项）。
+
+## 四十、**块 DOM 是"一父五子"的分层（左沟槽／文本／整行／右沟槽／0×0 portal），且官方块落点**不做 y 带数学**（搜证）**（✓屏上反推＋bundle 搜证 第 101 批 2026-09-30 09:0x–09:4x；原始读数在 `gap.md` §三点一〇四七 G1025／G1029、`interactions.md` V95 §三）
+
+1. ★★ **一个正文块的完整子层结构**（本轮第一次把一个块的 `children` 全量读回，沙盒页）：`[data-block-id]`（rect `358,173,654,28`）之下依次＝
+   - `div.sc-cyjsqg-0`＝**左沟槽热区**，rect `228,171,250,28` ⇒ 从正文左缘**向外扩 130px**、并向内盖到 x=478（正文 x=358）；
+   - `div.sc-3a69oq-1`＝**文本层**，rect `358,175,654,23`；
+   - `div.sc-1fwvj4a-1`＝**整行层**，rect `352,173,666,28`（比正文宽 12px、左右各溢出 6）；
+   - `div.sc-cyjsqg-1`＝**右沟槽热区**，rect `892,171,250,28`；
+   - `div.sc-1fwvj4a-2`＝**0×0 的 portal 容器**（手柄浮层挂这里，承 §三十九）。
+   ⇒ 本地含义：官方的"可拖拽热区"不是一个 24px 图标，而是**整条 250px 宽的沟槽**（手柄只是沟槽命中后浮出来的视觉）；本地若只给图标本身可拖，热区小一个量级。
+2. ★★★ **块级落点判定里找不到 y 带数学**（一条**反向证据**，务必按证据强度消费）：在已加载的 56 个 JS 资源里，主包 `index-DiTmKH3z.js`（6,841,180 字符）中 `data-block-id` 只出现 **8 次**，且**没有任何一次**与 `clientY` 相邻 600 字符内；全库 `"into"`／`"child"` 位置字面量 **0 次**；能搜到的 `clientY` 数学属于**画廊**（`to < Eo.left + Eo.width/2 ? "left" : "right"`＝水平二分）与**卡片倾斜／白板**（`(clientY - top)/height` 归一化）两类，都不是正文块。⇒ **官方正文块的落点很可能按"命中了哪个 DOM 元素"而不是"点在行的哪一段"来判定** ⇒ 这正好解释第 100 批"落到目标块中心＝插到其前"，并把"落到子块＝嵌套"升为首选假说。⚠ **这是"搜不到"不是"不存在"**：块拖拽的实现可能在未加载的懒加载 chunk 里，也可能用了 `over` 回调而不读坐标。
+3. ★★ **同一屏内并存两套按钮体系**（承 §三十五"编辑器内部件是 styled-components 不是 CSS Modules"，本轮把边界画清）：
+   - **CSS Modules hash 族**＝DS 按钮：`_button_1bml7_1 _variantPlainDanger_1bml7_165 _sizeMd_1bml7_*`（回收站工具栏）、`_content_16nf6_9`（菜单）、`_wrapper_1fgll_1`（全选框）、`_action_1j891_1`（菜单动作项）；
+   - **styled-components 族**＝`sc-wrwa8u-4 bdLahy` ＋ `sc-1bl4h28-1 kvoRFL FilledDanger`（**确认框里的「删除」按钮**）、`sc-1iqnrwp-0`（手柄）、`sc-cyjsqg-*`（沟槽）、`sc-3a69oq-*`／`sc-1fwvj4a-*`（块内层）、`sc-1mvhc0q-*`（正文容器）、`sc-1jxvk3b-*`（标题块）。
+   ⇒ 含义＝**确认框不是 DS 组件**（或走的是 DS 的另一份 styled 旧实现）⇒ 本地按 `data-block-id`／`sc-` 找编辑器内部件、按 `_hash_` 找 DS 控件的**双词典规则**再次成立，且新增一条：**弹层/确认框要按 `sc-` 找**。
+4. ★ **编辑器的选择模型自持、不镜像进 DOM Selection**：连接器点击与 7 连发都能命中块 DIV、`activeElement` 落在编辑器 DIV、`hasFocus:true`，但 `document.getSelection().rangeCount` 恒 **0**，而 `Alt+↑` 照样生效 ⇒ **a11y／Selection API 读不到官方的光标与选择范围**（第七条仪器边界的另一面）；本地 TipTap 是 ProseMirror 真 Selection，**这条差异无法 1:1，也不该 1:1**。
+5. ☆ **页内 `fetch` ＋ 正则回片段**是零预算挖 bundle 的可行通路（本轮用它扫了 56 个资源、定位到 6 个含 `clientY` 的文件、读出画廊落点的水平二分式）：原文不进仓库、不进上下文，只回计数与窗口片段；⚠ 但**只能证明"搜得到什么"，不能证明"官方只有这些"**。
+
+**仍未采到（本内部面）**：正文块拖拽的**真实判定函数**（在哪个 chunk、是否用 `over` 回调）；`pse(el, ctx)` 这个被画廊用的"相对位置"辅助函数的定义；确认框 `sc-1bl4h28-1` 族的完整规则（本轮只读到类名，未读样式）；`sc-cyjsqg-0/1` 两条沟槽的 `pointer-events`／`z-index` 关系（本轮只读到 `pe:"auto"`）；DS 与 styled 两套按钮的**混用清单**（哪些弹层用哪套）。
