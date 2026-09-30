@@ -2309,3 +2309,39 @@ if (type === "fixed") {
 7. **⇒ 本地落点**＝① G1080／G1082 的落地参数已全部到手（两个属性都写、intent 只被移动类事件改、`pa` 名单冻结、`sessionStorage` 持久化）；② **焦点类样式的验收脚本要加一条 `hasFocus()` 前置断言**（本地 Playwright 走真焦点，一般不为假，但跨 worktree 复用端口时窗口不可见会撞上，承第 104 批那条端口坑）；③ 排版档显式声明这条影响 G1092 的改法（`.typography-*` 类要挂到组件上，而不是靠父级继承）。
 
 **仍未采到（本节）**：三档焦点环（＋1.5／−2／−1）的屏上证据——**两次撞在同一条 `hasFocus:false` 上**，需用户点一下浏览器窗口；`:hover` → `:active` 的触摸端实证（本批无触摸档，需 DevTools 触摸模拟或真触摸）；主分支（输入框里冻结 intent）未裁；`data-whatclasses` 缺陷形对官方样式的实际影响（有没有 CSS 依赖整串 class 列表）未查；☆ 网格四公式与 `_col*` 三列的屏上对照（只拿到 JS 逐字）；⚠ 本批**没有对回收站／任务面做任何数据观察**（只读焦点与几何，未动选择模式）⇒ 残留三连不适用，但 `sessionStorage` 与焦点态确曾改动、已还原并逐条读回确认。
+
+## V103〔第 109 批 2026-09-30 17:0x–17:4x 本地＝UTC 09:0x–09:4x〕**焦点层第一次在"窗口真焦点"下取证＝`:focus` 与 `:focus-visible` 都匹配、DS 按钮的环逐字到手、闸门确认是 `data-whatinput`；★★★ 同时立两条仪器纪律（屏上线宽的 DPR 量化、手改 `data-what*` 会造成失同步并使后续"没变化"读数作废），并作废本批自己一条真按键读数**（★ 本轮是第 107 批 V101 立的那条"可屏上验证的预测"的**部分结案**：环的归属读到了，但"表单控件里冻结 intent"的主分支仍未裁；⚠ 全程零数据写入＝没有任何点击激活、没有选择模式、没有偏好改动，只有属性／焦点／滚动位置的瞬态改动且已逐条还原）
+
+### 1. 现场条件与开场（★ 这次终于满足）
+
+第 108 批两次撞在 `document.hasFocus()===false`；本轮开场时 `/trash` 屏仍是 `visible ＋ hasFocus:false`，**用户把窗口切到前台后**（同一批内）读到 `visibilityState:"visible"` ＋ `hasFocus():true` ＋ `activeElement:"A"` ＋ `innerWidth:991` ＋ `devicePixelRatio:1.25`；⇒ ☆ **纪律照旧＝`hasFocus` 为假时一律不做焦点类读数**（V102 第 9 条那条边界本轮被正面证据推翻其"不可知"部分，见 §2）。
+
+### 2. ★★★ 正向证据＝真焦点下 `:focus` 与 `:focus-visible` 全部匹配
+
+对 `mainWrapper` 内 10 枚可见可聚焦元素逐枚 `focus()` ＋ 现场断言 `document.activeElement === 目标` ⇒ **10/10 都返回 `matches(':focus')===true` 且 `matches(':focus-visible')===true`**；⇒ ★ 结案＝**G1100 是纯仪器边界**（官方焦点样式确实存在，历批"焦点环三档"不是虚构）；☆ 鼠标档下这些元素的 `outline-style` 仍是 `none` ⇒ 无环的原因是**闸门**而不是样式缺失。
+
+### 3. ★★★ 环的归属结案＝`data-whatinput` 决定，与 `:focus-visible` 的浏览器判定无关
+
+① 把两档属性写成 `mouse` ⇒ DS 按钮 `outline-style:none`；② 让**库自己**把属性写成 `keyboard`（派发带 `keyCode:9` 的合成 `keydown`）⇒ 同一按钮 computed 变成 `outline:solid 1px rgb(113,178,255)` ＋ `outline-offset:-1px`（原始读数 0.8px／−0.8px，按 §6 的律换算）；⇒ ★ **与逐字模板 `outline:1px solid var(--accent-500);outline-offset:-1px;` 完全对上**，且环色＝暗档 `--accent-*-500` 的 `113 178 255`（与第 107 批色阶表交叉咬合）；⇒ ☆ 结论口径＝**复刻时"环"要挂在 `input` 属性上，不能只写 `focus-visible:`**（本地 `src/components/ui/button.tsx:6` 现在正是只写 `focus-visible:ring-3 ring-ring/50`）。
+
+### 4. ★★ 预测的裁决＝"DS 按钮环出来、任务卡片环不出来"这一条**没能裁**
+
+第 107 批 V101 的预测前提是"在输入框里敲键盘会让 `input` 变 `keyboard` 而 `intent` 冻结"；本轮**造不出这个前提**＝对真实 `<input>` 调 `focus()` 后 `document.activeElement` 落在**外层 `SPAN`**（逐字 `ae:"SPAN"`）⇒ 与第 108 批在 checkbox 上撞到的**同一类现象**（自定义控件把焦点托管在外层容器）；⇒ ☆ 该预测**维持"待裁"**，不得写成官方行为（`gap.md` G1099 的"主分支未证"照旧）。
+
+### 5. ★★★ 本批最贵的一条＝手改 `data-what*` 会让后续所有"没变化"读数失去信息量（并作废本批一条真按键读数）
+
+时序逐字＝① 我把 `data-whatinput`／`data-whatintent` 强写为 `mouse`；② 用连接器打一次**真实** `Tab`；③ 窗口捕获日志证明事件送达且形态正确＝`keydown`／`Tab`／`Tab`／`kc9`／`trtrue`／`ae A`；④ 读数＝**`sessionStorage` 两键变成 `keyboard`／`keyboard`，而 DOM 两枚属性仍是 `mouse`／`mouse`**；⇒ 真因＝库内部保存 current intent，**新值与内部值相同就不再写 DOM**；我手写的值与它内部值不一致，但它认为"没变化"。⇒ ★ **那条"真按键没切档"的读数判废**（G1112），**严禁**写进任何"官方是否响应 Tab"的结论；⇒ ☆ 通用形态＝**凡是"外部写入 ＋ 内部状态"双写的机制，人工写入之后所有'没变化'的读数都不可定性**；要么别写，要么写完就把内部状态也一起重置（本桥做不到 ⇒ 只能重开页面）。
+
+### 6. ★★★ 屏上线宽的 DPR 量化律（新增判据，影响历批所有 1px 级读数）
+
+自插探针实测（同一帧、同一文档）＝`border:1px` → `0.8px`、`outline:medium`(3px) → `2.4px`、`outline-offset:1px` → `0.8px`；但 `width:100px`／`font-size:20px`／`line-height:20px`／`getBoundingClientRect()` **全部原样**；⇒ ★ 口径＝**只有 `border-width`／`outline-width`／`outline-offset` 这类被 snap 到设备像素的属性要 ×DPR（本桥 1.25）才是声明值**；⇒ ☆ 由此历批"焦点环三档 1.5／−2／−1px（声明）"与屏上"0.8px"的**冲突消解**＝同一条规则，只是没换算；⇒ ☆ 附一条对照＝DS 按钮（`MediumSmall`）实测 `height:32px` ＋ `font-size:13px` ⇒ 与第 100 批的 28／32／34 与第 105 批的 `--ui-md 13` 逐字咬合（这两个量不受量化影响，正好当校准）。
+
+### 7. ★★ 三条"读法"层面的增量判据
+
+① **判"某类元素不存在"要先判布局档**＝`/all` 与 `/tasks/all` 都在**网格档** ⇒ 列表视图的 `_headerRow_`／`_listRow_`／三个 `_col*` **本来就该是 0 个**（⇒ 第 108 批那条"消费面没找到"结案，见 `internals.md` §四十八.一）；② **家族普查代替逐个选择器**＝一次遍历 `mainWrapper` 后代的 `class`、按 `/_name_hashNN_line$/` 的 `hashNN` 归组，一次就分出六族（`6sjpd`／`1ltym`／`1wotv`／`1nu3o`／`dhebv`／`1fgll`），比逐个 `querySelector` 试省 5–6 次调用；③ **合成键必须带 `keyCode`／`which`**＝只给 `key`／`code` 时 what-input 全程无反应，补上 `keyCode:9, which:9` 同通路立刻生效 ⇒ ☆ **历批一部分"合成键推不动"的归因要改写**＝不是官方校验 `isTrusted`，而是官方 handler 读的是 `keyCode`。
+
+### 8. ☆ 现场还原（本批改过的是瞬态，不是数据）
+
+改动清单＝① 注入的 `window` 捕获 `keydown`／`keyup` 日志器 ⇒ **已 `removeEventListener` 并把 `globalThis.__k`／`__h` 清掉**（回读 `loggerGone:true`）；② `data-whatinput`／`data-whatintent` 与 `sessionStorage` 的 `what-input`／`what-intent` ⇒ **已回写 `mouse`／`mouse` 并读回确认**；③ 焦点 ⇒ 已 `blur()`，`activeElement` 回 `BODY`；④ 诊断属性 ⇒ `data-whatelement`／`data-whatclasses` 回 `null`（与进屏前一致）；⑤ 导航 ⇒ `/trash` → `/all` 同站路由跳转，**未点任何可点项、未进选择模式、未开任何浮层**（收尾读 `dialog:0`／`menu:0`／`checkbox:8`（网格静止态计数，与 `/trash` 的 3 不同屏不可比））；⑥ 数据面＝沙盒 `QODER-HARVEST-B109-CODEFIELD`（1 文档＋6 代码块）**已软删**，`unsorted` 回 3 条逐 id 相同、`tasks list --scope all` 9 条零 QODER 串、`reminders list --status all` 为 `No reminders found`，`manifest.jsonl` 149 → **150 行**。
+
+**仍未采到（本节）**：① `pa` 主分支（表单控件里冻结 intent）——两次通路都失败，**下一条最可能的通路是请用户手按 `Tab` 走进搜索框**（本桥 `press_key` 会把焦点送进 app 的托管控件还是外层容器，未判）；② **触摸档**下 `:hover`→`:active` 的屏上实证；③ 卡片／复选框的环实测（要进选择模式才会有 `role=checkbox`，而那是视图态改动）；④ 列可见性与容器宽的对照（要切列表布局＝空间级持久偏好＝禁区）；⑤ 亮档下环色实测；⑥ "DS 按钮环出来、任务卡片环不出来"那条预测的正/反裁决。

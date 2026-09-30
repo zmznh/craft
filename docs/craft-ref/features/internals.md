@@ -1272,3 +1272,45 @@ Sources:   （15 行路径）
 ⇒ ⚠ **自我纠正（G1104）＝第 107 批 §四十六.六 那句"一次得 14 个消费者 ⇒ 代码块是跨面组件"作废**＝真正引用 CM6 符号的只有 `CodeEditorWrapper` 一个 chunk；⇒ 修正后的结论＝**CM6 在官方架构里是"单一消费者"组件**（side-effect import 仍把它放进依赖闭包，但是否实际下载未取证＝网络面被 CDP 封，承既有边界）；☆ 同批 §四十六.六 的"选题法＝先扫 import 图"**仍然可用**，只是产出的是"谁引 helper"，判"跨面"要按符号拆。
 
 **仍未采到（本节）**：`tok-*` 表有没有被注册进 `extensions`（`...g` 未展开）；`createTheme` 的 `dark` 标记错配对 CM6 内建样式的实际影响；三档焦点环的屏上证据（撞在 §五 的仪器边界上，需用户点一下窗口）；`--col*` 三个列元素在哪个视图渲染（屏上 `/tasks/all` 命中 0）；网格四公式的屏上对照（只拿到 JS 逐字，未量 DOM）；20 档主题里除 craft 两档外的 18 档 settings／styles 未逐字（只取名册）；`--heading-*` 缺 `lg`／`xl` 时页面标题走哪档；☆ 主题选择器面板的屏上形状与 `auto` 的显示文案（`blockdetails.theme` 只拿到 key 与中文值）。
+
+## 四十八、**列表视图的渲染面结案＝一张 CSS-Module 类名常量表 ＋ 一个 `ResizeObserver` 列宽同步钩子 ＋ 三种表头变体共用同一组"槽位"类；★ 顺带把输入档闸门的运行时真相钉死（作废本批自己一条真按键读数），并结掉"主题 `dark` 标记从哪来"＝唯一来源是面板里被写死的字段、且有 3 档标反了**（✓盘上＋数据面＋屏上 第 109 批 2026-09-30 17:0x–17:4x 本地＝UTC 09:0x–09:4x，来源＝`index-DiTmKH3z.js` 与 `vendor-code-editor-BLm003PU.js` 逐字读 ＋ 沙盒 `QODER-HARVEST-B109-CODEFIELD` 的一次写入读回 ＋ 11 次只读屏上调用；★ 逐字名册在 `longtail.md` §三十五，行为取证在 `interactions.md` V103，gap 行 **G1105–G1118**）
+
+### 一、★★★ 具名容器查询的消费面找到了＝模块 `1m9yz` 的列表视图，而"DOM 里没有 `_col*`"是**布局本来就在网格**
+
+第 108 批留下的疑点（`/tasks/all` 屏运行时确认容器生效、但零个 `_col*` 元素）本轮在盘上直接结掉：列表视图的整套类是主包里一张**逐字常量表 ＋ 一张聚合对象**（`w$t="_headerRow_1m9yz_8"` … `Y$t="_newDocTag_1m9yz_314"`，共 27 个常量 ＋ `rn={headerRow:w$t,…,newDocTag:Y$t}`，位于 @2,922,687–2,924,289）。⇒ ★ **CSS-Module 的哈希类名在 Vite 产物里是以"字符串常量 ＋ 对象"的形式内联进 JS 的**（不是运行时代理），所以**只要知道任一哈希就能把整张名册捞出来**——这是本目录第一次把"某个组件有哪几个类"采全。
+
+而网格视图用的是**另一族**（同一次屏上扫描逐字读到）＝`6sjpd:viewWrapper, scrollRoot, headerWrapper, headingWrapper, headingRightWrapper, scrollViewport, docGrid` ＋ `1wotv:virtualBody, virtualCardRow` ＋ 卡片 `dhebv:aspectRatioStretch, container, contentWrapper, titleRow, title, titleMargin, iconSlot, iconPosition, selectionCheckbox` ＋ `1fgll:wrapper, checkbox`。⇒ **网格本身也是虚拟滚动**（`virtualCardRow`），而第 107 批从 JS 常量算出的"卡片基准宽 200／上限 268／列数 2–5"（G1096）就是喂给这个 `docGrid` 的。
+
+⇒ ☆ **口径修正**：历批"某元素在 DOM 里不存在"这类负向结论，**必须先判当前布局档**（网格／列表是两种 DOM 形状），否则会像本批上一次那样把"布局没开"读成"消费面没找到"。
+
+### 二、★★ 行壳组件是无条件全渲染的、可见性 100% 交给 CSS
+
+逐字行壳＝`Mx = forwardRef((t,e)=>{ … $e(rn.listRow, s) … children:[p, h, g, y, x, w] })`，props 解构＝`{leading, lastViewed, updated, created, trailing, children, className}`；六个子 DIV 里**只有 `leading` 判了 `!=null`**，其余四列（`colLastViewed＋dataCellLastViewed`、`colUpdated＋dataCellUpdated`、`colCreated＋dataCellCreated`、`statusCol`）**无条件渲染**。⇒ 官方把"要不要显示"完全交给 `@container` 规则（`_dataCol_1m9yz_197{…display:none…}` ＋ `@container (width>=768px){_colUpdated,_colCreated{display:flex}}` ＋ `@container (width>=1024px){_colLastViewed{display:flex}}`），**JS 侧不做宽度判断** ⇒ 这与第 104 批"落点数学在 handler 里"是同一种取向：**几何归 CSS，逻辑归模型**。
+
+### 三、★★★ 列宽同步钩子 `aW()`＝"JS 写变量、CSS 消费、两处各写兜底"的又一例
+
+逐字形状＝`aW(t)` 里三个 `useRef`（对应三个表头单元格）＋ 一个测量函数 `d`＝`c.style.setProperty("--col-last-viewed-width", n.current.offsetWidth + "px")`（三键同构，`c` 是容器 ref）；**先立即跑一次 `d()`**，再 `new ResizeObserver(d)` **观察三枚表头**，卸载时 `disconnect()`；CSS 侧消费＝`width: var(--col-last-viewed-width, 8rem)`／`--col-updated-width`／`--col-created-width`。⇒ 三条硬结论：① **表头与"虚拟滚动的行"不在同一个滚动容器里**，所以官方要用"表头实测宽 → CSS 变量 → 行内单元格消费"来对齐（这是虚拟列表表头对齐的一种通用解法，值得本地照抄）；② **`8rem` 这个兜底在 CSS 写、换算式在 JS 写**，与 `--st-row-height` 35／`--st-index-column-width` 45（第 107 批的 `--st-*` 双向通路）同族＝**"JS 写、CSS 消费、两处各写一遍兜底值"的又一例**；③ 三个 `--col-*` 在 13 份官方 CSS 里**零定义处**（本轮逐份正则扫＝定义 0／消费 3）⇒ 它们是**宿主注入接口**，不是主题变量。
+
+### 四、★★ 类名是"槽位"不是"数据身份"＝同一组 `_col*` 在三张表头里贴到不同列上
+
+三个表头变体逐字（同一段 `rn` 表被三处组件复用）＝变体 A（@2,924,800）`Bs.Title／Bs.LastViewed／Bs.Updated／Bs.Created` ＋ 标签 key `name`／`browse.sort.last.viewed`／`updated`／`created`；变体 B（@3,052,900）`Ns.Name／LastViewed／Updated／Created` ＋ 同标签；变体 C（@3,411,300）`wi.Name／Shared／SharedBy／LastViewed` ＋ 标签 `name`／`shared`／`shared.by`／`browse.sort.last.viewed`。★★ **变体 C 里 `rn.colLastViewed` 被贴在「共享」列上**＝逐字 `$e(rn.columnHeader, rn.colLastViewed, rn.sortable, {[rn.active]: w})` 且 `w = n.sortBy === wi.Shared` ⇒ 名字里的 `LastViewed` 只是**第一个数据槽**的历史命名，`@container` 门控的是"第 2／3／4 列"。⇒ ☆ 复刻含义：**别把列名写进宽度/可见性规则里**，槽位与数据要解耦，否则切换布局时会对不上官方行为。
+
+顺带三条同区读到的形状＝① 类名拼装函数是 `$e(...)`（clsx 形状：位置参数 ＋ 一个 `{[类]: 布尔}` 对象）；② 每个表头 `button` 都带 `style:{flexGrow:1}` **只给名称列**；③ 排序箭头是同一个组件 `wd({isActive, sortDirection, sortable, ascendingValue, descendingValue})`，两档枚举逐字 `$n.Ascending／$n.Descending`（与第 107 批的 `Ascending／Descending` 对齐）。
+
+### 五、★★★ 输入档闸门的运行时真相＝两条自我纠正（一条作废本批读数）
+
+① **手改 `data-what*` 会让后续读数不可定性**＝本批把两枚属性强写成 `mouse` 之后，连接器一次**真实** `Tab`（窗口捕获日志逐字＝`keydown`／`Tab`／`Tab`／`kc9`／`trtrue`／`ae A`）把 `sessionStorage` 的 `what-input`／`what-intent` 改成了 `keyboard/keyboard`，**而 DOM 两枚属性仍是 `mouse/mouse`** ⇒ 真因＝库内部保存 current intent，**值未变就不写 DOM**；我手写的值与它内部值不同，但它认为"不需要改"。⇒ ★ 那条"真按键没切档"的读数**判废**，**不得写成官方行为**（已登记 G1112）。☆ 通用形态＝**任何"外部写入 vs 内部状态"双写的机制，人工写入之后所有"没变化"的读数都失去信息量**。
+
+② **合成 `KeyboardEvent` 必须带 `keyCode`／`which`**＝只给 `key:'Tab'／code:'Tab'` 时 what-input 全程无反应（属性与 `sessionStorage` 都不动），补上 `keyCode:9, which:9` 后**同一通路立刻生效**（属性 `mouse/mouse → keyboard/keyboard`，随后 DS 按钮的 `outline` 当场出现）。⇒ ★ 这解释了历批一部分"合成键推不动"的归因：**不是官方校验 `isTrusted`，是官方 handler 读的是 `keyCode`**（第 107 批从代码读到的 `ma=[16,17,18,91,93]` 正是 `keyCode` 表，当时没意识到探针要照它写）。
+
+③ **`el.focus()` 对 Craft 的表单控件普遍不生效**＝本批对一个真实 `<input>` 调 `focus()`，`document.activeElement` 变成**外层 `SPAN`** ⇒ 第 108 批在 checkbox 上撞到的不是个别组件，而是**一类现象**（自定义控件把焦点托管在外层容器上）；⇒ `pa` 名单主分支（表单控件里冻结 intent）仍**未裁**，需要真键盘把焦点走位送进控件（下批在有真焦点的窗口里做）。
+
+### 六、★ 方法学：本批三条可复用做法
+
+① **从一个哈希反查整张类名表**＝CSS 里任取一条 `._x_hashNN_line`，去主包搜 `hashNN`，就能拿到该组件全部类名常量与聚合对象（本批由此一次得到 27 键名册，含三个此前完全没线索的状态类 `isUnavailableOffline`／`selected`／`newDocTag`）。② **屏上"家族普查"代替逐个选择器猜**＝一次遍历 `mainWrapper` 后代的 `class` 属性、用 `/_([A-Za-z0-9]+)_([0-9a-zA-Z]{5})_(\d+)$/` 按 hash 归组，一次就分出六族（`6sjpd`／`1ltym`／`1wotv`／`1nu3o`／`dhebv`／`1fgll`），比逐个 `querySelector` 试省 5–6 次调用。③ **写侧探字段用"分歧档"**＝要判"存的是 A 还是 B"，别测两者相同的常规值，直接挑**逐字不同**的那几个（本批 `typescript→tsx`、`cs→csharp`、`math_formula→stex`、`plaintext→null` 四档一枪定案）。
+
+### 七、★★★ 顺手结掉第 108 批留的一问＝主题的 `dark` 标记唯一来源是**面板自己那个被写死的字段**，而它有 3 档标反了
+
+CM6 侧逐字（在 `vendor-code-editor-BLm003PU.js`，不在 `CodeEditorWrapper`）＝`var g=li.theme(O,{dark:i==="dark"}), w=uE.define(l), Q=[g,R6e(w)]; return Q`，其中 `i` 就是面板工厂传进来的 `theme` 字段 ⇒ ⇒ **界面明暗不参与这个判断**，只有 `auto` 换档时才会挑到另一档面板。⇒ ★ **错配 3 档（逐字）**＝`craftdark` 工厂写 `theme:t="light"` 而它 spread 的 `Ue` 底色是 `#28292B`；`materiallight` 写 `"dark"` 而 `Qe` 底色 `#FAFAFA`；`tokyonightday` 写 `"dark"` 而 `tt` 底色 `#e1e2e7`；✓ 对照＝`craftlight`/`noctislilac`/`bbedit` 都 `"light"` 且底色确为浅色，其余 9 档 `"dark"` 与底色一致。⇒ ☆ **影响面判断要克制**＝Craft 把 `background`／`foreground`／`caret`／`selection`／`gutter*` 都在 settings 里写死了，所以错配大概只波及 settings 未覆盖的 CM6 内建项（matchingBracket、搜索高亮、tooltip 色系一类），**本批没有屏上证据**，只登记"标记与真实明暗相反"这条确定事实；⚠ 但因为 **`auto` 在暗档下解析成 `craftdark`**，这条错配命中的是**默认路径**，不是冷门档。
+
+**仍未采到（本节）**：① **代码块主题的真实作用域**（块级已被否；要 UI 里改一次再读回）；② **错配 3 档的可见影响**（要看 matchingBracket／搜索高亮在暗档下的实际取色）；③ **列可见性的屏上对照**（要做必须把布局切到列表＝空间级持久偏好，属禁区等点头）；④ 表头三变体各自对应哪一屏**只有枚举与标签证据**；⑤ `pa` 主分支；⑥ `_statusCheckboxVisible`／`_isUnavailableOffline`／`_newDocTag` 的触发条件；⑦ `rn` 名册里 `dragPreviewBase`／`dragPreviewInner` 在列表视图的拖拽行为（与第 102–104 批编辑器内拖拽是不是同一套）。

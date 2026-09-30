@@ -973,7 +973,7 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 | `githubdark` | 具名第三方板 | `vscodedark` | 具名第三方板（＝`qo()`） |
 | `githublight` | 具名第三方板 | `gruvboxdark`／`gruvboxlight` | 具名第三方板 |
 
-⇒ ☆ `auto` 的解析式逐字＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]`；⇒ ⚠ **本批只逐字了 craft 两档**，其余 18 档的 settings／styles 未抄（同 chunk 内，可下批补）；⇒ ☆ 与语言选择器同族的 i18n 逐字＝`blockdetails.theme`「主题」／`blockdetails.themes`／`blockdetails.search.themes`「搜索主题」＋ `blockdetails.language`「语言」／`blockdetails.search.languages`。
+⇒ ☆ `auto` 的解析式逐字＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]`；⇒ ⚠ **本批只逐字了 craft 两档**，其余 18 档的 settings／styles 未抄（同 chunk 内，可下批补）〔✎ **第 109 批结案**＝20 档工厂形状、settings 对象名、tag 条目数与 dark 标记全表见 §三十五.一；⚠ 但只有 7 个 settings 对象逐字到底（底色已读），其余 14 档的 background 仍未抄〕；⇒ ☆ 与语言选择器同族的 i18n 逐字＝`blockdetails.theme`「主题」／`blockdetails.themes`／`blockdetails.search.themes`「搜索主题」＋ `blockdetails.language`「语言」／`blockdetails.search.languages`。
 
 ### 二、★★★ `craftlight`／`craftdark` 两套逐字（settings ＋ token 色板）
 
@@ -990,7 +990,7 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 | `name`, `quote` | `#22863a` |  |
 | `heading` | `#24292e` | `fontWeight:"bold"` |
 | `emphasis` | `#24292e` | `fontStyle:"italic"` |
-| `deleted` | `#b31d28` | `backgroundColor:"ffeef0"`（⚠ **缺前导 `#`**＝官方逐字串，看着像 bug，登记不修正） |
+| `deleted` | `#b31d28` | `backgroundColor:"ffeef0"`（⚠ **缺前导 `#`**＝官方逐字串，看着像 bug，登记不修正；✎ 第 109 批全量复扫＝**四档同串**，见 §三十五.四 ④） |
 
 ⇒ **`craftdark`（`uo = fo()`）settings 逐字**＝`{background:"#28292B", foreground:"#CECFD0", caret:"#fff", selection:"#385576", selectionMatch:"#385576", lineHighlight:"rgba(255,255,255,0.05)", gutterBackground:"#28292B", gutterForeground:"rgba(255,255,255,0.4)", gutterActiveForeground:"rgba(255,255,255,0.7)", gutterBorder:"#f4f4f41f", fontFamily:"Roboto Mono, monospace"}`；
 ⇒ **`craftdark` token 色板逐字（＝GitHub Dark 系）**＝`comment`／`bracket`＝`#8b949e`；`className`／`propertyName`＝`#d2a8ff`；`variableName`／`attributeName`／`number`／`operator`＝`#79c0ff`；`keyword`／`typeName`／`typeOperator`＝`#ff7b72`；`string`／`meta`／`regexp`＝`#a5d6ff`；`name`／`quote`＝`#7ee787`；`heading`＝`#d2a8ff`＋bold；`emphasis`＝`#d2a8ff`＋italic；`deleted`＝`#ffdcd7`＋`backgroundColor:"ffeef0"`（★ 与亮档同一条**没有 `#` 的底色串**）；
@@ -1051,3 +1051,56 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 ⇒ ☆ 方法学修正＝**"按 import 图选题"这个工具仍然可用，但产出的是"谁引 helper"**；要判"跨面"必须**逐符号拆**（本批就是这么把自己上一条结论推翻的）。
 
 **仍未采到（本节）**：18 档第三方主题的 settings／styles 逐字（只逐字了 craft 两档）；`qo()`（vscodedark）只读到尾部片段；`tok-*` 表有没有被注册进 `extensions`（`...g` 未展开）；`dDt=268` 与 `FEt=268` 是不是同一个量的两份定义（未追使用点）；三份网格函数（`uDt`／`MZt`／`$Zt`）各自服务哪个屏（组件归属未追）；`--body-*` 只有 `md` 一档时**大段正文**（如全屏文档视图）走哪条；☆ 官方正文实际渲染像素（13px 还是 16px）未屏上量取；☆ `--ui-*` 的 `xs-500` 之上是否还有更大档（名册里 `xxl-600` 是末端，未见 `2xl`）。
+
+## 三十五、**长尾素材：20 档代码块主题的逐字形状表（工厂 ＋ settings 对象名 ＋ tag 条目数 ＋ `dark` 标记）＋ 列表视图 `rn` 27 键类名表逐字 ＋ 三张表头变体的枚举与标签 key ＋ 官方色值缺陷清单**（✓盘上 第 109 批 2026-09-30 17:0x–17:4x 本地＝UTC 09:0x–09:4x，全部来自 `_harvest/js/index-DiTmKH3z.js` 与 `CodeEditorWrapper-DB8UxA00.js` 与 `vendor-code-editor-BLm003PU.js` 的定点读；★ 本节只放逐字清单，机制与判定在 `internals.md` §四十八、`gap.md` G1105–G1118；⚠ 20 个工厂体全文另存 `_harvest/b109-theme-<id>.txt`，不进仓库）
+
+### 一、★★★ 主题名册的完整形状＝"每档一个工厂 ＋ 每个工厂一个 settings 对象"
+
+名册逐字＝`ue={auto:null, craftdark:uo, craftlight:go, atomone:so, aura:bo, bbedit:ho, darcula:lo, dracula:yo, githubdark:wo, githublight:Co, gruvboxdark:Do, gruvboxlight:Fo, materialdark:Mo, materiallight:jo, noctislilac:Ro, nord:To, sublime:Ho, tokyonightday:Po, tokyonightstorm:Uo, tokyonight:Go, vscodedark:$o}`；`auto` 解析式逐字＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]`；装配末端逐字（在 `vendor-code-editor`）＝`var g=li.theme(O,{dark:i==="dark"}), w=uE.define(l), Q=[g,R6e(w)]; return Q`。⇒ 工厂调用形状 20 档全同＝`Xf=o=>{const{theme:t="light|dark",settings:a={},styles:r=[]}={};return I({theme:t,settings:{...<settings对象>,...a},styles:[<内联 tag 条目…>,...r]})}` ⇒ ★ **解构源是字面量 `{}`、入参 `o` 恒被忽略** ⇒ 主题表封闭、不可外部覆写。
+
+| 主题 id | 工厂＝变量 | settings 对象 | `tag` 条目数 | 工厂里的 `theme` 字面量 | 底色（逐字） | `dark` 标记与底色是否一致 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `craftlight` | `go = io()` | `We` | 9 | `"light"` | `#FBFBFB` | ✓ 一致 |
+| `craftdark` | `uo = fo()` | `Ue` | 9 | `"light"` | `#28292B` | ✗ **反了** |
+| `atomone` | `so = co()` | `Pe` | 8 | `"dark"` | 未逐字（第三方板） | 未知（底色未读） |
+| `aura` | `bo = mo()` | `Ke` | 20 | `"dark"` | `#21202e` | ✓ 一致 |
+| `bbedit` | `ho = po()` | `Ge` | 13 | `"light"` | `#FFFFFF` | ✓ 一致 |
+| `darcula` | `lo = no()` | `_e` | 9 | `"dark"` | 未逐字 | 未知 |
+| `dracula` | `yo = ko()` | `qe` | 8 | `"dark"` | 未逐字 | 未知 |
+| `githublight` | `Co = xo()` | `$e` | 15 | `"light"` | 未逐字 | 未知 |
+| `githubdark` | `wo = vo()` | `ze` | 14 | `"dark"` | 未逐字 | 未知 |
+| `gruvboxlight` | `Fo = So()` | `Ye` | 34 | `"light"` | 未逐字 | 未知 |
+| `gruvboxdark` | `Do = No()` | `Ve` | 34 | `"dark"` | 未逐字 | 未知 |
+| `materiallight` | `jo = Ao()` | `Qe` | 20 | `"dark"` | `#FAFAFA` | ✗ **反了** |
+| `materialdark` | `Mo = Lo()` | `Xe` | 36 | `"dark"` | 未逐字 | 未知 |
+| `noctislilac` | `Ro = Io()` | `Je` | 15 | `"light"` | `#f2f1f8` | ✓ 一致（这档确实是浅板） |
+| `nord` | `To = Eo()` | `Ze` | 36 | `"dark"` | 未逐字 | 未知 |
+| `sublime` | `Ho = Oo()` | `et` | 11 | `"dark"` | 未逐字 | 未知 |
+| `tokyonightday` | `Po = _o()` | `tt` | 20 | `"dark"` | `#e1e2e7` | ✗ **反了** |
+| `tokyonightstorm` | `Uo = Wo()` | `ot` | 20 | `"dark"` | 未逐字 | 未知 |
+| `tokyonight` | `Go = Ko()` | `at` | 20 | `"dark"` | 未逐字 | 未知 |
+| `vscodedark` | `$o = qo()` | `rt` | 17 | `"dark"` | 未逐字 | 未知 |
+
+⇒ ☆ **"未知"是因为底色只在 settings 对象里、本批只逐字了 7 个对象**（`We／Ue／Ke／Ge／Qe／tt／Je`）；⇒ ★ 已可下的结论＝**错配至少 3 档**（`craftdark`／`materiallight`／`tokyonightday`），其中 **`craftdark` 是 `auto` 在暗档下的默认落点**；☆ 补齐动作已列第 110 批队列（把余下 14 个 settings 对象的 `background` 逐字读一遍即可判全表）。
+
+### 二、★★★ 列表视图类名表逐字（模块 `1m9yz`，27 键 ＋ 常量名）
+
+常量段逐字（`w$t` 起、`Y$t` 止）＝`_headerRow_1m9yz_8`／`_columnHeader_1m9yz_29 typography-caption-md-500`／`_sortable_1m9yz_43`／`_active_1m9yz_51`／`_divider_1m9yz_56`／`_listItemWrapper_1m9yz_74`／`_virtualRow_1m9yz_92`／`_isUnavailableOffline_1m9yz_102`／`_selected_1m9yz_108`／`_statusCheckbox_1m9yz_116`／`_statusCheckboxVisible_1m9yz_123`／`_starPinIcon_1m9yz_127`／`_listRow_1m9yz_142 no-select`／`_thumbnailCol_1m9yz_160`／`_nameCol_1m9yz_169`／`_rowTitle_1m9yz_179 typography-ui-md-600`／`_rowSubtitle_1m9yz_188 typography-ui-xs-500`／`_colLastViewed_1m9yz_208 _dataCol_1m9yz_197 typography-ui-sm-500`／`_colUpdated_1m9yz_212 _dataCol_1m9yz_197 typography-ui-sm-500`／`_colCreated_1m9yz_216 _dataCol_1m9yz_197 typography-ui-sm-500`／`_dataCellLastViewed_1m9yz_221`／`_dataCellUpdated_1m9yz_225`／`_dataCellCreated_1m9yz_229`／`_statusCol_1m9yz_249`／`_iconBox_1m9yz_259`／`_pinIcon_1m9yz_271`／`_starIcon_1m9yz_274`／`_dragPreviewBase_1m9yz_278`／`_dragPreviewInner_1m9yz_283`／`_virtualBody_1m9yz_290`／`_newDocTag_1m9yz_314`；聚合对象逐字＝`rn={headerRow, columnHeader, sortable, active, divider, listItemWrapper, virtualRow, isUnavailableOffline, selected, statusCheckbox, statusCheckboxVisible, starPinIcon, listRow, thumbnailCol, nameCol, rowTitle, rowSubtitle, colLastViewed, colUpdated, colCreated, dataCellLastViewed, dataCellUpdated, dataCellCreated, statusCol, iconBox, pinIcon, starIcon, dragPreviewBase, dragPreviewInner, virtualBody, newDocTag}`（27 键，值全指向上面的常量）。
+
+⇒ ★ **四处"哈希类 ＋ 排版档"成对写死**＝表头 `typography-caption-md-500`、行标题 `typography-ui-md-600`、行副标题 `typography-ui-xs-500`、三个数据列 `typography-ui-sm-500` ⇒ 官方排版档是**组件级显式声明**（G1117）；☆ `listRow` 还成对带一个**非哈希工具类** `no-select`。
+
+### 三、★★ 三张表头变体的枚举／标签 key 逐字（同一个 `rn` 被三处组件复用）
+
+| 变体 | 主包偏移 | 排序枚举（逐字局部名） | 出现的列 | 标签 key（逐字） |
+| --- | --- | --- | --- | --- |
+| A | @2,924,800 一带 | `Bs.Title`／`Bs.LastViewed`／`Bs.Updated`／`Bs.Created` | 名称＋三数据列 | `name`／`browse.sort.last.viewed`／`updated`／`created` |
+| B | @3,052,900 一带 | `Ns.Name`／`Ns.LastViewed`／`Ns.Updated`／`Ns.Created` | 同 A | 同 A |
+| C | @3,411,300 一带 | `wi.Name`／`wi.Shared`／`wi.SharedBy`／`wi.LastViewed` | 名称＋共享＋共享者＋上次浏览 | `name`／`shared`／`shared.by`／`browse.sort.last.viewed` |
+
+⇒ ★★★ **类名是"槽位"**＝变体 C 把 `rn.colLastViewed` 贴在「共享」列上（逐字 `$e(rn.columnHeader, rn.colLastViewed, rn.sortable, {[rn.active]: w})`，`w = n.sortBy === wi.Shared`）；⇒ ☆ 方向列都来自同一组件 `wd({isActive, sortDirection, sortable, ascendingValue, descendingValue})`，两档枚举逐字 `$n.Ascending`／`$n.Descending`（与第 107 批的 `Ascending／Descending` 对齐），且**只有名称列带 `style:{flexGrow:1}`**；☆ 语言包侧的列标题有两个可用 key＝裸 `name`「名称」与 `browse.sort.name`「名称」**同值**（代码用裸 key）＝官方自身不一致候选。
+
+### 四、★★★ 官方色值缺陷清单（本批新增三条、并给一条"看着像错其实合法"的免修正标记）
+
+① `gruvboxdark`＝`{tag:[e.annotation], color:"#fb4934d"}` ⇒ **7 位十六进制＝非法**；⇒ ★ 同一条 styles 里 `annotation` **又出现在下一条** `{tag:[e.number,e.changed,e.annotation,e.modifier,e.self,e.namespace], color:"#d3869b"}` ⇒ CM6 首条命中 ⇒ **`annotation` token 实际永久无色**。② 同档 `{tag:e.invalid, color:"#fe8019", borderBottom:"1px dotted #fb4934d"}` ⇒ 同一个非法串，**虚线边框整条失效**。③ ☆ `materiallight` 的 `color:"#E5393570"` 是**合法的 8 位 RRGGBBAA**（alpha `0x70`），与 ①② 不同类 ⇒ **登记、不要"顺手补 `#` 或截断"**。④ 承第 108 批：`deleted` 档 `backgroundColor:"ffeef0"` **缺前导 `#`**（同类缺陷，非本批新发现）；⇒ ★★★ **本批按 20 档全量复扫后该条要改写**＝同一串在 **四档里逐字相同**（`craftlight`／`craftdark`／`githublight`／`githubdark` 的 `deleted` 都是 `{color:…, backgroundColor:"ffeef0"}`），上批归因为"暗档一处"是**抽样导致的错**（已就地 ✎）；★★ 且**两档暗色沿用的是亮档粉底**（`craftdark`／`githubdark` 的 `deleted` ＝ `color:"#ffdcd7"` ＋ `ffeef0`）⇒ 在 `#28292B`／`#0d1117` 底上等于**把删除行涂成不透明浅粉**＝第二处缺陷候选，与"缺 `#`"是两条独立问题（补上 `#` 也不对）。⇒ ☆ 四条的处置建议统一＝**照抄 ＋ 注释**，否则对不上官方渲染；要修就先在产物里把"官方此处错"写死，避免下个会话以为是本地引入的回归。
+
+**仍未采到（本节）**：① 其余 14 档 settings 的 `background` 逐字（判全表 `dark` 标记一致性）；② 各档 `settings` 里除 `background`／`foreground`／`caret`／`selection`／`gutter*` 之外的键全集；③ 第三方板与上游原版的差异（有没有被 Craft 改过色值——需要外部基准，本目录不引外部资料，默认**不做**）；④ `_statusCheckboxVisible`／`_isUnavailableOffline`／`_newDocTag` 三个状态类的触发条件；⑤ `rn` 的 `dragPreviewBase`／`dragPreviewInner` 在列表视图里的拖拽表现（与编辑器内拖拽是否同一套）。

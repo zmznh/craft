@@ -2925,3 +2925,23 @@ HJe = (t, e) => { let n = {};
 ⇒ 本地浏览屏布局＝**视口断点**（`src/app/(app)/documents/page.tsx:28,39` 等 5 个页面写 `sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`）＋**没有布局态字段**（无网格／列表切换的持久化）；⇒ ☆ 与 §三 的差分＝官方是"数据驱动的两种布局 ＋ 容器宽算列"，本地是"CSS 断点一种布局"。
 
 **仍未采到（本节）**：`theme` 的**作用域**（块级／文档级／空间级）与**写侧字段名**（同 `storedLangCode` 一起欠一次 `blocks add` 读回）；`viewMode` 三档的屏上形状与切换入口（「拆分视图」在哪个按钮上）；★ 20 档主题的**默认可选集**（是不是 20 档全部可选、有没有付费档）；列表档 65px 行高在屏上的实际值（只拿到 JS 逐字，未量 DOM）；`_col*` 三列的渲染面；☆ 布局态（网格／列表）是否随空间持久化；☆ `blockdetails.theme` 单复数两条的实际用途。
+
+## 一之六十七、**代码块的模型字段结案＝`{type:"code", language, rawCode}`（★ 正文载体叫 `rawCode` 不叫 `content`、★ `language` 存的是 `storedLangCode`、★ "没有语言"＝键不存在）；☆ 主题与明暗标记**不是块级字段**（写侧塞进去会被静默丢弃）**；☆ 浏览屏"列表"是第三种形状（网格／列表两布局之外，还有独立的类名族与虚拟滚动）**（✓数据面实测＋盘上 第 109 批 2026-09-30 17:0x–17:4x 本地＝UTC 09:0x–09:4x，来源＝沙盒 `QODER-HARVEST-B109-CODEFIELD` 的 `blocks add` → `blocks get --format json` 读回 ＋ 主包与两个 chunk 的逐字读；★ 机制在 `internals.md` §四十八，逐字表在 `longtail.md` §三十五，gap 行 **G1105／G1106／G1107／G1113**）
+
+### 一、★★★ 代码块的落库形状（本目录第一次拿到"写入 → 读回"的双侧证据）
+
+| 字段 | 逐字读回值（本轮实测） | 模型含义 | 置信度 |
+| --- | --- | --- | --- |
+| `type` | `"code"` | 代码块**是独立块类型**（不是"带语言的文本块"），与第 107 批分派表里的 `code` 档一致 | ✓实测 |
+| `language` | `"python"`／`"typescript"`／`"cs"`／`"plaintext"`／`"math_formula"` | ★ **存的是 `storedLangCode`**（不是 `langCode`、不是 `label`）＝四个分歧档全部按存储码落库：`typescript`（`langCode` 是 `tsx`）、`cs`（`csharp`）、`math_formula`（`stex`）、`plaintext`（`langCode` 是 `null` **却照样存 `plaintext`**） | ✓实测 |
+| `language` **缺席** | 未知语言 `qqqlang` 的块读回＝`{id, type:"code", rawCode:"d", markdown:"…\n…"}` ⇒ **整键不存在** | ⇒ ☆ **"未选语言"在官方模型里＝"键不存在"**，不是空串、不是 `plaintext`；且**未知语言不会被拒绝、不报错、不提示** | ✓实测 |
+| `rawCode` | `"print('qoder-b109')"` | ★★★ **正文载体字段叫 `rawCode`**（历批一直假设是 `content`）；序列化出来的 `markdown` 是**读侧派生串**（围栏语言跟着 `language` 走，无语言时围栏退化成裸三个反引号） | ✓实测 |
+| `theme` / `isDark` | 写入 `--json` 后读回**两键都不存在**（回执仍是 `Added 1 block`、不报错） | ⇒ ★ **块级假设被否**；作用域候选收窄为"文档级／空间级／另一条未暴露的 mutation"；⚠ **仍欠一次屏幕写侧复测**（在 UI 里真改一次主题再读回） | ✓实测（否证）＋ ⚠ 未定（真作用域） |
+
+⇒ 三条建模结论：① 本地属性名 `language` 与官方一致（不用改），但**"无语言"不能归一化成 `plaintext`**（本地 `code-block-view.tsx:36` 的兜底要摘掉）；② 与 MCP 互操作时**正文要能映射到 `rawCode`**；③ **不要给代码块建块级 `theme` 字段**，等屏幕写侧判清作用域再建，否则会建错层再迁一次。
+
+### 二、☆ 浏览屏的第三种形状（承 §一之六十六的"两种布局"）
+
+本轮把两布局的**类名族与组件面**都拿到了：网格＝模块 `6sjpd`（`docGrid`／`scrollViewport`／`viewWrapper`）＋ `1wotv`（`virtualBody`／`virtualCardRow`，★ **网格也是虚拟滚动**）＋ 卡片 `dhebv`（`aspectRatioStretch`／`container`／`titleRow`／`iconSlot`／`selectionCheckbox`）＋ 复选框 `1fgll`（`wrapper`／`checkbox`）；列表＝模块 `1m9yz` 的 27 键名册（表头四枚可排序按钮、六个无条件渲染的行槽、`dragPreviewBase`／`dragPreviewInner`、`isUnavailableOffline`、`newDocTag`）。⇒ 模型侧的含义＝**"同一份文档集合"在官方有两套渲染树、两套类名族、两套 checkbox 实现**（第三个复选框族 `1nu3o` 还自带具名 `focusRing` 子元素），所以本地若只补一种布局，另一种的交互（列排序、列显隐、行选择）会永远缺一块。
+
+**仍未采到（本节）**：① **`theme`／`isDark` 的真实作用域**（需要屏幕写侧一次）；② `language` 是否有独立的写入动词（MCP 无代码块主题旗标 ⇒ 只能靠 markdown 围栏）；③ 代码块的**其它属性**（有没有 `wrap`、字号、语言"最近使用"等）本轮没探到，因为读回只有那三个键＋派生 `markdown`；④ 列表／网格的**选择集模型**（`selectionCheckbox` 与 `selected` 类背后的状态是否共享一套 Set，与第 102–103 批"选择集跨操作累积"假说相关）；⑤ 卡片与行的 `isUnavailableOffline` 触发条件（离线态未采）。

@@ -832,4 +832,33 @@
 ⇒ **强调色**＝本地只有 `--craft-accent`／`--craft-accent-hover` 两档（`src/app/globals.css:127-128,284-285`），**没有 550–900 上段、也没有暗档反向机制**；☆ 另注意 §十四 的命名陷阱＝本地 shadcn 的 `--accent` 是灰底 hover 色、与官方 `--accent`（强调色）同名不同物；
 ⇒ ☆ **可执行改法**（`gap.md` §〇「七」第 1／5 行）＝先在 `@layer base` 补四族 token ＋ 31 个类（六件套逐字），再把 `.tiptap h1…h4` 改成读类；强调色两套上段 96 个值直接可抄（本节两张表）。
 
-**仍未采到（本节）**：`--ui-*`／`--caption-*`／`--body-*` **在界面上的实际消费分布**（哪个组件用哪档）只读到一处屏上样本（任务卡片＝`typography-ui-md-500`）；`.typography-*` 是否被 CSS-Module 之外的地方引用（未做全库消费点扫描）；`--heading-*` 缺 `lg`／`xl` 时**页面标题与副标题走哪一档**未裁；☆ `--font-family` 在暗档／不同文档字体偏好下是否被改写（承第 106 批"字体偏好是否随文档持久化"这条未结项）；★ 上段 96 个值的**生成规律**未反推（亮档看着像按固定步长压暗，但没验证是否与 `--accent-N` 的 HSL 调整一致）。
+**仍未采到（本节）**：`--ui-*`／`--caption-*`／`--body-*` **在界面上的实际消费分布**（哪个组件用哪档）只读到一处屏上样本（任务卡片＝`typography-ui-md-500`）〔✎ **第 109 批**＝消费点从 1 处补到 4 处（表头 `typography-caption-md-500`／行标题 `typography-ui-md-600`／行副标题 `typography-ui-xs-500`／三个数据列 `typography-ui-sm-500`，见 §十六.四）〕；`.typography-*` 是否被 CSS-Module 之外的地方引用（未做全库消费点扫描）；`--heading-*` 缺 `lg`／`xl` 时**页面标题与副标题走哪一档**未裁；☆ `--font-family` 在暗档／不同文档字体偏好下是否被改写（承第 106 批"字体偏好是否随文档持久化"这条未结项）；★ 上段 96 个值的**生成规律**未反推（亮档看着像按固定步长压暗，但没验证是否与 `--accent-N` 的 HSL 调整一致）。
+
+## 十六、**焦点层结案＝官方焦点环实测逐字 `outline:1px solid var(--accent-500)` ＋ `outline-offset:-1px`（由 `data-whatinput` 闸门控制，鼠标档下 `outline-style:none`）；★★★ 一条必须写进验收脚本的换算律＝屏上 `border-width`／`outline-width`／`outline-offset` 读数在本桥是"设备像素量化后"的值，要 ×DPR 才是声明值**（✓屏上实测＋盘上 第 109 批 2026-09-30 17:0x–17:4x 本地＝UTC 09:0x–09:4x；★ 行为侧在 `interactions.md` V103，gap 行 **G1110／G1111／G1116／G1117**，与 `styles.md` §十五 的排版消费点合并读）
+
+### 一、★★★ 屏上换算律（先讲这个，因为不先讲就会把官方读成"三档环对不上"）
+
+自插锚点探针实测（DPR＝1.25 的同一帧里）＝`border:1px` → computed **`0.8px`**；`outline:medium`（规范上 3px）→ **`2.4px`**；`outline-offset:1px` → **`0.8px`**；而同一探针的 `width:100px`／`font-size:20px`／`line-height:20px`／`getBoundingClientRect().width` **全部原样**。⇒ 结论＝**只有会被 snap 到设备像素的"发丝线"属性（`border-width`／`outline-width`／`outline-offset`）受 1/DPR 量化影响**，本桥 1px 声明 → 0.8px 读数；⇒ ★ **历批"焦点环三档（通用 ＋1.5px／tab −2px／卡片 −1px，来自 CSS 声明）与屏上 0.8px 读数不一致"的疑点结案＝不是官方不一致，是读数没换算**；⇒ ☆ 反向规则＝**报告里凡是屏上量到的 1px 级线宽，要 ×1.25 还原成声明值再与 CSS 对账**；☆ 附带一条环境差＝本地 Playwright 的 DPR 通常是 1 ⇒ **跨环境比较"环宽"字节必然不等**，与第 104 批"端口复用跑成别人代码"同属验收脚本的环境门槛。
+
+### 二、★★★ DS 按钮的焦点环逐字（第一次拿到"屏上真焦点"的读数）
+
+| 态 | 读数（屏上 computed，已按 §一 换算） | 对应声明 |
+| --- | --- | --- |
+| 窗口真焦点 ＋ `data-whatinput="keyboard"` | `outline-style:solid`／`outline-width:1px`／`outline-color:rgb(113,178,255)`／`outline-offset:-1px` | ⇒ 与主包与 CSS 里都存在的模板串 **`outline:1px solid var(--accent-500);outline-offset:-1px;`** 逐字对上 |
+| 同一元素、两档属性打回 `mouse` | `outline-style:none` | ⇒ ★ **闸门确实是 `input` 属性**（不是浏览器自己的 `:focus-visible` 判定），且 `:focus`／`:focus-visible` 本身**一直是匹配的** |
+| 链接（`A`，键盘档下） | `outline-style:none` ＋ `outline-offset:1px`（换算后） | ⇒ ☆ **链接在鼠标档没有环**；offset 保留说明规则命中过但 style 被 `outline:none` 关掉 |
+| DS 按钮（`MediumSmall` 档）另两条 | computed `height:32px`／`font-size:13px` | ⇒ 与第 100 批"三档尺寸 28／32／34"与第 105 批"`--ui-md` 13"两条静态值**交叉复证** |
+
+⇒ ★ **环色＝`--accent-500`**，暗档逐字 `113 178 255`（第 107 批的强调色上段表）⇒ 焦点层与色阶层在此咬合；⇒ ☆ 本地对照（三项都不同）＝`src/components/ui/button.tsx:6` 与 `src/components/ui/checkbox.tsx:12` 用 `outline-none` ＋ `focus-visible:ring-3 focus-visible:ring-ring/50`（**box-shadow 环、3px、50% alpha**）、`src/app/globals.css:345-346` 的 `* { @apply border-border outline-ring/50 }` 只定色、`src/app/globals.css:798-800` 的 `.math-block-edit:focus{outline:2px solid var(--craft-accent);outline-offset:-1px}` 是**2px 且无闸门**。
+
+### 三、★★ 官方"环"至少有三套实现（不要按一种抄）
+
+① **`outline` 型**＝DS 按钮一类（§二）；② **具名子元素型**＝复选框模块 `1nu3o` 的键集逐字＝`outerBox／innerBox／focusRing／isActive` ⇒ **环是一个真实 DOM 子节点**（可自带缩放与层级）；③ **换脸型**＝卡片的 `_idle`→0 与 `_action`→1 成对规则（第 106 批），鼠标 `:hover` 与键盘 `:focus` 共用同一对、触摸档被 `:not([data-whatintent=touch])` 整体排除。⇒ ☆ 另注＝同屏还读到第二、第三种 checkbox 族（`1fgll:wrapper,checkbox` 与 `dhebv:…,selectionCheckbox`）⇒ **浏览屏至少三种复选框实现**，本地只有一个 `ui/checkbox.tsx`。
+
+### 四、★☆ 排版档的真实消费点（把 §十五 的"类存在"补成"类被谁用"）
+
+逐字来自 §三十五.二的类名表＝表头 `typography-caption-md-500`、行标题 `typography-ui-md-600`、行副标题 `typography-ui-xs-500`、三个数据列 `typography-ui-sm-500`；⇒ ★ **官方把哈希类与排版档写在同一个字符串常量里**（例：`"_columnHeader_1m9yz_29 typography-caption-md-500"`）⇒ **排版档是组件级显式声明、不靠父级继承**；⇒ 本地要落地就得**逐组件挂档**（`src/app/globals.css:369-396` 那种写死 rem 的写法要一并迁到 token）。
+
+⇒ **就地 ✎**＝`styles.md` §十五 的「仍未采到」第一条（"`--ui-*`／`--caption-*`／`--body-*` 在界面上的实际消费分布只读到一处屏上样本＝任务卡片 `typography-ui-md-500`"）本批**结一半**＝列表视图四档消费点逐字到手（§四：`caption-md-500`／`ui-md-600`／`ui-xs-500`／`ui-sm-500`），★ 且样本从 1 处变 4 处；仍缺**编辑器正文与标题档**的消费点，该条不整条划掉。
+
+**仍未采到（本节）**：① **触摸档的环／`active` 替代**（本批窗口有真焦点但没有触摸模拟，`:hover`→`:active` 那条编译产物仍未屏上复现）；② 复选框 `focusRing` 子元素的**实测尺寸与颜色**（本轮 `role=checkbox` 在 `/all` 静止态不存在，需要进选择模式＝会改视图态，未做）；③ `--accent-500` 在**亮档**下的环色实测（亮档值逐字是 `46 109 233`，未屏上复验）；④ 三档 DS 按钮尺寸各自的环偏移（只测了 `MediumSmall`）；⑤ 卡片"换脸"在键盘档的实测（只拿到规则）。
