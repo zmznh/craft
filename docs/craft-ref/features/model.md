@@ -3025,3 +3025,45 @@ HJe = (t, e) => { let n = {};
 ⇒ 第 109 批沙盒里那条公式块，MCP 读回＝`{type:"code", language:"math_formula", rawCode:"x^2", markdown:"```math_formula\nx^2\n```"}` ⇒ ★ **公式在数据面就是一种代码语言**；⇒ ⚠ 本地公式走独立 KaTeX 通路（`src/lib/math/render.ts`），`CODE_LANGUAGES`（`code-block-view.tsx:9-32`，22 条）里**没有** `math_formula` ⇒ 记为**有意偏差**（原因＝本地另有渲染器，把公式塞进代码语言会双轨）。
 
 **仍未采到（本节）**：① 设过主题的代码块在 MCP 读回里的键形状（当前不可达）；② `collections`／`richUrl`（link card）在写侧的字段形状（本批只证到读侧）；③ `math_formula` 与既有导出映射表（`model.md` 导出节）的逐档对账；④ `documents create --destination unsorted` 的回包同时给了 `rootBlockId` 与另一个 `documentId`（`craftdocs://` 深链里那个），**两者不等**⇒ 两者的作用域差别未判。
+
+## 一之七十、**代码块的"语言"与"主题"两侧各有多张名册：grammar 能力面 119 键（★ 其中挑选名册 5 档查不到键 ⇒ 不高亮）、主题持久化其实是两层（块级 `pluginData` ＋ 账户默认 `codeEditorDefaultTheme`）、Markdown 导出是一张 handlebars 模板（`math_formula` 出 `$$…$$`、其余出围栏、围栏长度是常量）**（✓盘上 第 112 批 2026-09-30 21:4x–23:1x，**零浏览器内容面调用、零写入**；★ 来源＝`_harvest/js/` 缓存的 `vendor-code-editor-BLm003PU.js`／`CodeEditorWrapper-DB8UxA00.js`／`vendor-craft-export-DIm_3hRN.js`／`index-DiTmKH3z.js` 定点读；★ 逐字表在 `longtail.md` §三十八，机制在 `internals.md` §五十一，样式在 `styles.md` §十九，gap 在 `gap.md` §三点一〇六二 G1160–G1179；☆ 本节接 §一之六十五（语言三元组）与 §一之六十六（主题名册））
+
+### 一、★★★ 语言不是一个字符串、也不是一张表：本批数出**四张**
+
+| 名册 | 条数 | 用途 | 关键形状（逐字） |
+| --- | --- | --- | --- |
+| 挑选名册 | **39** | 界面下拉／菜单 | `{storedLangCode, langCode, label}`（§一之六十五；本批用 `langCode:"…"` 形态匹到 38 条 ⇒ ☆ 漏的正是唯一非字符串档 `plaintext`（`langCode:null`）） |
+| `jTe` | **119**（全唯一） | **CodeMirror grammar 能力面** | `X:()=>F.define(Y)` 106 条 ＋ 直接引用 13 条；`kt=Object.keys(jTe)`、`yt(r)=jTe[r]?jTe[r]():null` |
+| `Qvt` | **41** | 另一域（导入／检索侧） | 扁平字符串数组 ＋ `Yvt=new Set(Qvt)`；比挑选名册**多** `docs`／`blocks`／`suggestions`、**少** `mermaid` |
+| `Xvt` | **77** | **扩展名／别名 → `storedLangCode`** | `tex→math_formula`、`ltx→math_formula`、`ts/tsx/cts/mts→typescript`、`sh/bash/ksh→shell`、`c/cc/h/hpp…→cpp`（9 个别名最宽） |
+| `PGe` | **3** | "伪语言"名单 | `["mermaid","math_formula","stex"]`，被**默认语言校验器**与**菜单写入守卫**各用一次 |
+
+⇒ ★★★ **能力面判据逐字**＝`l.useEffect(()=>{if(d){if(kt.includes(d)){const i=yt(d);B(i)}}else B(null)},[d])`，`d`＝该块的 `langCode`（消费点逐字 `langCode:N.langCode`）⇒ **闸门不做任何别名规范化**（`Xvt` 那张表服务的是另一条通路）。
+⇒ ⇒ ★★ 由此得一条**可屏上复验的预测**＝挑选名册 38 条 string `langCode` 里有 **7 条在 `jTe` 查不到**＝`ada`、`bash`、`matlab`、`prolog`、`vbnet`（真语言档）＋ `mermaid`、`other`（本就无需 grammar）⇒ **前五档选中后不会加载任何 language 扩展 ⇒ 不高亮**；☆ 而 `jTe` 里存在 `shell`、`octave`、`vb` 这些近义键 ⇒ ⇒ 判"名册的 `langCode` 与登记表键漏配"（不是"这些语言不支持"）；⇒ ☆ 反证设计意图＝四个已知分歧档 `csharp`／`objectiveC`／`tsx`／`stex` **全在 `jTe` 里** ⇒ `langCode` 确实就是 grammar 键。
+⇒ ☆ `stex` 在 `jTe` 里 ⇒ **公式档有一条真 grammar** ⇒ 与"公式另有 KaTeX 预览通路"并存不矛盾（编辑态高亮 ＋ 预览态渲染，两条各走各的）。
+⇒ 对本地模型的含义＝本地只有**一张 22 条 `CODE_LANGUAGES`**（`src/components/editor/extensions/code-block-view.tsx:9-32`）＋ 一次 `createLowlight(common)`（`src/components/editor/Editor.tsx:20,71`）⇒ 本地既没有"可选项／能力面"之分，也没有别名层；☆ 若要 1:1，最小形＝把挑选名册补到 39 条 ＋ 加一张 `tex|ltx|ts|tsx|…` 别名表，**不必**复刻 119 键的 grammar 面（低亮能力本地由 lowlight 的 common 集决定，属有意偏差，承 G1088）。
+
+### 二、★★★ 主题不是"只落在块上"：持久化有两层，且默认层的校验**不验名册**
+
+⇒ 块级层（承 §一之六十六／第 110 批）＝`Ut([o],{pluginType:"codeBlock", pluginName:"codeBlock", pluginConfigurationData:{themeId:L.id}, horizontalSizeClass:null, verticalSizeClass:null, surfaceShadowOpacity:1})`。
+⇒ ★★ **账户默认层（本批新增）**＝挑选菜单每一项的 `onClick` 逐字 `()=>{St.store(v.id), s(v)}`，而 `St` ＝ `MGe=new Lo("codeEditorDefaultTheme","auto", t=>typeof t=="string")` ⇒ ⇒ ☆ **校验只验"是字符串"** ⇒ 任意／未知 themeId 都能进偏好，之后靠名册层 `lt()` 的 `‖V[0]` 兜底成 `auto`（契约宽、实现兜）。
+⇒ ☆ 语言同构＝`Ft.store(B.storedLangCode)` ⇒ `rD=new Lo("codeEditorDefaultLanguage","javascript", t=>typeof t=="string" && !PGe.includes(t))` ⇒ ★ 两条默认偏好的**宽严不同**：主题"什么都收"、语言"显式排除三档伪语言"。
+⇒ 解析层的三套兜底策略（同一件"未知名"三种下场）＝① 名册 `lt` ⇒ `V[0]`＝`auto`；② 工厂 `De` ⇒ **`undefined`（无兜底）**；③ 外部 themeId 的同步 effect ⇒ `if(!L) return`（**保持原值**）。⇒ ⇒ ☆ 上批"屏上复测 `De("",isDark)`"这条**在盘上结案并转负**（组件里 `editorTheme` prop 恒为名册条目，空串在 UI 通路不可达）。
+⇒ 对本地模型的含义＝本地**两条默认键都没有**、且本地没有任何客户端偏好层（`grep -rn 'localStorage|sessionStorage' src` 0 命中；持久面只有 `prisma/schema.prisma:19-21` 的 `theme`／`editorFont`／`editorWidth`）⇒ 若要做代码块主题面，**建模要一次做两层**（块级 override ＋ 账户默认），否则与官方行为对不上（G1166）。
+
+### 三、★★☆ Markdown 序列化的权威映射：一张模板 ＋ 一个三令牌解码器（结掉 §一之六十九 开放项③）
+
+⇒ 模板＝`de.template`（`vendor-craft-export` @14,612，**2,729 字符**，整表落盘 `_harvest/b112-export-template.txt`）；代码块分支逐字＝`{{#ifEquals properties.language 'math_formula'}} $$\sl{{{replaceNewLines content }}}\sl$$\dl {{else}} {{{backticks}}}{{properties.language}}\sl{{{replaceNewLines content }}}\sl{{{backticks}}}\dl {{/ifEquals}}`。
+⇒ ★★★ **公式在导出侧走显示数学 `$$…$$`、不是围栏** ⇒ 与 §一之六十九 读回的 MCP 字段 `markdown:"```math_formula\nx^2\n```"` **不等价** ⇒ ⇒ **官方自己两条 markdown 码路对同一个块给出两种产物**（导出模板 vs MCP 序列化器）⇒ 判"两条通路各自口径"，不断言谁错（与第 76 批"契约文案不可信"同族：读回的 `markdown` 字段不能当导出规格）。
+⇒ ☆ 解码器＝`formatBlock(e,r,i)` 四步：① 先 `split("\n").filter(o=>o.trim().length!==0).join("")`（**模板自身的换行与缩进整行丢弃** ⇒ 模板里的缩进纯装饰，真实输出全部顶格）；② `l="\n"`；③ **仅当 `i`（inline）为真**时 `l = s.includes("`") ? " " : "<br>"`；④ `\dl`→`\n\n`、`\sl`→`l`、`\i__craft`→`flavour.indentationCharacters` ⇒ ★ 由 ③ 与 `backticks` 是常量可推：**任何 code 块的输出必然含反引号 ⇒ inline 语境下代码块的软换行一律变空格 ⇒ 多行代码被摊成一行**（☆ 推论，未屏上复证；`inline` 两个调用点逐字＝`formatBlock(P,r,!0)` 与 `formatBlock(g,r,!1)`）。
+⇒ ☆ 围栏长度＝`registerHelper("backticks",function(){return"```"})` **常量三条** ⇒ 官方**不做自适应围栏**（内容含 ```` ``` ```` 会破栏）⇒ 与本地同缺陷（`src/lib/document-codec/index.ts:78-79`）⇒ ⇒ 记为"同构"，不算本地落后。
+⇒ 本地对照（本轮实扫）＝`src/lib/document-codec/index.ts:78-79`（codeBlock → ` ```{language}\n{内容}\n``` `，语言为空时是空串）与 `:83-84`（mathBlock → `$$\n{latex}\n$$`）⇒ ★ **两条都与官方导出模板同形**；☆ 但官方"一种块类型（code）＋一个语言档分支"，本地"两种块类型两条分支"＝§一之六十五 已判的**建模分叉（有意偏差）**，本批补一句：**分叉只分在模型上，导出产物这一格是对得上的**。
+⇒ ★★ 导入侧才是真缺口＝官方逐字 `else if(i.type==="math_block"){ …type:"code", content:i.content, properties:{language:"math_formula"} }`（与导出的 `$$` 分支互逆），而本地导入**没有** `$$`／`math_block` 分支（`src/lib/import/markdown.ts` 的块级分支只有 fence `:34`、heading `:51`、rule `:62`、quote `:68`、image `:81`、list `:88`；`INLINE` 正则 `:171-172` 无数学档）⇒ ⇒ **官方导出的 `.md` 再导入本地，公式会变成普通段落**（G1173，与 §一之六十五"缩进读得进写不出"同形的另一处单向断链）。
+⇒ ☆ 顺带一张此前没记的映射＝`{{#case "video"}}` 出 `[fileName](url)`（**没有 `!`** ⇒ 视频塌成普通链接）、`{{#case "drawing"}}` 出 `![fileName]({{{previewImageUrl_relative}}})`（★ 用**预览图** URL 而非原图）、`{{#case "file"}}` 出 `[fileName](rawDataUrl_relative)`。
+
+### 四、☆ 本节新增的三条"未证就不断言"
+
+⇒ ① `yt(d)` 的加载结果进不进 `extensions`（只读到赋值 `B(i)` 与闸门，没读到组装点）；② 同 tag 多条规则的胜负顺序（影响 §三十八.八 那条 7 位十六进制缺陷的实际后果）；③ flavour 表（`L.title`／`L.bulletListStyle`／`L.numberedListStyle`／`L.todoListStyleChecked/Unchecked`／`L.focus`／`L.block`／`L.lineStyle`）的逐字取值与 flavour 一共几档。
+
+
+**仍未采到（本节）**：① 上面第四条的三件；② `ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档不高亮**只到盘上为止**，要屏上实测一次才算结案（☆ 零写入批可做：打开任一代码块切这五档、看 token 是否有色）；③ 主题的两层持久化在**读取顺序**上的优先级（块级 override 与账户默认谁盖谁，本批只看到 `lt(themeId, isDark)` 的入参来自外部数据，未读到"块上没设主题时是否回落默认"那条分支）；④ `Qvt` 这 41 项名单到底服务什么域（`docs`／`blocks`／`suggestions` 三个非语言值是关键线索，未读消费点）；⑤ `Xvt` 别名表的消费点（导入文件？拖拽上传？）未定位；⑥ 官方 MCP 序列化器（第 109 批读回那张）的本体未读——它在哪份 chunk、与 `de.template` 什么关系。

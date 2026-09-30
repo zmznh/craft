@@ -2447,3 +2447,40 @@ if (type === "fixed") {
 ⇒ ⚠ **沙盒 `QODER-HARVEST-B111-THEME` 未删**（MCP 桥挂死＋屏上预算用尽）；⇒ ⚠ **第 109 批残留 `QODER-HARVEST-B109-CODEFIELD` 仍在回收站**（未二次清空，用户已点头"清"，本批没来得及做）；⇒ ⚠ **用户的 Edge 标签页当前停在沙盒文档**（本批从「所有文档」点进去的），下批第一件事＝回「所有文档」并自证标题（★ 注意离开编辑器页的 `beforeunload` 原生弹窗形态＝停摆 #23）；⇒ ☆ 那 3 个无标题回收站文档**不是**我建的，未动。
 
 **仍未采到（本节）**：① 主题面板入口（三条已否）；② 面板内逐档预览与 `themePreviews` chunk 的实际拉取时机（modulepreload 已证，运行时是否再取未证）；③ `De("",isDark)` 空串路径的渲染后果；④ 沙盒删除后的**残留三连**（本批未做删除，三连未跑）。
+
+## V106〔第 112 批 2026-09-30 21:4x–23:1x：**零预算盘上批 ＝ 主题的"装配处／缺省值／展示序／持久层"四案并结 ＋ Markdown 导出模板与导入分支闭合 ＋ 本会话只有 3 条控制面探活**〕
+
+⇒ ★ **本批性质先声明**＝零浏览器内容面调用、零写入、零沙盒；§6 的"屏上证据"条件**本批不适用**（所有结论都是盘上代码逐字＋机读表，标 `✓盘上`），☆ 凡"屏上还看不出来"的地方在下文与 §三点一〇六二 明确标 `~` 或写进未采到。
+⇒ ☆ 唯一三次外部调用＝`node_repl` 里的 Browser SDK **控制面**探活（`browsers.list()` → `browsers.get(id)` → `tabs.list()` → `user.openTabs()`，一条 cell 跑完），结果见 §四"现场状态"。
+
+### 一、★★★ 主题面的四个悬案一次结（全部盘上）
+
+| 悬案（来源） | 结案（逐字判据） | 判定 |
+| --- | --- | --- |
+| 缺 `gutterActiveForeground` 的 13 档"实际继承值"（第 111 批队列④） | 装配函数 `gBn` 全文读毕＝**每条写都是 `s.X&&…` 条件写，一个默认值都没有** ⇒ 缺键＝该声明不产出 ⇒ 前景沿 CSS 继承 `.cm-gutters` 的 `color`（＝该档 `gutterForeground`）；⇒ ☆ 队列原提法"去装配处找默认值"本身不成立 | ✓盘上（12 档继承值逐档、`githubdark` 落基准 `#ccc`） |
+| 名册展示序规则（第 110 批开放项④） | `auto` 第 1 → `craftdark`／`craftlight` 第 2–3（暗前亮后）→ 其余 **18 档严格按 `id` 字母升序**（逐位与 `[...].sort()` DIFF 数 0）；chunk 内 `.sort(`／`.reverse(` 各 0 处 ⇒ 序＝字面量声明序；★ 判据＝姊妹工厂名册 `ue` 与 `V` **只有 Tokyo Night 三档不同序** ⇒ 展示序非派生 | ✓盘上（✎ 否证"亮前暗后"，`isDark` 序列＝`DDLDDLDDDLDLDLLDDDLDD`） |
+| `De("",isDark)` 空串后果（第 111 批 V105 开放项③） | 工厂 `De` 无兜底（`ue[""]` ⇒ undefined）；名册 `lt` 两处 `‖V[0]` ⇒ **未知名一律 `auto`**；组件里 `editorTheme:S` 是 prop、`S` 恒为名册条目 ⇒ **空串在 UI 通路不可达**；☆ 同步 effect 那支是 `if(!L)return`（第三种处理＝保持原值） | ✓盘上 ⇒ **该屏上复测项转负**（不必再花预算） |
+| 主题的落点（第 110／111 批） | ★★ **两层**＝块级 `pluginData.pluginConfigurationData.themeId`（承上批）＋ **账户默认** `codeEditorDefaultTheme`（逐字 `St.store(v.id)`，`St`←`sP`←`MGe=new Lo("codeEditorDefaultTheme","auto",t=>typeof t=="string")`）⇒ ☆ 后者校验**只验"是字符串"** ⇒ 任意串可入库、靠 `lt` 兜底 | ✓盘上（☆ 两层的读取优先级未证，转下批） |
+
+### 二、★★☆ Markdown 导出／导入的往返（本批新成的一个"可复现面"）
+
+⇒ 导出模板逐字（`de.template` 内 code 分支）＝`{{#ifEquals properties.language 'math_formula'}} $$\sl<content>\sl$$\dl {{else}} {{{backticks}}}{{properties.language}}\sl<content>\sl{{{backticks}}}\dl {{/ifEquals}}`；`backticks` helper＝**常量 `"```"`**；`replaceNewLines`＝`t.replace(/\n/g,"\\sl")`；解码器 `formatBlock` 四步（先删空行、`inline` 时 `\sl`→空格或 `<br>`、`\dl`→`\n\n`、`\i__craft`→缩进字符）。
+⇒ 导入分支逐字＝`else if(i.type==="math_block"){ … type:"code", content:i.content, properties:{language:"math_formula"} }` ⇒ 与导出的 `$$` 分支互逆 ⇒ ☆ **官方 markdown 往返对公式是同一条码路的两端**（可作下一批"导出→导入回灌"实测的最小靶子，属零写入：只在官方界面导出、本地读文件比对；☆ 但导出本身要走屏上菜单 ⇒ 需一次屏上批）。
+⇒ ★ 与 MCP 读回的 `markdown` 字段**不等价**（第 109 批实测 ` ```math_formula `）⇒ 判"官方两条 markdown 码路各有一套"，⇒ ☆ 复刻时**不要**把读回字段当导出规格（与第 76 批"契约文案不可信"同族）。
+
+### 三、★☆ 三条新的"可观测判据"（给下批屏上用）
+
+⇒ ① **主题菜单的搜索框谓词**＝`v.label.toLowerCase().includes(q) ‖ v.keywords.includes(q)`（★ `keywords` 是精确成员）⇒ ☆ 屏上判"这是不是官方主题菜单"的一条廉价指纹＝**输 `system` 应当只出现 `Auto`**、输 `dar` 应当 0 命中（子串不匹配 keywords）。
+⇒ ② **CM6 `basicSetup` 裁剪**逐字 `highlightActiveLineGutter:t, highlightActiveLine:t, searchKeyMap:!1, foldGutter:!1, highlightSelectionMatches:!1, autocompletion:k==="web", closeBrackets:!0` ⇒ ⇒ ★ 屏上判据＝**非编辑态不应有活跃行高亮**；`Ctrl+F` 在代码块内不应唤起搜索（searchKeymap 关）；☆ 选中一处 `foo` 不应把其它 `foo` 一起标出。
+⇒ ③ **语言菜单排除 mermaid**（`pe.filter(L=>L.langCode!=="mermaid")`）＋ **Mermaid 受特性开关** `Wt.isEnabled(Qt)`、`Qt` 逐字＝`"fs-mermaid-diagrams"` ⇒ ☆ 屏上"看不到 Mermaid 档"**不能**判"官方没有图表能力"（本目录第一次把开关 id 抄到手）。
+⇒ ☆ 顺带一条全 chunk 枚举（`fs-`／`pf-`／`ex-` 前缀串）＝41 条、落盘 `_harvest/b112-flags.txt`，其中 **`fs-debug-*` 一族 13–14 条**（含 `fs-debug-allow-past-task-dates`＝§11.3／G333 那条"过去日期不自动采纳"的**开关本体**、`fs-debug-allow-inbox-root`、`fs-debug-block-selection-borders`＝第 103～104 批落点沟槽调试用的那族）。
+
+### 四、现场状态（★ 下批开场必读）
+
+⇒ ⚠ **两条沙盒残留仍未清**＝`QODER-HARVEST-B111-THEME` ＋ `QODER-HARVEST-B109-CODEFIELD`；⇒ ⚠ **用户的 Edge 标签页仍停在沙盒文档**（本批控制面实测：`tabs.list()` ⇒ 0 枚可控；`user.openTabs()` ⇒ **4 枚**，第一枚标题逐字 `QODER-HARVEST-B111-THEME`、URL `https://docs.craft.do/editor/d/<spaceId>/…`）⇒ 说明**桥是活的、只是没有可控标签页**（承"判活与接管的正确顺序"那条：可用 `user.claimTab(tabObject)` 直接接管）。
+⇒ ★ **本批没有动那扇标签页、也没有做清除**＝原因不是技术不可达，而是纪律：**永久删除属不可逆动作，第 111 批的具名授权不跨批沿用** ⇒ 已在 `gap.md` §十一 台账登记，等下一轮点头；☆ 若要动，正确顺序＝**先 `claimTab` → 进回收站 → 二次清空（V93 五判据协议）→ 再回「所有文档」**，因为离开编辑器页有 `beforeunload` 原生弹窗风险（第 23 次停摆形态），一次导航机会只留一次。
+⇒ ☆ 本会话**没有 `craft` MCP server**（`mcp_list` 关键词 craft ⇒ 0 工具）⇒ 队列⑦（`rootBlockId` vs `documentId` 作用域、trash 文档写侧边界）结构不可得；⚠ 不得据此写"官方无此行为"。
+⇒ ✓ 账户偏好／分享面／非本轮实体：本批全程未碰（零写入批）。
+
+
+**仍未采到（本节）**：① 主题面板的屏上入口（上批三条否证仍未突破；本批新拿到的**菜单实现体逐字**给出了要找的东西长什么样＝单组 `themes`、每项只有文字与勾、上面有个搜索框）；② 两层主题偏好的**读取优先级**（块级 vs 账户默认谁先）；③ `ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档"不高亮"目前是盘上实证（`...M?[M]:[]`），**屏上未验**；④ `formatBlock` 的 `inline` 触发场景；⑤ 同一 tag 多条规则的胜负顺序；⑥ `themePreviews` 18 张 PNG 的屏上呈现位；⑦ 队列①②（清残留＋还原标签页）与队列③（主题面板）本批未做。

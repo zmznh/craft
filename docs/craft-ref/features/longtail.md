@@ -1222,3 +1222,105 @@ card 家族（逐字，序列化器 `S1e` 内）＝`{fontStyle,pageStyle,backgro
 ⇒ ①（承第 109／110 批）`deleted` 的 `backgroundColor:"ffeef0"` 缺前导 `#`＝**四档同串**，登记不修正；② ☆ 新登记一条**非缺陷但易踩**＝`githublight` 的 `background` 是**三位** `#fff`（其余 19 档全六位）⇒ 按"必须是六位"写的解析器会在这档静默失败；③ ☆ `gruvboxlight.selection`＝`rgba(235,219,178)`（**三个分量、无 alpha**，CSS 合法但看着像漏写）⇒ 登记为"官方写法不规范"，不判缺陷。
 
 **仍未采到（本节）**：① 20 档里 `styles`（token 色板）**仍只有第 109 批那 7 档逐字**，本批只闭合了 `settings` 一族；② `gutterActiveForeground` 缺的 13 档实际继承值；③ 主题面板屏上入口（三条已否，剩块把手菜单／右键菜单／`⋯` 详情）；④ `V` 名册的**展示序规则**（承第 110 批开放项④，本批仍未判：表里 `tokyonight` 排在 `tokyonightday` 之前，既非纯字母也非"亮前暗后"）；⑤ MCP 19 档与界面 21 档差值的**强制层**（拒绝还是只是不列）。
+
+## 三十八、**第 112 批＝20 档 `styles` token 色板逐字全表（368 条规则）＋ CM6 基准主题 `&light`／`&dark` 全表（119 键 grammar 表 ＋ 5 档挑选名册无 grammar）＋ Markdown 导出模板逐字 ＋ 名册三张与语言名册四张 ＋ 官方色值缺陷新增一条**（2026-09-30 21:4x–23:1x；★ 源＝`_harvest/js/` 缓存的 `CodeEditorWrapper-DB8UxA00.js`（59,843 字符）、`vendor-code-editor-BLm003PU.js`（3,578,108 字符）、`vendor-craft-export-DIm_3hRN.js`、`index-DiTmKH3z.js`、`themePreviews-BJcCJGmn.js`（2,595 字符，本批第一次读）；★ 判定在 `internals.md` §五十一、`model.md` §一之七十、`styles.md` §十九，gap 在 `gap.md` §三点一〇六二 G1160–G1179；★ 机读结果＝`_harvest/b112-styles.txt`（22,831 字节，368 条规则逐字，由 `b112-style-scan.cjs` 生成、**未手抄**）、`_harvest/b112-base-theme.txt`（`b112-base-theme.cjs`，括号配平版）、`_harvest/b112-grammar.txt`（`b112-grammar.cjs`，深度感知取键）、`_harvest/b112-export-template.txt`（`b112-export-tpl.cjs`，2,729 字符整表）、`_harvest/b112-lang-roster.txt`（`b112-lang-roster.cjs`，38 条三元组）、`_harvest/b112-color-audit.txt`（`b112-color-audit.cjs`，形态普查）、`_harvest/b112-second-roster.cjs`（第四张名单 ＋ 别名表 77 条）；⚠ **本批零浏览器内容面调用、零写入**）
+
+### 一、★★★ 缺 `gutterActiveForeground` 的 13 档：继承值逐档（结掉第 111 批 §三十七 开放项②）
+
+⇒ 装配处逐字（`gBn`，`vendor-code-editor` @1,481,662）＝`var p={}; s.gutterActiveForeground&&(p.color=s.gutterActiveForeground), s.lineHighlight&&(O[".cm-activeLine"]={backgroundColor:s.lineHighlight}, p.backgroundColor=s.lineHighlight), O[".cm-activeLineGutter"]=p` ⇒ **一个默认值都没有**，缺键＝不写该声明 ⇒ 前景沿 CSS 继承取自 `.cm-gutters` 的 `color`（＝该档 `gutterForeground`）。
+
+| 档 | 声明的 `gutterActiveForeground` | 活跃行行号**前景**的实际来源 | 活跃行行号**底色**的实际来源 |
+| --- | --- | --- | --- |
+| craftdark | `rgba(255,255,255,0.7)` | 自己声明 | 名册 `lineHighlight` `rgba(255,255,255,0.05)` |
+| craftlight | `rgba(31,34,37,0.6)` | 自己声明 | `rgba(0,0,0,0.03)` |
+| atomone | `#8997b2` | 自己声明 | `rgba(255,255,255,0.05)` |
+| aura | `rgba(237,236,238,0.7)` | 自己声明 | `rgba(255,255,255,0.05)` |
+| materialdark | `#c2c2c2` | 自己声明 | `rgba(84,91,97,0.5)` |
+| nord | `#d8dee9` | 自己声明 | `rgba(255,255,255,0.05)` |
+| vscodedark | `#fff` | 自己声明 | `#ffffff0f` |
+| darcula | **缺** | 继承 `gutterForeground` `#999` | `rgba(255, 255, 255, 0.05)` |
+| bbedit | **缺** | 继承 `#4D4D4C` | `#00000012` |
+| dracula | **缺** | 继承 `#6D8A88` | `rgba(255, 255, 255, 0.05)` |
+| gruvboxdark | **缺** | 继承 `#7c6f64` | `rgba(60,56,54,0.5)` |
+| gruvboxlight | **缺** | 继承 `#665c54` | `rgba(235,219,178,0.4)` |
+| materiallight | **缺** | 继承 `#90A4AE` | `#CCD7DA50` |
+| noctislilac | **缺** | 继承 `#0c006b70`（★ 带 alpha） | `rgba(225,222,243,0.5)` |
+| tokyonight | **缺** | 继承 `#787c99` | `rgba(255,255,255,0.05)` |
+| tokyonightday | **缺** | 继承 `#3760bf` | `#5f5faf11` |
+| tokyonightstorm | **缺** | 继承 `#7982a9` | `rgba(255,255,255,0.05)` |
+| sublime | **缺** | 继承 `#FFFFFF70`（★ 带 alpha） | `#00000059` |
+| githublight | **缺** | ★ **空规则**（`lineHighlight` 也缺 ⇒ `.cm-activeLineGutter` 赋的是 `{}`）⇒ 前景继承 `#6e7781`、底色落回基准 | 基准 `&light` `#e2f2ff`／`&dark` `#222227`（该档标 light ⇒ 取 `#e2f2ff`） |
+| githubdark | **缺** | ★★ **两级都缺**（`gutterForeground` 也没有）⇒ 落 CM6 基准 `&dark .cm-gutters{color:"#ccc"}` | 名册 `lineHighlight` `#36334280`；行号槽**底色**也缺 ⇒ 基准 `&dark` `#333338`（★ 与该档正文底色 `#0d1117` 不同 ⇒ 屏上可见的色差） |
+
+### 二、★★★ CM6 基准主题的 `&light`／`&dark` 全表（**35 条规则、20 个去重选择器**；★ 必须用括号配平取，flat 正则会把带嵌套的 `&light .cm-gutters` 整条漏掉）
+
+| 选择器 | `&light` 声明（逐字） | `&dark` 声明（逐字） |
+| --- | --- | --- |
+| .cm-activeLine | `backgroundColor:"#cceeff44"` | `backgroundColor:"#99eeff33"` |
+| .cm-activeLineGutter | `backgroundColor:"#e2f2ff"` | `backgroundColor:"#222227"` |
+| .cm-button | `backgroundImage:"linear-gradient(#eff1f5, #d9d9df)",border:"1px solid #888","&:active":{backgroundImage:"linear-gradient(#b4b4b4, #d0d3d6)"}` | `backgroundImage:"linear-gradient(#393939, #111)",border:"1px solid #888","&:active":{backgroundImage:"linear-gradient(#111, #333)"}` |
+| .cm-content | `caretColor:"black"` | `caretColor:"white"` |
+| .cm-cursor | **（无 light 版）** | `borderLeftColor:"#ddd"` |
+| .cm-gutters | `backgroundColor:"#f5f5f5",color:"#6c6c6c",border:"0px solid #ddd","&.cm-gutters-before":{borderRightWidth:"1px"},"&.cm-gutters-after":{borderLeftWidth:"1px"}` | `backgroundColor:"#333338",color:"#ccc"`（★ 无 border 键） |
+| .cm-panels | `backgroundColor:"#f5f5f5",color:"black"` | `backgroundColor:"#333338",color:"white"` |
+| .cm-panels-bottom | `borderTop:"1px solid #ddd"` | **（无 dark 版）** |
+| .cm-panels-top | `borderBottom:"1px solid #ddd"` | **（无 dark 版）** |
+| .cm-searchMatch | `backgroundColor:"#ffff0054"` | `backgroundColor:"#00ffff8a"` |
+| .cm-searchMatch-selected | `backgroundColor:"#ff6a0054"` | `backgroundColor:"#ff00ff8a"` |
+| .cm-selectionBackground | `background:"#d9d9d9"` | `background:"#222"` |
+| .cm-snippetField | `backgroundColor:"#00000022"` | `backgroundColor:"#ffffff22"` |
+| .cm-specialChar | `color:"red"` | `color:"#f78"` |
+| .cm-textfield | `backgroundColor:"white"` | （见 `_harvest/b112-base-theme.txt`） |
+| .cm-tooltip .cm-tooltip-arrow | **（无 light 版）** | `"&:before":{borderTopColor:"#333338",borderBottomColor:"#333338"},"&:after":{borderTopColor:"transparent",borderBottomColor:"transparent"}` |
+| .cm-tooltip-section:not(:first-child) | `borderTop:"1px solid #bbb"` | **（无 dark 版）** |
+
+⇒ ★ 单档缺失的 5 条（`.cm-cursor`、`.cm-tooltip-arrow` 只有 dark；`.cm-panels-bottom`、`.cm-panels-top`、`.cm-tooltip-section` 只有 light）＝**名册不覆写时另一档这个属性根本没有值**。
+⇒ ☆ 分支选择的逐字机制＝`W9t={"&light":"."+C9t,"&dark":"."+Y9t}` ＋ 根 class 逐字 `Sxe+" "+(state.facet(kxe)?Y9t:C9t)+" "+state.facet(Ene)`，而 `kxe` 的 combine 是 `r.indexOf(!0)>-1` ⇒ **任一主题声明 dark 即整编辑器取 dark 分支**；Craft 每编辑器只注册一条主题 ⇒ 等价于"该档工厂 `theme` 字面量"。
+
+### 三、★★★ grammar 能力面登记表 `jTe`（结掉第 107 批 §三十三.五 开放项"能力面未量化"）
+
+⇒ 身份＝`kt` ＝逐字 `hBn=Object.keys(jTe)`，`yt` ＝逐字 `function dBn(r){return jTe[r]?jTe[r]():null}`（`vendor-code-editor` @1,477,736 起，体长 2,879 字符）；⇒ 加载闸门逐字（CodeEditorWrapper @41,784）＝`l.useEffect(()=>{if(d){if(kt.includes(d)){const i=yt(d);B(i)}}else B(null)},[d])`，`d` ＝ **挑选名册的 `langCode`**（消费点逐字 `langCode:N.langCode`）⇒ ⇒ **闸门不做任何规范化**。
+⇒ **键数＝119，全部唯一**；形态两种＝`:()=>F.define(…)` 惰性 106 条 ＋ 直接引用 13 条（`javascript:Bne`、`jsx:()=>Bne({jsx:!0})`、`typescript:()=>Bne({typescript:!0})`、`tsx:()=>Bne({jsx:!0,typescript:!0})`、`markdown:()=>UPn({base:h7e,codeLanguages:F5n})`、`sql:k4e`、`mysql:()=>k4e({dialect:Ixn})`、`pgsql:()=>k4e({dialect:Wxn})`、`html:p4n`、`css:Poe`、`python:E3n`、`xml:exn`、`lezer:UTn`…）。
+⇒ 全键逐字（声明序）＝`apl、asciiArmor、asterisk、c、csharp、scala、kotlin、shader、nesC、objectiveC、objectiveCpp、squirrel、ceylon、dart、cmake、cobol、commonLisp、crystal、cypher、d、diff、dtd、dylan、ebnf、ecl、eiffel、elm、factor、fcl、forth、fortran、gas、gherkin、groovy、haskell、haxe、http、idl、jinja2、mathematica、mbox、mirc、modelica、mscgen、mumps、nsis、ntriples、octave、oz、pig、properties、protobuf、puppet、q、sas、sass、sieve、smalltalk、solr、sparql、spreadsheet、`**`stex`**`、textile、tiddlyWiki、tiki、troff、ttcn、turtle、velocity、verilog、vhdl、webIDL、xQuery、yacas、z80、wast、javascript、jsx、typescript、tsx、json、html、css、python、markdown、xml、sql、mysql、pgsql、java、rust、cpp、lezer、php、go、shell、lua、swift、tcl、yaml、vb、powershell、brainfuck、stylus、erlang、nginx、perl、ruby、pascal、livescript、less、scheme、toml、vbscript、clojure、coffeescript、julia、dockerfile、r`
+⇒ ★★★ **挑选名册 38 条 string `langCode` 里有 7 条在 `jTe` 里查不到**＝`ada`、`bash`、`matlab`、`mermaid`、`prolog`、`vbnet`、`other` ⇒ 其中 `mermaid`／`other` 本就无需 grammar，但 **`ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档是真语言档 ⇒ 选它们时闸门不进分支 ⇒ 不加载任何 language 扩展 ⇒ 不高亮**（☆ 而 `jTe` 里存在近义键 `shell`、`octave`、`vb` ⇒ 名册的 `langCode` 与登记表的键**对不上**；别名表 `Xvt` 里 `bash→shell`、`matlab?`… 有映射但那条表服务的是**另一条通路**（导入），不在这条闸门之前）；⇒ ☆ 反证设计意图＝四个已知分歧档（`csharp`／`objectiveC`／`tsx`／`stex`）**都在 `jTe` 里** ⇒ ⇒ `langCode` 确实就是 grammar 键，所以那 5 档是漏配而非另有机制。
+⇒ ☆ 能力面 3.13 倍（119／38）：`jTe` 有而挑选名册没有的共 88 个（`apl`、`cmake`、`cobol`、`octave`、`protobuf`、`erlang`、`nginx`、`pascal`、`scheme`、`toml`、`clojure`、`coffeescript`…）⇒ **官方能解析的语言远多于可选项**，且 13 个直接引用形态说明这张表是从 `@codemirror/language-data` 一类包裁剪而来（☆ 未证，仅形状）。
+⇒ ★ `stex` **在 `jTe` 里** ⇒ 公式档（`math_formula` → `langCode:"stex"`）**有一条真 grammar** ⇒ 与"公式另有 KaTeX 预览通路"不矛盾（预览与高亮两条并存，承 §一之六十五 的三条渲染路）。
+
+### 四、★★★ Markdown 导出模板 `de.template`（2,729 字符，整表落盘 `_harvest/b112-export-template.txt`）
+
+⇒ 代码块分支逐字（模板源，`\sl`／`\dl` 是令牌不是文本）＝`{{#case 'code'}} {{#ifEquals properties.language 'math_formula'}} $$\sl{{{replaceNewLines content }}}\sl$$\dl {{else}} {{{backticks}}}{{properties.language}}\sl{{{replaceNewLines content }}}\sl{{{backticks}}}\dl {{/ifEquals}} {{/case}}`
+⇒ 其余与本节相关的分支逐字＝`{{#case 'line'}} {{getLine}}\dl`；`{{#case "file"}} [{{properties.fileName}}]({{rawDataUrl_relative}}){{{getBlockIdIndicator this}}}\dl`；`{{#case 'url'}} [{{{properties.title}}}]({{{properties.url}}})\dl`；`image` → `![{{properties.fileName}}]({{{rawDataUrl_relative}}})`；`video` → `[{{properties.fileName}}](…)`（★ **不是 `![…]`**＝视频塌成链接）；`drawing` → `![…]({{{previewImageUrl_relative}}})`（★ 用预览图 URL 而非原图）；`text` 分支前缀＝`{{getSpacesForIndentationLevel styleAttributes.indentationLevel parentSubBlocks}}` ＋ 列表样式 switch（`toggle`／`bullet`／`todo`／`numbered`）＋ `focus`／`block` 两个 decoration 判定 ＋ `{{#unless inline}}{{{getHeading this parentSubBlocks}}}{{/unless}}`。
+⇒ helper 逐字（本批新读 9 条）＝`backticks` → 常量 `"```"`；`replaceNewLines` → `t.replace(/\n/g,"\\sl")`；`getSpacesForIndentationLevel` → `Array(Number(t)+1).join("\\i__craft")`；`getHeading` → `e===void 0 ? L.title : (r in L ? L[r] : "")`（★ 标题前缀**从 flavour 表按 textStyle 名取**）；`getBulletListStyle` → `L.bulletListStyle`；`getNumberedListStyle` → `L.numberedListStyle.replace("{number}",t)`；`getTodoListStyle` → `Number(t)>0 ? L.todoListStyleChecked : L.todoListStyleUnchecked`；`getToggleListStyle` → `L.toggleListStyle`；`getFocus` → `L.focus`、`getBlock` → `L.block`；`hasChildren` → `t.subBlocks ? t.subBlocks.length>0 : !1`。
+⇒ 解码器逐字＝`formatBlock(e,r,i)`：`s=r({...e,flavourInfo, parentSubBlocks:e.subBlocks, inline:i, subBlocks:i?void 0:e.subBlocks})`；`s=s.split("\n").filter(o=>o.trim().length!==0).join("")`；`let l="\n"`；`return i&&(s.includes("`")?l=" ":l="<br>"), s=s.replace(/\\dl/g,"\n\n").replace(/\\sl/g,l).replace(/\\i__craft/g,this.flavour.indentationCharacters), s`；⇒ ☆ 调用点两处＝`formatBlock(P,r,!0)` @40,151、`formatBlock(g,r,!1)` @40,653（后者前一行逐字 `g.styleAttributes.textStyle="title"`）。
+
+### 五、★★★ 名册三张（主题）与四张（语言）
+
+⇒ 主题＝`V`（展示，21 条）、`ue`（工厂，21 键含 `auto:null`）、`nt`（TypeScript 枚举，21 条）；枚举逐字＝`AUTO="auto"、CRAFTDARK="craftdark"、CRAFTLIGHT="craftlight"、ATOMONE="atomone"、AURA="aura"、BBEDIT="bbedit"、DARCULA="darcula"、DRACULA="dracula"、GITHUBDARK="githubdark"、GITHUBLIGHT="githublight"、GRUVBOXDARK="gruvboxdark"、GRUVBOXLIGHT="gruvboxlight"、MATERIALDARK="materialdark"、MATERIALLIGHT="materiallight"、NOCTISLILAC="noctislilac"、NORD="nord"、SUBLIME="sublime"、TOKYONIGHTDAY="tokyonightday"、TOKYONIGHTSTORM="tokyonightstorm"、TOKYONIGHT="tokyonight"、VSCODEDARK="vscodedark"`。
+⇒ **展示序逐位（`V` 声明序，即屏上顺序）**＝1 `auto`（`isDark:true`、`keywords:["system"]`、`settings:null`）→ 2 `craftdark` → 3 `craftlight` → 4 `atomone` → 5 `aura` → 6 `bbedit` → 7 `darcula` → 8 `dracula` → 9 `githubdark` → 10 `githublight` → 11 `gruvboxdark` → 12 `gruvboxlight` → 13 `materialdark` → 14 `materiallight` → 15 `noctislilac` → 16 `nord` → 17 `sublime` → 18 `tokyonight` → 19 `tokyonightday` → 20 `tokyonightstorm` → 21 `vscodedark`；⇒ ★ 第 4 项起与 `[...].sort()` **逐位相同**（DIFF 数 0），且 chunk 内 `.sort(`／`.reverse(` 各 **0 处**；⇒ ☆ 纯字母序下 `auto` 第 3、`craftdark` 第 5、`craftlight` 第 6；`isDark` 序列＝`DDLDDLDDDLDLDLLDDDLDD`。
+⇒ ☆ `ue` 与 `V` 的去 auto 对照：**只有位置 16/17/18 不同**（`V`＝tokyonight→day→storm；`ue`／`nt`＝day→storm→base）⇒ 展示序不是从工厂表派生。
+⇒ 语言＝① 挑选名册 39 条三元组（§三十三.一，本批用 `langCode:"…"` 形态只匹到 38 条 ⇒ ☆ **与上批的 39 对账才发现漏了唯一非字符串档 `plaintext`（`langCode:null`）**）；② `Qvt` **41 项**扁平名单逐字＝`ada、bash、cpp、cs、css、dart、dockerfile、go、groovy、haskell、html、java、javascript、json、julia、kotlin、lua、markdown、matlab、objectivec、perl、php、prolog、plaintext、python、r、ruby、rust、scala、shell、sql、swift、typescript、vbnet、yaml、xml、math_formula、other、docs、blocks、suggestions`（⇒ 与挑选名册的双向差集＝**多 `docs`／`blocks`／`suggestions`、少 `mermaid`**；`Yvt=new Set(Qvt)`）；③ `Xvt` **77 条**扩展名／别名表逐字＝`c、cc、cpp、cxx、h、hh、hpp、hxx、ino→cpp`；`cjs、js、jsx、mjs→javascript`；`cts、mts、ts、tsx→typescript`；`sh、bash、ksh→shell`；`svg、xsd、xsl→xml`；`md、mkd→markdown`；`pl、pm→perl`；`php3、php4、php5、php7、phtml→php`；`kt→kotlin`；`hs→haskell`；`gradle→groovy`；`hbs、handlebars、htm→html`；`cql、pls→sql`；`py、pyw→python`；`rb→ruby`；`rs→rust`；`jl→julia`；`map→json`；★ `ltx、tex→math_formula`；其余同名自映射（`cs、css、dart、go、java、json、lua、markdown、perl、php、r、scala、sql、swift、yaml`）⇒ ⇒ ☆ **29 个目标语言里只有 `cs` 与 `math_formula` 不在 `jTe`**（`cs` 靠挑选名册的 `langCode:"csharp"` 才有 grammar；`math_formula` 靠 `stex`）；④ `PGe=["mermaid","math_formula","stex"]`。
+
+### 六、★★☆ 账户级默认偏好的两条定义逐字
+
+⇒ 主包 @646,001 一段逐字＝`PGe=["mermaid","math_formula","stex"]，rD=new Lo("codeEditorDefaultLanguage","javascript",t=>typeof t=="string"&&!PGe.includes(t))，MGe=new Lo("codeEditorDefaultTheme","auto",t=>typeof t=="string")`；⇒ ☆ 顺带同段一条无关但可复核的＝`Fc=t=>(t==null?void 0:t.startsWith("="))??!1`；☆ 另一条同形态但不同类＝`new K$("forcedDarkOrLightMode","system",CE(["light","dark"]))` 与 `new Lo("forcedDarkOrLightMode",null,…)` **同名两实例**（☆ 未展开，转下批）。
+⇒ 写入点逐字＝主题菜单 `onClick:()=>{St.store(v.id), s(v)}`；语言菜单 `onClick:()=>{["mermaid","math_formula","stex"].includes(B.storedLangCode)||Ft.store(B.storedLangCode), s(B)}`。
+
+### 七、★★☆ `themePreviews-BJcCJGmn.js` 全表（2,595 字符，本批第一次整块读）
+
+⇒ **与代码块主题无关**；它是一张 **18 项路径表** ＝ 6 强调色 × 3 档外观：`appearance.{blue,pink,green,purple,yellow,gray}.{light,dark,dynamic}@2x.png.<hash>.png`，聚合形态逐字 `I={blue:{light, dark, dynamic}, pink:{…}, green:{…}, purple:{…}, yellow:{…}, gray:{…}}`；⇒ ☆ 与 CSS 侧 `[data-accent=…]` 全量枚举的 6 枚**两个独立源吻合**（`blue｜gray｜green｜pink｜purple｜yellow`）。
+⇒ 预载器形态逐字＝`t=new Map()`；`r=e=>{const a=new Image; return a.alt="", a.draggable=!1, {image:a, src:e, status:"idle"}}`；`T=e=> e.status==="loaded" ? Promise.resolve(!1) : (… e.image.onload=()=>{e.image.decode().catch(()=>{}).then(()=>n(!1))}, e.image.onerror=()=>n(!0), e.image.src=e.src …)`；`B=e=>{… Promise.all(Object.values(a.images).map(T)).then(n=>{n.some(Boolean)&&(a.preloadPromise=void 0)})}`；导出仅两符号（`_ as g`、`B as p`）；⇒ ☆ 消费方＝`PreferencesPanel`（`import"./themePreviews-…"`）、`SubscriptionsPanel`（`import{p as rl, g as xc}`）、`MySpaces`、`index` 的 modulepreload 表。
+
+### 八、★★ 官方色值缺陷清单（本批增量，承 §三十五.三／§三十七）
+
+⇒ ☆ ①承上批：`deleted` 的 `backgroundColor:"ffeef0"` 缺前导 `#`＝**四档同串**（暗档沿用亮粉底）。
+⇒ ★★ ②**本批新增**＝`gruvboxdark` 里 **7 位十六进制 `#fb4934d`** 出现**两处**：`{tag:[e.annotation],color:"#fb4934d"}` 与 `{tag:e.invalid,color:"#fe8019",borderBottom:"1px dotted #fb4934d"}`；⇒ ☆ 同档另有合法串 `{tag:[e.contentSeparator],color:"#fb4934"}` ⇒ 判"多打一个 `d`"；⇒ ⇒ 后果＝两处声明均**非法 CSS、整条丢弃**（annotation 失去颜色、invalid 的下划线失去颜色），☆ 但 `e.annotation` 在该档**还出现在另一条合法规则里**（`{tag:[e.number,e.changed,e.annotation,e.modifier,e.self,e.namespace],color:"#d3869b"}`）⇒ 谁生效取决于 CM6 的匹配顺序（**本批未证**，见 §五十一 仍未采到①）。
+⇒ ☆ ③`atomone` 同档 hsl 写法三种混用＝`"hsl(207, 82%, 66%)"`、`"hsl(38,71%,66%)"`、★`"hsl( 29, 54%, 61%)"`（左括号后带空格）。
+⇒ ☆ ④`dracula` 同档内 `e.atom` 出现两次且同色 `#bd93f9`（`{tag:[e.atom,e.number]}` 与 `{tag:e.atom}`）。
+⇒ ☆ ⑤**368 条规则里 31 条根本没有 `color` 键**（只带 `fontWeight`／`fontStyle`／`textDecoration`），且全部属于 `strong`／`emphasis`／`link`／`strikethrough` 一族 ⇒ ☆ 这些 token 的"颜色"因此完全依赖名册的 `foreground` 继承，跨档一致。
+
+### 九、☆☆ 本批方法账（三条，均已写进 `internals.md` §五十一.十）
+
+⇒ ① **chunk 名不能定性**（`themePreviews` 案）；② **"缺省值找不到"要先把装配函数全文读出来**才能写成"没有默认"；③ **配对类／名册类枚举必须用括号配平或深度感知取键**，本批两处都先踩了 flat 正则（`&light .cm-gutters` 被整条漏掉、`jTe` 键数先算成 121 且有重复）。
+
+
+**仍未采到（本节）**：① 挑选名册 5 档无 grammar（`ada`／`bash`／`matlab`／`prolog`／`vbnet`）是**漏配还是另有第二道 grammar 源**（`jTe` 里存在 `shell`／`octave`／`vb` 近义键 ⇒ 需要屏上实测"选 Bash 有没有高亮"才能定案）；② `HighlightStyle` 里同 tag 多条规则的**胜负顺序**（只拿到声明序，未读 `uE.define` 的建树实现）⇒ 影响 §八.② 与名册末尾 `...r` 的可覆盖性判定；③ `kt`／`yt` 的加载结果 `M` **具体进不进 `extensions`**（本批只读到 `B(i)` 赋值与闸门，没读到组装点）；④ flavour 表（`L.title`、`L.bulletListStyle`、`L.numberedListStyle`、`L.todoListStyleChecked/Unchecked`、`L.focus`、`L.block`、`L.lineStyle`、`indentationCharacters`）的**逐字取值**与 flavour 有几档；⑤ `formatBlock` 的 `inline` 真值语义（哪些块走内联支 ⇒ 官方代码块会不会因此在表格里被摊平）；⑥ `themePreviews` 18 张 PNG 的**屏上呈现位**（外观设置卡片？订阅面板？）；⑦ `forcedDarkOrLightMode` 为何有 `Lo` 与 `K$` 两个构造、各服务什么；⑧ `new K$(…)` 这个类的校验器 `CE(["light","dark"])` 与屏上第三档 `dynamic` 的关系（名单里只有两档）。

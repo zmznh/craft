@@ -946,3 +946,38 @@
 ⇒ `src/app/globals.css:300-301` 暗档 `--editor-blueDark` 由 `rgb(3 0 245)`→`rgb(170 169 249)`、`--editor-blueLight` 由 `rgb(41 98 246)`→`rgb(65 146 247)`（＝官方暗档逐字，G1068）⇒ ☆ 至此本地 `.dark` 的 `--editor-*` 一族**全部**与官方暗档一致（除 G1068 记的"缺 `--editor-text`／`--editor-spectrum`"与命名大小写差仍在）；⇒ ★ 测试守＝`src/lib/editor/dark-syntax-tokens.test.ts`（读 CSS 断言暗档两值＋亮档两值不被改动）。
 
 **仍未采到（本节）**：① 20 档的 `styles`（token 色板）仍只有第 109 批 7 档逐字；② `gutterActiveForeground` 缺的 13 档实际继承到什么值；③ 主题在屏上的**实际渲染底色**（本批全部来自盘上 settings，未做屏上底色对照，因主题面板入口未找到）；④ `--editor-spectrum` 与 `--editor-text` 在本地补齐（G1068 的缺失半条）。
+
+## 十九、**第 112 批＝代码块"色从哪来"这一面的一次闭合：CM6 基准主题 `&light`／`&dark` 全表 ＋ 缺省 gutter 的继承链 ＋ Craft 压在 CM6 上的 `!important` 层 ＋ 浮层与滚动条的 app 级常量**（✓盘上 第 112 批 2026-09-30 21:4x–23:1x，**零浏览器内容面调用、零写入**；★ 逐字表在 `longtail.md` §三十八.一／二／七，机制在 `internals.md` §五十一，gap 在 `gap.md` §三点一〇六二 G1160–G1179；机读结果 `_harvest/b112-base-theme.txt`／`_harvest/b112-styles.txt`）
+
+### 一、★★★ 名册覆写不到的部分走"基准主题"，而基准主题**按 `&light`／`&dark` 分档**
+
+⇒ 本节把一件以前只能"猜兜底"的事量化了：CM6 基准主题（`vendor-code-editor` @165,701 起）里有 **35 条 `&light`／`&dark` 规则、去重 20 个选择器**（逐字两列表在 `longtail.md` §三十八.二），而 Craft 的 20 档名册通过 `gBn` 只覆写其中 **6 类**（`&`、`.cm-gutters`、`.cm-activeLine`、`.cm-activeLineGutter`、`.cm-selectionBackground`、`.cm-selectionMatch`，外加 `.cm-content` 的 `caretColor` 与 `.cm-cursor`／`.cm-dropCursor` 的 `borderLeftColor`、`&.cm-editor .cm-scroller` 的 `fontFamily`）⇒ ⇒ **其余 14 类选择器（`.cm-searchMatch*`、`.cm-specialChar`、`.cm-panels*`、`.cm-button`、`.cm-snippetField`、`.cm-textfield`、`.cm-tooltip*`）在 Craft 里永远是 CM6 基准值**，且基准值本身是亮暗两套 ⇒ ★ 复刻时的正确做法＝**把这两套也当作规格表抄**，而不是只抄 20 档名册。
+⇒ ★★★ 分支的判定**不看底色**，看逐字 `{dark:i==="dark"}` 里的 `i`＝工厂 `theme` 字面量 ⇒ 于是第 109／111 批钉死的三档错配（`craftdark` 自标 `light`、`materiallight`／`tokyonightday` 自标 `dark`）在本节有了**具体的可见后果**：这三档从**相反分支**取那 14 类基准值（例如 `craftdark` 的搜索命中高亮会取亮档的 `#ffff0054` 而不是暗档的 `#00ffff8a`、`.cm-specialChar` 取 `red` 而不是 `#f78`）。
+⇒ ☆ 另有 5 条基准规则**天生只有一档有**＝`.cm-cursor` 与 `.cm-tooltip-arrow` 只有 dark 版、`.cm-panels-bottom`／`.cm-panels-top`／`.cm-tooltip-section:not(:first-child)` 只有 light 版 ⇒ 名册若也不写（`craftlight`／`githublight` 没有 `caret`），该属性**整条不存在**。
+
+### 二、★★★ 行号槽（gutter）的颜色链：名册 → 继承 → 基准，三层且没有中间默认值
+
+⇒ 逐字装配（`gBn` @1,481,662）：`O[".cm-gutters"]={}` 起手，随后 `s.gutterBackground&&(O[".cm-gutters"].backgroundColor=…)`、`s.gutterForeground&&(O[".cm-gutters"].color=…)`、`s.gutterBorder&&(O[".cm-gutters"].borderRightColor=…)`；活跃行那一支是 `var p={}; s.gutterActiveForeground&&(p.color=…); s.lineHighlight&&(…, p.backgroundColor=…); O[".cm-activeLineGutter"]=p` ⇒ ⇒ ★ **装配处没有任何默认值**，缺键＝该声明根本不产出 ⇒ ⇒ 13 档缺 `gutterActiveForeground` 的"实际颜色"＝**CSS 继承 `.cm-gutters` 的 `color`**（逐档继承值表在 §三十八.一）。
+⇒ ★★ 两个边界值可作判据：① `githublight` 的 `gutterActiveForeground` 与 `lineHighlight` **都缺** ⇒ `p` 是空对象 ⇒ 官方给它生成一条**不产出任何声明**的 `.cm-activeLineGutter{}`；② `githubdark` 的 `gutterForeground`／`gutterBackground` **也缺** ⇒ 落到基准 `&dark .cm-gutters{backgroundColor:"#333338",color:"#ccc"}` ⇒ ☆ 与该档正文底色 `#0d1117` 形成**肉眼可见的色差**（行号槽比正文偏亮）⇒ 这条是本批唯一"名册缺字段会直接改变观感"的实例。
+
+### 三、★★☆ Craft 压在 CM6 之上的 `!important` 几何层（历批屏上读数的码路来源）
+
+⇒ 逐字（`CodeEditorWrapper` @34,900 段，styled/emotion 的 `Ae([...])` 模板）＝`.cm-content{line-height:24px !important; font-size:14px; cursor:text; padding:12px 0 !important; .cm-line{padding-left:10px !important}}`、`.cm-theme{height:100%; overflow:auto}`、`.cm-gutters{line-height:24px !important; font-size:14px; <插他>; border-top-left-radius:5px}`、`.cm-gutterElement{padding:0 10px !important; min-width:36.8px !important; &:not(:first-child){min-height:24px}}`、`.cm-focused{outline:none !important}` ⇒ ★ **这一层与"档"无关**（20 档共用一套），⇒ ⇒ 分工＝**名册管颜色、这一层管几何**；☆ 历批屏上量到的"块内行高 24"在此有声明（`line-height:24px !important`），且 `min-width:36.8px` ＝官方给行号列的**非整数最小宽**（★ 屏上量它时要按第 109 批的 DPR 律还原：1.25 档下 `36.8` 是声明值、不受量化）。
+⇒ ☆ 焦点环：`.cm-focused{outline:none !important}` ⇒ **代码块内部刻意取消 CM6 自己的 outline**（与第 109 批"环有三处三种写法"并列的新素材：代码编辑器内部是**第四处**，而且是无）。
+⇒ ☆ 自动补全菜单两支逐字＝`.cm-completionLabel{font-family:"Roboto Mono",monospace;font-size:13px}`、`.cm-completionDetail{font-family:"Roboto Mono",monospace;font-size:11px;font-style:italic}`、`.cm-completionIcon{padding-right:1rem !important}`、`li{border-radius:6px;padding:6px 8px !important;background:<插>; &[aria-selected]{background:<插> !important; color:inherit !important}}` ⇒ ★ 这里出现了本目录少见的 **`[aria-selected]` 直接当选中态**（与第 97／108 批"Craft 自有浮层零 ARIA"形成对照：**CM6 自己的补全菜单是有 ARIA 的**）。
+⇒ ☆ tooltip 一支＝`.cm-tooltip{z-index:1000; background:<渐变> !important; background:transparent; box-shadow:0 0 0 1px <边框色>, <阴影>; border-radius:8px; overflow:hidden; border:none !important; padding:8px; @supports (backdrop-filter:saturate(1.5) blur(32px)){background:<渐变85%> !important; backdrop-filter:… !important}}` ⇒ ☆ 同一条里"先给 `!important` 的实色、再给不带 `!important` 的 `transparent`、再用 `@supports` 盖回"这种三段式是官方一处**故意的渐进增强**写法。
+
+### 四、★☆ 浮层与滚动条的 app 级常量（代码块专用，与 token 名无关）
+
+⇒ 两条渐变逐字＝`me=(o,t)=>o ? "linear-gradient(116deg, rgb(40 42 43 / "+t+"%), rgb(34 36 37 / "+t+"%))" : "linear-gradient(116deg, rgb(250 250 250 / "+t+"%), rgb(244 244 244 / "+t+"%)"`（调用时 `t` 传 **100** 与 **85** 两档）；一条 backdrop＝`se="saturate(1.5) blur(32px)"`。
+⇒ 滚动条四色＋一个透明常量逐字＝`zo="#C1C1C1"`（亮 thumb）、`Vo="#686868"`（暗 thumb）、`Yo="#A8A8A8"`（亮 track）、`Xo="#7B7B7B"`（暗 track）、`Se="transparent"`；闸门＝`if(o.isScrollbarPersistent) return K([...])` ⇒ **不持久时整段不产出**（☆ 默认走另一支，本批未读那支）；几何＝`::-webkit-scrollbar{width:14px;height:14px;overflow:visible}`、`thumb{border:3px solid transparent;border-radius:7px;min-height:28px;padding:100px 0 0;background-clip:padding-box}`、`track{margin:0 4px;border-width:4px !important}`。
+⇒ ☆ 数学排版一支＝`Ae([".katex{font-size:","em !important;}"], o=>(1.21*(o.fontScale??1)).toFixed(2))` ⇒ ⇒ **KaTeX 的字号是 `1.21 × fontScale` 个 em，且写成两位小数字符串**（☆ 第 111 批读到的 `fontScale` 由此第一次有消费点）。
+
+### 五、★★ 本地对照（本轮实扫）
+
+⇒ **本地根本没有 token 配色层**＝`grep -rn 'hljs' src` **0 命中**、`grep -rn '\.hljs' src e2e` **0 命中**，而高亮是 `createLowlight(common)`（`src/components/editor/Editor.tsx:20,71`）＋ `CodeBlockLowlight.configure({lowlight})`（`:304-310`）⇒ 发出去的是 `hljs-*` 类名，**没有任何规则消费** ⇒ ⇒ ★ **本地代码块现在是单色的**（这条以前只记过"命名三套不通"G1088／G1094，本批把"本地这一套也没接上"钉死）。
+⇒ 本地的 `--editor-*` 语法九色（`:143-152` 亮／`:300-309` 暗）只派生出 `--highlight-*`（`:158-165`／`:315-322`）＝**文本高亮标记**用，与代码 token 无关；☆ 第 111 批改的 `--editor-blueDark`／`--editor-blueLight` 两行至今只有测试消费（`src/lib/editor/dark-syntax-tokens.test.ts:16-21`）。
+⇒ 几何差＝本地 `pre` 是 Tailwind `overflow-x-auto p-3 text-sm`（`code-block-view.tsx:73`）＋ `globals.css:424-441` 的 `pre{line-height:1.6; font-size:0.875rem; padding:1rem 1.25rem; background:oklch(0.2 0.005 260); border-radius:8px}` ⇒ 与官方"行高强制 24px／字号 14px／`padding:12px 0`／行号列最小宽 36.8px／左上圆角 5px"**四格全不同**，且本地无行号槽。
+⇒ ☆ 命名差＝本地外观第三档叫 `system`（`src/actions/user/preferences.ts:6` 的 `themeValues`＝`light／dark／system`），官方对应词是 **`dynamic`**（`appearance.*.dynamic@2x.png`）⇒ 语义同、词表不同 ⇒ 若做导出／对账映射要显式列这条。
+
+**仍未采到（本节）**：① 滚动条"不持久"那一支的 css（`ct` 的 else 分支未读）；② `.cm-gutters` 模板里那个插值位（逐字 `…font-size:14px;"," border-top-left-radius:5px`）实际注入的是哪个 helper 的返回值（同段的插值序列第一个是 `he("none")`，☆ 未证它注入到哪一位）；③ 官方屏上"行号槽底色与正文底色不同"（`githubdark` 的 `#333338` vs `#0d1117`）尚未屏上复验——需要能切到该档；④ 本地要不要补 token 配色层（G1163）属**待用户裁**项，未动。

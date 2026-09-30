@@ -1441,3 +1441,89 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ⇒ 编辑器屏 HTML 的内联脚本里有逐字注释 `Mirrors the resolution logic in src/theme/theme-store.ts.` 与 `…matches the user's choice. Without this, ThemeProvider…`，另有 `parsed === "dark" || parsed === "light") theme = parsed;`；⇒ ☆ 含义＝官方**应用级**主题存储模块路径＝`src/theme/theme-store.ts`，档位字面量＝`dark`／`light`（外加持久化的其它值需回落），且解析发生在**首帧内联脚本**里（防 FOUC）；⇒ ⚠ 与代码块主题**无关**，别混用（同屏还有 `data-theme="light" data-accent="blue" data-whatinput="mouse"` 三个属性在同一元素上）。
 
 **仍未采到（本节）**：① 主题面板的真实入口（三条已否）；② `De("",isDark)` 空串路径的渲染后果；③ `pluginData` 是否会出现在 MCP 读回里（本批判为"写不进所以读不到"，若官方将来放开则需复测）；④ 19 与 21 的差异是名单裁剪还是强制拒绝；⑤ 内联脚本里 `src/theme/theme-store.ts` 的**完整**解析式（本批只读到两条注释与一段条件式，没读全函数体）；⑥ `gutterActiveForeground` 只有 7/20 给了值，其余 13 档 CM6 实际继承到什么未证。
+
+## 五十一、**代码块主题的装配管线一次走通（名册 → 工厂 → `gBn` → CM6 两套扩展），并结掉四条积压：缺省 gutter 前景、名册展示序、`De("",isDark)` 空串、`math_formula` 与导出映射**（✓盘上 第 112 批 2026-09-30 21:4x–23:1x，**零浏览器内容面调用、零写入**；★ 逐字清单在 `longtail.md` §三十八，色板与几何在 `styles.md` §十九，模型含义在 `model.md` §一之七十，gap 在 `gap.md` §三点一〇六二 G1160–G1178）
+
+### 一、★★★ 一条完整的调用链（全部逐字，符号名可复查）
+
+⇒ `CodeEditorWrapper-DB8UxA00.js` 顶部 import 串逐字＝`import{c as I,t as e,_ as ve,l as kt,a as yt,b as xt,E as Ct,d as vt,R as wt}from"./vendor-code-editor-BLm003PU.js"` ⇒ **`I` ＝ 该 chunk 导出 `c` ＝ `gBn`**（导出表整串逐字＝`export{n8t as D, Ls as E, B5n as R, $Bn as T, Ft as _, dBn as a, pBn as b, gBn as c, tBn as d, wBn as k, hBn as l, QBn as r, W as t}`），**`e` ＝ `W` ＝ `@lezer/highlight` 的 tag 集**（所以 368 条 styles 规则里的 `e.comment`／`e.function(…)` 全是 tag 常量）；☆ 其余七个别名一并对上＝`ve`＝`Ft`（★ **与本目录别处写的 `Ft` 不是同一个东西**，此处它是 `import(...)` 的 preload helper ⇒ 一条"同名不同源"的坑）、`yt`＝`dBn`、`kt`＝`hBn`、`xt`＝`pBn`、`Ct`＝`Ls`、`vt`＝`tBn`、`wt`＝`B5n`（＝React 编辑器本体，消费点逐字 `n.jsx(wt,{spellCheck:!1, ref:b, value:o, autoFocus:s, extensions:ge, height:"100%", readOnly:!t, editable:t, basicSetup:{…}, theme…})`）。
+⇒ 20 个工厂体逐个 `return I({theme:t, settings:{…<名册 settings>…a}, styles:[<本档色板>…, ...r]})` ⇒ ⇒ **工厂直接产出 CM6 扩展数组**，不返回"配置对象"。
+⇒ `gBn` 尾部逐字 `var g=li.theme(O,{dark:i==="dark"}), w=uE.define(l), Q=[g, R6e(w)]; return Q` ⇒ 三件身份已核：`li.theme` ＝ `EditorView.theme`；`uE.define` ＝ `HighlightStyle.define`；`R6e` ＝ CM6 的 `syntaxHighlighting`（判据＝其体内逐字 `r instanceof uE && (r.module && s.push(li.styleModule.of(r.module)), l=r.themeType)` 与 `d_t.of(r)`／`qxe.computeN([li.darkTheme], O=>O.facet(li.darkTheme)==(l=="dark")?[r]:[])`，即"带 `fallback` 才直推、否则按 `darkTheme` 条件挂载"）。
+⇒ ☆ **`R6e(w)` 在 Craft 这条路上没有第二参数** ⇒ 不走 `fallback` 分支（G1094 里那条"CM6 默认 hex 样式当 fallback"是 `basicSetup` 的 `R6e(v2n,{fallback:!0})`，**与名册路径互斥**）⇒ 判：**选了名册档就没有兜底 hex 样式**。
+
+### 二、★★★ "缺省值"问题的正解＝装配处一个默认值都没有
+
+⇒ `gBn` 全文 15 条写操作**全是条件与**（`s.fontFamily&&`、`s.gutterBackground&&`、`s.gutterForeground&&`、`s.gutterBorder&&`、`s.caret&&`、`s.gutterActiveForeground&&`、`s.lineHighlight&&`、`s.selection&&`、`s.selectionMatch&&`）＋两条无条件（`O["&"]={backgroundColor:s.background,color:s.foreground}`、`O[".cm-gutters"]={}`）。
+⇒ ⇒ ★★★ **不存在"默认 gutter 前景"**，上批队列的提法（"在装配处找默认 gutter 前景"）本身不成立；正确机制＝`.cm-activeLineGutter` 是一条**独立选择器**、其 `color` 不被写入时**沿 CSS 继承**取祖先 `.cm-gutters` 的 `color`（＝该档 `gutterForeground`），13 档的继承值因此全部可算（逐字见 `longtail.md` §三十八.一）。
+⇒ ☆ 更妙的是 `p` 是**同一个对象引用**赋给 `O[".cm-activeLineGutter"]`：`gutterActiveForeground` 与 `lineHighlight` 两个键写进同一个 `p` ⇒ 两键都缺时**赋的是一条空规则** `{}`（`githublight` 就是这种）⇒ 该选择器在生成的 CSS 里不产出任何声明。
+
+### 三、★★★ 暗档分支的判定与"三档错配"的真实后果
+
+⇒ 逐字 `{dark:i==="dark"}`，`i` ＝ 工厂内 `theme:t="…"` 的字面量默认值（承第 109／111 批：解构源是字面量 `{}` ⇒ 参数进不来）。
+⇒ 分支的落点机制（`vendor-code-editor` @165,412–168,300 逐字）＝`W9t={"&light":"."+C9t,"&dark":"."+Y9t}`（`C9t`／`Y9t` 是 `StyleModule.newName()` 生成的类名，逐字 `newName(){let i=HSt[FSt]||1; return HSt[FSt]=i+1, axe+i.toString(36)}`）＋ 根节点 class 逐字 `get themeClasses(){return Sxe+" "+(this.state.facet(kxe)?Y9t:C9t)+" "+this.state.facet(Ene)}`，而 `kxe=Facet.define({combine:r=>r.indexOf(!0)>-1})` ⇒ ⇒ ★★ **只要注册的主题里有一个声明 `dark:true`，整个编辑器根节点就取 dark 分支**（Craft 每编辑器只注册一个 ⇒ 等价于"该档工厂字面量说了算"）。
+⇒ ☆ 因此第 111 批那三档错配的可见后果**不是**"代码块整体配色反了"（名册自己覆写了背景／前景／底色／选中／行号），**而是**"名册没覆写的那批基准选择器取相反分支"：基准主题里成对的 `&light`／`&dark` 共 **20 个去重选择器**，名册只碰得到 6 类（`.cm-gutters`／`.cm-activeLine`／`.cm-activeLineGutter`／`.cm-content` caret／`.cm-selectionBackground`／`.cm-selectionMatch`）⇒ 漏出面＝`.cm-searchMatch`、`.cm-searchMatch-selected`、`.cm-specialChar`（`red` vs `#f78`）、`.cm-panels*`、`.cm-button`、`.cm-snippetField`、`.cm-textfield`、`.cm-tooltip*`。
+⇒ ★ 另有两条**天生不对称**的基准规则＝`.cm-cursor` **只有 dark 版**（`borderLeftColor:"#ddd"`）、`.cm-gutters` 的 flat 形态只有 dark 版（`#333338`／`#ccc`），light 版的 `border` 反倒多一条 `0px solid #ddd` ⇒ 名册缺 `caret` 的两档（`craftlight`／`githublight`）在亮分支下**根本不产出 cursor 颜色**。
+
+### 四、★★★ 主题名册其实有三张、语言名册有四张（本批新增两张）
+
+⇒ 主题三张＝`V`（展示，21 条，带 label／keywords／isDark／settings 引用）、`ue`（工厂表，21 键 → 工厂结果变量）、`nt`（TypeScript 枚举，21 条 `AUTO="auto"`…`VSCODEDARK="vscodedark"`）⇒ ★★ **`V` 与另外两张的声明序不同**，且分歧**只在 Tokyo Night 三档**（`V`：base→day→storm；`ue`／`nt`：day→storm→base）⇒ 展示序是**独立手写**的（不是从工厂表派生），规则结案见 §五。
+⇒ 语言四张＝① 挑选名册 39 条三元组（第 107 批）；② **`Qvt` 41 项扁平名单**（本批新增，尾部多 `docs`／`blocks`／`suggestions`、**少 `mermaid`**，且 `Yvt=new Set(Qvt)`）；③ **`Xvt` 77 条扩展名／别名 → `storedLangCode`**（本批新增，逐字全表在 `longtail.md` §三十八.三）；④ **`PGe=["mermaid","math_formula","stex"]`** 三条"伪语言"（本批新增，被两条独立通路各用一次）。
+⇒ ☆ `PGe` 的两次用法＝`rD=new Lo("codeEditorDefaultLanguage","javascript", t=>typeof t=="string" && !PGe.includes(t))`（**默认语言偏好校验器排除它们**）与挑选菜单里 `["mermaid","math_formula","stex"].includes(B.storedLangCode) || Ft.store(B.storedLangCode)`（**选这三档不写默认偏好**）⇒ ⇒ ★ 同一条规则两处独立实现、用词一致（`stex` 与 `math_formula` **同时**在名单里 ⇒ 说明存储侧与 grammar 侧两个码都可能出现）。
+
+### 五、★★★ 展示序结案（结掉第 110 批开放项④）
+
+⇒ 规则＝**`auto` 第 1 → `craftdark`／`craftlight` 第 2–3（暗前亮后）→ 其余 18 档严格按 `id` 字母升序**；判据三条：① 逐位与 `[...tail].sort()` 比对，**DIFF 数 0**；② 本 chunk 内 `.sort(`／`.reverse(`／`V.sort`／`[...V` **各 0 处** ⇒ 展示序＝字面量声明序；③ 消费点唯一加工＝`V.filter(b).map(N)`（过滤＋映射，**不改序**）。
+⇒ ✎ 否证：纯字母序里 `auto` 应在第 3、`craftdark` 第 5、`craftlight` 第 6；按 `label` 排是另一套（`Atom One`、`Aura`、`Auto`、`BBEdit`…）；`isDark` 序列逐字 `DDLDDLDDDLDLDLLDDDLDD` ⇒ **既非亮前暗后也非暗前亮后**（上批"表里 `tokyonight` 排在 `tokyonightday` 之前"正是字母序的体现，不是异常）。
+
+### 六、★★☆ 兜底策略有三套，同一件"未知名"三种下场
+
+⇒ ① **名册层有兜底**＝`lt=(o,t)=>{if(o==="auto"){const r=t?"craftdark":"craftlight", s=V.find(D=>D.id===r); return s||V[0]} const a=V.find(r=>r.id===o); return a||V[0]}` ⇒ 空串／未知名 ⇒ **`V[0]`＝`auto`**（☆ 顺带：**`auto` 因此是"兜底位"**，把它放第 1 既是展示需要也是语义需要）。
+⇒ ② **工厂层无兜底**＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]` ⇒ `De("")` ⇒ **`undefined`**。
+⇒ ③ **同步 effect 走早退**＝`useEffect(()=>{if(u){const L=V.find(P=>P.id===u); if(!L)return; B(L)}},[u])` ⇒ 外部传入未知 themeId ⇒ **保持当前值不变**（既不兜底也不报）。
+⇒ ⇒ ★★★ 上批队列③的"`De("",isDark)` 空串复测"**在盘上结案**：组件里 `S` ＝ `editorTheme` prop（`ca=forwardRef(({…editorTheme:S,…})=>…)`，消费点逐字 `editorTheme:M`，而 `M` 只由 `B(L)`／`B(V[0])` 写入 ⇒ **恒为名册条目**）⇒ `De(S.id, …)` 拿不到空串 ⇒ **UI 通路不可达**，不必再花屏上预算。
+
+### 七、★★★ 主题的写入面是两层，不是一层
+
+⇒ 块级＝`Ut([o],{pluginType:"codeBlock", pluginName:"codeBlock", pluginConfigurationData:{themeId:L.id}, horizontalSizeClass:null, verticalSizeClass:null, surfaceShadowOpacity:1})`（第 110 批，逐字再证一次：本批在同 chunk @53480 又撞到一处）。
+⇒ 账户级＝挑选菜单逐项 `onClick:()=>{St.store(v.id), s(v)}` ⇒ `St` ＝ 主包 @646,127 的 `MGe=new Lo("codeEditorDefaultTheme","auto", t=>typeof t=="string")`；⇒ ★★ **校验只验"是字符串"** ⇒ 任意／未知 themeId 都能进偏好库，之后由 §六① 的 `V[0]` 兜底 ⇒ 这是"契约宽、实现兜"的一条实例（与第 76 批"契约文案不可信"呼应但方向相反：**这里宽的是校验器**）。
+⇒ 语言同构＝`Ft.store(B.storedLangCode)` ⇒ `rD` ＝ `new Lo("codeEditorDefaultLanguage","javascript", …)`（校验**排除** `PGe` 三档）。
+⇒ ⇒ 对复刻的含义＝**"某块用什么主题"与"新块默认用什么主题"是两条独立持久通路**，本地现在两者都没有（G1093 未动 ＋ G1166 新增）。
+
+### 八、★★☆ `themePreviews` chunk 的真实身份（✎ 作废上批一条推断）
+
+⇒ 上批登记 G1140 时**只看了 chunk 名**（`themePreviews-BJcCJGmn.js` 在两份 contract 里被点名）就推断"每档主题有预览资源"；本批整块读完（**2,595 字符，一次读完**）⇒ ★ 它导出的是 **6 强调色 × 3 档外观＝18 张 `appearance.<色>.<档>@2x.png`** 的预载缓存，与代码块主题**毫无关系**；消费方＝`PreferencesPanel`／`SubscriptionsPanel`／`MySpaces`／`index`（`import{p as rl, g as xc}from"./themePreviews-BJcCJGmn.js"`）。
+⇒ 实现细节（可复刻）＝模块级 `t=new Map()` 缓存；`r(e)` 造 `Image` 且 `alt:""`、`draggable:false`；`T(e)` 的三态 `idle/loading/loaded|failed`，**`onload` 里先 `image.decode().catch(()=>{})` 再 resolve**（⇒ 防"标记完成但字体／解码没好"）；`B(e)` 的 `preloadPromise` ＝ `Promise.all` 三支，**任一失败则把 `preloadPromise` 置回 undefined 允许重试**。
+⇒ ☆ 顺带两条新事实＝**强调色恰好 6 档**（与本目录 CSS 侧 `[data-accent=…]` 全量枚举的 6 枚**两个独立源吻合**）＋ **外观有第三档叫 `dynamic`**（历批只见亮／暗；本地的对应词是 `system`，见 `src/actions/user/preferences.ts:6`）。
+
+### 九、★★☆ Markdown 导出是一张 handlebars 模板 ＋ 一个三步解码器（不是历批那张 HTML 表）
+
+⇒ 模板＝`de.template`（**2,729 字符**，整表已解码落盘 `_harvest/b112-export-template.txt`）；代码块分支逐字见 `longtail.md` §三十八.四；⇒ ★ 与 `model.md §一之六` 的 `g4e` 表**并存不矛盾**＝那张是**块样式 → HTML 标签**（导出 DOCX／HTML 侧），这张是**块 → Markdown 文本**（导出 md 侧），此前本目录一直只有前者。
+⇒ 解码器＝`formatBlock(e,r,i)` 四步（① `split("\n").filter(o=>o.trim().length!==0).join("")`；② `l="\n"`；③ `i&&(s.includes("`")?l=" ":l="<br>")`；④ `\dl`→`\n\n`、`\sl`→`l`、`\i__craft`→`flavour.indentationCharacters`）⇒ ★ 模板里的换行／缩进因此**全是装饰**，所有真实输出顶格写；⇒ ★★ 一条可检验推论＝code 块的输出必然含反引号（`backticks` helper 自己发的）⇒ **inline 语境下代码块的软换行一律变空格**＝多行被摊成一行。
+⇒ ☆ `inline` 的两个调用点＝`formatBlock(P,r,!0)` @40,151（块 id 解析支）与 `formatBlock(g,r,!1)` @40,653（先把 `styleAttributes.textStyle` 强设 `"title"`）⇒ `~` 真值语义（"什么算内联渲染"）本批未继续展开，转下批。
+⇒ ☆ `backticks` helper 是**常量** `"```"` ⇒ 官方**不做自适应围栏**（与本地同缺陷，见 G1171）。
+
+### 十、☆ 本批方法账（零预算盘上项怎么打）
+
+⇒ 一条：**chunk 名会骗人**（`themePreviews` 案例），凡"某资源服务于 X"的推断，要么读完 chunk 体、要么读它的消费方 import，**不许按名字定性**（上批 G1140 就是按名字定的性）。
+⇒ 二条：**"找不到默认值"本身是一条结论**，但要先证明装配处**没有**默认值才能这么说（本批把 `gBn` 全文读出来才敢写"缺省＝靠继承"）；☆ 上批队列写的是"去装配处找默认 gutter 前景"，**这个提法把'可能存在默认'预设进去了**，实际答案是不存在。
+⇒ 三条：**配对类枚举要用带嵌套的括号配平**，不能用 `[^{}]*` 之类的" flat 正则"——本批第一版把 `&light .cm-gutters`（体内有 `"&.cm-gutters-before":{…}`）漏掉了，差点写出"`.cm-gutters` 只有 dark 版"这种错话；⇒ ★ 修正后＝20 个去重选择器、5 条单档（逐字表在 `longtail.md` §三十八.二）。
+⇒ 四条（承第 111 批正则律）：`storedLangCode` 全量枚举这次是**用 `langCode:"…"` 形态匹配**的，因此漏掉唯一非字符串档 `plaintext`（`langCode:null`）⇒ 脚本报 38 条、官方实际 39 条；⇒ ☆ **按"值必须是字符串"写的正则会系统性漏掉 `null`／`undefined` 档**，全量枚举要么允许 `null` 要么与上一批的名册数对账（本批靠与 §三十三.一的 39 项对账才发现）。
+
+
+### 十一、★★★ `kt`／`yt` 的身份结案＝**grammar 能力面登记表**（顺带把第 107 批"能力面未量化"结掉）
+
+⇒ 别名还原走 export 表（承第 43 批那条纪律，别按字母猜）：CodeEditorWrapper 的 `import{l as kt, a as yt}` ⇒ `vendor-code-editor` 尾部导出表逐字 `… dBn as a, pBn as b, gBn as c, tBn as d, wBn as k, hBn as l, QBn as r, W as t` ⇒ ⇒ **`kt`＝`hBn`＝`Object.keys(jTe)`、`yt`＝`dBn`＝`function dBn(r){return jTe[r]?jTe[r]():null}`**。
+⇒ 表本体＝`jTe={…}`（@1,477,736，体长 2,879 字符），**119 个键、全部唯一**，两种形态＝`:()=>F.define(Y)` 惰性 106 条 ＋ 直接引用 13 条（`javascript:Bne`、`jsx:()=>Bne({jsx:!0})`、`typescript:()=>Bne({typescript:!0})`、`tsx:()=>Bne({jsx:!0,typescript:!0})`、`sql:mysql:pgsql` 一族共用 `k4e` 加 dialect、`markdown:()=>UPn({base:h7e,codeLanguages:F5n})`…）。
+⇒ 闸门逐字＝`l.useEffect(()=>{if(d){if(kt.includes(d)){const i=yt(d);B(i)}}else B(null)},[d])`，`d`＝**挑选名册的 `langCode`**（不是 `storedLangCode`）⇒ ⇒ ★ **闸门不做别名规范化**，查不到键就**根本不加载语言扩展**（`B` 保持 `null`）⇒ 于是"名册里可选、但不高亮"是可预期的：**`ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档的 `langCode` 不在 119 键里**（☆ 而键表里有近义键 `shell`／`octave`／`vb` ⇒ 判"名册 `langCode` 与登记表键漏配"，不是"这些语言不支持"）；⇒ ☆ 四个已知分歧档（`csharp`／`objectiveC`／`tsx`／`stex`）都在表里 ⇒ ⇒ **`langCode` 这个字段的存在意义现在被解释了：它就是 grammar 键，与落库用的 `storedLangCode` 分属两个命名空间**。
+⇒ ☆ `stex` 在表里 ⇒ 公式档**有一条真 grammar** ⇒ 与"公式另有 KaTeX 预览"并存（编辑态高亮、预览态渲染，两条各走各的）。
+⇒ ★★★ **`M`（语言扩展）进不进 `extensions` 这一问，本批已证**＝组装点逐字 `ge=[Ct.changeFilter.of(i=>{…}), ne, ...M?[M]:[], vt({parent:v.current, position:"absolute"}), ...g]` ⇒ ⇒ **查不到 grammar 键 ⇒ `M` 是 `null` ⇒ 数组里那一项被展开成空 ⇒ 编辑器拿不到任何 language 扩展** ⇒ §十一 那条"五档不高亮"从推论升为**盘上实证**（☆ 仍缺屏上一次实测来确认观感，但不影响机制结论）。
+⇒ ☆ 同一处还第一次给出 **Craft 的 CM6 `basicSetup` 裁剪**（逐字）＝`basicSetup:{highlightActiveLineGutter:t, highlightActiveLine:t, searchKeyMap:!1, foldGutter:!1, highlightSelectionMatches:!1, autocompletion:k==="web", closeBrackets:!0}`（`t`＝`inCodeEditing`、`k`＝platform）⇒ ★ **活跃行与活跃行行号槽只在"编辑态"开**（非编辑态整条关闭 ⇒ §三十八.一 那张继承表要在"编辑态"这一格才成立）；⇒ ★ **搜索键表关、折叠沟槽关、选中匹配不高亮、自动补全只在 web、括号自动配对开**；☆ `readOnly:!t, editable:t`、`autoFocus:s`（`s`＝`inFocusMode`）。
+
+### 十二、★★☆ 图表档受**特性开关**控制（第一次把开关 id 抄到手）
+
+⇒ 逐字 `m=Wt.isEnabled(Qt)` ＋ `X=m&&N.langCode==="mermaid"` ＋ 语言菜单 `c=pe.filter(L=>L.langCode!=="mermaid")`；⇒ 别名链＝CodeEditorWrapper `import{g5 as Wt, sY as Qt}` ⇒ index 导出表 `XN as sO,…`（☆ `Wt` 未再往下追）与 **`Qt`＝`OE`＝逐字 `"fs-mermaid-diagrams"`** ⇒ ★ **Mermaid 支持在 web 构建里是灰度开关**（⇒ 历批"图与公式可以不是独立块类型"那条要加一句：**图的渲染还额外受开关门**，屏上看不到 Mermaid 不等于代码没有）。
+⇒ ☆ 顺带全 chunk 枚举前缀串（`fs-`／`pf-`／`ex-`）＝**41 条**，落盘 `_harvest/b112-flags.txt`；其中同段相邻的常量逐字＝`"fs-quick-search-space-filter"`、`"fs-workflow-links"`、`"fs-service-worker"`、`"fs-mermaid-diagrams"`、`"fs-collection-kanban-view"`、`"fs-offline-mode-rollout"`、`"pf-paddle-subscription"`、以及 **`fs-debug-*` 一族 13 条**（`reminder-options`、`sync-log`、`block-selection-borders`、`allow-inbox-root`、`allow-past-task-dates`、`dont-refetch-tasks-on-focus`、`extend-resize-observer-logs`、`pseudo-localization`、`disable-sentry`、`show-block-debug-info`、`whiteboard-low-limit`、`ai-chat-models`、`posthog-market`、`fps-overlay`）⇒ ★ 这一族是第 97 批 `DebugPrimitives` 面板的**后端名单**，且其中两条与历批结论直接相关：**`fs-debug-allow-past-task-dates`**（＝§11.3／G333 那条"过去日期不自动采纳，除非特性开关放开"的**开关本体**）与 **`fs-debug-allow-inbox-root`**。
+⇒ ☆ 读法纪律＝`ex-data`／`ex-info` 两条疑似他库噪声（不认作 flag）⇒ 本批只把"**同一段常量表里的 21 条**"当权威名单，全 chunk 的 41 条只当候选。
+
+
+**仍未采到（本节）**：① **同一 tag 出现两条规则时谁赢**（`styles` 数组末尾的 `...r` 与名册内 `dracula` 的重复 `e.atom` 都依赖这一点；本批只拿到声明顺序，未读 `HighlightStyle` 的优先级实现）；② `formatBlock` 的 `inline` 真值语义（哪些块会走内联支、官方自己会不会因此把多行代码摊平，属推论未实证）；③ `R6e` 内 `qxe`／`d_t`／`Q2n` 三个符号的身份（只判到"syntaxHighlighting 的形状"）；④ 基准主题 20 个选择器里 **`.cm-panels*`／`.cm-button`／`.cm-searchMatch*` 在 Craft 里是否可达**（要看 Craft 有没有挂 `search`／panel 扩展，本批没查）；⑤ `themePreviews` 的 18 张 PNG 在屏上的**呈现位**（外观设置卡片？订阅面板预览？）未屏上验；⑥ `yt(d)` 的结果进不进 `extensions`（逐字只读到 `B(i)` 赋值，没读到组装点 ⇒ "查不到键就 `null`"这条推论要在这里复证）；⑦ `Wt`（`sO`）本体与开关的**取值来源**（远端下发还是本地默认）；⑧ 第 112 批队列①②③（还原标签页、清残留、主题面板屏上入口）本批未做，原因见 `interactions.md` V106 的现场状态节。
