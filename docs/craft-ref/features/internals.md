@@ -1527,3 +1527,52 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 
 
 **仍未采到（本节）**：① **同一 tag 出现两条规则时谁赢**（`styles` 数组末尾的 `...r` 与名册内 `dracula` 的重复 `e.atom` 都依赖这一点；本批只拿到声明顺序，未读 `HighlightStyle` 的优先级实现）；② `formatBlock` 的 `inline` 真值语义（哪些块会走内联支、官方自己会不会因此把多行代码摊平，属推论未实证）；③ `R6e` 内 `qxe`／`d_t`／`Q2n` 三个符号的身份（只判到"syntaxHighlighting 的形状"）；④ 基准主题 20 个选择器里 **`.cm-panels*`／`.cm-button`／`.cm-searchMatch*` 在 Craft 里是否可达**（要看 Craft 有没有挂 `search`／panel 扩展，本批没查）；⑤ `themePreviews` 的 18 张 PNG 在屏上的**呈现位**（外观设置卡片？订阅面板预览？）未屏上验；⑥ `yt(d)` 的结果进不进 `extensions`（逐字只读到 `B(i)` 赋值，没读到组装点 ⇒ "查不到键就 `null`"这条推论要在这里复证）；⑦ `Wt`（`sO`）本体与开关的**取值来源**（远端下发还是本地默认）；⑧ 第 112 批队列①②③（还原标签页、清残留、主题面板屏上入口）本批未做，原因见 `interactions.md` V106 的现场状态节。
+
+## 五十二、**第 113 批＝"删除"与"id"各有两套口径的一次拆解（屏上「最近删除」不含 MCP 软删的文档／`rootBlockId` 与 `documentId` 不互通且只有反向翻译器／回收站写侧在块级 action 入口被拒／每个代码块是一个独立 CM6 实例）**（✓屏上只读＋MCP 数据面 第 113 批 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x；★ gap 在 `gap.md` §三点一〇六三 G1180–G1191，逐字回包在 `longtail.md` §三十九，模型含义在 `model.md` §一之七十一，现场状态在 `interactions.md` V107；⚠ 本批**建了一个沙盒并软删、但三条永久清除一条都没落刀**＝连接器在打开 ⋯ 菜单那一步挂死）
+
+### 一、★★★ 「回收站」不是一个集合，是两个
+
+⇒ 同一时刻、同一账户、同一空间：MCP `documents list --location trash` 回 **6 条**（含本批刚软删的 `B111-THEME`、`B113-CODEBLOCK`），屏上「最近删除」屏渲染 **4 张卡**（不含那两条）。
+⇒ 两条假说都被排除＝**虚拟滚动**（把末行 `scrollIntoView` 之后仍是 4 行，且末行 `height:282`＝卡片、四张全在一屏内）与**客户端缓存**（`goto(同一 URL)` 在 SPA 里等于重载，重载后仍 4）。
+⇒ ★ 所以正确读法＝**"删除"至少写了两层标记，而屏上列表与 MCP 列表各查各的**；☆ 由此得一条通路级后果＝**V93 屏上永久清除只能清"屏上列得出"的条目**，对上批那条"回收站二次清空只能屏上"要加这个限定。
+⇒ ☆ 反证"屏上口径更严"的证据＝屏上那 4 条里含 `6cc9761c-…`（第 75 批"已删除并结案"的归属未定残留），它**不在** MCP 的 6 条里 ⇒ 两套名单**双向**都有对方没有的条目。
+
+### 二、★★★ `rootBlockId` 与 `documentId`＝同一篇文档的两个命名空间，官方只给反向翻译器
+
+⇒ 逐字对照＝`documents create` 回 `rootBlockId: <objId:19>`，而第二个 id 出现在 **`Craft app link: craftdocs://open?spaceId=<spaceId>&documentId=d0710568-…`** 的 query 里（☆ 所以第 111 批"同时回两个 id"的表述要改成"第二个 id 藏在 app link 行里"）。
+⇒ `blocks get <documentId>` 逐字报 `Block not found: …` ＋ `Hint: If you have the Craft app/web link, run 'documents resolve-link <url>' via craft_read to get the rootBlockId.`
+⇒ `documents resolve-link <web URL>` 回 `Resolved link to rootBlockId <8d3acfb3-…>` ＋ `Title: …` ＋ `Raw URL documentId: d0710568-…` ⇒ **一次调用把两层都回显**，是唯一的翻译入口，且**只吃 URL**（没有 `resolve-id`）。
+⇒ ★ 屏上侧同源证据＝「最近删除」四条 `data-item-id`（`e8404352-…`／`cddd981c-…`／`6cc9761c-…`／`35edfc37-…`）与 MCP 六条 `rootBlockId` **零交集**，而 `35edfc37-…` 同时出现在历批缓存的 `docs.craft.do/editor/d/<spaceId>/35edfc37-…` ⇒ **屏上条目 id＝URL 层的 documentId**。
+⇒ ☆ 与第 112 批 `langCode`／`storedLangCode` 那条同形＝**Craft 一贯把"给人看的链接层 id"与"给块层用的 id"分成两套命名空间**，复刻时任何按 id 寻址的实现都要先定是哪一层。
+
+### 三、★★ 回收站的写侧闸门在块级 action 入口，且错误信息质量分三档
+
+⇒ 逐字＝对回收站里那篇文档的块做 `blocks update` ⇒ `Failed to update block: Cannot modify document in trash. Restore it first.` ＋ `Hint: Restore trashed documents before deleting blocks inside them.`
+⇒ 与第 111 批 G1155"回收站文档对 MCP 仍可读（json＋markdown 双通路完整返回）"合起来＝**读放行、写拒绝**，拒绝点在**块级 action**（不是文档级动词缺失、也不是静默成功）。
+⇒ ☆ 同一条 CLI 里错误信息三档＝① 本条（有原因＋有下一步）② G1151 的 `at "root": Invalid input`（只有位置）③ G1149 的 `Theme "dracula" not found. Use "blocks explore-themes --type page"`（有原因＋有替代命令）⇒ **不要按"报错都很详细"设计本地错误层**。
+
+### 四、★ 每个代码块是一个独立的 CodeMirror 6 实例
+
+⇒ 实测＝六块文档里 `.cm-content` 的 locator `count()` **恰好 6** ⇒ 一块一编辑器（不是"整篇一个 CM6 ＋ 代码块内嵌 mode"）。
+⇒ ☆ 这给历批两条现象补上机制＝**焦点在块内时 `Ctrl+Z` 被子编辑器吞掉**（走该实例自己的历史，为空即无操作）、**块内行高与块间距来自不同层**（块内＝每实例的 `.cm-content{line-height:24px !important}`＝第 112 批 G1176 那层；块间＝Craft 自己的布局）。
+⇒ ☆ 顺得一条廉价判据＝**数代码块可以数 `.cm-content`**（官方不是 `pre`，历批按 `pre` 数会数不到）。
+
+### 五、★★ "选了不高亮"的判据形态＝同屏对照，一次采集两类样本
+
+⇒ 做法＝一篇文档里并排放五档"无 grammar"语言（`bash`／`ada`／`matlab`／`prolog`／`vbnet`）**加一档对照组**（`python`，在 `jTe` 119 键里）⇒ 一次截图同时得到"无 grammar ⇒ 整块单色"与"有 grammar ⇒ 按 `craftlight` 三组上色"。
+⇒ ★ 对照组那三条色（`def`/`return` 红、`f`/`x`/`1`/`+` 蓝、`# note` 灰）逐一对应第 112 批的 `keyword→#d73a49`、`variableName/number/operator→#005cc5`、`comment→#6a737d` ⇒ **同一次采集把"漏配判定"和"映射表方向"两件事一起验了**。
+⇒ ☆ 可复用为通用判据＝**能力面类结论（有没有 X）要自带一个"确定有 X"的对照档**，否则"没看到"永远可能是"没触发"。
+
+### 六、☆ 契约与实现：这次对上的一条、没对上的两条
+
+⇒ 对上＝`craft_read` 描述里逐字写着 `rootBlockId != URL docId`，本批实测完全一致（见 §二）⇒ ☆ 这是历批"契约文案不可信"的一条反例，**要记成"该条契约可信"而不是取消那条纪律**（同批 `explore-themes --type code` 的例子仍是错的＝G1149）。
+⇒ 没对上①＝`documents list --filter QODER` 回全量 4 条 ⇒ `--filter` 在该动词上不生效（文档里它只出现在 `folders list` 的例子旁）。
+⇒ 没对上②＝`blocks add` 一次 6 块的回包是 `Added 6 blocks.` ＋ 五个 id ＋ `(+1 more)` ⇒ 第 111 批"只回首个 id"过窄（那次 3 块只回 1 个，本批 6 块回 5 个 ＋ 截断标记）⇒ ☆ 判"回包够不够用"要按**枚举规模**测，不能只测一例。
+
+### 七、☆ 仪器增补三条
+
+⇒ ① **`locator.scrollIntoViewIfNeeded` 不存在**（逐字 `is not a function`）⇒ 滚元素用 **`locator.evaluate(el => el.scrollIntoView({block:'end'}))`**，实测可用且能同手回传 `getBoundingClientRect`（＝第 111 批那条"locator.evaluate 可用"的第二个用法）。
+⇒ ② `cua.scroll` 的入参是 `{x, y, …}`（从某个视口坐标滚），**没有实测就不要用**。
+⇒ ③ ★★★ **窗口可见时点击也能把扩展串行队列挂死**＝`locator.click()` 打 `BUTTON[data-testid="browse-sort-button"]` 之后 cell 永久 running、`node_repl_wait` 回 `AbortError: Execution was cancelled`、随后**连 `title()` 都拿不到**（`Tool command waited too long in queue`），而**当时 `visibility.get()`＝true** ⇒ ☆ 历批"挂死＝窗口最小化"的归因**不充分**：点击本身就能挂（最可能是那枚 ⋯ 触发了扩展侧不返回的原生路径）。⇒ 处置＝按"中断即停"立刻停手，**没有**在挂死队列上重试点击，**没有**做任何不可逆动作。
+
+**仍未采到（本节）**：① 屏上「最近删除」的**查询条件**到底是什么（另一套删除标记？`trashedAt` 之类字段？还是"只列 UI 删的"）；② documentId→rootBlockId 有没有**非 URL** 的正向映射；③ 屏上选择模式能不能勾到"MCP 列得出、屏上列不出"的条目（本批在打开 ⋯ 那一步挂死）；④ 每块一个 CM6 实例 ⇒ **跨块撤销是否合并**（G1188 只给了机制，没跑行为）；⑤ 主题面板触发器（只剩块把手一条）。

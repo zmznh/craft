@@ -981,3 +981,9 @@
 ⇒ ☆ 命名差＝本地外观第三档叫 `system`（`src/actions/user/preferences.ts:6` 的 `themeValues`＝`light／dark／system`），官方对应词是 **`dynamic`**（`appearance.*.dynamic@2x.png`）⇒ 语义同、词表不同 ⇒ 若做导出／对账映射要显式列这条。
 
 **仍未采到（本节）**：① 滚动条"不持久"那一支的 css（`ct` 的 else 分支未读）；② `.cm-gutters` 模板里那个插值位（逐字 `…font-size:14px;"," border-top-left-radius:5px`）实际注入的是哪个 helper 的返回值（同段的插值序列第一个是 `he("none")`，☆ 未证它注入到哪一位）；③ 官方屏上"行号槽底色与正文底色不同"（`githubdark` 的 `#333338` vs `#0d1117`）尚未屏上复验——需要能切到该档；④ 本地要不要补 token 配色层（G1163）属**待用户裁**项，未动。
+
+### 十九之续（第 113 批）＝**`craftlight` 三组着色获屏上复核；本批无新样式读数**（✓屏上 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x；★ gap 在 `gap.md` G1180，逐字对照在 `longtail.md` §三十九.三）
+
+⇒ ☆ **为什么不单开一节**＝本批没有新的样式读数，只做了一件事＝**把 §十九.一 那张 `craftlight` 表拿去屏上复核**：同一篇文档里并排六块（五档无 grammar ＋ `python` 对照），实测 `python` 块出现三组色＝`def`／`return` 红、`f`／`x`／`1`／`+` 蓝、`# note` 灰，逐一对应 `keyword→#d73a49`、`variableName/attributeName/number/operator→#005cc5`、`comment/bracket→#6a737d`；☆ 另两条几何读数与历批一致＝**每块都有行号槽**、块底色浅灰白（`--code-background` 那档 `#FBFBFB`）。
+⇒ ★ 由此把 §十九 的一条"未证"降级为"已证"＝**名册色板确实会渲染成屏上像素**（此前只有码路与 CSS 生成层证据，没有屏上像素）；☆ 同时**没有**给 §十九 的 `!important` 层加新值（`line-height:24px`／`font-size:14px`／`min-width:36.8px` 三条本批未重测）。
+⇒ ☆ 本地对应面（本轮实扫）＝`src/app/globals.css:172-186`（`:root`＝`craftlight` 逐字）／`:327-338`（`.dark`＝`craftdark` 逐字）／`:424-500`（八组 `.hljs-*` 规则）⇒ 提交 `0bc777b`；⚠ **本地侧的屏上自证仍欠**（连接器在本批末挂死，没来得及开 `localhost:3000`）⇒ 记在台账「十二」的 P1 行。

@@ -3067,3 +3067,14 @@ HJe = (t, e) => { let n = {};
 
 
 **仍未采到（本节）**：① 上面第四条的三件；② `ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档不高亮**只到盘上为止**，要屏上实测一次才算结案（☆ 零写入批可做：打开任一代码块切这五档、看 token 是否有色）；③ 主题的两层持久化在**读取顺序**上的优先级（块级 override 与账户默认谁盖谁，本批只看到 `lt(themeId, isDark)` 的入参来自外部数据，未读到"块上没设主题时是否回落默认"那条分支）；④ `Qvt` 这 41 项名单到底服务什么域（`docs`／`blocks`／`suggestions` 三个非语言值是关键线索，未读消费点）；⑤ `Xvt` 别名表的消费点（导入文件？拖拽上传？）未定位；⑥ 官方 MCP 序列化器（第 109 批读回那张）的本体未读——它在哪份 chunk、与 `de.template` 什么关系。
+
+## 一之七十一、**第 113 批＝文档身份其实是两个 id、"在不在回收站"也不是一个布尔：`rootBlockId`（块层）与 `documentId`（链接层）不互通，回收站可见性按通路分两套；代码块语言档还带第三个隐式属性"有没有 grammar"**（✓屏上＋MCP 第 113 批 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x；★ 机制在 `internals.md` §五十二，gap 在 `gap.md` §三点一〇六三 G1180–G1191，逐字在 `longtail.md` §三十九；☆ 本节接 §一之六十九（读写契约）与 §一之七十（多张名册））
+
+1. ★★★ **一篇文档有两个 id、两个命名空间**＝`rootBlockId`（块层，`blocks get/add/update` 只认它）＋ `documentId`（链接层，出现在 `craftdocs://open?…&documentId=` 与 web URL `editor/d/<spaceId>/<documentId>`，也是**屏上 DOM 里 `data-item-id` 的值**）；⇒ ☆ 两者**互不能直接喂给对方**（`blocks get <documentId>` 报 `Block not found`），唯一翻译器＝`documents resolve-link <url>`（且只吃 URL）；⇒ ★ 与第 112 批 `langCode`／`storedLangCode` 同形＝**Craft 反复把"给人/给链接的标识"与"给块层的标识"分成两套**，任何按 id 寻址的建模都要先回答"哪一层"。
+2. ★★★ **"是否已删除"至少两个口径**＝MCP 的 `--location trash`（本批 6 条）与屏上「最近删除」列表（同刻 4 条），**双向都有对方独有的条目**（屏上含第 75 批已结案那条、MCP 含本批刚软删那两条）；⇒ ☆ 模型含义＝文档上不止 `isDeleted` 一个位，**"删除"与"进屏上回收站"是两个可分离的状态**；⇒ ★ 复刻口径建议＝本地只有单一 `deletedAt`（`prisma/schema.prisma`）⇒ **不要**为了对齐而凭空造第二个标记，但要在产物里写清"官方两套名单不同步"，否则下批会把"屏上看不见"当成"没删掉"。
+3. ★★ **回收站的写侧模型＝读放行／写拒绝**＝同一篇回收站文档，`blocks get` 两条通路都完整返回（第 111 批 G1155），`blocks update` 逐字被拒 `Cannot modify document in trash. Restore it first.`；⇒ ☆ 拒绝点在**块级 action 入口**，不在文档级动词层（`documents` 根本没有 purge/restore 动词＝G678 那条）。
+4. ★★ **语言档的第三个隐式属性＝"有没有 grammar"**＝§一之六十五 给了三元组 `{label, langCode, storedLangCode}`、§一之七十 给了 `jTe` 119 键；本批补上**行为后果**＝挑选名册 38 条 string `langCode` 里 5 条（`ada`／`bash`／`matlab`／`prolog`／`vbnet`）**选了之后整块单色**（屏上实测，对照组 `python` 正常上色）⇒ ☆ 所以"语言档"这个实体的完整属性集＝`label`（展示）＋`storedLangCode`（落库）＋`langCode`（取 grammar）＋**派生态"能否高亮"＝`langCode ∈ jTe`**。
+5. ★ **代码块实体不是"文内一段"而是"一个子文档级实例"**＝六块 ⇒ `.cm-content` 六枚 ⇒ 每块自带一个 CodeMirror 编辑器（各自的撤销栈、各自的 `!important` 几何层）；⇒ ☆ 模型含义＝块级"子编辑器"边界是**运行时对象边界**，不只是渲染边界；本地是单 ProseMirror 文档内装饰 ⇒ **有意偏差**（原因＝本地不嵌子编辑器，撤销天然整篇一致）。
+6. ☆ **MCP 写侧回包形态两条新基线**＝① `blocks add` 多块＝`Added N blocks.` ＋ 枚举多数 id ＋ `(+1 more)`（⇒ 要全量 id 就 `blocks get <root> --depth 1 --format json`，本批就是这么把六块的 `id`／`language`／`rawCode`／`markdown` 逐键读回的）；② `documents create` 的第二个 id **只在 app link 行**，不要指望有独立字段。
+
+**仍未采到（本节）**：① 屏上回收站的查询条件（哪个字段决定"进不进屏上列表"）；② 两 id 的正向映射是否存在（非 URL 通路）；③ `restore` 类动词在 MCP 面到底有没有（历批结论＝没有，本批未复探）；④ 每块一个 CM6 实例 ⇒ 跨块撤销是否合并（行为未跑）；⑤ grammar 缺失的五档在**导出 markdown** 里是否仍写对语言名（本批只看了读回，没看导出）。

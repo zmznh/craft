@@ -2484,3 +2484,49 @@ if (type === "fixed") {
 
 
 **仍未采到（本节）**：① 主题面板的屏上入口（上批三条否证仍未突破；本批新拿到的**菜单实现体逐字**给出了要找的东西长什么样＝单组 `themes`、每项只有文字与勾、上面有个搜索框）；② 两层主题偏好的**读取优先级**（块级 vs 账户默认谁先）；③ `ada`／`bash`／`matlab`／`prolog`／`vbnet` 五档"不高亮"目前是盘上实证（`...M?[M]:[]`），**屏上未验**；④ `formatBlock` 的 `inline` 触发场景；⑤ 同一 tag 多条规则的胜负顺序；⑥ `themePreviews` 18 张 PNG 的屏上呈现位；⑦ 队列①②（清残留＋还原标签页）与队列③（主题面板）本批未做。
+
+## V107〔第 113 批 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x〕**屏上只读＋MCP 数据面混合批＝五档语言高亮结案／两套回收站口径现形／主题面板再两条否证／末段连接器挂死且没有不可逆动作落刀**（★ 全部动作都在**本会话 `tabs.new()` 新建的可控标签页**里做；⚠ **用户的标签页本批完全没被触碰**）
+
+### 一、现场基线（开场三条控制面＋两条数据面，零内容面）
+
+| 探针 | 实测 |
+|---|---|
+| `mcp_list({keyword:"craft"})` | **2 个工具**（`craft_read`／`craft_write`）⇒ 上批"本会话没有 craft MCP"的阻塞**解除** |
+| `browsers.list()` | 1 枚 Edge（`260355…`，扩展 `1.7.5`） |
+| `tabs.list()`（可控） | 开场 **0 枚** ⇒ `tabs.new()` 后 **1 枚**（`1701771780`） |
+| `visibility.get()` | **true**（★ 用户已按请求把窗口还原；⇒ 但见 §五，可见窗口也会挂死） |
+| `user.openTabs()` | **1 枚**，标题逐字 **`所有文档`** ⇒ ☆ **上批那条"用户标签页停在沙盒文档"已不成立**（本批未做还原动作，是用户自行解围）⇒ 队列③结案方式＝**现场消失**，不是通路验证 |
+| `documents list --location trash` | 4 条（3 无标题 ＋ `B109-CODEFIELD`）＝**基线** |
+| `documents list --location unsorted` | 4 条（`Welcome to Craft` ＋ 2 无标题 ＋ `B111-THEME`）⇒ ★ **B111 当时仍是活文档**（上批只建没删） |
+| `reminders list --status all` | `No reminders found` |
+
+### 二、屏上动作逐条（每动作一 cell；括号＝该动作的读数）
+
+1. `goto(<space>/all)` → `title()`＝**`所有文档`**（自己的新标签页，未触碰用户页面）。
+2. `documents create --title QODER-HARVEST-B113-CODEBLOCK`（MCP）→ 回 `rootBlockId: 8d3acfb3-…` ＋ app link 里的 `documentId=d0710568-…`。
+3. `blocks add` 一次插 **6 个**围栏块（`bash`／`ada`／`matlab`／`prolog`／`vbnet`／`python`）→ `Added 6 blocks.` ＋ 五个 id ＋ `(+1 more)`；`blocks get --depth 1 --format json` 逐键读回＝六块 `type:"code"`＋`language`＋`rawCode` 全对。
+4. `goto(editor/d/<spaceId>/<documentId>)` → `title()`＝**`QODER-HARVEST-B113-CODEBLOCK`** ⇒ ★ 用 **documentId** 能开文档（与 §internals 二 一致）。
+5. `screenshot()` → 116,239 字节 PNG（首字节 137＝PNG 签名）；**已亲眼看过**（`_harvest/b113-codeblocks.png`）＝前五块**整块单色**、`python` 块**三组着色**（红／蓝／灰）⇒ ★★★ **上批"5 档选了不高亮"升为屏上事实**，且三条色逐一对上 `craftlight`。
+6. `locator('.cm-content').last().click()` → `count()`＝**6**（＝块数）⇒ 焦点进块；`domSnapshot()`＝188,524 字符 ⇒ **0 处「主题」、0 个 `<select>`**（`cm-focused` 9 处）。
+7. `locator('.cm-content').last().click({button:'right'})` → `domSnapshot()` **188,524→188,524（delta 0）**、`role="menuitem"` **0** ⇒ ☆ 右键没有产出任何应用内浮层 ⇒ **主题面板入口累计五条否证**。
+8. `documents delete` ×2（B111、B113，MCP）→ 两条都回 `Deleted document <id> (moved to trash)`。
+9. `blocks update`（对回收站里 B113 的 `bash` 块，MCP）→ `Failed to update block: Cannot modify document in trash. Restore it first.` ⇒ ★ 回收站**写侧闸门**现形。
+10. `goto(<space>/trash)` → `title()`＝**`最近删除`**、DOM 166,442 字符、`data-item-id` **4**、QODER 命中 **1**（只有 `B109-CODEFIELD`）。
+11. `goto(同一 trash URL)`（＝SPA 重载）→ 仍 **4 行**、仍只有 B109 ⇒ ☆ **MCP 软删的两条不进屏上回收站列表**。
+12. `locator('[data-item-id]').last().evaluate(el => el.scrollIntoView({block:'end'}))` → 回传末行 `{y:116,h:282}`；重拍快照仍 **4 行** ⇒ ★ **虚拟滚动假说被排除**（末行是 282px 高的卡片、四张同屏）。
+13. `locator('BUTTON[data-testid="browse-sort-button"]').first().click()` → **cell 永久 running** ⇒ `node_repl_wait` 回 `[node_repl timeout] AbortError: Execution was cancelled` ⇒ 随后 `title()` 报 **`Tool command waited too long in queue`** ⇒ ★★★ **连接器挂死，本批屏上动作到此为止**（⚠ 当时窗口可见 ⇒ 历批"挂死＝最小化"归因不充分）。
+
+### 三、判据增量（要固化进下批的三条）
+
+1. ★★★ **能力面类结论要自带对照档**＝"选了 X 会不会有 Y"这类问题，一次摆"确定有 Y"与"怀疑没有 Y"两类样本同屏（本批＝`python` 对照五档无 grammar）⇒ 否则"没看到"永远可能是"没触发"。
+2. ★★ **数代码块数 `.cm-content`，别数 `pre`**（官方一块一 CM6 实例；`.cm-content` 枚数＝块数，实测 6＝6）。
+3. ★★ **屏上条目寻址用 `data-item-id`＝documentId 层**，与 MCP 的 `rootBlockId` **不同源**⇒ 两边对名单要先翻译（`documents resolve-link` 只吃 URL），**不要**指望 id 能跨层比对。
+
+### 四、本批写入面与还原状态（★ 一条不可逆动作都没落刀）
+
+⇒ 写入＝新建 1 篇文档（`QODER-HARVEST-B113-CODEBLOCK`）＋ 6 个代码块 ＋ 2 次软删（B111、B113）＋ 1 次被拒的块写尝试；`manifest.jsonl` 153 → **155 行**。
+⇒ ⚠ **未清＝三条**：`B109-CODEFIELD`（屏上列得出，通路可用，但卡在打开 ⋯ 那一步挂死）＋ `B111-THEME`／`B113-CODEBLOCK`（**屏上列不出**＝V107 §二.11，V93 屏上通路对它们不可用）；三条都**仍可还原**（MCP `--location trash` 读得到、软删未落刀）。
+⇒ ☆ **禁区复核**＝屏上回收站里那 3 条无标题项与 `6cc9761c-…` 一条**不是本轮建的**，本批没有勾选、没有删除、没有还原；用户标签页未被触碰；未改任何账户级偏好（主题／语言／强调色／默认视图／排序／显示开关全未动）。
+⇒ ☆ **中断即停执行记录**＝挂死后立即停止屏上动作，**没有**在挂死的队列上重试点击，**没有**为了"把现场收干净"去做不可逆动作。
+
+**仍未采到（本节）**：① 主题面板触发器（只剩块把手一条候选）；② 屏上选择模式能否勾到"屏上列不出"的条目（未跑）；③ 屏上回收站的查询条件（为什么不含 MCP 软删项）；④ 焦点在块内时 `Ctrl+Z` 的撤销归属（每块一个实例 ⇒ 跨块是否合并）；⑤ 五档无 grammar 的语言在**导出 markdown** 里语言名是否仍写对；⑥ 本地配色的屏上视觉自证（没来得及开 `localhost:3000`）；⑦ ☆ 用户标签页那条"未还原"欠账的结案方式＝现场消失（**没有**拿到"通过通路还原"的证据，要按此置信度使用）。

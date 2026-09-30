@@ -1324,3 +1324,60 @@ card 家族（逐字，序列化器 `S1e` 内）＝`{fontStyle,pageStyle,backgro
 
 
 **仍未采到（本节）**：① 挑选名册 5 档无 grammar（`ada`／`bash`／`matlab`／`prolog`／`vbnet`）是**漏配还是另有第二道 grammar 源**（`jTe` 里存在 `shell`／`octave`／`vb` 近义键 ⇒ 需要屏上实测"选 Bash 有没有高亮"才能定案）；② `HighlightStyle` 里同 tag 多条规则的**胜负顺序**（只拿到声明序，未读 `uE.define` 的建树实现）⇒ 影响 §八.② 与名册末尾 `...r` 的可覆盖性判定；③ `kt`／`yt` 的加载结果 `M` **具体进不进 `extensions`**（本批只读到 `B(i)` 赋值与闸门，没读到组装点）；④ flavour 表（`L.title`、`L.bulletListStyle`、`L.numberedListStyle`、`L.todoListStyleChecked/Unchecked`、`L.focus`、`L.block`、`L.lineStyle`、`indentationCharacters`）的**逐字取值**与 flavour 有几档；⑤ `formatBlock` 的 `inline` 真值语义（哪些块走内联支 ⇒ 官方代码块会不会因此在表格里被摊平）；⑥ `themePreviews` 18 张 PNG 的**屏上呈现位**（外观设置卡片？订阅面板？）；⑦ `forcedDarkOrLightMode` 为何有 `Lo` 与 `K$` 两个构造、各服务什么；⑧ `new K$(…)` 这个类的校验器 `CE(["light","dark"])` 与屏上第三档 `dynamic` 的关系（名单里只有两档）。
+
+## 三十九、**第 113 批＝MCP 逐字回包七条（两个 id／两道闸门／一次回包形态改判）＋ 屏上快照计数五条（六块对照／两套回收站名单／`.cm-content` 枚数）＋ 仪器逐字三条**（✓屏上只读＋MCP 数据面 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x；★ 判定在 `internals.md` §五十二、`model.md` §一之七十一、`interactions.md` V107，gap 在 `gap.md` §三点一〇六三 G1180–G1191；★ 原始快照＝`_harvest/b113-codeblocks.png`（116,239 字节，**已亲眼看过**）、`b113-dom-focused.html`（188,524 字符）、`b113-dom-rightclick.html`（同字节数）、`b113-dom-trash.html`／`b113-dom-trash2.html`（166,442 字符）；⚠ 本批**没有落任何不可逆动作**）
+
+### 一、★★★ MCP 逐字回包（七条，命令与响应都原样）
+
+⇒ ① **建文档**＝`documents create --title QODER-HARVEST-B113-CODEBLOCK` ⇒
+
+```
+Created document "QODER-HARVEST-B113-CODEBLOCK"
+rootBlockId: 8d3acfb3-…
+Use with: blocks get 8d3acfb3-…
+Next: add body content, not the title, with blocks add --id 8d3acfb3-… --markdown "..."
+Craft app link: craftdocs://open?spaceId=<spaceId>&documentId=d0710568-…
+```
+
+⇒ ② **多块插入回包（改判上批）**＝`blocks add --id 8d3acfb3-… --markdown "<6 个围栏块>"` ⇒ `Added 6 blocks.` ＋ `IDs: <936897f3-…>, <8d8fae17-…>, <5a7beec5-…>, <ca84e4d9-…>, <413cd637-…> (+1 more)` ⇒ ★ 形态＝**枚举多数并显式截断**（上批 3 块只回 1 个 ⇒ "只回首个 id"过窄）。
+⇒ ③ **读回逐键**＝`blocks get 8d3acfb3-… --depth 1 --format json` ⇒ `{id,type:"page",textStyle:"page",markdown:"QODER-HARVEST-B113-CODEBLOCK",content:[{id,type:"code",language,rawCode,markdown}×6]` ⇒ ☆ 六块 `language` 全部落库为围栏那串（`bash`／`ada`／`matlab`／`prolog`／`vbnet`／`python`）。
+⇒ ④ **用 documentId 喂块层**＝`blocks get d0710568-… --format markdown` ⇒ `Command 1 failed: … Block not found: d0710568-…` ＋ `Hint: If you have the Craft app/web link, run 'documents resolve-link <url>' via craft_read to get the rootBlockId. Otherwise run documents list to find rootBlockIds.` ＋ `Stopped after failure; earlier commands were already applied.` ⇒ ★★★ 一条回包里同时给出**两 id 不互通**＋**分号批处理不是事务且失败中止后续**（第三次复现）。
+⇒ ⑤ **两 id 翻译器**＝`documents resolve-link https://docs.craft.do/editor/d/<spaceId>/d0710568-…` ⇒ `Resolved link to rootBlockId <8d3acfb3-…>` ＋ `Title: QODER-HARVEST-B113-CODEBLOCK` ＋ `Raw URL documentId: d0710568-…` ＋ `Next: blocks get 8d3acfb3-…` ⇒ ★ 一次调用**两层都回显**；☆ 且它证明 web URL 的路径段就是 **documentId**。
+⇒ ⑥ **回收站写侧闸门**＝`blocks update --id 936897f3-… --markdown "```bash …"`（该块所在文档已被本批软删）⇒ `Failed to update block: Cannot modify document in trash. Restore it first.` ＋ `Hint: Restore trashed documents before deleting blocks inside them. Use "blocks update --help" for full usage.`；☆ 同篇文档**读**侧仍可完整返回（第 111 批 G1155）⇒ **读放行／写拒绝**。
+⇒ ⑦ **软删两次**＝`documents delete e5696832-…`／`documents delete 8d3acfb3-…` ⇒ 均回 `Deleted document <id> (moved to trash)`；随后 `documents list --location trash` 回 **6 条**＝`2db38d6b-…`、`d8af008b-…`、`73dc4026-…`、`d48fd45a-…`(B109)、`e5696832-…`(B111)、`8d3acfb3-…`(B113)。
+⇒ ☆ **契约不生效一条**＝`documents list --location unsorted --filter QODER` 回**全量 4 条**（含 `Welcome to Craft` 与两条无标题）⇒ `--filter` 在该动词上被忽略。
+
+### 二、★★★ 屏上回收站名单与 MCP 名单：双向都不同步
+
+⇒ 屏上「最近删除」（`title()` 逐字 `最近删除`）DOM 里 `data-item-id` 四条逐字＝`e8404352-…`、`cddd981c-…`、`6cc9761c-…`、`35edfc37-…`；其中**唯一**带采集串的是 `QODER-HARVEST-B109-CODEFIELD`。
+⇒ 与 §一.⑦ 的 MCP 六条**零交集** ⇒ ★ 屏上条目 id 属 **documentId 层**（交叉证据＝`35edfc37-…` 同时出现在第 111 批缓存的 `docs.craft.do/editor/d/<spaceId>/35edfc37-…`）。
+⇒ ☆ `6cc9761c-…`＝第 75 批"已删除并结案"的归属未定残留 ⇒ **它今天仍在屏上回收站**，且**不在** MCP 名单里 ⇒ 上批"屏上回收站只剩 3 条无标题项"这条要按此修正。
+⇒ ☆ 排除项两条＝**虚拟滚动**（末行 `scrollIntoView` 后仍 4 行；末行 `getBoundingClientRect().height`＝282＝卡片高）与**客户端缓存**（`goto(同一 URL)` 重载后仍 4 行）。
+
+### 三、★★ 六块同屏对照表（屏上是否上色＝`langCode ∈ jTe` 的派生态）
+
+| # | 围栏语言 | `rawCode`（本批自造样本） | `langCode` 在 `jTe` 119 键里？ | 屏上实测 |
+| --- | --- | --- | --- | --- |
+| 1 | `bash` | `echo hi # note` | **否**（表内只有近义键 `shell`） | **整块单色** |
+| 2 | `ada` | `with Ada.Text_IO; -- note` | **否** | **整块单色** |
+| 3 | `matlab` | `x = [1 2]; % note` | **否**（近义键 `octave`） | **整块单色** |
+| 4 | `prolog` | `father(X) :- parent(X, y).` | **否** | **整块单色** |
+| 5 | `vbnet` | `Dim x = 1 ' note` | **否**（近义键 `vb`／`vbscript`） | **整块单色** |
+| 6 | `python` | `def f(x): return x + 1  # note` | **是** | **上色**＝`def`／`return` 红、`f`／`x`／`1`／`+` 蓝、`# note` 灰 |
+
+⇒ ★ 对照组三条色逐一对上 `craftlight`＝`keyword→#d73a49`、`variableName/attributeName/number/operator→#005cc5`、`comment/bracket→#6a737d`（第 112 批 §三十八.一 那张表）⇒ ☆ 同一次采集把"漏配判定"与"lezer→hljs 映射方向"一起验了。
+⇒ ☆ 顺带读数＝六块都有行号槽（每块一个 `1`）、块底色为浅灰白（`craftlight` 的 `#FBFBFB` 档），与历批屏上"块内行高 24"同源。
+
+### 四、☆ 主题面板入口的两条新否证（逐字读数）
+
+⇒ ① 点进第六块（`.cm-content` 第 6 枚，`count()`＝6）→ 快照 188,524 字符内 **`主题` 0 处**、**`<select>` 0 个**、`cm-focused` 9 处、`data-testid` 去重 23 枚（全是侧栏／头部那批：`sidebar-profile`、`new-document-button`、`header-root`…）。
+⇒ ② 对同一块 `click({button:'right'})` → 快照 **188,524→188,524（delta 0）**、`role="menuitem"` **0** ⇒ 没有应用内浮层。
+⇒ ☆ 累计五条否证（第 111 批三条 ＋ 本批两条）⇒ **只剩块把手 `data-hover-only` 菜单一条候选**。
+
+### 五、☆ 仪器逐字三条（本批新踩）
+
+⇒ ① `rows.nth(...).scrollIntoViewIfNeeded is not a function` ⇒ 该 SDK 的 locator 包装**没有**这个方法；可用替代＝`locator.evaluate(el => el.scrollIntoView({block:'end'}))`（实测可用，且同手回传几何）。
+⇒ ② `cua.scroll` 的入参形态（SDK 文档逐字）＝`ScrollOptions`＝"Scroll by a delta from a specific viewport coordinate" ⇒ 要 `{x, y, …}`；**本批未实测，别按猜测用**。
+⇒ ③ ★★★ 一次 `locator.click()` 打 `BUTTON[data-testid="browse-sort-button"]` 把扩展串行队列**挂死**＝cell 永久 running → `node_repl_wait` 回 `[node_repl timeout] AbortError: Execution was cancelled` → 随后连 `title()` 都报 `Tool command waited too long in queue`；**而当时 `visibility.get()`＝true** ⇒ ☆ 历批"挂死＝窗口最小化"归因**不充分**，点击本身可挂；☆ 处置＝立刻停手、不在挂死队列上重试、不做不可逆动作。
+
+**仍未采到（本节）**：① 屏上回收站的**查询条件**（哪个字段决定可见性）；② documentId→rootBlockId 的**非 URL** 正向映射；③ 屏上选择模式对"屏上列不出"条目的可见性；④ 焦点在块内时 `Ctrl+Z` 的撤销归属；⑤ 五档无 grammar 语言在**导出 markdown** 里的语言名是否仍正确；⑥ `browse-sort-button` 菜单里到底有什么（本批一点就挂，未读到菜单文本集）。
