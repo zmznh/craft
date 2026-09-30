@@ -1067,3 +1067,14 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 5. ☆ **页内 `fetch` ＋ 正则回片段**是零预算挖 bundle 的可行通路（本轮用它扫了 56 个资源、定位到 6 个含 `clientY` 的文件、读出画廊落点的水平二分式）：原文不进仓库、不进上下文，只回计数与窗口片段；⚠ 但**只能证明"搜得到什么"，不能证明"官方只有这些"**。
 
 **仍未采到（本内部面）**：正文块拖拽的**真实判定函数**（在哪个 chunk、是否用 `over` 回调）；`pse(el, ctx)` 这个被画廊用的"相对位置"辅助函数的定义；确认框 `sc-1bl4h28-1` 族的完整规则（本轮只读到类名，未读样式）；`sc-cyjsqg-0/1` 两条沟槽的 `pointer-events`／`z-index` 关系（本轮只读到 `pe:"auto"`）；DS 与 styled 两套按钮的**混用清单**（哪些弹层用哪套）。
+
+
+## 四十一、**一次 OS 拖拽的事件序列画像＝`dragstart:T` ×1 ＋ `dragenter` ×2 ＋ `dragover` ×100＋ ＋ `drop:T:p` ×1；以及"选择集可能跨操作累积"的源码线索**（✓屏上事件计数＋bundle 片段 第 102 批 2026-09-30 10:1x–10:5x；原始读数在 `gap.md` §三点一〇四八 G1036／G1037、`interactions.md` V96）
+
+1. ★★ **判"拖拽是否真的发生"的唯一硬判据＝capture-phase 的 `dragstart` 是否存在**，不是连接器返回值、不是模型是否变化（第 101 批 4 次连接器 `drag` 全部"返回成功＋零 `dragstart`"）。⇒ 采拖拽类行为前**必须先装 `dragstart/dragenter/dragover/drop/dragend` 五名监听**，否则会把仪器失败记成官方行为。
+2. ★★ **一次拖拽的事件量级**＝`dragover` 在 150 步移动下发了 **100＋ 次**、`dragenter` 2 次、`drop` 1 次且为 `T:p`（`isTrusted:true` ＋ `defaultPrevented`）⇒ **不能用"事件计数"判命中**（与 §四十"数 checkbox 判不了选择模式"同族盲区）；要判"命中了哪个块"只能在每次 `dragover` 里读 `e.target`（本轮未采，列入下一批）。
+3. ★ **`draggedIds` 是 provider 级状态**（bundle 片段：`{canReorder, draggedIds, dropIndicator, onDragStart, onHover, clearDropIndicator, onDrop, onDragEnd}`，且存在 `clearDropIndicator` 但**未见 `clearDraggedIds`**）⇒ 为 D 枪"两处交换"与第 101 批"一次 `Alt+↑` 位移 2 格"提供同一个可能机制（**假说，未证**）；⚠ 采证方式＝在**全新沙盒、零前序操作**下打一枪看是否仍出现多位移。
+4. ☆ **`dropIndicator` 是对象不是布尔**（同一段里 `onHover(bc, co, Mi, {top: Ti.top, height: ra.offset…})`＝画廊路数）⇒ 官方的落点指示携带 **top＋height** 两个几何量＝**一条"带"而不是"线"**，与第 98 批屏上所见"整块幽灵"吻合；本地是 ProseMirror `dropcursor` 2px 竖线（`src/components/editor/Editor.tsx:259-261`）⇒ **形状差分继续成立**。
+5. ☆ **页内注入的监听器不是产品事实**＝本轮 9 个 `document` 级监听随页面销毁消失（未显式卸载）；⚠ 记录以免下批误以为"官方有常驻监听"。
+
+**仍未采到（本内部面）**：正文块拖拽的真实判定函数本体（本轮只拿到 provider 的返回值形状与画廊路数）；`onHover` 收到的第 3 参（画廊是 `"left"|"right"`）在正文块上是什么词表；`draggedIds` 的清理时机。
