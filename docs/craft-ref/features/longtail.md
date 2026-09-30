@@ -844,7 +844,7 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 
 **仍未采到（本节）**：84 个哈希族里除 `_fdch5_／`_11co4_`／`_ydla7_`／`_apokp_` 之外**全部未逐条读**；KaTeX 150／151 条差集**只给了计数与 20 条样本**，未出全表；白板 108 条 `--color-*` 定义里的**重复覆写位置**（谁在后、是否暗色注入）未定位；`--st-*` 的注入方（组件 props／内联 `style`／JS）未反编译；`AdobeBlank` 的消费点未找到；m-plus 354 片的**权重×序号分布**（400／500／700 各多少片）未拆；`fontdef.*` 的 `src` 指向的 **woff2 本体未落盘**（只取了 CSS）；★ 官方**是否存在第 14 份 CSS**（日历屏）未证。
 
-## 三十三、**长尾素材：JS 侧的"原始名册层"＝代码块语言 39 项三元组逐字全表 ＋ app shell 的 `_6sjpd_` 9 个类名与 12 个同段常量与 2 个排序枚举 ＋ `what-input` 的属性／取值／事件映射／修饰键／表单控件名单全册 ＋ CM6 的 28 个 `tok-*` 与 `&light`／`&dark` 双档机制 ＋ CJK 注入的两条路径与 12 条 locale 前缀表 ＋ `--st-*` 的 13 个注入名（与 §六 的 8 个宿主名对齐）**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，**零浏览器调用、零写入**；★ 本节只放"逐字清单"，解释与判定在 `internals.md §四十六`／`styles.md §十四`／`model.md §一之六十五`／`interactions.md V101`，gap 行 `gap.md` G1080–G1091；原始机读结果＝`_harvest/b107-probe1.txt`～`b107-probe5.txt`；★ 与 §三十二 的分工＝§三十二 是 CSS 层清单、本节是 JS 层清单，两节的唯一交叉点是 `--st-*`）
+## 三十三、**长尾素材：JS 侧的"原始名册层"＝代码块语言 39 项三元组逐字全表 ＋ app shell 的 `_6sjpd_` 9 个类名与 12 个同段常量与 2 个排序枚举 ＋ `what-input` 的属性／取值／事件映射／修饰键／表单控件名单全册 ＋ CM6 的 28 个 `tok-*` 与 `&light`／`&dark` 双档机制 ＋ CJK 注入的两条路径与 12 条 locale 前缀表 ＋ `--st-*` 的 13 个注入名（与 §六 的 8 个宿主名对齐）**（✓盘上 第 107 批 2026-09-30 15:4x–16:0x，**零浏览器调用、零写入**；★ 本节只放"逐字清单"，解释与判定在 `internals.md §四十六`／`styles.md §十四`／`model.md §一之六十五`／`interactions.md V101`，gap 行 `gap.md` G1080–G1091；原始机读结果＝`_harvest/b107-probe1.txt`～`b107-probe5.txt`；★ 与 §三十二 的分工＝§三十二 是 CSS 层清单、本节是 JS 层清单，两节的唯一交叉点是 `--st-*`）
 
 ### 一、代码块语言三元组（39 项，逐字，按数组内出现序；源＝`CodeEditorWrapper-DB8UxA00.js` @28,995，整表用括号配平取出，数组 2,211 字符）
 
@@ -910,7 +910,7 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 | `docGrid` | `_docGrid_6sjpd_59` | 59 |
 
 ⇒ ★ 这族就是 §三十二.八／`styles.md §十三.九` 那条**具名容器查询的宿主**（`mainWrapper` @20＝`container-type:inline-size` 的声明者）；⇒ ☆ 行号间距（1／5／13／20／28／33／39／51／59）与 CSS 里规则块的顺序一致 ⇒ **可用行号差反推每条规则的块大小**。
-⇒ **同段 12 个常量逐字**＝`T_=208`、`$h=16`、`ic=20`、`D7=8`、`QJ=240`、`ob=200`、`of=1/1.25`、`FEt=268`、`NEt=5`、`hm=65`、`dS=!0`、`uS=100`；⚠ **本批未读到任何一个的使用点 ⇒ 含义全部未定，不得据此判"侧栏宽 208"**（第 108 批队列）。☆ 其中 `of=1/1.25` 与本目录历批的 OS→css DPR 换算式同值，**只记形状、不记因果**。
+⇒ **同段 12 个常量逐字**＝`T_=208`、`$h=16`、`ic=20`、`D7=8`、`QJ=240`、`ob=200`、`of=1/1.25`、`FEt=268`、`NEt=5`、`hm=65`、`dS=!0`、`uS=100`；⚠ ~~本批未读到任何一个的使用点 ⇒ 含义全部未定~~ ⇒ ✎ **第 108 批全部结案**（12 个用处逐条见 **§三十四.三**／`internals §四十七.三`／**G1096**）＝基准卡宽 200／桌面 gap 20／窄档 gap 8／左右内边距 16／卡宽上限 268／列数上限 5／**卡片宽高比 `of=1/1.25`**／封面图请求宽 208／空态占位卡 240×300／列表行高 65／入场动画 appear＋timeout 100；★ 其中 `of` **不是 DPR**（本目录历批的 OS→css 换算式与它无关）＝**卡片宽高比**，用在 `height = width / of` 与 `boxAspectRatio:of`。
 ⇒ **两个枚举逐字**＝`wi = {Name:"Name", Shared:"Shared", SharedBy:"SharedBy", LastViewed:"LastViewed"}` 与 `ja = {Ascending:"Ascending", Descending:"Descending"}` ⇒ ☆ 与第 103 批的稳定锚点 `BUTTON[data-testid="browse-sort-button"]` 咬合＝**浏览屏排序＝四维度 × 两方向**，且四维度里有两个（`SharedBy`／`LastViewed`）本地排序面板没有（`model.md §一之六十五`）。
 
 ### 三、`what-input` v5.2.12 全册（源＝`vendor-BZCR0rqu.js`，文件头注释 @2,527 逐字带 `@link`／`@license MIT`；常量块 @3,303；`Aa` @4,961；`Oa` @5,490；`Pa` @5,517；`Ua` @5,816）
@@ -921,14 +921,14 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 ⇒ **`pointerType` 表逐字**＝`{2:"touch", 3:"touch", 4:"mouse"}` ＋ `pointerType==="pen" → "touch"` ⇒ ★ **手写笔归 touch**；另 `typeof pointerType=="number"` 才查表，字符串（现代浏览器）直接透传（`"mouse"`／`"touch"`／`"pen"`／`"eraser"`）。
 ⇒ **修饰键排除表逐字**＝`ma=[16,17,18,91,93]`（Shift／Ctrl／Alt／MetaLeft／MetaRight）；`specificKeys` 默认空数组 `ga=[]`。
 ⇒ **表单控件名单逐字**＝`pa=["button","input","select","textarea"]`（intent 冻结判据，见 `V101` 第 3 条）。
-⇒ **持久化**＝`sessionStorage` 键 `what-input`／`what-intent`；闸门属性 `data-whatpersist="false"`（读 `documentElement` 或 `body`）。
+⇒ **持久化**＝`sessionStorage` 键 `what-input`／`what-intent`；闸门属性 `data-whatpersist="false"`（读 `documentElement` 或 `body`）。〔✎ **第 108 批屏上补测**＝官方页面上 `documentElement.dataset.whatpersist` 实测为 **`null`** ⇒ **闸门从未被拉下、持久化是开着的**（两键实测在写、进屏读到 `mouse／mouse`）⇒ 本行"闸门属性"只是库能力，**不要读成"官方关了持久化"**〕
 ⇒ **API 面 6 个**＝`ask`、`element`、`ignoreKeys`、`specificKeys`、`registerOnChange`、`unRegisterOnChange`；⇒ ☆ **无 SSR 退化桩逐字**＝`{ask:function(){return "initial"}, element:function(){return null}, ignoreKeys:function(){}, specificKeys:function(){}, registerOnChange:function(){}, unRegisterOnChange:function(){}}`（`typeof document>"u" || typeof window>"u"` 时整套 API 退化成这份桩 ⇒ **服务端渲染阶段属性为 `initial`、且不会被写**）。
 ⇒ **其余三个回调**＝`Ua`（`focusin`）只写两个诊断属性、`qa`（`focusout`）把两个都 `removeAttribute`、`Ta`（`DOMContentLoaded`）回灌并首次 `Oa("input")＋Oa("intent")`。
 
 ### 四、CodeMirror 6 侧名册（源＝`vendor-code-editor-BLm003PU.js`，`tok` 表 @279,197、主题 @165,452～@166,700；`basicSetup` 在 `CodeEditorWrapper-DB8UxA00.js`）
 
-⇒ **28 个 `tok-*` 类名逐字（按 `class:"tok-"` 表内出现序）**＝`tok-link`、`tok-heading`、`tok-emphasis`、`tok-strong`、`tok-keyword`、`tok-atom`、`tok-bool`、`tok-url`、`tok-label`、`tok-inserted`、`tok-deleted`、`tok-literal`、`tok-string`、`tok-number`、`tok-string2`、`tok-variable`、`tok-local`、`tok-definition`、`tok-property`、`tok-type`、`tok-namespace`、`tok-class`、`tok-macro`、`tok-operator`、`tok-comment`、`tok-meta`、`tok-invalid`、`tok-punctuation`。
-⇒ ☆ 形状＝`{tag: W.link, class:"tok-link"}` 的 `highlightStyle` 数组，前面有一句 `i instanceof j2 && (i.name = r)`（给 `tags` 里没具名的补名）⇒ **前 4 个（link／heading／emphasis／strong）不是语言 token、是 markdown 面**（`tok-heading`／`tok-emphasis`／`tok-strong` 与本地 `lowlight` 的 `hljs-*` 命名完全不同体系）。
+⇒ ⚠ **本行初稿把名册记错、第 108 批就地更正＝真名册是 29 个不同名／30 条声明**（初稿正则只收 `[a-z0-9]+`，**把 camelCase 后缀截断了**）；⇒ 更正后的 28 个 `tok-*` 类名逐字（按 `class:"tok-"` 表内出现序）＝`tok-link`、`tok-heading`、`tok-emphasis`、`tok-strong`、`tok-keyword`、`tok-atom`、`tok-bool`、`tok-url`、`tok-labelName`、`tok-inserted`、`tok-deleted`、`tok-literal`、`tok-string`、`tok-number`、`tok-string2`、`tok-variableName`、`tok-local`、`tok-definition`、`tok-variableName2`、`tok-propertyName`、`tok-typeName`、`tok-namespace`、`tok-className`、`tok-macroName`、`tok-operator`、`tok-comment`、`tok-meta`、`tok-invalid`、`tok-punctuation`。
+⇒ ★ ☆ 形状＝`{tag: W.link, class:"tok-link"}` 的数组，外面包的是 @lezer/highlight 的 **class 表工厂**（逐字 `function n_t(r,i){…s[p.tag.id]=p.class…return{style(p){…}}}`）⇒ **只映射 tag→class、完全不含颜色**；★ 而**13 份 CSS 里 `.tok-*` 规则 0 条、chunk 内规则形态 0 条** ⇒ ⇒ **本构建里这套 class 表没有配色来源**，真正的颜色来自代码块主题自带的 `styles`（`internals §四十七.一／二`、**G1094**）；☆ 数组前面有一句 `i instanceof j2 && (i.name = r)`（给 `tags` 里没具名的补名）⇒ **前 4 个（link／heading／emphasis／strong）不是语言 token、是 markdown 面**（`tok-heading`／`tok-emphasis`／`tok-strong` 与本地 `lowlight` 的 `hljs-*` 命名完全不同体系）。
 ⇒ **双档机制逐字**＝`Sxe=u4.newName(), C9t=u4.newName(), Y9t=u4.newName(), W9t={"&light":"."+C9t, "&dark":"."+Y9t}` ＋ `new u4(i, {finish(l){ return /&/.test(l) ? l.replace(/&\w*/, …) : l }})` ⇒ ☆ 三个 `newName()`＝两个主题类＋一个未定性变量。
 ⇒ **两条明写的暗档值**＝`&light .cm-content{caretColor:"black"}`／`&dark .cm-content{caretColor:"white"}`；`&light .cm-selectionBackground{background:"#d9d9d9"}`／`&dark{background:"#222"}`；另 `.cm-line{display:"block";padding:"0 2px 0 6px"}`、`.cm-layer{position:"absolute";left:0;top:0;contain:"size style";& > *{position:"absolute"}}`、正文 `white-space:"pre-wrap"`／`word-break:"break-word"`／`overflow-wrap:"anywhere"`／`flex-shrink:1`。
 ⇒ **`basicSetup` 逐字**＝`{highlightActiveLineGutter:t, highlightActiveLine:t, searchKeymap:!1, foldGutter:!1, highlightSelectionMatches:!1, autocompletion: k==="web", closeBrackets:!0}`（`t`＝可编辑位、`k`＝surface）；同段编辑器 props＝`readOnly:!t, editable:t, height:"100%", theme: j ?? void 0` ＋ `onMouseDown`／`onTouchEnd` 两个处理器。
@@ -955,3 +955,99 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 ⇒ ☆ 本节**全部为代码断言、零屏上证据**；欠的证据清单在 `interactions.md V101` 末尾与「仍未采到」。
 
 **仍未采到（本节）**：`_6sjpd_` 同段 12 个常量的**使用点**（一个都没读到）；`tok-*` 的**具体配色**（只拿到类名，样式在 `highlightStyle` 的另一半里未读全）；grammar 能力面（本批只读到"vendor 里的语言名比 39 档多"这个形状，**未量化**）；`Sxe` 第三个 `newName()` 的用途；`MermaidRender-DrFu6-mF.js` 本体未读（`themeId` 取值表、图类型支持面未知）；`blockdetails.*` 里代码块相关的其他 key 未逐条读；`storedLangCode` 在**写侧**的字段名（MCP／mutation）未取证 ⇒ 需一次 `blocks add` 读回（写入批）；★ 12 份 `translationCaches` 的体积与是否全量打进主包未量化。
+
+## 三十四、**长尾素材：代码块主题名册逐字（21 键）＋ `craftlight`／`craftdark` 两套 settings 与 token 色板全量逐字 ＋ 排版四族的**值**表（`--ui-*` 15 组合 ＋ `--caption-*` 4 ＋ `--body-*` 5，`--heading-*` 见 §十四）＋ `_6sjpd_` 12 个常量的用处逐条 ＋ 浏览屏网格四条公式逐字 ＋ `tok-*` 更正后的 29 个名册 ＋ `vendor-code-editor` 引用面的逐符号拆分**（✓盘上＋屏上 第 108 批 2026-09-30 16:1x–16:5x，**零写入、零沙盒**；★ 本节只放逐字清单，解释在 `internals.md §四十七`／`styles.md §十五`／`model.md §一之六十六`／`interactions.md V102`，gap 行 `gap.md` §三点一〇五八 G1092–G1104；机读结果 `_harvest/b108-probe1.txt`～`b108-probe17.txt`；⚠ 本节同时**更正 §三十三.四 的 `tok-*` 名册**（已就地 ✎）与 **§三十三.二 的 `of` 猜测**）
+
+### 一、代码块主题名册（21 键，逐字，源＝`CodeEditorWrapper-DB8UxA00.js` @28,692）
+
+| 键 | 实现 | 键 | 实现 |
+| --- | --- | --- | --- |
+| `auto` | **`null`**（解析成 craft 两档） | `materialdark` | 具名第三方板 |
+| `craftdark` | **官方自写**（＝`fo()`，板见 §二） | `materiallight` | 具名第三方板 |
+| `craftlight` | **官方自写**（＝`io()`，板见 §二） | `noctislilac` | 具名第三方板 |
+| `atomone` | 具名第三方板 | `nord` | 具名第三方板 |
+| `aura` | 具名第三方板 | `sublime` | 具名第三方板 |
+| `bbedit` | 具名第三方板 | `tokyonightday` | 具名第三方板 |
+| `darcula` | 具名第三方板 | `tokyonightstorm` | 具名第三方板 |
+| `dracula` | 具名第三方板 | `tokyonight` | 具名第三方板 |
+| `githubdark` | 具名第三方板 | `vscodedark` | 具名第三方板（＝`qo()`） |
+| `githublight` | 具名第三方板 | `gruvboxdark`／`gruvboxlight` | 具名第三方板 |
+
+⇒ ☆ `auto` 的解析式逐字＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]`；⇒ ⚠ **本批只逐字了 craft 两档**，其余 18 档的 settings／styles 未抄（同 chunk 内，可下批补）；⇒ ☆ 与语言选择器同族的 i18n 逐字＝`blockdetails.theme`「主题」／`blockdetails.themes`／`blockdetails.search.themes`「搜索主题」＋ `blockdetails.language`「语言」／`blockdetails.search.languages`。
+
+### 二、★★★ `craftlight`／`craftdark` 两套逐字（settings ＋ token 色板）
+
+⇒ **`craftlight`（`go = io()`）settings 逐字**＝`{background:"#FBFBFB", foreground:"#3D3D3D", selection:"#BBDFFF", selectionMatch:"#BBDFFF", gutterBackground:"#FBFBFB", gutterForeground:"rgba(31,34,37,0.3)", gutterActiveForeground:"rgba(31,34,37,0.6)", lineHighlight:"rgba(0,0,0,0.03)", fontFamily:"Roboto Mono, monospace"}` ⇒ ⚠ **无 `caret`、无 `gutterBorder`**（这两条不写 ⇒ CM6 走默认插入符）；
+⇒ **`craftlight` token 色板逐字（＝GitHub Light 系）**＝
+
+| tag（逐字分组） | color | 附加 |
+| --- | --- | --- |
+| `comment`, `bracket` | `#6a737d` |  |
+| `className`, `propertyName` | `#6f42c1` |  |
+| `variableName`, `attributeName`, `number`, `operator` | `#005cc5` |  |
+| `keyword`, `typeName`, `typeOperator`, `typeName` | `#d73a49` | ☆ `typeName` 在同一组里**写了两遍** |
+| `string`, `meta`, `regexp` | `#032f62` |  |
+| `name`, `quote` | `#22863a` |  |
+| `heading` | `#24292e` | `fontWeight:"bold"` |
+| `emphasis` | `#24292e` | `fontStyle:"italic"` |
+| `deleted` | `#b31d28` | `backgroundColor:"ffeef0"`（⚠ **缺前导 `#`**＝官方逐字串，看着像 bug，登记不修正） |
+
+⇒ **`craftdark`（`uo = fo()`）settings 逐字**＝`{background:"#28292B", foreground:"#CECFD0", caret:"#fff", selection:"#385576", selectionMatch:"#385576", lineHighlight:"rgba(255,255,255,0.05)", gutterBackground:"#28292B", gutterForeground:"rgba(255,255,255,0.4)", gutterActiveForeground:"rgba(255,255,255,0.7)", gutterBorder:"#f4f4f41f", fontFamily:"Roboto Mono, monospace"}`；
+⇒ **`craftdark` token 色板逐字（＝GitHub Dark 系）**＝`comment`／`bracket`＝`#8b949e`；`className`／`propertyName`＝`#d2a8ff`；`variableName`／`attributeName`／`number`／`operator`＝`#79c0ff`；`keyword`／`typeName`／`typeOperator`＝`#ff7b72`；`string`／`meta`／`regexp`＝`#a5d6ff`；`name`／`quote`＝`#7ee787`；`heading`＝`#d2a8ff`＋bold；`emphasis`＝`#d2a8ff`＋italic；`deleted`＝`#ffdcd7`＋`backgroundColor:"ffeef0"`（★ 与亮档同一条**没有 `#` 的底色串**）；
+⇒ ★★★ **两套的结构性结论**＝**官方自写的 craft 两档 ＝ "GitHub Light／GitHub Dark 的 token 色板 ＋ 一套自己的容器色（底／前景／选区／行高亮／gutter）＋ Roboto Mono"** ⇒ ⇒ **与 app 的 `--accent-*`／`--editor-*` 完全无关**（☆ 全库仅 Excalidraw chunk 出现过一次 `--editor-`）；⇒ ⚠ **`craftdark` 的 `theme` 形参停在工厂默认 `"light"` 未被覆盖**（`fo` 的默认是 `t="light"`，调用是 `fo()`）⇒ 注册成 `EditorView.theme(O,{dark:false})` ⇒ 后果未屏上复验，登记为**官方错配候选**；⇒ ☆ 装配式逐字＝`g = li.theme(O,{dark:i==="dark"}), w = uE.define(l), Q = [g, R6e(w)]` ⇒ **主题一次产出两条扩展＝容器样式 ＋ 上色**。
+
+### 三、★★ `_6sjpd_` 同段 12 个常量的用处逐条（第 107 批欠的那条，本批结掉）
+
+| 常量 | 值 | 用处（逐字片段） |
+| --- | --- | --- |
+| `ob` | `200` | 卡片基准宽（列数公式里 `(ob + ic)`＝220 一档） |
+| `ic` | `20` | 桌面档 gap（`gap:ic`；`jme=Ame*2+ob*2+ic`） |
+| `D7` | `8` | 窄档／移动档 gap（`({$isMobile:t})=>t?D7:ic`；两列分支 `const r=D7`） |
+| `$h` | `16` | 左右内边距（`Ame=$h`、`x7e=$h`、`w7e=$h` 三处别名都参与 `padding*2`） |
+| `FEt` | `268` | **卡宽上限**（`r=Math.min(l,FEt)`；另有独立的 `dDt=268` 作 masonry 列 `max-width`） |
+| `NEt` | `5` | 列数上限（`i=Math.min(s,NEt)`） |
+| `of` | `1/1.25`（＝0.8） | ★ **卡片宽高比**（`rowHeight=(t-(c-1)*r)/c/of`、`boxAspectRatio:of`、`height:QJ/of`）⇒ **不是 DPR** |
+| `T_` | `208` | 封面图请求宽（`Wme(url, window.devicePixelRatio*T_, e)` ＋ `width:T_`） |
+| `QJ` | `240` | 空态占位卡（`width:QJ;height:QJ/of`＝**240×300**，`border-radius:8px`，`&.isHidden{visibility:hidden}`） |
+| `hm` | `65` | **列表档行高**（`estimateSize:()=>hm` ＋ `Pe=hm` 的拖拽矩形 `height`） |
+| `dS` | `true` | 入场动画 `appear`（`<Transition in appear:dS timeout:uS>`） |
+| `uS` | `100` | 入场动画 `timeout:100`（＝**卡片入场 100ms**） |
+
+### 四、网格四条公式逐字（源＝`index-DiTmKH3z.js` @2,499,970～／@2,989,862～／@2,994,728～）
+
+⇒ **公式一（列数）**＝`jme = 16*2 + 200*2 + 20`（＝452）；`uDt = t => { if (t < jme) return 2; const e = t - 16*2, n = Math.floor((e + 20) / (200 + 20)); return Math.max(2, Math.min(n, 5)); }`；
+⇒ **公式二（瀑布流行高）**＝`MZt(t)`：`t<=0 → {columns:1, gap:20, rowHeight:0}`；`t + 32 < 452 → {columns:2, gap:8, rowHeight:(t-8)/2/of + 8}`；否则 `gap=20, s=max(1, floor((t+20)/(200+20))), rowHeight=(t-(s-1)*20)/s/of + 20`；
+⇒ **公式三（网格卡宽）**＝`$Zt`／同族：`i = min(s, 5)`；`columnWidth = (t - (i-1)*gap)/i`；`cardWidth = min(columnWidth, 268)` ⇒ ★ **超过 5 列后卡宽不再增长**（余量变成留白）；
+⇒ **公式四（布局落地）**＝网格项**绝对定位**（逐字 `style:{top:M.y, left:M.x, width:M.width}`）＋ **虚拟滚动**（`estimateSize`／`overscan`）＋ 列表档行高 65；
+⇒ ☆ 另两处同族阈值＝`UZt = 16*2 + 200*2 + 20`（第三份网格实现，与 `jme`／`PZt` 同式）⇒ ⇒ **官方有三份并列的网格尺寸函数**（`uDt` 列数、`MZt` 行高、`$Zt` 卡宽），共用同一组常量。
+
+### 五、★ `tok-*` 更正后的名册（29 个不同 class 名／30 条声明，源＝`vendor-code-editor-BLm003PU.js` @279,180）
+
+⇒ 逐字序＝`tok-link`、`tok-heading`、`tok-emphasis`、`tok-strong`、`tok-keyword`、`tok-atom`、`tok-bool`、`tok-url`、`tok-labelName`、`tok-inserted`、`tok-deleted`、`tok-literal`、`tok-string`、`tok-number`、`tok-string2`、`tok-variableName`、`tok-local`、`tok-definition`、`tok-variableName2`、`tok-propertyName`、`tok-typeName`、`tok-namespace`、`tok-className`、`tok-macroName`、`tok-operator`、`tok-comment`、`tok-meta`、`tok-invalid`、`tok-punctuation`；
+⇒ ☆ 三条形状注记＝① `tok-local` 与 `tok-definition` 是**双 class 条目**（`class:"tok-variableName tok-local"`）⇒ 所以"30 条声明／29 个不同名"；② `tok-string2` 来自 `{tag:[W.regexp, W.escape, W.special(W.string)]}`；③ 表前一句 `for (let r in W) { let i = W[r]; i instanceof j2 && (i.name = r) }`＝给没具名的 tag 补名；
+⇒ ★ **本套 class 名在本构建里没有配色来源**（13 份 CSS 内 `.tok-*` 0 条、chunk 内规则形态 0 条）⇒ 见 `internals §四十七.二`／**G1094**。
+
+### 六、排版四族的**值**表（`--heading-*` 30 条已在 `styles.md §十四.一`，此处补其余三族）
+
+⇒ `--ui-*`（15 组合＝60 个 token，逐字）＝
+
+| 档 | size | weight | line-height | letter-spacing |
+| --- | --- | --- | --- | --- |
+| `xs-500` | 11px | 500 | 13.2px | .05px |
+| `sm-400`／`sm-500` | 12px | 400／500 | 14.4px | .01px |
+| `md-400`／`md-500`／`md-600` | 13px | 400／500／600 | 16px | −.04px |
+| `lg-400`／`lg-500`／`lg-600` | 14px | 400／500／600 | 16px | −.09px |
+| `xl-400`／`xl-500`／`xl-600` | 15px | 400／500／600 | 18px | −.13px |
+| `xxl-400`／`xxl-500`／`xxl-600` | 16px | 400／500／600 | 19.2px | −.18px |
+
+⇒ `--caption-*`（4 组合＝16 个 token，逐字）＝`md-400`＝11px／400／**16px**／**.01px**；`md-500`＝11px／500／**13.2px**／**.05px**；`lg-400`＝12px／400／16px／**.05px**；`lg-500`＝12px／500／16px／**.01px**；⇒ ⚠ **加粗那两格是 §十五.四 的官方不自洽候选**（`md` 档 400 与 500 的行高／字距互反）。
+⇒ `--body-*`（5 组合＝22 个 token，逐字）＝`md-400`＝13px／400／15.6px／−.04px；`md-500`＝13px／500／15.6px／−.04px；`md-600`＝13px／600／15.6px／−.04px；`md-400-italic`＝同 400 ＋ `-style: italic`（5 条）；`md-500-italic`＝同 500 ＋ `-style: italic`（5 条）；⇒ ★ **body 只有 `md` 一档 size、且 600 没有 italic 变体**（三档权重里只前两档有斜体族）。
+⇒ ☆ 四族 size 的**交叉关系**＝`ui` 11–16px／`caption` 11–12px／`heading` 11–14px／`body` 13px ⇒ ⇒ **正文只有一档 13px**，而 `.tiptap` 根字号在本地是 16px（`src/app/globals.css:360`）＝一条可裁的度量差分候选（未屏上量过官方正文像素）。
+
+### 七、`vendor-code-editor-BLm003PU.js` 引用面的逐符号拆分（★ 本批的自我纠正，G1104）
+
+⇒ 该 chunk **3,564,744 字符**；被引用面＝**side-effect import 53 处 ＋ 具名 import 14 处**；⇒ ★ **14 处具名里有 13 处只引 `_`**（＝Vite 的 `__vitePreload` helper，逐字 `import{_ as an}from"./vendor-code-editor-BLm003PU.js"`）⇒ **真正引 CM6 符号的只有 `CodeEditorWrapper-DB8UxA00.js` 一处**（它一次引 8 个符号＝`c as I, t as e, _ as ve, l as kt, a as yt, b as xt, E as Ct, d as vt, R as wt`）；
+⇒ ⇒ ☆ 修正后的结论＝**CM6 在官方架构里是"单一消费者"组件**（不是第 107 批说的跨面组件）；side-effect import 仍会把该 chunk 放进依赖闭包，**但"每个功能屏都实际下载 3.5MB"未取证**（网络面被 CDP 封，承既有边界）；
+⇒ ☆ 方法学修正＝**"按 import 图选题"这个工具仍然可用，但产出的是"谁引 helper"**；要判"跨面"必须**逐符号拆**（本批就是这么把自己上一条结论推翻的）。
+
+**仍未采到（本节）**：18 档第三方主题的 settings／styles 逐字（只逐字了 craft 两档）；`qo()`（vscodedark）只读到尾部片段；`tok-*` 表有没有被注册进 `extensions`（`...g` 未展开）；`dDt=268` 与 `FEt=268` 是不是同一个量的两份定义（未追使用点）；三份网格函数（`uDt`／`MZt`／`$Zt`）各自服务哪个屏（组件归属未追）；`--body-*` 只有 `md` 一档时**大段正文**（如全屏文档视图）走哪条；☆ 官方正文实际渲染像素（13px 还是 16px）未屏上量取；☆ `--ui-*` 的 `xs-500` 之上是否还有更大档（名册里 `xxl-600` 是末端，未见 `2xl`）。

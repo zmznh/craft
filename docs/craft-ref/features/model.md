@@ -2859,7 +2859,7 @@ HJe = (t, e) => { let n = {};
 
 **仍未采到（本节）**：官方**用户可选的字体列表**（是全部 21 个还是 UI 那 5 个）未从界面确认，需要读设置屏或 i18n 的 `style.*` 命名空间；`AdobeBlank` 与 `--st-*` 的 JS 侧写入方未反编译；CJK 各 family 的**具体 face 数**（本轮只给 15 族的名单与合计 45，未逐族拆）；`--st-grid-columns` 的实际值形态（`repeat(...)`？）未采到；白板主题在本地 tldraw 下的实现未读（`src/components/whiteboard/` 本轮未开）；★ 字体偏好是否**随文档持久化**（本地字段该不该存在）未验证，需要一次屏上写入实验（属写入批）。
 
-## 一之六十五、**代码块的"语言"不是一个字符串＝官方是三元组 `{storedLangCode, langCode, label}`（39 项封闭名单，`plaintext` 的 `langCode` 是 `null`）；同一个代码块按语言档分成三条渲染路 ⇒ "图"与"公式"可以不是独立块类型；浏览屏排序是四维度 × 两方向的封闭枚举**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，来源＝`CodeEditorWrapper`／`index` chunk 的逐字读；★ 本节**给 G1086／G1087／G1091 三条模型含义**，逐字全表在 `longtail.md §三十三.一／二`，机制在 `internals.md §四十六.二`）
+## 一之六十五、**代码块的"语言"不是一个字符串＝官方是三元组 `{storedLangCode, langCode, label}`（39 项封闭名单，`plaintext` 的 `langCode` 是 `null`）；同一个代码块按语言档分成三条渲染路 ⇒ "图"与"公式"可以不是独立块类型；浏览屏排序是四维度 × 两方向的封闭枚举**（✓盘上 第 107 批 2026-09-30 15:4x–16:0x，来源＝`CodeEditorWrapper`／`index` chunk 的逐字读；★ 本节**给 G1086／G1087／G1091 三条模型含义**，逐字全表在 `longtail.md §三十三.一／二`，机制在 `internals.md §四十六.二`）
 
 ### 一、语言字段＝三个不同用途的值，官方从不混用
 
@@ -2895,3 +2895,33 @@ HJe = (t, e) => { let n = {};
 | `--heading-*` token 数 | **30 条，全部有消费点** | ⇒ 排版语义层在官方是**独立且完整的一层**（本地 0 条）；同族前缀穷举后**不存在 `--body-*` 等兄弟族** |
 
 **仍未采到（本节）**：`storedLangCode` **到底存在块的哪个字段**（本批只看到前端数组与 `updateAttributes` 语义，未读写侧 mutation／MCP 契约里代码块的 `language` 字段名）⇒ 需下一次 `blocks add` 写入读回（属写入批）；39 档里哪些 grammar 真能解析（能力面 vs 可选项）未量化；Mermaid 的**入口 UI 与失败态文案**未屏上验证；`blockdetails.*` 命名空间里代码块相关的其他 key（如"专注模式""复制"）未逐条读；本地 `contract.prisma` 是否已有 `lastViewedAt`／`sharedBy` 两列未查；☆ `other` 档选中后 `langCode` 传什么给 grammar 未读到（数组里是 `"other"`，但 CM 侧是否有该 grammar 未证）。
+
+## 一之六十六、**代码块实体的第二个字段＝`theme`（21 键名册、`auto` 解析成 craft 两档）；★ 官方"预览／拆分视图"与"全屏模式"是代码块自带的三档呈现态 ⇒ 图与公式不只是"渲染成 HTML"，而是有可切换的编辑面；浏览屏是"同一份数据的两种布局"（网格与列表），且列表行高写死 65**（✓盘上＋屏上 第 108 批 2026-09-30 16:1x–16:5x，来源＝`CodeEditorWrapper-DB8UxA00.js` 逐字读 ＋ 8 次只读屏上读数；★ 本节**接 §一之六十五 的语言三元组**，机制在 `internals.md §四十七.一／三`，逐字名册在 `longtail.md §三十四`，gap 行 `gap.md` G1093／G1096）
+
+### 一、★★ 代码块的第二条设置＝主题（字段候选表）
+
+| 量 | 逐字来源 | 模型含义 | 置信度 |
+| --- | --- | --- | --- |
+| `language`（三元组） | 39 项 `{storedLangCode, langCode, label}`（§一之六十五） | 块上存的是 **`storedLangCode`**（★ 不是 `langCode`、不是 `label`） | ✓盘上，写侧字段名**未取证** |
+| `theme` | 名册 21 键 `ue={auto:null, craftdark, craftlight, atomone, aura, bbedit, darcula, dracula, githubdark, githublight, gruvboxdark, gruvboxlight, materialdark, materiallight, noctislilac, nord, sublime, tokyonightday, tokyonightstorm, tokyonight, vscodedark}` | ⇒ **代码块需要一个"主题 id"字段**，且 `auto` 是**合法值**（不是"没选"）⇒ 本地建模时 `theme` 的默认值应为 `auto`，而不是某个具体主题 | ✓盘上 |
+| `isDark` | `De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]` ＋ `te=S.id===nt.AUTO?lt(S.id,c).isDark:S.isDark` | ⇒ `auto` 时**跟随宿主明暗**、非 `auto` 时**用主题自带的明暗属性** ⇒ ★ 一个"深色主题但 app 是亮档"的组合是**允许且稳定**的（不是被覆盖） | ✓盘上 |
+| ⚠ **作用域未定** | 读到的是 `S.id`／`S.isDark`（一个设置对象），**没有证据说明它是块级／文档级／空间级** | ⇒ 本地先按**块级**建模还是按**全局偏好**建模＝待定，需一次写入读回（第 109 批队列④）；☆ 同批读到 `blockdetails.theme` 与 `blockdetails.themes` **两条 key**（单复数并存），提示"面板标题＋列表标题"两处文案、也提示可能存在"块级选择 ＋ 全局默认"两层 | ✎ 未证，已记在未采到 |
+
+### 二、★★ 代码块有三档呈现态＝编辑／预览／拆分视图（⇒ 图与公式是"可切换的编辑面"，不是单向渲染）
+
+⇒ 语言包逐字＝`blockdetails.edit.code`「编辑代码」＋`blockdetails.code.close.preview`「关闭预览」＋`blockdetails.code.split.view`「拆分视图」＋`blockdetails.full.screen.mode`「全屏模式」；⇒ ★ 读法＝**`mermaid`／`math_formula` 两档在"源码"与"渲染结果"之间是可来回切换的两个面，且还能同时看（拆分视图）**⇒ 与第 107 批 §四十六.二 的"三条渲染路"咬合：三条路不是"三选一固定"，而是**同一个块在编辑态与预览态之间切换**；
+⇒ ☆ 另有独立 chunk `CodeEditorFocusMode`（4,757 字符，懒加载）＝「全屏模式」的实现体；
+⇒ **对本地建模的含义**＝代码块组件需要一个 `viewMode ∈ {edit, preview, split}` 的态（★ 且只对图／公式两档有意义——纯代码档没有可预览语义），本地现状只有 `<pre>` 加编辑器、**没有任何预览通路**（`src/components/editor/extensions/code-block-view.tsx` 全文 65 行只有语言选择与复制）。
+
+### 三、★ 浏览屏＝同一份数据的两种布局，行高与卡片尺寸都是常量
+
+⇒ 屏上逐字（`/tasks/all`，视口 991×558、容器宽 703）＝同一元素上同时挂着**组件类与排版类**＝`class="_card_ydla7_1 typography-ui-md-500"` ⇒ ⇒ ☆ 模型含义＝**排版档是组件的显式声明、不是继承结果**（本地 Tailwind 走继承＋变体）；
+⇒ 网格布局由 JS 计算后**绝对定位**（逐字 `style:{top:M.y,left:M.x,width:M.width}` ＋ 虚拟滚动 `estimateSize:()=>hm`），列表布局行高写死 **65px**；⇒ ★ ⇒ 对本地＝**"网格／列表"是视图态字段（要持久化），不是 CSS 开关**；☆ 与 §一之六十五 的排序四维度（`Name／Shared／SharedBy／LastViewed` × 两方向）合起来＝**浏览屏的显示态至少有三维：排序、布局、（列显隐待证）**；
+⇒ ⚠ **本批没找到的那条**＝`_colUpdated`／`_colCreated`／`_colLastViewed` 三个列元素在 `/tasks/all` 屏 **DOM 里 0 个**（同屏 `_card_ydla7_1` 存在 ⇒ 不是样式表没加载）⇒ ⇒ 口径＝**"显示哪几列"目前在官方界面上没有找到消费面**，不得据此建"三列开关"字段（G1101）。
+
+### 四、☆ 与本地代码的对照（本轮实扫）
+
+⇒ 本地代码块＝`code-block-view.tsx:9-32` 的 22 档语言 `<select>`（`CODE_LANGUAGES`）＋ `:36` 的 `(node.attrs.language as string) || 'plaintext'` ⇒ ⇒ **只有 `language` 一个字段、且档位是官方的 22／39**；**没有 `theme`、没有 `viewMode`、没有 `font-mono` 指定**（`src/app/globals.css:11` 的 `--font-mono` 是系统栈、无 Roboto Mono）；
+⇒ 本地浏览屏布局＝**视口断点**（`src/app/(app)/documents/page.tsx:28,39` 等 5 个页面写 `sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5`）＋**没有布局态字段**（无网格／列表切换的持久化）；⇒ ☆ 与 §三 的差分＝官方是"数据驱动的两种布局 ＋ 容器宽算列"，本地是"CSS 断点一种布局"。
+
+**仍未采到（本节）**：`theme` 的**作用域**（块级／文档级／空间级）与**写侧字段名**（同 `storedLangCode` 一起欠一次 `blocks add` 读回）；`viewMode` 三档的屏上形状与切换入口（「拆分视图」在哪个按钮上）；★ 20 档主题的**默认可选集**（是不是 20 档全部可选、有没有付费档）；列表档 65px 行高在屏上的实际值（只拿到 JS 逐字，未量 DOM）；`_col*` 三列的渲染面；☆ 布局态（网格／列表）是否随空间持久化；☆ `blockdetails.theme` 单复数两条的实际用途。

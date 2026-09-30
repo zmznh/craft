@@ -1184,7 +1184,7 @@ Sources:   （15 行路径）
 
 **仍未采到（本节）**：~~`container-type`／`container-name` 的声明处（在 JS 还是内联 `style`）未证~~ ⇒ ✎ **本批结案**（在 `index.css` 的 CSS-Module 族 `_6sjpd_` 里，见 §四十五.四）；`--st-*` 8 个宿主名的注入方未反编译；`AdobeBlank` 的注入点未找到（CSS 层 0 引用）；官方代码块高亮的真身（JS 注入 vs 未落盘 chunk）未取证；`build_cjk_common_css.py` 的完整逻辑只从注释反推，脚本本体不在前端资产里；白板暗色"JS 覆写 `--color-*`"的具体写入方未读到；★ 本批**未做任何反编译**（零 JS 读），以上四条都需要下一批开码路。
 
-## 四十六、**输入意图闸门的完整链路结案＝第三方库写属性 ＋ 官方自研编译层改写伪类 ＋ 两套样式体系各用一个属性；代码块按语言分三条渲染路（CodeMirror 6 的样式由 StyleModule 运行时注入 ⇒ 这才是 `.cm-*` 不在 13 份 CSS 里的真因）；`--st-*` 是双向通路（JS 注入 ＋ JS 反读 CSS，兜底值双写）；`AdobeBlank` 是字形探测器不是兜底字体**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，**零浏览器调用**＝读数全部来自 `_harvest/js/` 已缓存的 105 个 chunk 与已落盘的 `index.css`；逐字值表在 `styles.md §十四`／`longtail.md §三十三`，gap 行在 `gap.md` §三点一〇五七 G1080–G1091）
+## 四十六、**输入意图闸门的完整链路结案＝第三方库写属性 ＋ 官方自研编译层改写伪类 ＋ 两套样式体系各用一个属性；代码块按语言分三条渲染路（CodeMirror 6 的样式由 StyleModule 运行时注入 ⇒ 这才是 `.cm-*` 不在 13 份 CSS 里的真因）；`--st-*` 是双向通路（JS 注入 ＋ JS 反读 CSS，兜底值双写）；`AdobeBlank` 是字形探测器不是兜底字体**（✓盘上 第 107 批 2026-09-30 15:4x–16:0x，**零浏览器调用**＝读数全部来自 `_harvest/js/` 已缓存的 105 个 chunk 与已落盘的 `index.css`；逐字值表在 `styles.md §十四`／`longtail.md §三十三`，gap 行在 `gap.md` §三点一〇五七 G1080–G1091）
 
 ### 一、★★★ `[data-what*]` 不是 Craft 写的：三层链路拆开看
 
@@ -1223,7 +1223,52 @@ Sources:   （15 行路径）
 
 ### 六、☆ 本批方法学（零浏览器的定点读，怎么做的）
 
-⇒ 检索面＝`_harvest/js/` 的 **105 个 chunk**（历批缓存，本批**没有新增任何下载**）；⇒ 三条硬技巧＝① **先按"引用关系"选题**（扫全部 chunk 的 import 串找 `vendor-code-editor` 的引用方 ⇒ 一次得 14 个消费者，直接证明"代码块是跨面组件"）；② **属性名可能是拼出来的**（`"data-what" + Xa`）⇒ 按字面串 0 命中时，要退到**库名／注释／`setAttribute(` 调用点**三路再搜；③ **数组字面量要用括号配平取整表**（39 项语言三元组、`_6sjpd_` 类名表都是这么出来的，别按 `]` 首次出现切）。
+⇒ 检索面＝`_harvest/js/` 的 **105 个 chunk**（历批缓存，本批**没有新增任何下载**）；⇒ 三条硬技巧＝① **先按"引用关系"选题**（扫全部 chunk 的 import 串找 `vendor-code-editor` 的引用方 ⇒ 一次得 14 个消费者，直接证明"代码块是跨面组件"＝⚠ **该推论已在第 108 批作废**（逐符号拆开后 14 处具名引用里 13 处只引 Vite 预加载 helper，真引 CM6 符号的只有 `CodeEditorWrapper` 一个 ⇒ 修正结论＝**CM6 是单一消费者组件**，见 §四十七.六 与 **G1104**））；② **属性名可能是拼出来的**（`"data-what" + Xa`）⇒ 按字面串 0 命中时，要退到**库名／注释／`setAttribute(` 调用点**三路再搜；③ **数组字面量要用括号配平取整表**（39 项语言三元组、`_6sjpd_` 类名表都是这么出来的，别按 `]` 首次出现切）。
 ⇒ ⚠ **本批没有做任何屏上验证** ⇒ G1087（Mermaid 是否有界面入口）、G1079（容器变宽的实际表现）、G1076（框选）三条**全部欠屏幕证据**；G1085 的"英文 locale 下 11 份"是**由代码推论、未复采**。
 
 **仍未采到（本节）**：官方是否显式 `import` 了 what-input 的 CSS 侧配置（`specificKeys`／`ignoreKeys` 的实际入参本批只读到默认桩，未见调用参数）；`:focus-visible-within` 这条自造伪类的**完整改写分支**只读到三条（`:not(:focus-visible)` 那条的替换串未看全）；`--st-*` 其余 5 个宿主名（`--st-page-bg` 系列的注入点）未逐一定位；`MermaidRender` chunk 未读（渲染参数与主题映射表未知）；`CodeEditorFocusMode` 的触发入口未读；☆ grammar 能力面比 39 档大多少**未量化**；`tok-*` 28 档的**具体配色**未抄（只拿到类名）；★ 本批零屏上动作 ⇒ 意图闸门的可达性（V101 三条规则）与"表单控件里冻结 intent"**全靠代码断言**。
+
+## 四十七、**代码块主题体系结案＝一个 `createTheme` 工厂 ＋ 20 档名册 ＋ 三处颜色来源（`tok-*` 那套在本构建里没有配色来源）；浏览屏网格是"按容器宽算列数"的四条公式；`data-whatinput` 与 `data-whatintent` 的写入分工在屏上被证实可以背离；★ 一条新的仪器边界＝`document.hasFocus()===false` 时 `:focus` 全链不匹配**（✓盘上＋屏上 第 108 批 2026-09-30 16:1x–16:5x，**零写入、零沙盒**＝盘上读 `_harvest/js/` 105 个 chunk ＋ 屏上 8 次只读 `evaluate_script`；`manifest.jsonl` **148 行不变**；逐字值表在 `styles.md §十五`／`longtail.md §三十四`，gap 行 `gap.md` §三点一〇五八 G1092–G1104）
+
+### 一、★★★ 代码块主题的装配链（逐字）＝一个工厂 ＋ 一张名册 ＋ 一个 `auto` 解析器
+
+⇒ **工厂**＝`gBn = r => { const {theme:i, settings:s, styles:l} = r; … return [ li.theme(O, {dark: i === "dark"}), R6e(uE.define(l)) ] }`（`li.theme`＝CM6 `EditorView.theme`、`R6e`＝`syntaxHighlighting`、`uE.define`＝`HighlightStyle.define`）⇒ ⇒ ★ **每档主题一次产出两条扩展＝容器样式 ＋ token 上色**，所以**颜色天生跟着主题走、与 app 的 `--accent-*`／`--editor-*` 无关**（☆ 全库只有 Excalidraw chunk 出现一次 `--editor-`）；
+⇒ **settings → CSS 的映射逐条**＝`background`／`foreground` → `&{}`；`gutterBackground`／`gutterForeground`／`gutterBorder` → `.cm-gutters`；`fontFamily` → `&.cm-editor .cm-scroller`（★ **只作用在 scroller，正文 `.cm-content` 不单独设字体**）；`caret` → `.cm-content{caretColor}` ＋ `.cm-cursor, .cm-dropCursor{borderLeftColor}`；`lineHighlight` → `.cm-activeLine` ＋ `.cm-activeLineGutter`；`selection` → 三条并列选择器（`&.cm-focused .cm-selectionBackground, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection`）；`selectionMatch` → `& .cm-selectionMatch`；
+⇒ ☆ **缺项就是不写**（`craftlight` 的 settings 没有 `caret` 与 `gutterBorder` ⇒ 官方亮档代码块的插入符走 CM6 默认）；
+⇒ **名册**＝`ue={auto:null, craftdark, craftlight, atomone, aura, bbedit, darcula, dracula, githubdark, githublight, gruvboxdark, gruvboxlight, materialdark, materiallight, noctislilac, nord, sublime, tokyonightday, tokyonightstorm, tokyonight, vscodedark}`（21 键，源 `CodeEditorWrapper-DB8UxA00.js` @28,692）；**`auto` 解析**＝`De=(o,t)=>o==="auto"?(t?ue.craftdark:ue.craftlight):ue[o]` ⇒ ☆ **`auto` 落到"官方自写的那两档"**，其余 18 档是具名第三方配色；
+⇒ ⚠ **官方标签错配候选**＝`craftdark` 由 `fo()` 产出，而 `fo` 的形参默认是 `theme:"light"` 且**调用时没有覆盖** ⇒ 注册进 CM6 的是 `{dark:false}`；`craftlight` 同理默认 `light`（那条是对的）；⇒ ☆ 后果（`.cm-editor` 的 dark 侧默认样式／`color-scheme`）**未屏上复验**，按纪律只登记形状、不判官方缺陷（`longtail.md §三十四.二`）。
+
+### 二、★★★ 三处颜色来源结案 ＝ `tok-*` 那套在本构建里"无色可用"（⇒ ✎ 第 107 批 `longtail §三十三.四` 的用途判定）
+
+⇒ ① **主题自带 `styles`**（见 §一）＝实际生效的那一套；② **CM6 默认样式当 fallback**＝`basicSetup` 逐字 `i.syntaxHighlighting !== !1 && l.push(R6e(v2n, {fallback:!0}))`，`v2n`＝14 个硬编码 hex 的 `HighlightStyle.define`；③ **`tok-*` 的 30 条表**＝@lezer/highlight 的 **class 表**，逐字工厂是 `function n_t(r,i){ let s=Object.create(null); for (let p of r) if(!Array.isArray(p.tag)) s[p.tag.id]=p.class; else for(let g of p.tag) s[g.id]=p.class; … return {style(p){…}} }` ⇒ ⇒ ★ **它只把 tag 映射成 class 名、完全不含颜色**；而**13 份 CSS 里 `.tok-*` 规则 0 条、chunk 内规则形态 0 条** ⇒ ⇒ **本构建里 `tok-*` 体系即便被挂上也不会渲染色**；⚠ 未证＝它到底有没有被注册（`extensions:ge` 里有未展开的 `...g`）⇒ 记在「仍未采到」；
+⇒ ☆ 修正后的名册＝**29 个不同 class 名／30 条声明**（真名带 camelCase：`tok-labelName`、`tok-variableName`、`tok-variableName2`、`tok-propertyName`、`tok-typeName`、`tok-className`、`tok-macroName`）⇒ 第 107 批记成 28 个是因为**正则只收了 `[a-z0-9]+`、把 camelCase 截断了**（同批 §三十三.四 已就地 ✎）；
+⇒ ⇒ 对本地的含义（G1094）＝官方是"主题级颜色"，本地是"`hljs-*` ＋ CSS 类"，**两套不可映射**；要补就做一层代码主题变量（`--code-bg`／`--code-fg`／`--code-selection`／`--code-caret`／`--code-line-highlight`／`--code-gutter-*`），不要往 `hljs` 类上抄 hex。
+
+### 三、★★ 浏览屏网格＝四条公式（不是断点）⇒ 官方"列数"是容器宽度的纯函数
+
+⇒ 逐字常量与用处（结掉第 107 批 §三十三.二 那条"12 个常量含义未定"）＝基准卡宽 `ob=200`、桌面 gap `ic=20`、窄档／移动 gap `D7=8`、左右内边距 `$h=16`、卡宽上限 `FEt=268`、列数上限 `NEt=5`、**卡片宽高比 `of=1/1.25`**（★ 结案＝**不是 DPR**，用在 `height = width / of` 与 `boxAspectRatio:of` ⇒ 高＝宽×1.25）、封面图请求宽 `T_=208`（`devicePixelRatio * T_`）、空态占位卡 `QJ=240`（`width:QJ;height:QJ/of` ⇒ 240×300）、列表行高 `hm=65`（虚拟滚动 `estimateSize:()=>hm`）、入场动画 `appear:dS(true)` ＋ `timeout:uS(100)`；
+⇒ 公式一（列数，逐字）＝`jme = 16*2 + 200*2 + 20`（＝452）；`t < 452 ⇒ 2`；否则 `Math.max(2, Math.min(Math.floor((t − 32 + 20) / (200 + 20)), 5))`；
+⇒ 公式二（瀑布流行高）＝窄容器走 `gap=D7` 的两列分支、其余 `s = max(1, floor((t + gap) / (200 + gap)))`，`rowHeight = (t − (s−1)×gap) / s / of + gap`；
+⇒ 公式三（网格卡宽）＝`i = min(s, 5)`；`columnWidth = (t − (i−1)×gap) / i`；**`cardWidth = min(columnWidth, 268)`** ⇒ ⇒ ★ **超过 5 列后卡片不再变宽、而是留白变多**；
+⇒ 公式四（移动档）＝`({$isMobile:t}) => t ? D7 : ic` ⇒ gap 与 padding 一起从 20 降到 8；
+⇒ ☆ 关键含义＝**官方把"多宽算几列"写死在 JS 里、按容器宽度算** ⇒ 侧栏折叠时列数会变（第 108 批屏上实测容器宽 703 而视口 991 ⇒ 官方此刻是"按 703 算"），本地用 `sm:/lg:/xl:/2xl:` 视口断点＝**方向性差分**（G1096）。
+
+### 四、★★★ 屏上证实＝`input` 与 `intent` 的写入分工，两值可以长期背离
+
+⇒ 逐字分工＝`Aa`（keydown／keyup／mousedown／pointerdown／touchstart…）里 `nu && Hr !== za ⇒ 写 input`，再 `nu && ca !== za ⇒（过表单控件闸门）写 intent`；`Pa`（pointermove／mousemove／wheel）里**只有一条**`ca !== eu ⇒ 写 intent`、**从不碰 `Hr`**；
+⇒ ★ **屏上实测到的背离态**＝官方 `/s/<space>/tasks/all` 屏读到 `data-whatinput:"keyboard"` 且 `data-whatintent:"mouse"` **同时成立**（合成 `keydown` 让两值进 keyboard → 合成 `pointermove` 只把 intent 拉回 mouse）⇒ ⇒ 第 107 批 G1082 的"两套闸门分叉"从代码断言**升级为实测**；⇒ ☆ 读法＝**鼠标一动，静态层（读 intent）就退回鼠标档，而运行时层（读 input）仍停在键盘档**；
+⇒ ☆ 顺带三条屏上实证＝`data-whatelement` 随焦点标签走（`div → span → button → null`）、`focusout` 一次删掉两个诊断属性、`data-whatclasses` 的 **`replace(" ", ",")` 非全局**缺陷形在真实 DOM 上成立（逐字 `"_viewport_1ltym_9,_scrollViewport_6sjpd_33 _vertical…"`＝第二个空格没换）；`sessionStorage` 两键 `what-input`／`what-intent` 实测在写、`data-whatpersist` 为 `null`（G1102／G1103）。
+
+### 五、★★★ 新仪器边界＝焦点样式类读数必须先断言 `document.hasFocus()===true`
+
+⇒ 实测形状＝`visibilityState:"visible"` ＋ `document.activeElement === 目标卡片` ＋ `data-whatintent:"keyboard"` **三条齐全**时，`el.matches(':focus')` 仍是 **`false`**、`document.hasFocus()` 是 **`false`** ⇒ ⇒ `:focus` 全链不匹配 ⇒ 官方 `[data-whatintent=keyboard] ._card_ydla7_1:focus{outline:1px solid var(--accent-500);outline-offset:-1px}`（盘上逐字，本批已复核）在屏上读不出环（`outline-style:"none"`）；
+⇒ ★ 判定＝**该读数判"仪器不可用"，不得写成"官方无焦点环"、也不得据此改判 V100 的三档焦点环**（V100 的 `✓盘上` 标注维持）；⇒ ☆ 口径＝**焦点类样式复验协议第一步＝读 `document.hasFocus()`，为假就请用户点一下窗口再测**（这是 V88 六步协议"原生激活必须断言 `activeElement===目标`"的姊妹条：那条管"按键能否激活"，这条管"`:focus` 样式是否生效"）；
+⇒ ☆ 第二条仪器事实＝**不要用 `cssRules[].cssText` 正则找声明**（浏览器会重排简写顺序，本批用 `outline:1px solid var(--accent-500)` 去匹配 `cssText` 拿到 0 条，而盘上原文确实在）⇒ 找规则要走"递归 `cssRules` ＋ 读 `style` 属性"或回盘上原文；
+⇒ ☆ 第三条＝**`el.focus()` 对 Craft 的 checkbox 不生效**（`activeElement` 变成外层 `span`）＝与第 105 批 G1062"框本身 `pointer-events:none`、点击由 20px wrapper 承接"同形；⇒ ⇒ 本批"表单控件里冻结 intent"这条**没能在屏上裁**（唯一例外分支——不在 `form` 里的 `button`——裁到了：聚焦 `button` 后合成 `keydown` ⇒ intent 照改 ⇒ ★ **`pa` 名单与 `button ∉ form` 例外同时获得运行时支持**）。
+
+### 六、☆ 本批方法学 ＋ 一条自我纠正
+
+⇒ 盘上＝零新增下载（105 个缓存 chunk ＋ 已落盘 13 份 CSS）；屏上＝**8 次只读 `evaluate_script`、零 click／零 navigate_page**（路由切换用页面内 `a[href]` 的 `.click()` 走 SPA，收尾 `history.back()` 还原到进屏前的 `/trash`；焦点属性与 `sessionStorage` 两键全部还原成进屏前的 `mouse／mouse`）；⇒ 检索技巧＝① **按"引用关系"而非"文件内容"定位组件边界**（本批把 `vendor-code-editor` 的 53 处 side-effect ＋ 14 处具名 import 逐符号拆开，才发现其中 13 处只引 Vite 预加载 helper）；② **正则收 class 名必须允许 camelCase**（上一条 ✎ 的来源）。
+⇒ ⚠ **自我纠正（G1104）＝第 107 批 §四十六.六 那句"一次得 14 个消费者 ⇒ 代码块是跨面组件"作废**＝真正引用 CM6 符号的只有 `CodeEditorWrapper` 一个 chunk；⇒ 修正后的结论＝**CM6 在官方架构里是"单一消费者"组件**（side-effect import 仍把它放进依赖闭包，但是否实际下载未取证＝网络面被 CDP 封，承既有边界）；☆ 同批 §四十六.六 的"选题法＝先扫 import 图"**仍然可用**，只是产出的是"谁引 helper"，判"跨面"要按符号拆。
+
+**仍未采到（本节）**：`tok-*` 表有没有被注册进 `extensions`（`...g` 未展开）；`createTheme` 的 `dark` 标记错配对 CM6 内建样式的实际影响；三档焦点环的屏上证据（撞在 §五 的仪器边界上，需用户点一下窗口）；`--col*` 三个列元素在哪个视图渲染（屏上 `/tasks/all` 命中 0）；网格四公式的屏上对照（只拿到 JS 逐字，未量 DOM）；20 档主题里除 craft 两档外的 18 档 settings／styles 未逐字（只取名册）；`--heading-*` 缺 `lg`／`xl` 时页面标题走哪档；☆ 主题选择器面板的屏上形状与 `auto` 的显示文案（`blockdetails.theme` 只拿到 key 与中文值）。
