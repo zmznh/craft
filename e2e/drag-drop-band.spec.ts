@@ -95,4 +95,28 @@ test('the drop boundary sits on the block midline', async ({ page }) => {
     '落点靶',
     '',
   ]);
+
+  // The gutter under a row belongs to that row: dropping there used to resolve to
+  // no target at all, so the block simply refused to move.
+  const beforeGutter = (await readRows())[2];
+  const afterGutter = (await readRows())[3];
+  expect(beforeGutter.top + beforeGutter.height).toBeLessThan(afterGutter.top);
+  expect(await dragTo(0, afterGutter.top - 2)).toEqual([
+    '落点丁',
+    '落点丙',
+    '落点甲',
+    '落点靶',
+    '',
+  ]);
+
+  // Above the first row there is no row to hit, yet the official editor still
+  // inserts at the very front.
+  const first = (await readRows())[0];
+  expect(await dragTo(3, first.top - 20)).toEqual([
+    '落点靶',
+    '落点丁',
+    '落点丙',
+    '落点甲',
+    '',
+  ]);
 });

@@ -1,30 +1,40 @@
 import { describe, expect, it } from 'vitest';
-import { dropBandFor } from './drop-band';
+import { dropTargetFor } from './drop-band';
 
-// Row geometry read from the official editor: a tall block spanning y 209..329 (midline 269)
-// and a single 28px row (midline top + 14).
-const tall = { top: 209, bottom: 329, height: 120 };
-const row = { top: 173, bottom: 201, height: 28 };
+// Row geometry read from the official editor: six single-line blocks, row height
+// 28 and pitch 36, so each row is followed by an 8px gutter.
+const rows = [
+  { top: 173, bottom: 201 },
+  { top: 209, bottom: 237 },
+  { top: 245, bottom: 273 },
+  { top: 281, bottom: 309 },
+  { top: 317, bottom: 345 },
+  { top: 353, bottom: 381 },
+];
 
-describe('dropBandFor', () => {
-  it('lands after only when strictly past the midline', () => {
-    expect(dropBandFor(269, tall)).toBe('before');
-    expect(dropBandFor(270, tall)).toBe('after');
+describe('dropTargetFor', () => {
+  it('counts the gutter under a row as that row', () => {
+    expect(dropTargetFor(205, rows)).toEqual({ index: 0, before: false });
   });
 
-  it('keeps the four measured above-midline drops on the after side', () => {
-    for (const y of [277, 285, 299]) expect(dropBandFor(y, tall)).toBe('after');
+  it('keeps the midline as the before/after boundary, midpoint included', () => {
+    expect(dropTargetFor(187, rows)).toEqual({ index: 0, before: true });
+    expect(dropTargetFor(188, rows)).toEqual({ index: 0, before: false });
   });
 
-  it('treats the visual center of a short row as its midline', () => {
-    expect(dropBandFor(187, row)).toBe('before');
-    expect(dropBandFor(188, row)).toBe('after');
+  it('clamps a drop above the first row to the very front', () => {
+    expect(dropTargetFor(150, rows)).toEqual({ index: 0, before: true });
   });
 
-  it('stays inside the row and reports the gap outside it', () => {
-    expect(dropBandFor(209, tall)).toBe('before');
-    expect(dropBandFor(329, tall)).toBe('after');
-    expect(dropBandFor(208, tall)).toBe('none');
-    expect(dropBandFor(330, tall)).toBe('none');
+  it('accepts the trailing gutter of the last row', () => {
+    expect(dropTargetFor(385, rows)).toEqual({ index: 5, before: false });
+  });
+
+  it('has no slot below the last band', () => {
+    expect(dropTargetFor(399, rows)).toBeNull();
+  });
+
+  it('has no slot without rows', () => {
+    expect(dropTargetFor(200, [])).toBeNull();
   });
 });

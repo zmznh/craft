@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 import type { Editor } from '@tiptap/react';
 import { GripVertical } from 'lucide-react';
-import { dropBandFor } from './drop-band';
+import { dropTargetFor } from './drop-band';
 
 interface HandlePosition {
   top: number;
@@ -128,21 +128,20 @@ export function DragHandle({ editor }: { editor: Editor }) {
     (clientY: number): { el: HTMLElement; pos: number; before: boolean } | null => {
       const dom = editor.view.dom as HTMLElement;
       const children = Array.from(dom.children) as HTMLElement[];
-      for (const child of children) {
+      const rows = children.map((child) => {
         const rect = child.getBoundingClientRect();
-        const band = dropBandFor(clientY, rect);
-        if (band !== 'none') {
-          const before = band === 'before';
-          const range = getTopLevelRange(child);
-          if (!range) return null;
-          return {
-            el: child,
-            pos: before ? range.from : range.to,
-            before,
-          };
-        }
-      }
-      return null;
+        return { top: rect.top, bottom: rect.bottom };
+      });
+      const slot = dropTargetFor(clientY, rows);
+      if (!slot) return null;
+      const child = children[slot.index];
+      const range = getTopLevelRange(child);
+      if (!range) return null;
+      return {
+        el: child,
+        pos: slot.before ? range.from : range.to,
+        before: slot.before,
+      };
     },
     [editor, getTopLevelRange]
   );
