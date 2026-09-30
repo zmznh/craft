@@ -2858,3 +2858,40 @@ HJe = (t, e) => { let n = {};
 ⇒ 对模型的含义＝**块内容里存的 LaTeX 源不受影响**（数学块的持久化是源字符串，历批已证子树序列化成 markdown），但**任何"导出 HTML 再回灌"的通路会类名不通**⇒ 若本地做"官方导出的 HTML 直接渲染"，必须锁版本（0.16.x）或只做视觉对齐（`gap.md` G1070 的两条路）。
 
 **仍未采到（本节）**：官方**用户可选的字体列表**（是全部 21 个还是 UI 那 5 个）未从界面确认，需要读设置屏或 i18n 的 `style.*` 命名空间；`AdobeBlank` 与 `--st-*` 的 JS 侧写入方未反编译；CJK 各 family 的**具体 face 数**（本轮只给 15 族的名单与合计 45，未逐族拆）；`--st-grid-columns` 的实际值形态（`repeat(...)`？）未采到；白板主题在本地 tldraw 下的实现未读（`src/components/whiteboard/` 本轮未开）；★ 字体偏好是否**随文档持久化**（本地字段该不该存在）未验证，需要一次屏上写入实验（属写入批）。
+
+## 一之六十五、**代码块的"语言"不是一个字符串＝官方是三元组 `{storedLangCode, langCode, label}`（39 项封闭名单，`plaintext` 的 `langCode` 是 `null`）；同一个代码块按语言档分成三条渲染路 ⇒ "图"与"公式"可以不是独立块类型；浏览屏排序是四维度 × 两方向的封闭枚举**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，来源＝`CodeEditorWrapper`／`index` chunk 的逐字读；★ 本节**给 G1086／G1087／G1091 三条模型含义**，逐字全表在 `longtail.md §三十三.一／二`，机制在 `internals.md §四十六.二`）
+
+### 一、语言字段＝三个不同用途的值，官方从不混用
+
+| 字段 | 用途 | 逐字样本（不一致处全部列出） |
+| --- | --- | --- |
+| `storedLangCode` | **写进块属性、参与持久化与导出** | `ada｜bash｜cpp｜cs｜css｜dart｜dockerfile｜math_formula｜go｜groovy｜haskell｜html｜java｜javascript｜json｜julia｜kotlin｜lua｜markdown｜matlab｜mermaid｜objectivec｜perl｜php｜prolog｜plaintext｜python｜r｜ruby｜rust｜scala｜shell｜sql｜swift｜typescript｜vbnet｜xml｜yaml｜other` |
+| `langCode` | **只喂给 CodeMirror 的 grammar** | `cpp｜**csharp**｜**stex**｜**objectiveC**｜**tsx**｜**vbnet**｜…`，其中 `plaintext` 的是 **`null`**、`other` 的是 `"other"` |
+| `label` | 界面显示 | `C++｜C#｜Formula (TeX)｜Objective-C｜TypeScript｜Visual Basic.NET｜Plain text｜Other｜Mermaid｜Matlab｜Shell｜Yaml`（★ `Yaml` 与 `Matlab` 的官方大小写就是如此，非 `YAML`／`MATLAB`） |
+
+⇒ ★★ **五处两两不一致**＝`cs↔csharp`、`typescript↔tsx`、`objectivec↔objectiveC`、`math_formula↔stex`、`vbnet` 的 label 与两个 code 差更远 ⇒ **本地只存一个字段就必然对不上官方**（本地现为 `node.attrs.language`，`src/components/editor/extensions/code-block-view.tsx:36`）。
+⇒ ★★★ **`plaintext` 的 `langCode` 是 `null`（不是空串）**⇒ 官方用**显式 null 表达"高亮关闭"**这一状态 ⇒ 本地是"空值回落成 `'plaintext'` 字符串"＝表达不同、语义等价（但导出给官方时 `null` 与 `"plaintext"` 不可互换）。
+⇒ ☆ **末位有 `other` 档**⇒ 语言选择器允许"未知语言"，意味着**语言字段是开放语义、封闭名单**（存 `other` 而非拒绝）。
+⇒ ☆ label 大小写是**显示串、不是枚举名**（`Yaml`／`Matlab`）⇒ 历批"官方文案自身不一致"家族的最新一例：这里更像**未做统一格式化**，登记为"照抄，别顺手改成 `YAML`"。
+
+### 二、★★★ 同一个块、三条渲染路 ⇒ **"图"和"公式"不必是独立块类型**
+
+⇒ 分派只看 `langCode`：`mermaid` → 懒加载渲染器出 HTML；`stex` → 公式渲染；其余 → 代码编辑器本体（`internals.md §四十六.二` 逐字）。
+⇒ 对本地模型的含义＝**官方 `code` 块是"多态容器"**（正文永远是一段文本源，产物随语言档变），而本地现在是＝`code` 块（TipTap＋lowlight）与**独立的 math 块**（`src/components/editor/extensions/math-block-view.tsx:6,11` 走 `@/lib/math/render`）两种块类型 ⇒ ★ 这是一条**真实的建模分叉**：官方把公式当"代码块的一种语言"，本地把公式当"块类型"。⇒ 判**有意偏差**（原因＝本地 math 块有独立的编辑态与焦点环规格，历批已定；改回"语言档"会推翻已锁的 math 交互），但**导出／导入互通时必须做映射**：官方 `math_formula` 档 ↔ 本地 math 块。
+⇒ ☆ Mermaid 在本地**完全没有**（`package.json` 无该依赖）⇒ 属缺失面（G1087），且若要补，**官方形状是"加一档语言"而不是"加一种块"**。
+⇒ ⚠ 本节全部是**代码级断言**＝未屏上验证过 Mermaid 入口是否对用户暴露（第 108 批队列①）。
+
+### 三、★ 浏览屏排序＝封闭枚举两两组合（代码侧真名首次到手）
+
+⇒ 逐字＝维度 `{Name, Shared, SharedBy, LastViewed}` × 方向 `{Ascending, Descending}`（与历批在 ⋯ 菜单里读到的"排序方式"是同族的代码真名）。
+⇒ 模型含义＝排序是**视图态**（与第 84／96 批"浏览屏偏好是空间级、会同步"的结论一致），不是块属性；⇒ ☆ `LastViewed` 与 `SharedBy` 两档意味着**本地要存"最后查看时间"与"分享者"**才可能对齐（本地 `contract.prisma` 目前是否有 `lastViewedAt`／`sharedBy` 本批未查 ⇒ 登记为待查，不判缺失）。
+
+### 四、☆ 顺带掉出来的三个数（对本地有直接含义）
+
+| 观测 | 值 | 含义 |
+| --- | --- | --- |
+| 引用代码编辑器 chunk 的消费者 | **14 个**（含 `TaskViews`／`ShareSheet`／`PreferencesPanel`／`AIChatPopup`／`DocxExportApi`） | ★ **代码编辑器不是编辑器局部件**＝分享页、导出、任务视图、AI 弹窗都要它 ⇒ 本地若只在编辑器里挂 `CodeBlockLowlight`，覆盖面窄于官方 |
+| 高亮类名数 | **28 个 `tok-*`** ＋ **63 个 `cm-*`** | ⇒ 本地是 `hljs-*` 一套 ⇒ **三套不通**（G1088） |
+| `--heading-*` token 数 | **30 条，全部有消费点** | ⇒ 排版语义层在官方是**独立且完整的一层**（本地 0 条）；同族前缀穷举后**不存在 `--body-*` 等兄弟族** |
+
+**仍未采到（本节）**：`storedLangCode` **到底存在块的哪个字段**（本批只看到前端数组与 `updateAttributes` 语义，未读写侧 mutation／MCP 契约里代码块的 `language` 字段名）⇒ 需下一次 `blocks add` 写入读回（属写入批）；39 档里哪些 grammar 真能解析（能力面 vs 可选项）未量化；Mermaid 的**入口 UI 与失败态文案**未屏上验证；`blockdetails.*` 命名空间里代码块相关的其他 key（如"专注模式""复制"）未逐条读；本地 `contract.prisma` 是否已有 `lastViewedAt`／`sharedBy` 两列未查；☆ `other` 档选中后 `langCode` 传什么给 grammar 未读到（数组里是 `"other"`，但 CM 侧是否有该 grammar 未证）。

@@ -1183,3 +1183,47 @@ Sources:   （15 行路径）
 ⇒ ☆ 与第 105 批 §十二.5 的 `:root,.token-scope` 是**两种不同层级的复用机制**＝`token-scope` 重挂整棵色阶，`--st-*` 是单个组件的窄接口。本地两者都无。
 
 **仍未采到（本节）**：~~`container-type`／`container-name` 的声明处（在 JS 还是内联 `style`）未证~~ ⇒ ✎ **本批结案**（在 `index.css` 的 CSS-Module 族 `_6sjpd_` 里，见 §四十五.四）；`--st-*` 8 个宿主名的注入方未反编译；`AdobeBlank` 的注入点未找到（CSS 层 0 引用）；官方代码块高亮的真身（JS 注入 vs 未落盘 chunk）未取证；`build_cjk_common_css.py` 的完整逻辑只从注释反推，脚本本体不在前端资产里；白板暗色"JS 覆写 `--color-*`"的具体写入方未读到；★ 本批**未做任何反编译**（零 JS 读），以上四条都需要下一批开码路。
+
+## 四十六、**输入意图闸门的完整链路结案＝第三方库写属性 ＋ 官方自研编译层改写伪类 ＋ 两套样式体系各用一个属性；代码块按语言分三条渲染路（CodeMirror 6 的样式由 StyleModule 运行时注入 ⇒ 这才是 `.cm-*` 不在 13 份 CSS 里的真因）；`--st-*` 是双向通路（JS 注入 ＋ JS 反读 CSS，兜底值双写）；`AdobeBlank` 是字形探测器不是兜底字体**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，**零浏览器调用**＝读数全部来自 `_harvest/js/` 已缓存的 105 个 chunk 与已落盘的 `index.css`；逐字值表在 `styles.md §十四`／`longtail.md §三十三`，gap 行在 `gap.md` §三点一〇五七 G1080–G1091）
+
+### 一、★★★ `[data-what*]` 不是 Craft 写的：三层链路拆开看
+
+⇒ **第 1 层（属性来源）＝开源库 `what-input` v5.2.12（MIT）**，落在 `vendor-BZCR0rqu.js` @2,527 的文件头注释里逐字可证（连 `@link` 都留着）；写入函数逐字＝`documentElement.setAttribute("data-what" + Xa, Xa === "input" ? lastInput : lastIntent)` ⇒ 属性名是**拼出来的**（这就是为什么在第 100 批之前的码路检索里按字面串搜 `data-whatintent` 会 0 命中——**只能搜到 CSS 侧的消费点**）。
+⇒ ★ **属性一共四个**＝`data-whatinput`（上一次输入类型）、`data-whatintent`（当前意图）、`data-whatelement`（`activeElement` 的标签名小写）、`data-whatclasses`（其 classList，空格换逗号）；☆ 后两个是**诊断属性**（官方线上 DOM 里就挂着，历批屏上读数时可以从 `documentElement` 的 attribute 里直接看到，本批是第一次从代码侧确认来源）。
+⇒ **第 2 层（官方自研编译层）＝把标准伪类改写成属性选择器**，逐字规则见 `interactions.md` V101 与 `gap.md` G1081；⇒ ★ 关键读法＝**开发者其实写的是 `:focus-visible`／`:hover`／`:not(:hover)`／`:raw-hover`，产物 CSS 里看到的是 `[data-whatintent]:not([data-whatintent=touch]) …`** ⇒ 历批"官方根本不用 `:focus-visible`"（第 100 批 G1012 一带）这句结论要**降级**：不是"不用"，而是**用了但在编译期被换掉了**。
+⇒ **第 3 层（两套样式体系各用一个属性）**＝CSS Modules（静态产物）用 `data-whatintent`、styled-components（运行时注入）用 `data-whatinput` ⇒ ☆ 复刻时**两个属性都得写**，否则一半规则永远不命中；⇒ ★ 应用自己也把属性当状态源（`document.querySelector("[data-whatinput]")?.getAttribute("data-whatinput") ?? null`）＝**用 DOM 属性代替 React state 传递"当前输入方式"**（跨组件、无订阅）。
+
+### 二、★★★ 代码块不是一个 `<pre>`：按语言分三条渲染路
+
+⇒ 分派点逐字＝`langCode === "mermaid"` → 动态 `import("./MermaidRender-*.js")`（走 `__vite__mapDeps` 懒加载）→ `renderMermaidDiagram(text, { themeId, isDark })` → 失败 `catch` 回落成 `<pre white-space: pre-wrap;">Invalid Mermaid syntax: …</pre>`；公式档（`math_formula` → `stex`）→ `renderMathFormula(text)` → 失败回落到普通高亮；其余 37 档 → CodeMirror 编辑器本体；⇒ ★ 三条路的产物**都是 `dangerouslySetInnerHTML:{__html}`**（图与公式是 HTML 注入，不是 canvas／iframe）⇒ 复刻时的安全边界要自己划（官方没做净化，因为它自己生成）。
+⇒ ☆ 空内容的处理是**显式短路**（`if (!text?.trim()) { setHtml(null); … return }`）＝**不画占位、不报错**。
+⇒ ★★ **为什么 13 份 CSS 里没有 `.cm-*`（第 106 批留下的疑点）＝CodeMirror 6 用 StyleModule 运行时注入样式**：逐字 `new StyleModule(…, { finish(l) { return /&/.test(l) ? l.replace(/&\w*/, …) : l } })`，且暗档靠**两个运行时生成的类名**＝`W9t = {"&light": "." + newName(), "&dark": "." + newName()}` ⇒ **官方有两套暗档机制**（主 app 靠 `[data-theme=…]` 三段重指、白板靠 JS 覆写 `--color-*`、代码编辑器靠运行时类名）——三种暗档通路在同一产品里并存，这是本批最系统的一条结论。
+⇒ ☆ 官方明确关掉的编辑器能力（逐字 `basicSetup`）＝`searchKeymap:false`、`foldGutter:false`、`highlightSelectionMatches:false`；开着的＝`closeBrackets:true`、`highlightActiveLine(Gutter): 仅可编辑时`、`autocompletion: 仅 surface==="web"`；⇒ **代码块里没有搜索、没有折叠**（此前直觉"专业编辑器都该有"不成立）。
+⇒ ☆ 另有 `CodeEditorFocusMode`（4,757 字符的独立 chunk）＝**代码块专注模式**是懒加载的独立面；grammar 能力面（vendor 里的语言名）**大于**选择器的 39 档 ⇒ "能解析"与"能选"是两份名单。
+
+### 三、★★ `--st-*` 是**双向**通路，且兜底值在两边各写一遍
+
+⇒ **注入方向**＝① React 内联 style 对象（`{"--st-grid-columns": l, "--st-row-height": dt}`）② `style.setProperty("--st-scroll-left", `${scrollLeft}px`)`（滚动回调里，另有一处在 `requestAnimationFrame` 内与 `transform: translateX(-f px)` **同时**写）。
+⇒ **反向读取**＝`getComputedStyle(el)` → `parseFloat(getPropertyValue("--st-row-height"))`，缺省回落 **35**、`--st-index-column-width` 回落 **45** ⇒ ★ **CSS 是几何的唯一真源、JS 只是消费者**，而 35／45 这两个数**在 CSS 与 JS 各写了一次**（官方自己的双写风险：改 CSS 不改 JS 会出现"渲染与测量不一致"）。
+⇒ ☆ 浮层侧＝`EditorPopup` 把 `--st-font-family`（**从锚点元素的 computed style 里读出来**）、`--st-text-color`、`--st-border-color` 注入弹层 ⇒ **"单元格里的编辑器浮层继承该单元格的字体与色"** 是靠变量透传实现的，不是靠 props 逐层传。
+⇒ ★ 与第 105 批 §十二.5 的 `:root,.token-scope` 对照＝**两种层级的复用机制**：`token-scope` 重挂整棵色阶（容器级），`--st-*` 是单组件的窄接口（组件级，且带内置兜底）。本地两者都无。
+
+### 四、★★★ `AdobeBlank` 的真实算法＝"宽度为零 ⇒ 没有字形"（**推翻第 106 批 G1073 的作用判定**）
+
+⇒ 调用体逐字拆解＝① 先 `document.fonts.load("1rem AdobeBlank", 首个字符)` **确保字体就绪**（否则 measure 会拿到回落字形的宽度）；② 建 `position:absolute; width:0; height:0` 的 canvas **追加进 body**（★ 不追加进文档就测不到，说明它必须参与布局）；③ `ctx.font = '1em "Apple Color Emoji", "Android Emoji", "Segoe UI Emoji", AdobeBlank'`；④ **`filter(c => ctx.measureText(c).width !== 0)`** ＝保留"有宽度"的那批，反过来说**宽度 0 的字符被判为"整条栈都没有字形"**；⑤ 测完 `canvas.remove()`。
+⇒ ☆ 第二条分支（非 Web 通路）＝`ctx.font = '10px sans-serif"'` ＋ 取一个基准串的 `measureText(...).width / 2` 作阈值比较（⚠ 该基准串在盘上副本里是非 ASCII mojibake ⇒ **只记形状、不抄字面**，承「bundle 非 ASCII 会误解码」那条已知边界；且该串末尾多了一个 `"`，看着像官方源码里的引号错位，**不当缺陷登记**）。
+⇒ ★ **结论改向**＝`BlankFont.css` 不是"渲染兜底"而是**检测用字体**，所以它**不需要**被 `font-family` 引用（CSS 层 0 引用是设计而非遗漏）。⇒ 对本地的直接影响：历批建议的"把空白字体挂到字体栈末位"**是错的方向**，真正要补的是一条字形探测通路（`gap.md` §〇「六」已改）。
+
+### 五、★★ CJK 字体 CSS 是**运行时按 locale 注入**的（⇒ 名册读数带 locale 条件）
+
+⇒ 注入清单**只有两条**＝`["_cjk/common/fontdef.css", "_japanese/rounded/m-plus-rounded-1c/fontdef.css"]`；触发白名单＝`["ja", "ko", "zh-Hans", "zh-Hant"]`；⇒ 建链逐字＝`link.rel="stylesheet"` ＋ `link.setAttribute("data-cjk-font-css","true")` ＋ `fetchpriority` 显式档 ＋ **`media="print"` 然后 `onload → media="all"`**（非阻塞 CSS 注入的标准形）；幂等闸门＝`document.head.querySelector('link[data-cjk-font-css]') != null`。
+⇒ ☆ URL 形状＝`${publicUrlPrefix}/static/fonts/${构建号}/${路径}`，其中构建号形如 `r-48-g<hash>`；⇒ ★ **同一段里有一条恒假分支**（`!IS_DESKTOP && !1`）＝桌面／Web 两套前缀的开关被常量折叠，只余 Web 路 ⇒ **复刻时不要按"桌面走另一套路径"建模**（当前构建里那条路不存在）。
+⇒ ☆ 语言归一化＝12 个 locale 的**前缀表**（`"zh-Hans":["zh-CN","zh-Hans","zh"]`、`"zh-Hant":["zh-TW","zh-Hant"]`、`"pt-BR":["pt-BR","pt"]`），匹配法＝把候选串按长度降序排好后做 `startsWith` ⇒ **`zh-CN` 会先命中 `zh` 之前的长串**，这条排序是有意的。
+⇒ ★★ 对既有结论的影响＝第 106 批"13 份全部落盘"要加限定＝**本批读数是中文 locale 下的 13 份，英文 locale 下应为 11 份**（已在 `gap.md` G1069 就地 ✎）；☆ 顺带解释 `internals §四十五.二` 的"m-plus 为何不并进 common"＝**它两份都是运行时单独注入的 link**，`build_cjk_common_css.py` 的排除表与此吻合。
+
+### 六、☆ 本批方法学（零浏览器的定点读，怎么做的）
+
+⇒ 检索面＝`_harvest/js/` 的 **105 个 chunk**（历批缓存，本批**没有新增任何下载**）；⇒ 三条硬技巧＝① **先按"引用关系"选题**（扫全部 chunk 的 import 串找 `vendor-code-editor` 的引用方 ⇒ 一次得 14 个消费者，直接证明"代码块是跨面组件"）；② **属性名可能是拼出来的**（`"data-what" + Xa`）⇒ 按字面串 0 命中时，要退到**库名／注释／`setAttribute(` 调用点**三路再搜；③ **数组字面量要用括号配平取整表**（39 项语言三元组、`_6sjpd_` 类名表都是这么出来的，别按 `]` 首次出现切）。
+⇒ ⚠ **本批没有做任何屏上验证** ⇒ G1087（Mermaid 是否有界面入口）、G1079（容器变宽的实际表现）、G1076（框选）三条**全部欠屏幕证据**；G1085 的"英文 locale 下 11 份"是**由代码推论、未复采**。
+
+**仍未采到（本节）**：官方是否显式 `import` 了 what-input 的 CSS 侧配置（`specificKeys`／`ignoreKeys` 的实际入参本批只读到默认桩，未见调用参数）；`:focus-visible-within` 这条自造伪类的**完整改写分支**只读到三条（`:not(:focus-visible)` 那条的替换串未看全）；`--st-*` 其余 5 个宿主名（`--st-page-bg` 系列的注入点）未逐一定位；`MermaidRender` chunk 未读（渲染参数与主题映射表未知）；`CodeEditorFocusMode` 的触发入口未读；☆ grammar 能力面比 39 档大多少**未量化**；`tok-*` 28 档的**具体配色**未抄（只拿到类名）；★ 本批零屏上动作 ⇒ 意图闸门的可达性（V101 三条规则）与"表单控件里冻结 intent"**全靠代码断言**。

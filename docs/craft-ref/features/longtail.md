@@ -843,3 +843,115 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 ⇒ ☆ 检索口径（可复现）＝对 13 份逐份 `grep -o '@container'` 与 `grep -o 'container-type'` ⇒ **只有 `index.css`（5 ＋ 1）与 `TaskViews.css`（1 ＋ 0）非零**；⇒ ★ 其余 11 份（含两份 vendor 与十份字体包）**一处容器查询都没有**＝容器策略只用在 Craft 自写的浏览／列表／任务三面。
 
 **仍未采到（本节）**：84 个哈希族里除 `_fdch5_／`_11co4_`／`_ydla7_`／`_apokp_` 之外**全部未逐条读**；KaTeX 150／151 条差集**只给了计数与 20 条样本**，未出全表；白板 108 条 `--color-*` 定义里的**重复覆写位置**（谁在后、是否暗色注入）未定位；`--st-*` 的注入方（组件 props／内联 `style`／JS）未反编译；`AdobeBlank` 的消费点未找到；m-plus 354 片的**权重×序号分布**（400／500／700 各多少片）未拆；`fontdef.*` 的 `src` 指向的 **woff2 本体未落盘**（只取了 CSS）；★ 官方**是否存在第 14 份 CSS**（日历屏）未证。
+
+## 三十三、**长尾素材：JS 侧的"原始名册层"＝代码块语言 39 项三元组逐字全表 ＋ app shell 的 `_6sjpd_` 9 个类名与 12 个同段常量与 2 个排序枚举 ＋ `what-input` 的属性／取值／事件映射／修饰键／表单控件名单全册 ＋ CM6 的 28 个 `tok-*` 与 `&light`／`&dark` 双档机制 ＋ CJK 注入的两条路径与 12 条 locale 前缀表 ＋ `--st-*` 的 13 个注入名（与 §六 的 8 个宿主名对齐）**（✓盘上 第 107 批 2026-09-30 15:4x–16:5x，**零浏览器调用、零写入**；★ 本节只放"逐字清单"，解释与判定在 `internals.md §四十六`／`styles.md §十四`／`model.md §一之六十五`／`interactions.md V101`，gap 行 `gap.md` G1080–G1091；原始机读结果＝`_harvest/b107-probe1.txt`～`b107-probe5.txt`；★ 与 §三十二 的分工＝§三十二 是 CSS 层清单、本节是 JS 层清单，两节的唯一交叉点是 `--st-*`）
+
+### 一、代码块语言三元组（39 项，逐字，按数组内出现序；源＝`CodeEditorWrapper-DB8UxA00.js` @28,995，整表用括号配平取出，数组 2,211 字符）
+
+| # | storedLangCode | langCode | label |
+|---|---|---|---|
+| 1 | `ada` | `ada` | Ada |
+| 2 | `bash` | `bash` | Bash |
+| 3 | `cpp` | `cpp` | C++ |
+| 4 | `cs` | `csharp` | C# |
+| 5 | `css` | `css` | CSS |
+| 6 | `dart` | `dart` | Dart |
+| 7 | `dockerfile` | `dockerfile` | Dockerfile |
+| 8 | `math_formula` | `stex` | Formula (TeX) |
+| 9 | `go` | `go` | Go |
+| 10 | `groovy` | `groovy` | Groovy |
+| 11 | `haskell` | `haskell` | Haskell |
+| 12 | `html` | `html` | HTML |
+| 13 | `java` | `java` | Java |
+| 14 | `javascript` | `javascript` | JavaScript |
+| 15 | `json` | `json` | JSON |
+| 16 | `julia` | `julia` | Julia |
+| 17 | `kotlin` | `kotlin` | Kotlin |
+| 18 | `lua` | `lua` | Lua |
+| 19 | `markdown` | `markdown` | Markdown |
+| 20 | `matlab` | `matlab` | Matlab |
+| 21 | `mermaid` | `mermaid` | Mermaid |
+| 22 | `objectivec` | `objectiveC` | Objective-C |
+| 23 | `perl` | `perl` | Perl |
+| 24 | `php` | `php` | PHP |
+| 25 | `prolog` | `prolog` | Prolog |
+| 26 | `plaintext` | **`null`** | Plain text |
+| 27 | `python` | `python` | Python |
+| 28 | `r` | `r` | R |
+| 29 | `ruby` | `ruby` | Ruby |
+| 30 | `rust` | `rust` | Rust |
+| 31 | `scala` | `scala` | Scala |
+| 32 | `shell` | `shell` | Shell |
+| 33 | `sql` | `sql` | SQL |
+| 34 | `swift` | `swift` | Swift |
+| 35 | `typescript` | `tsx` | TypeScript |
+| 36 | `vbnet` | `vbnet` | Visual Basic.NET |
+| 37 | `xml` | `xml` | XML |
+| 38 | `yaml` | `yaml` | Yaml |
+| 39 | `other` | `other` | Other |
+
+⇒ ☆ **两码不同的恰好 5 项**＝`cs→csharp`、`objectivec→objectiveC`（★ 唯一的大写 `C`，grammar 侧大小写敏感时会踩）、`typescript→tsx`（★ 不是 `typescript`）、`math_formula→stex`、`plaintext→null`（★ 全表唯一非字符串）。
+⇒ ☆ **破坏字母序的一处**＝`math_formula` 夹在 `dockerfile` 与 `go` 之间（其余 38 项按 `storedLangCode` 升序，`other` 固定末尾）＝"公式"是被插进列表的，不是原生成员。
+⇒ ☆ **label 大小写混形**＝缩写全大写的有 `C++／C#／CSS／HTML／JSON／PHP／SQL／XML／R`，但 **`Yaml` 只首字母大写**（同族该写 `YAML`）；另有 `Formula (TeX)`／`Plain text`／`Visual Basic.NET` 三处带空格或括号的长名 ⇒ 本地照抄时**不要顺手规范化**（承「产品自己的字符串表会暴露自相矛盾」）。
+⇒ ☆ i18n 引用逐字＝面板标题用 `blockdetails.language`、搜索框用 `blockdetails.search.languages`（本批只读到这两个 key，其余条目全走数组 `label`、**不经语言包** ⇒ 语言选择器在非中文界面也显示英文 label）。
+
+### 二、app shell 的 `_6sjpd_` 族：9 个类名 ＋ 同段 12 个常量 ＋ 2 个排序枚举（逐字，源＝`index-DiTmKH3z.js` @2,487,132～@2,487,400）
+
+| 对象键 | 类名串 | 族内行号 |
+|---|---|---|
+| `noScroll` | `_noScroll_6sjpd_1` | 1 |
+| `viewWrapper` | `_viewWrapper_6sjpd_5` | 5 |
+| `headerWrapper` | `_headerWrapper_6sjpd_13` | 13 |
+| `mainWrapper` | `_mainWrapper_6sjpd_20` | 20 |
+| `scrollRoot` | `_scrollRoot_6sjpd_28` | 28 |
+| `scrollViewport` | `_scrollViewport_6sjpd_33` | 33 |
+| `headingWrapper` | `_headingWrapper_6sjpd_39` | 39 |
+| `headingRightWrapper` | `_headingRightWrapper_6sjpd_51` | 51 |
+| `docGrid` | `_docGrid_6sjpd_59` | 59 |
+
+⇒ ★ 这族就是 §三十二.八／`styles.md §十三.九` 那条**具名容器查询的宿主**（`mainWrapper` @20＝`container-type:inline-size` 的声明者）；⇒ ☆ 行号间距（1／5／13／20／28／33／39／51／59）与 CSS 里规则块的顺序一致 ⇒ **可用行号差反推每条规则的块大小**。
+⇒ **同段 12 个常量逐字**＝`T_=208`、`$h=16`、`ic=20`、`D7=8`、`QJ=240`、`ob=200`、`of=1/1.25`、`FEt=268`、`NEt=5`、`hm=65`、`dS=!0`、`uS=100`；⚠ **本批未读到任何一个的使用点 ⇒ 含义全部未定，不得据此判"侧栏宽 208"**（第 108 批队列）。☆ 其中 `of=1/1.25` 与本目录历批的 OS→css DPR 换算式同值，**只记形状、不记因果**。
+⇒ **两个枚举逐字**＝`wi = {Name:"Name", Shared:"Shared", SharedBy:"SharedBy", LastViewed:"LastViewed"}` 与 `ja = {Ascending:"Ascending", Descending:"Descending"}` ⇒ ☆ 与第 103 批的稳定锚点 `BUTTON[data-testid="browse-sort-button"]` 咬合＝**浏览屏排序＝四维度 × 两方向**，且四维度里有两个（`SharedBy`／`LastViewed`）本地排序面板没有（`model.md §一之六十五`）。
+
+### 三、`what-input` v5.2.12 全册（源＝`vendor-BZCR0rqu.js`，文件头注释 @2,527 逐字带 `@link`／`@license MIT`；常量块 @3,303；`Aa` @4,961；`Oa` @5,490；`Pa` @5,517；`Ua` @5,816）
+
+⇒ **写入的属性 4 个**＝`data-whatinput`（上一次输入类型）、`data-whatintent`（当前意图）、`data-whatelement`、`data-whatclasses`；★ 属性名是**拼出来的**＝`Pr.setAttribute("data-what" + Xa, Xa === "input" ? Hr : ca)` ⇒ 按字面串全库检索会 0 命中。
+⇒ **取值**＝`initial`（初值，`Hr="initial", ca=Hr`）、`mouse`、`keyboard`、`touch`；☆ 事件表里另有 `"pointer"` 这个中间值，但 `pointer` 立刻被 `La` 换成 `pointerType` 真值 ⇒ **`data-what*` 上不会出现 `pointer`**（本批按代码判定，未屏上复验）。
+⇒ **事件→类型映射逐字**＝`{keydown:"keyboard", keyup:"keyboard", mousedown:"mouse", mousemove:"mouse", MSPointerDown:"pointer", MSPointerMove:"pointer", pointerdown:"pointer", pointermove:"pointer", touchstart:"touch", touchend:"touch"}`。
+⇒ **`pointerType` 表逐字**＝`{2:"touch", 3:"touch", 4:"mouse"}` ＋ `pointerType==="pen" → "touch"` ⇒ ★ **手写笔归 touch**；另 `typeof pointerType=="number"` 才查表，字符串（现代浏览器）直接透传（`"mouse"`／`"touch"`／`"pen"`／`"eraser"`）。
+⇒ **修饰键排除表逐字**＝`ma=[16,17,18,91,93]`（Shift／Ctrl／Alt／MetaLeft／MetaRight）；`specificKeys` 默认空数组 `ga=[]`。
+⇒ **表单控件名单逐字**＝`pa=["button","input","select","textarea"]`（intent 冻结判据，见 `V101` 第 3 条）。
+⇒ **持久化**＝`sessionStorage` 键 `what-input`／`what-intent`；闸门属性 `data-whatpersist="false"`（读 `documentElement` 或 `body`）。
+⇒ **API 面 6 个**＝`ask`、`element`、`ignoreKeys`、`specificKeys`、`registerOnChange`、`unRegisterOnChange`；⇒ ☆ **无 SSR 退化桩逐字**＝`{ask:function(){return "initial"}, element:function(){return null}, ignoreKeys:function(){}, specificKeys:function(){}, registerOnChange:function(){}, unRegisterOnChange:function(){}}`（`typeof document>"u" || typeof window>"u"` 时整套 API 退化成这份桩 ⇒ **服务端渲染阶段属性为 `initial`、且不会被写**）。
+⇒ **其余三个回调**＝`Ua`（`focusin`）只写两个诊断属性、`qa`（`focusout`）把两个都 `removeAttribute`、`Ta`（`DOMContentLoaded`）回灌并首次 `Oa("input")＋Oa("intent")`。
+
+### 四、CodeMirror 6 侧名册（源＝`vendor-code-editor-BLm003PU.js`，`tok` 表 @279,197、主题 @165,452～@166,700；`basicSetup` 在 `CodeEditorWrapper-DB8UxA00.js`）
+
+⇒ **28 个 `tok-*` 类名逐字（按 `class:"tok-"` 表内出现序）**＝`tok-link`、`tok-heading`、`tok-emphasis`、`tok-strong`、`tok-keyword`、`tok-atom`、`tok-bool`、`tok-url`、`tok-label`、`tok-inserted`、`tok-deleted`、`tok-literal`、`tok-string`、`tok-number`、`tok-string2`、`tok-variable`、`tok-local`、`tok-definition`、`tok-property`、`tok-type`、`tok-namespace`、`tok-class`、`tok-macro`、`tok-operator`、`tok-comment`、`tok-meta`、`tok-invalid`、`tok-punctuation`。
+⇒ ☆ 形状＝`{tag: W.link, class:"tok-link"}` 的 `highlightStyle` 数组，前面有一句 `i instanceof j2 && (i.name = r)`（给 `tags` 里没具名的补名）⇒ **前 4 个（link／heading／emphasis／strong）不是语言 token、是 markdown 面**（`tok-heading`／`tok-emphasis`／`tok-strong` 与本地 `lowlight` 的 `hljs-*` 命名完全不同体系）。
+⇒ **双档机制逐字**＝`Sxe=u4.newName(), C9t=u4.newName(), Y9t=u4.newName(), W9t={"&light":"."+C9t, "&dark":"."+Y9t}` ＋ `new u4(i, {finish(l){ return /&/.test(l) ? l.replace(/&\w*/, …) : l }})` ⇒ ☆ 三个 `newName()`＝两个主题类＋一个未定性变量。
+⇒ **两条明写的暗档值**＝`&light .cm-content{caretColor:"black"}`／`&dark .cm-content{caretColor:"white"}`；`&light .cm-selectionBackground{background:"#d9d9d9"}`／`&dark{background:"#222"}`；另 `.cm-line{display:"block";padding:"0 2px 0 6px"}`、`.cm-layer{position:"absolute";left:0;top:0;contain:"size style";& > *{position:"absolute"}}`、正文 `white-space:"pre-wrap"`／`word-break:"break-word"`／`overflow-wrap:"anywhere"`／`flex-shrink:1`。
+⇒ **`basicSetup` 逐字**＝`{highlightActiveLineGutter:t, highlightActiveLine:t, searchKeymap:!1, foldGutter:!1, highlightSelectionMatches:!1, autocompletion: k==="web", closeBrackets:!0}`（`t`＝可编辑位、`k`＝surface）；同段编辑器 props＝`readOnly:!t, editable:t, height:"100%", theme: j ?? void 0` ＋ `onMouseDown`／`onTouchEnd` 两个处理器。
+
+### 五、CJK 字体 CSS 的运行时注入名册（源＝`index-DiTmKH3z.js` @492,279～@493,100）
+
+⇒ **注入清单只有 2 条**＝`NHe = ["_cjk/common/fontdef.css", "_japanese/rounded/m-plus-rounded-1c/fontdef.css"]`；**触发白名单**＝`FHe = ["ja","ko","zh-Hans","zh-Hant"]`；**标记属性**＝`X1e = "data-cjk-font-css"`；**构建号**＝`BHe = "r-48-g9244379"`。
+⇒ **URL 形状逐字**＝`${去尾斜杠的 publicUrlPrefix}/static/fonts/${UHe()}${路径}`，`UHe()` 返回 `` `${BHe}/` ``；⚠ 同一函数有一条**恒假分支**（`!IS_DESKTOP && !1`）⇒ 桌面／Web 两套前缀的开关被常量折叠，**当前构建只余 Web 路**。
+⇒ **建链逐字**＝`o.rel="stylesheet"` ＋ `o.setAttribute(X1e,"true")` ＋ `o.setAttribute("fetchpriority", e)` ＋ **`o.media="print"`，`o.onload=()=>{o.media="all"}`**，然后 `document.head.appendChild(o)`；**幂等闸门**＝`document.head.querySelector("link[data-cjk-font-css]") != null`；调度＝`requestAnimationFrame` ＋ `setTimeout(…, 0)` 双保险、只跑一次（`Cu`／`MR` 两个模块级变量）。
+⇒ **12 条 locale 前缀表逐字**＝`{en:["en"], de:["de"], es:["es"], fr:["fr"], it:["it"], pl:["pl"], ja:["ja"], ko:["ko"], vi:["vi"], "pt-BR":["pt-BR","pt"], "zh-Hans":["zh-CN","zh-Hans","zh"], "zh-Hant":["zh-TW","zh-Hant"]}`；★ 归一化算法＝把 `(候选串 → 规范名)` 摊平成对、**按候选串长度降序排序**，再做 `startsWith` 首中即返 ⇒ ☆ `"zh-CN"` 命中的是 `"zh-CN"`（最长）而不是 `"zh"`，这个排序是有意的。
+⇒ ☆ 顺带读到**语言包条数**：同一句里 12 个 locale 的 `translationCaches.<lang>` 回退到打包常量（`it/de/es/fr/ja/ko/vi/pl/pt-BR/zh-Hans/zh-Hant` ＋ 内置 `en`）⇒ **官方把 12 份翻译全打进主包**（第 108 批可查每份大小）。
+
+### 六、`--st-*` 的 JS 注入名全列（13 个，源＝`index-DiTmKH3z.js` 的 20 处 `--st-` ＋ `EditorPopup` 的 4 处；★ 消费面在 §六、兜底值与双向机制在 `internals.md §四十六.三`）
+
+⇒ **index 侧 13 个注入名逐字**＝`--st-row-height`、`--st-index-column-width`、`--st-scroll-left`、`--st-grid-columns`、`--st-selection-color`、`--st-page-bg`、`--st-page-bg-hover-opaque`、`--st-text-color`、`--st-border-color`、`--st-font-family`、`--st-accent-selection`、`--st-selection-bg-opaque`、`--st-selection-hover-bg-opaque`。
+⇒ **EditorPopup 侧 3 个**＝`--st-font-family`（★ 值是**从锚点元素 `getComputedStyle().getPropertyValue()` 读出来的**）、`--st-text-color`、`--st-border-color`。
+⇒ ★ **与 §六 的 8 个"只消费不定义"对齐＝8 个全部落在 13 个里**；JS 额外注入的 5 个＝`--st-row-height`、`--st-index-column-width`、`--st-scroll-left`、`--st-page-bg`、`--st-text-color` ⇒ ☆ 这 5 个**在 CSS 里有默认定义**（行高 35px／索引列宽 45px），JS 用内联 `style` 覆写 ⇒ **优先级链＝JS 内联 ＞ CSS 声明 ＞ JS 反读的 `||35`／`||45` 兜底**（"CSS 是几何真源"这条只对没被内联覆写的实例成立，比 §四十六.三 的说法更准确）。
+⇒ 两个注入形态逐字＝内联对象 `{"--st-grid-columns": l, "--st-row-height": dt}`（`dt` 是模板串 `` `${行高}px` ``）＋ `el.style.setProperty("--st-scroll-left", `${el.scrollLeft}px`)`（另一处在 `requestAnimationFrame` 里与 `transform: translateX(-f px)` **同时**写）。
+
+### 七、名册取证数据（★ 记法要留档，否则下批复现不了本节任何一张表）
+
+⇒ **零新增下载**＝检索面是历批缓存的 `_harvest/js/` **105 个 chunk**，本批没有一次浏览器调用；⇒ 三条取表法＝① **先扫 import 图选题**（对全部 chunk 的 import 串找 `vendor-code-editor` 的引用方 ⇒ 14 个消费者，据此断定"代码块是跨面组件"）；② **属性名可能是拼出来的**（`"data-what" + Xa`）⇒ 字面串 0 命中时退到"库名注释／`setAttribute(` 调用点／`dataset.` 读法"三路再搜（本批 `document.documentElement.dataset.whatintent` 是在 @2,099,675 撞到的第二路）；③ **数组字面量用括号／花括号配平取整表**（39 项三元组、`_6sjpd_` 名册都是这么出来的，**别按首个 `]` 切**）。
+⇒ ⚠ **非 ASCII 只记形状**＝`AdobeBlank` 探测分支里的基准串在盘上副本里是 mojibake（承「bundle 非 ASCII 会误解码」）⇒ 本节不抄字面、不给长度；☆ 同段还有一条 `n.font='10px sans-serif"'`（★ 串尾多一个 `"`，看着像官方源码里的引号错位，**不当缺陷登记**）。
+⇒ ☆ 本节**全部为代码断言、零屏上证据**；欠的证据清单在 `interactions.md V101` 末尾与「仍未采到」。
+
+**仍未采到（本节）**：`_6sjpd_` 同段 12 个常量的**使用点**（一个都没读到）；`tok-*` 的**具体配色**（只拿到类名，样式在 `highlightStyle` 的另一半里未读全）；grammar 能力面（本批只读到"vendor 里的语言名比 39 档多"这个形状，**未量化**）；`Sxe` 第三个 `newName()` 的用途；`MermaidRender-DrFu6-mF.js` 本体未读（`themeId` 取值表、图类型支持面未知）；`blockdetails.*` 里代码块相关的其他 key 未逐条读；`storedLangCode` 在**写侧**的字段名（MCP／mutation）未取证 ⇒ 需一次 `blocks add` 读回（写入批）；★ 12 份 `translationCaches` 的体积与是否全量打进主包未量化。
