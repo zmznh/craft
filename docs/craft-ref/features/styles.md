@@ -551,4 +551,176 @@
 ⇒ ★ **两档同值的 `--editor-*` 只有 2 条**（`--editor-orange`／`--editor-brown`）⇒ 官方**刻意**不重指这两色；其余全部逐色重指（`--editor-bluedark` 从 `rgb(3 0 245/100%)` 跳到 `rgb(170 169 249/100%)`＝**深蓝→浅靛**）。
 ⇒ ★ **本地对照（本轮逐条比过，G1068）**＝light 侧 **10 条逐字等于官方 light**（`src/app/globals.css:143-152`，在 `:root`「Craft Design System — Light Theme」块内），**5 条渐变 light（`:153-157`）与 dark（`:310-314`）双双逐字一致**＝本轮最大面积的一致项；★ **但 `.dark` 里 `--editor-blueDark: rgb(3 0 245)` 与 `--editor-blueLight: rgb(41 98 246)` 照抄了 light 值**（官方暗档＝`rgb(170 169 249)`／`rgb(65 146 247)`）⇒ **暗色下这两档等于没换**；☆ 本地**缺 `--editor-text`**（只有 `:120` 注释提到）与 **`--editor-spectrum`**；☆ 命名差＝本地 camelCase（`blueDark`／`greyLight`）vs 官方全小写（`bluedark`／`greylight`）⇒ **CSS 变量大小写敏感**，按官方名写的消费方代码会取不到值。
 
-**仍未采到（本节）**：其余 **12 份 CSS**（含只在 `/tasks`、`/calendar` 加载的 `TaskViews.css`）未落盘 ⇒ 本表只覆盖登录后的主 CSS 一份，**不能断言"官方只有这 9 段 token 块"**；`--heading-*-<档>-*` 排版 token 的**完整档位表**（本批只撞到 `xs-500` 一个消费点）；`[data-accent=…]` 六档强调主题块的逐字值（本批只到 `--accent-<色>` 基色层）；95 个哈希族里另外 **91 个**族未读；`:root` 裸块、`:root,.token-scope` 与 `[data-theme=light]` scale 块三者的**同名条目已实测逐字节相同**（重叠 48 条与 60 条，见 §四.末），但**层叠中谁胜出仍未做浏览器实测**（层序 base＜utilities＜components、且三者特异性同为 0,1,0 只是推断）；brand 档位序号在两档下反向的**实际消费点**未统计；`--shadow-*` 各档的实际消费点未统计；★ 以及"utilities 570 类"是否有别处以非 `.class` 形式扩展（未查 `@`规则内部）。
+**仍未采到（本节）**：~~其余 **12 份 CSS**（含只在 `/tasks`、`/calendar` 加载的 `TaskViews.css`）未落盘 ⇒ 本表只覆盖登录后的主 CSS 一份，**不能断言"官方只有这 9 段 token 块"**~~ ⇒ ✎ **第 106 批结案**（13/13 全落盘，逐份清点见 **§十三.一**；"第三套色阶"的怀疑被否＝其余 12 份里没有 `[data-theme]` 色阶表，见 §十三.六／§十三.七）；★ 同批**修正本节的"95 个哈希族"口径＝严格捕获组复扫是 84 个**（旧口径把 `_title_11co4_8` 这种"类名本身恰为 5 个小写字母数字＋后接数字"误当成族名，见 §十三.一 末）；`--heading-*-<档>-*` 排版 token 的**完整档位表**（本批只撞到 `xs-500` 一个消费点）；`[data-accent=…]` 六档强调主题块的逐字值（本批只到 `--accent-<色>` 基色层）；95 个哈希族里另外 **91 个**族未读（★ 按 84 的新口径＝另外 **81 个**未读）；`:root` 裸块、`:root,.token-scope` 与 `[data-theme=light]` scale 块三者的**同名条目已实测逐字节相同**（重叠 48 条与 60 条，见 §四.末），但**层叠中谁胜出仍未做浏览器实测**（层序 base＜utilities＜components、且三者特异性同为 0,1,0 只是推断）；brand 档位序号在两档下反向的**实际消费点**未统计；`--shadow-*` 各档的实际消费点未统计；★ 以及"utilities 570 类"是否有别处以非 `.class` 形式扩展（未查 `@`规则内部）。
+
+## 十三、**名册结案＝13 份官方 CSS 全量清点（858,303 字符）＋ 集合表格 `--st-*` 接口逐字（21 条定义／7 档 z 阶梯／8 个只消费不定义的宿主变量）＋ KaTeX 跨版本类名不通（官方 368 条 vs 本地 369 条，仅 218 条同名）＋ 字体名单结案（21 个 family／429 个 `@font-face`／CJK 是 5 目录 15 源拼接）**（✓盘上 第 106 批 2026-09-30 14:3x–15:2x，**零写入批**＝无沙盒、无删除、无偏好改动，唯一浏览器动作是只读取回 12 份 CSS 并用完 `close()`；原始读数在 `gap.md` §三点一〇五六 G1069–G1078、`_harvest/b106-verify.txt`／`b106-verify2.txt`／`b106-census.json`；⚠ 本节**结掉 §十二 遗留的"其余 12 份 CSS 未落盘"**，并**把 §十二 的"95 个哈希族"口径改为 84**）
+
+### 一、13 份逐份清点（★ 本轮改用"先剥 `/* */` 注释、再按大括号配平"的 parse＝注释会污染选择器串，`fontdef.common.css` 的 15 个伪选择器就是这么来的）
+
+| 文件 | 字符 | 不同选择器 | 规则块 | `@font-face` | `unicode-range` | 哈希族 | 自定义属性（定义／不同名） | 归属 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `fontdef.m-plus-rounded-1c.css` | 308,022 | 0 | 0 | **354** | **354** | 0 | 0／0 | 日文圆体，★ 官方明确"不并进 common、单独注入" |
+| `index.css.CP00jDAy.css` | 297,080 | **2,219** | 2,114 | 0 | 0 | **84** | **1,430／544** | 主包＝`@layer base`＋`utilities`＋`components` 三层（at 块 156） |
+| `vendor-excalidraw.css.tkYuNB5W.css` | 163,877 | 1,200 | 1,155 | 4 | 0 | 0 | 406／212 | 白板 vendor 自带主题（见 §十三.六） |
+| `vendor-code-editor.css.DkZwelau.css` | 29,193 | 368 | 229 | 20 | 0 | 0 | 0／0 | ★ **名不符实＝100% KaTeX 0.16.25**（见 §十三.二） |
+| `BlankFont.css.CSdHt10-.css` | 25,567 | 0 | 0 | 1 | 0 | 0 | 0／0 | `AdobeBlank` 空白兜底（见 §十三.八） |
+| `fontdef.common.css` | 25,401 | 0 | 0 | 45 | 45 | 0 | 0／0 | ★ CJK 15 个源拼接＋16 条来源注释（见 §十三.七） |
+| `fontdef.roboto-mono.css` | 3,382 | 0 | 0 | 12 | 12 | 0 | 0／0 | 等宽＝6 区 × 2 style |
+| `TaskViews.css.DghTjfLb.css` | 2,240 | 19 | 20 | 0 | 0 | **3** | 0／0 | ★ **13 份里唯一"按路由才加载"的 CSS**（见 §十三.四） |
+| `fontdef.avenir-next-rounded.css` | 1,485 | 0 | 0 | 8 | 0 | 0 | 0／0 | 400/500/600/700 × normal+italic |
+| `fontdef.untitled-serif.css` | 1,045 | 0 | 0 | 6 | 0 | 0 | 0／0 | 400/500/700 × 2 |
+| `fontdef.source-serif.css` | 353 | 0 | 0 | 2 | 0 | 0 | 0／0 | variable `200 900` |
+| `AIChatPopup.css.D9rwJ006.css` | 333 | 4 | 4 | 0 | 0 | **1** | 0／0 | AI chip 条（见 §十三.五） |
+| `fontdef.inter.css` | 325 | 0 | 0 | 2 | 0 | 0 | 0／0 | variable `100 900` |
+| **合计** | **858,303** | — | — | **454** | **411** | **88** | 1,836 条（index 1,430＋excalidraw 406） | ★ 第 105 批只落 `index.css` 一份＝297,080／858,303＝**34.6%** ⇒ 此前所有"全文件"结论的分母其实只有三分之一 |
+
+⇒ ★ **`@font-face` 454 个的分解**＝429（7 份 `fontdef.*`）＋20（KaTeX）＋4（白板 `Assistant`）＋1（`AdobeBlank`）；`unicode-range` 411＝45＋354＋12（只有这三份分片，其余 10 个 family 不分片）。
+⇒ ★ **哈希族 88 个的分解**＝index 84＋TaskViews 3＋AIChatPopup 1 ⇒ **CSS-Module 只出现在 Craft 自写的三份里**，两份 vendor 与十份字体包一个都没有。
+⇒ ✎ **口径修正**＝§十二 记的"95 个哈希族"按严格捕获组（`._<类名>_<5 位小写字母数字>_<序号>`）复扫＝**84 个**；旧正则把 `_title_11co4_8` 这种"类名本身恰为 5 字符且后接数字"的串当成族名，多算 11 个。
+⇒ ☆ **"第三套色阶"的怀疑被否**＝除 `index.css` 外，**没有任何一份带 `[data-theme=…]` 色阶块**（excalidraw 走自己的 `--color-*`，10 份字体包只有 `@font-face`）⇒ 历批"本目录只覆盖主 CSS"的限定语可以收窄为"主色阶表已全覆盖，组件层只覆盖了 84 族里的 3 族"。
+
+### 二、`vendor-code-editor.css`＝KaTeX 0.16.25 原件，**零 Craft 覆写** ⇒ 官方代码块语法高亮不在这 13 份里
+
+| 项 | 官方（本轮逐字） | 本地（本轮实扫） |
+| --- | --- | --- |
+| 版本自印 | `.katex-version:after{content:"0.16.25"}` | `node_modules/katex/dist/katex.min.css` 自印 `content:"0.18.7"`（`package.json:66` 锁 `^0.18.7`） |
+| 选择器 | **368 条不同**（229 个规则块），其中**只有 1 条不是 `.katex` 作用域＝`body`** | **369 条不同**（230 个规则块） |
+| 两向差集 | **官方独有 150／本地独有 151／同名只有 218** ⇒ 跨 0.16↔0.18 **类名体系整体换了前缀** | 逐字对照样本＝官方 `.katex .base`／`.strut`／`.rule`／`.sqrt>.root`／`.clap>.inner`／`.sizing.reset-size1.size1` ↔ 本地 `.katex .katex-base`／`.katex-strut`／`.katex-rule`／`.sqrt>.katex-root`／`.clap>.katex-inner`／`.katex-sizing.reset-size1.size1` |
+| 字体 | **20 个 `@font-face`／12 个 `KaTeX_*` 族**＝AMS／Caligraphic／Fraktur／Main／Math／SansSerif／Script／Size1／Size2／Size3／Size4／Typewriter，**全部 `font-display:block`**，`src` 指向 `/static/KaTeX_AMS-Regular-BqhdFmY1.woff2` 形态的哈希名资源 | 同为 20 faces、同为 `font-display:block`（本地经 `import 'katex/dist/katex.min.css'` ⇒ **一致**，`src/app/layout.tsx:3`） |
+| 语法高亮 | ★ **`.cm-*`（CodeMirror）在 13 份 CSS 里 0 命中**；`index.css` 里 code-ish 的类只有 `token-scope`（第 105 批 §十二.5 的子树作用域）与预览卡族的 `_code`／`_codePlaceholder` ⇒ **代码块着色要么走 JS 注入、要么在未落盘的 chunk 里** | 本地代码块＝TipTap 自写（`src/app/globals.css:417` 用 `--font-mono`），**无 token 类名体系＝没有语法高亮着色** |
+
+⇒ ★ **可执行结论**＝**不要"照官方 CSS 抄数学样式"**：本地 0.18 的类名与官方 0.16 只有 218/368 重合，任何按官方选择器写的覆写都会静默失效。二选一＝① 把 `katex` 锁到 `0.16.x` 以复用官方那份 CSS；② 留在 0.18 但**只对视觉结果**（字号阶、`.katex-display` 行高、`.vlist` 上下标位移），并在文档里显式声明"不共享官方 CSS"＝有意偏差。本地已有 1 条自写覆写 `.crafty-math .katex-display`（`src/app/globals.css:1035`，压 KaTeX 自己的 line-height）＝属②路线。
+
+### 三、★ 集合表格对外的主题接口＝`--st-*`：本文件定义 21 条、消费 28 个名字、其中 8 个只被消费不被定义（＝宿主注入）
+
+**（a）21 条定义逐字**（全在 `index.css` 的 `_l4u28_`／`_1xjl6_`／`_z4j2j_` 三族附近）
+
+| 变量 | 值（逐字） | 变量 | 值（逐字） |
+| --- | --- | --- | --- |
+| `--st-row-height` | `35px` | `--st-z-base-cell` | `1` |
+| `--st-index-column-width` | `45px` | `--st-z-index-cell-header` | `2`（★ 全文件**无任何 `var()` 消费点**＝定义了没用） |
+| `--st-cell-padding-x` | `10px` | `--st-z-sticky-index` | `3` |
+| `--st-cell-padding-y` | `4px` | `--st-z-sticky-header` | `6` |
+| `--st-border-radius` | `5px` | `--st-z-sticky-header-index` | `7` |
+| `--st-max-height` | `560px` | `--st-z-interactive-overlay` | `10` |
+| `--st-scroll-left` | `0px` | `--st-z-resize-preview` | `12` |
+| `--st-card-title-line-height` | `21px` | `--st-text-color` | `initial`（宿主注入占位） |
+| `--st-index-bg` | `var(--st-page-bg, #fff)` | `--st-page-bg` | `initial`（宿主注入占位） |
+| `--st-index-bg-hover` | `var(--st-page-bg-hover-opaque, #f8f8f8)` | | |
+| `--st-index-bg-selected` | `var(--st-selection-bg-opaque, rgb(194, 223, 255))` | | |
+| `--st-index-bg-selected-hover` | `var(--st-selection-hover-bg-opaque, rgb(173, 212, 255))` | | |
+
+**（b）7 档 z-index 阶梯（★ 冻结体系的唯一权威次序）**＝`base-cell 1` ＜ `index-cell-header 2` ＜ `sticky-index 3` ＜ `sticky-header 6` ＜ **`sticky-header-index 7`（左上角交点格）** ＜ `interactive-overlay 10` ＜ `resize-preview 12`。
+⇒ ☆ 读法＝**交点格（7）高于表头（6）高于索引列（3）**，与第 105 批浮层栈的 `z` 无冲突（`interactive-overlay 10`／`resize-preview 12` 是"拖列宽时的预览线"与"单元格编辑器浮层"，压在一切表格内容之上）。
+
+**（c）8 个"只消费不定义"的宿主注入名与其内置兜底**（＝表格组件对宿主的要求清单，兜底写死在 `var()` 第二参里）
+
+| 宿主注入名 | 兜底值（逐字） | 语义 |
+| --- | --- | --- |
+| `--st-page-bg-hover-opaque` | `#f8f8f8` | 不透明页底（悬停） |
+| `--st-selection-bg-opaque` | `rgb(194, 223, 255)` | 不透明选中底 |
+| `--st-selection-hover-bg-opaque` | `rgb(173, 212, 255)` | 不透明选中悬停底 |
+| `--st-border-color` | `var(--foreground-100)` | 网格线（回落主 app token） |
+| `--st-selection-color` | `var(--accent-500)` | 选中描边（回落强调色） |
+| `--st-accent-selection` | `none` | 表头激活条（默认关） |
+| `--st-grid-columns` | `none` | 列模板（由 JS 逐实例算完再写回） |
+| `--st-font-family` | `Inter, system-ui, sans-serif` | 表格字体（★ 兜底里点名 `Inter`） |
+
+⇒ ★ **三条"opaque"变体是刻意的**＝主 app 的 `--base-*`／`--accent-*` 大多带 alpha，冻结单元格必须**遮住下方滚动的内容** ⇒ 表格另要一组**不透明**版本；这解释了为什么 `--st-index-bg-*` 全部 `var(--…, 十六进制)` 而不是直接引用主 token。
+⇒ ★ **本地对照（本轮实扫）**＝`--st-` 前缀全库**零命中**；本地表格只有两处硬编码层级＝`src/app/(app)/collections/[id]/TableView.tsx:149` 的 `<thead className="sticky top-0 z-10">` 与 `:154` 的 `first:max-md:sticky first:max-md:left-0 first:max-md:z-20` ⇒ **方向一致（交点高于表头）但只有两档**，缺 `interactive-overlay`／`resize-preview`＝**本地没有列宽拖拽预览层**；单元格内距本地 `px-3 py-2`（12px／8px）vs 官方 10px／4px；行高本地未固定（全库无 `35px`／`rowHeight`）。
+
+### 四、`TaskViews.css`＝13 份里唯一"按路由才加载"的一份（2,240 字符／20 条规则／19 个不同选择器／3 个族）
+
+⇒ ★ 取证方式＝同一标签页在 `/all`（所有文档）屏拿到 128 个资产、点进侧栏「任务」后拿到 139 个资产，差集里只有这一份；⚠ **`/calendar` 屏未复验**（`title()` 本地超时，见 `todo-actions.md` 第 106 批日志）。
+
+| 族 | 角色 | 逐字要点（本轮全量读，含每条规则所在的 at 层与断点） |
+| --- | --- | --- |
+| `_11co4_` | 任务页页头（**8 个不同选择器／9 条规则**＝`_heading._heading` 出现两次） | `_heading._heading{height:auto;flex-wrap:wrap;gap:8px;margin-bottom:16px}` → 宽屏覆写 `flex-wrap:nowrap`；`_title{display:flex;flex:1;align-items:center;min-width:0;min-height:36px}`＋`_title>h1{margin:0}` → 覆写 `min-height:48px`；`_tabs{order:1;flex:0 0 calc(100% + 32px);min-width:0;margin:-8px -16px;overflow-x:auto;scrollbar-width:none}`＋`_tabs::-webkit-scrollbar{display:none}` → 覆写 `order:0;flex:0 1 auto;margin:-8px`；`_tabsContent{display:flex;width:max-content;padding:8px 16px}` → `padding:8px`；`_settings{display:flex;flex-shrink:0}`＋`_settingsPlaceholder{visibility:hidden;pointer-events:none}`★ **覆写分布在两个不同断点里**＝`@media (width <= 747px){ _title{min-height:48px} }`（**窄屏抬高标题**）＋ `@media (width >= 748px){ @container web-shared-layout-main-wrapper (width >= 600px){ _heading._heading{flex-wrap:nowrap} ＋ _tabs{order:0;flex:0 1 auto;margin:-8px} ＋ _tabsContent{padding:8px} }`（**宽屏且容器够宽才把 tabs 提回第一行**）（★ 用等尺寸占位撑住宽度，避免切档时页头跳动） |
+| `_ydla7_` | 任务视图卡片（**10 个不同选择器／7 条规则**） | `_card{position:relative;display:block;box-sizing:border-box;width:100%;height:11.25rem(180px);flex-shrink:0;margin:0;padding:0;border:none;border-radius:.9375rem(15px)}`；`_layer{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem}`；`_iconSlot{display:flex;width:2.5rem;height:2.5rem;flex-shrink:0}`；★ **`_idle`／`_action` 两态互换**（见下）；焦点环 `[data-whatintent=keyboard] _card:focus{outline:1px solid var(--accent-500);outline-offset:-1px}` |
+| `_fdch5_` | **框选矩形（1 条）** | ★（`@layer components` 顶层、无断点）`_rubberBand{position:fixed;background:var(--accent-100);border:1px solid var(--accent-500);border-radius:var(--radius-sm);pointer-events:none;z-index:10}` ⇒ **这是历批第一次在官方 CSS 里看到"拖框批选"的样式痕迹**；⚠ 本条**只有静态证据**，未做屏上验证 ⇒ 只能记成"官方声明了这个样式"，不能记成"官方任务视图支持框选"（→ 第 107 批队列①） |
+
+⇒ ★ **"悬停换脸"逐字**（`_ydla7_` 族的四条组合规则）＝静止 `_idle, _action.isAlwaysVisible { opacity:1 }`；在 `[data-whatintent]:not([data-whatintent=touch])` 闸门下，`_card:hover _idle{opacity:0}` **且** `_card:hover _action{opacity:1}`；同一对规则**在 `[data-whatintent=keyboard] _card:focus` 下原样重复一遍** ⇒ **键盘聚焦与鼠标悬停共用同一套换脸**，而触摸档（`whatintent=touch`）整体被排除。
+⇒ ★★★ **本节最大新发现＝官方用"具名容器查询"**＝`@container web-shared-layout-main-wrapper (width >= 600px)`，且**嵌在 `@media (width >= 748px)` 里面**（双层条件、不是替换）⇒ ① 主布局里存在一个名为 `web-shared-layout-main-wrapper` 的容器（侧栏折叠时**容器宽变、视口宽不变**，这才是页头要跟的量）；② 官方**同时使用视口断点与容器断点**，历批"侧栏展开/收起两档"的几何读数应理解为**容器宽度变化**；③ 本地若只写 `@media`，在"视口宽但侧栏展开（容器窄）"这一档会走错分支。⇒ ✎ **声明处已在本批落盘时补检索到**（初稿写"未检索到"是**没跑检索**，就地作废）＝`index.css` @134,582 逐字 `._mainWrapper_6sjpd_20{display:flex;flex-direction:column;height:100%;container-type:inline-size;container-name:web-shared-layout-main-wrapper}`；★ **全 13 份 `@container` 共 6 处、逐字清单见 §十三.九**（其中 4 处匿名 ⇒ 官方列表视图的**列显隐按内容区宽度**分档）。
+⇒ ☆ 读法＝**不是"叠加显示"而是"两个图层互换"**：常驻信息淡出、动作件淡入，卡面高度不变（靠 `_layer{inset:0}` 绝对定位）。这与第 105 批 §十二.9 的"`_1bml7_` 按钮族 0 条 `:active`"是同一种取向＝官方把反馈放在**换脸与闸门**上，而不是按压缩放。
+
+### 五、`AIChatPopup.css`＝13 份里最小的一份（333 字符／4 条规则／1 个族 `_apokp_`）
+
+| 选择器 | 逐字 |
+| --- | --- |
+| `._scrollRoot_apokp_1` | `max-width:100%;margin-top:-8px;margin-bottom:-8px` |
+| `._scrollViewport_apokp_7` | `padding-top:8px;padding-bottom:8px;scrollbar-width:none` |
+| `._scrollViewport_apokp_7::-webkit-scrollbar` | `display:none` |
+| `._scrollContent_apokp_19` | `display:inline-flex;gap:8px;min-width:fit-content!important;flex-direction:row` |
+
+⇒ ☆ **负 margin ＋ 等量 padding**＝"内容贴边但焦点环不被裁"的成对写法（与第 105 批浮层壳 `--fadeout-padding-top` 同一族思路）；★ **AI 快捷动作条的本体是"横向滚动 chip 容器"**，其余样式全在 `index.css` ⇒ 说明这份 CSS 是"滚动容器补丁"而不是"AI 面板样式表"。
+⇒ 本地对照＝`src/components/editor/bubble-menu/AiBubbleMenu.tsx` 存在，本轮**未读其溢出与滚动实现** ⇒ 不判定，进第 107 批队列。
+
+### 六、白板＝**独立 vendor 主题体系**，与主 app 不共用一个 token（163,877 字符／1,200 个不同选择器／1,155 条规则）
+
+| 项 | 官方逐字（本轮） |
+| --- | --- |
+| 变量总量 | 自定义属性 **406 条定义／212 个不同名**，其中 **`--color-*` 108 条定义／67 个不同名** |
+| 主色族 | `--color-primary: #6965db`｜`--color-primary-darker: #5b57d1`｜`--color-primary-darkest: #4a47b1`｜`--color-primary-hover: #5753d0`｜`--color-primary-light: #e3e2fe`｜`--color-primary-light-darker: #d7d5ff`｜`--color-selection: #6965db` |
+| 灰阶族 | `--color-gray-10 #f5f5f5`→`-20 #ebebeb`→`-30 #d6d6d6`→`-40 #b8b8b8`→`-50 #999999`→`-60 #7a7a7a`→`-70 #5c5c5c`→`-80 #3d3d3d`→`-85 #242424`→`-90 #1e1e1e`→`-100 #121212`（★ 11 档，**含 `-85`**，与主 app 的 20/18 档色阶完全不同族） |
+| 表面族 | `--color-surface-high #f1f0ff`／`-mid #f6f6f9`／`-low #ececf4`／`-lowest #ffffff`／`--color-on-surface #1b1b1f`／`--color-surface-primary-container #e0dfff`／`--color-on-primary-container #030064` |
+| 语义族 | `--color-danger #db6965`（＝**primary 的 RGB 反转**）／`-dark #db6965`（与基色同值）／`-darker #d65550`／`-darkest #d1413c`；`--color-warning #fceeca`／`-dark #f5c354`／`-darker #f3ab2c`／`-darkest #ec8b14`；`--color-success #cafccc`／`-darker #bafabc`／`-darkest #a5eba8`／`-text #268029`／`-contrast #65bb6a`／`-contrast-hover #6bcf70`／`-contrast-active #6edf74`；`--color-badge #0b6513` |
+| 暗色机制 | ★★★ **整份文件 `[data-theme]` 0 处、`prefers-color-scheme` 0 处** ⇒ 白板暗色**不是 CSS 双档，而是运行时 JS 覆写 `--color-*`** |
+| 断点 | 25 条 `@media`（`min-width:1921px`／`max-width:379px`／`orientation:landscape`／`min-width:861px`／`max-width:861px`／`max-width:450px`）＝白板自带超宽屏与手机横屏档 |
+| 字体 | ★ **4 个 `@font-face` 全是 `Assistant`（400/500/600/700），且描述符写错**＝逐字 `style:normal`／`display:swap`（正确应为 `font-style`／`font-display`）⇒ **官方这份 `font-display:swap` 从未生效**＝vendor 缺陷；`--ui-font: Assistant, system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif` |
+
+⇒ ★ **要记住的两条**＝① **白板主色是紫 `#6965db`，主 app 强调蓝是 `--accent-blue: 46 109 233`** ⇒ 同产品两套品牌色，跨面复刻时不能互相代入；② **暗色靠 JS 覆写变量**是官方（实为 excalidraw）的真实机制，与 §十二.3 主 app 的"三段逐色重指"是**两条不同的暗档通路**。
+⇒ 本地对照＝白板走 **tldraw**（`package.json:78 tldraw ^5.4.2`＋`@tldraw/sync`，同步服务 `src/collab/tldraw-server.mjs`）⇒ **库不同＝有意偏差**（原因：许可与协同已按 tldraw 落地，不重做）；但"暗色靠 JS 覆写 CSS 变量"这一条本地是否做到，需下一批实扫 `src/components/whiteboard/`。
+
+### 七、字体名单结案＝**21 个 family／429 个 `@font-face`／5 个语言目录 15 个源**
+
+| 文件 | family（逐字） | faces | `font-weight` | `font-style` | `unicode-range` | 备注（逐字来源） |
+| --- | --- | --- | --- | --- | --- | --- |
+| `fontdef.inter.css` | `Inter` | 2 | **`100 900`（variable）** | normal, italic | 无 | ★ 整份 325 字符，两 face 各 5 行、**未压缩**；`font-display:swap`；`src:url("inter-variable.woff2") format("woff2")` |
+| `fontdef.source-serif.css` | `Source Serif` | 2 | `200 900`（variable） | normal, italic | 无 | 353 字符 |
+| `fontdef.avenir-next-rounded.css` | `Avenir Next Rounded` | 8 | 400／500／600／700 | normal, italic | 无 | `avenir-next-rounded-regular.woff2` 等 8 个静态 face |
+| `fontdef.untitled-serif.css` | `Untitled Serif` | 6 | 400／500／700 | normal, italic | 无 | `untitled-serif-regular.woff2` 等 |
+| `fontdef.roboto-mono.css` | `Roboto Mono` | 12 | `100 700`（variable） | normal, italic | **12 片** | ★ 6 区 × 2 style，**同一区的 normal 与 italic `unicode-range` 逐字相同**＝`cyrillic-ext: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F`／`cyrillic: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116`／`greek: U+0370-03FF`／`latin-ext: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF`／`latin: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD`／`vietnamese: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB`；文件名自带区名（`roboto-mono-cyrillic-ext-wght-normal.woff2`） |
+| `fontdef.common.css` | **15 个 CJK family**＝`Noto Sans Mono JP`／`Pretendard JP`／`Source Han Serif JP`／`Jetendard`／`Nanum Square Round`／`Pretendard`／`Source Han Serif KR`／`Noto Sans Mono SC`／`Resource Han Rounded SC`／`Noto Sans SC`／`Source Han Serif SC`／`Noto Sans Mono TC`／`Resource Han Rounded TC`／`Noto Sans TC`／`Source Han Serif TC` | 45 | `100 900`／`200 900`／`100,200,300,400` 混用 | normal, italic | **45 片** | ★★★ 文件头注释逐字＝`Generated by scripts/build_cjk_common_css.py. DO NOT EDIT.`＋`Concatenation of every CJK language-pack fontdef.css except _japanese/rounded/m-plus-rounded-1c, which is injected as its own stylesheet.`＋**15 行 `Sources:`** 路径清单（`_japanese/{mono,sans,serif}`／`_korean/{mono,rounded,sans,serif}`／`_simplified-chinese/{mono,rounded,sans,serif}`／`_traditional-chinese/{mono,rounded,sans,serif}`）⇒ **语言目录 × 类别 = 构建真源** |
+| `fontdef.m-plus-rounded-1c.css` | `M PLUS Rounded 1c` | **354** | 400／500／700 | normal | **354 片** | ★ 308,022 字符＝**13 份里最大**，且**完全没有压缩**（`@font-face {\n  font-family: 'M PLUS Rounded 1c';`）；分片粒度是**逐码点枚举**（首片 `U+25ee8, U+25f23, U+25f5c, …` 全在 CJK 扩展 B 区），末片回到 `U+20, U+2027, U+3001-3002, U+3041-307F, U+3081-308F, …`＝假名＋标点＋拉丁空格 ⇒ **按字形出现频率切片**，非常规 6 区 |
+
+⇒ ★★ **官方"支持中文"的实现口径**＝**4 个区域（`_simplified-chinese`／`_traditional-chinese`／`_korean`／`_japanese`）× 每区 3–4 个类别（sans／serif／mono／rounded）× 独立 `unicode-range`**，共 15 个 family，**不是一个"中文字体"**；日文圆体因为分片太多（354）被单独成文件、不并入 common。
+⇒ ★ **两种加载策略**＝数学字体 **20 faces 全部 `font-display:block`**（宁可留白等字体，也不要替代字形闪一下）vs UI 与 CJK 字体 **`font-display:swap`**。
+⇒ 本地对照（本轮实扫）＝**本地只有官方 21 个 family 里的 1 个**＝`Inter({ variable:'--font-sans', subsets:['latin'] })`（`src/app/layout.tsx:8-11`）⇒ **latin 单区、零 CJK 分片**；中文落哪个字体取决于用户机器（`src/app/globals.css:14` 的 `--font-serif` 里写了 `Georgia, 'Noto Serif SC', 'Songti SC'` 这类系统栈名）。☆ 本地 `--font-sans` 在 `@theme inline` 中自指（`:10`）＝**Tailwind v4 的正确写法**（引用 `next/font` 注入的运行时变量），本轮核实后**不登记为缺陷**。
+
+### 八、`BlankFont.css`＝AdobeBlank 空白兜底（1 face，CSS 层零引用）
+
+⇒ 逐字＝整份 **25,567 字符里 99% 是 base64**：`@font-face{font-family:AdobeBlank;src:url(data:font/opentype;base64,T1RUTwAKAIAAAwAgQ0ZG…==)}` ⇒ **无 `format()`、无 `font-display`、无 `unicode-range`、无 `font-weight`**。
+⇒ ★ 作用＝Adobe 系的**不可见字体**：字形缺失时显示为**空白**而不是豆腐块／系统替代字形。⇒ **`index.css` 里 `AdobeBlank` 0 处引用** ⇒ 消费点在 JS（按字体栈注入），本批未证。
+⇒ 本地＝**无 AdobeBlank、无 base64 字体、无 `size-adjust`**（grep 零命中）⇒ 缺字形时本地走系统 last-resort。
+
+### 九、★★★ 官方有**两套断点体系**＝`@container` 具名容器查询（★ 本批落盘时补做全库检索才找到，逐字 6 处）
+
+⇒ **声明处（全库唯一 1 处 `container-type`）逐字**＝`index.css` @134,582 逐字 `._mainWrapper_6sjpd_20{display:flex;flex-direction:column;height:100%;container-type:inline-size;container-name:web-shared-layout-main-wrapper}`（同一族还有 `._scrollRoot_6sjpd_28{flex:1;min-height:0}`，上游一个 `max-width:1280px`）⇒ **主内容区自己就是一个 inline-size 容器，名字等于它的角色**（web-shared-layout-main-wrapper）。
+
+| # | `@container` 查询（逐字） | 所在族 | 效果 |
+| --- | --- | --- | --- |
+| 1 | `@container web-shared-layout-main-wrapper (width < 452px)` | `_6sjpd_`（浏览屏文档网格） | `._docGrid_6sjpd_59{gap:8px;…}`＝**具名窄容器里网格间距收到 8px** |
+| 2 | `@container (width >= 768px)` | `_1m9yz_`（列表视图） | `._divider_1m9yz_56{left:14px;right:16px}` |
+| 3 | `@container (width >= 768px)` | `_1m9yz_` | `._listRow_1m9yz_142{padding:12px 16px 12px 14px}` |
+| 4 | `@container (width >= 768px)` | `_1m9yz_` | `._colUpdated_1m9yz_212,._colCreated_1m9yz_216{display:flex}`＝**"更新／创建"两列出现** |
+| 5 | `@container (width >= 1024px)` | `_1m9yz_` | `._colLastViewed_1m9yz_208{display:flex}`＝**"最后查看"列出现** |
+| 6 | `@container web-shared-layout-main-wrapper (width >= 600px)` | `TaskViews.css` 的 `_11co4_` | 页头三条覆写（`flex-wrap:nowrap`＋`_tabs{order:0}`＋`_tabsContent{padding:8px}`），且**外面还包着 `@media (width >= 748px)`＝合取** |
+
+⇒ ★★★ **读法**＝① 6 处里只有 2 处具名、**4 处匿名**（匿名＝沿最近祖先容器，也就是 `_mainWrapper`）；② **列表视图的列数完全由"内容区有多宽"决定**（768／1024 两档三列），这与第 105 批的"表格 `--st-*`"是同一族的响应式策略；③ 官方**同时保留视口断点**（`@media (width <= 747px)` 与 `(width >= 748px)`），两套是**分工不是替代**＝视口档管"移动端 vs 桌面"，容器档管"内容区宽窄／侧栏折叠"。
+⇒ ☆ **本目录历批把"侧栏展开／收起两档"当视口量是归因错位**（第 96／97 批的几何读数）⇒ ⚠ **仍未屏上复验**，列第 107 批队列②。
+⇒ 本地对照（本轮实扫）＝全库检索 `@container｜container-type｜container-name`（`src/` 三扩展名 css／tsx／ts）**只有 1 处**＝`src/components/ui/card.tsx:27`（Tailwind `@container/card-header`，卡片内部自用）⇒ **主布局零容器**、表格与列表全走 `md:`／`max-md:` 视口断点（`TableView.tsx:154`）⇒ 缺失（机制）＋ 行为不同（列分档参考系），登记 **G1079**。
+
+### 十、本节与本地的总结对照
+
+| 项 | 官方（本批） | 本地（本轮实扫） | 判定 |
+| --- | --- | --- | --- |
+| CSS 份数 | 13 份／858,303 字符，1 份按路由分包 | 1 份自写 `src/app/globals.css`（36,308）＋ KaTeX 原件 ＋ Tailwind 运行时 | 有意偏差（构建与分包机制不同） |
+| 数学排版 | KaTeX 0.16.25，368 条无前缀类名 | KaTeX 0.18.7，369 条带 `katex-` 前缀，同名仅 218 | 行为不同（跨版本不通） |
+| 代码块高亮 | 不在这 13 份里（`.cm-*` 0 命中） | 无 token 类名体系＝无着色 | 缺失 |
+| 字体 | 21 family／429 faces／CJK 四区 15 族 | 1 family／latin 单区 | 缺失＋有意偏差（不随包分发字体＝许可与包体） |
+| 缺字形兜底 | `AdobeBlank` | 系统 last-resort | 缺失 |
+| 表格接口 | `--st-*` 21 定义／7 档 z／8 宿主注入 | 两档硬编码 `z-10`／`z-20`，内距 12/8px | 缺失＋行为不同 |
+| 白板主题 | 67 个 `--color-*`、暗色靠 JS 覆写、主色紫 | tldraw（不同库） | 有意偏差（附原因＝库与协同已定） |
+| 框选 | `_fdch5__rubberBand` 样式存在 | 全库 `rubber`／`box-select` 零命中 | **待验证**（只有静态证据） |
+
+**仍未采到（本节）**：★ 容器查询的**屏上行为**未验（折叠侧栏时 `_mainWrapper` 宽度是否真的跨过 768／1024）；★ **`/calendar` 屏的资产并集未复验**（`title()` 本地超时）⇒ 名义上"13 份"只对 `/all`＋`/tasks` 两屏负责，**不能排除第 14 份**；84 个哈希族里 **81 个**未逐条读；官方代码块语法高亮的真身（JS 注入 vs 未落盘 chunk）未取证；`AdobeBlank` 与 `--st-*` 宿主注入的**JS 侧写入点**未反编译；`_fdch5__rubberBand` 的触发处（哪种视图、什么手势）未屏上验证；KaTeX 0.16↔0.18 的 150／151 条差集**未逐条列**（本轮只给计数与 20 条样本）；白板暗色在本地 tldraw 下的实现未读（`src/components/whiteboard/` 本轮未开）；`--st-*` 的 8 个宿主名在官方是由谁注入（组件 props？`style` 属性？）未证。

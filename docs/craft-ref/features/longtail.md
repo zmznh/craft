@@ -726,3 +726,120 @@ const redraw = async (elements) => {
 | 变量名大小写 | 本地 camelCase（`blueDark`／`greyLight`）vs 官方全小写 | 有意偏差候选（附原因＝本地沿用 JS 命名；⚠ CSS 变量大小写敏感，混用必失效） |
 
 **仍未采到（本节）**：brand 七族在**界面上的实际消费点**（哪些屏用 `brand-blue-300` 等）未统计，需要全 DOM 扫描或读 JS；`--editor-*` 10 色与代码块／数学块的**对应关系**未采（即"哪种语言 token 用哪个色"）；`--editor-spectrum` 用在哪个界面（疑似 AI／渐变头像背景，未证）；其余 12 份 CSS 是否另有第 4 套色阶；本地那两条"照抄 light"的 dark 值在真实暗色屏上的可读性（未截图对照，属可见度判断）。
+
+
+## 三十二、**长尾素材：13 份 CSS 的"原始清单层"＝TaskViews 19 个选择器串全集 ＋ KaTeX 20 face 逐支 ＋ CJK 45 face 逐族逐权重 ＋ m-plus 354 片的分片统计 ＋ roboto-mono 12 片全 `unicode-range` 逐字 ＋ 白板 67 个 `--color-*` 全列 ＋ `--st-*` 的 8 个宿主名与 1 个死变量**（✓盘上 第 106 批 2026-09-30 14:3x–15:2x，零写入；★ 本节只放"逐字清单"，解释与判定在 `styles.md §十三`／`internals.md §四十五`／`model.md §一之六十四`，gap 行 `gap.md` G1069–G1078；原始机读结果＝`_harvest/b106-census.json`／`b106-detail.txt`／`b106-verify.txt`／`b106-verify2.txt`）
+
+### 一、`TaskViews.css` 的 19 个选择器串（逐字，按文件内出现序）
+
+```
+._rubberBand_fdch5_1
+._heading_11co4_1._heading_11co4_1                         （出现 2 次＝基础＋宽屏覆写）
+._title_11co4_8 ／ ._title_11co4_8>h1                       （窄屏再出现 1 次）
+._tabs_11co4_24 ／ ._tabs_11co4_24::-webkit-scrollbar       （宽屏再出现 1 次）
+._tabsContent_11co4_37                                      （宽屏再出现 1 次）
+._settings_11co4_43 ／ ._settingsPlaceholder_11co4_48
+._card_ydla7_1 ／ [data-whatintent=keyboard] ._card_ydla7_1:focus
+._layer_ydla7_27
+._idle_ydla7_42,._action_ydla7_46._isAlwaysVisible_ydla7_46
+[data-whatintent]:not([data-whatintent=touch]) ._card_ydla7_1:hover ._idle_ydla7_42,
+[data-whatintent=keyboard] ._card_ydla7_1:focus ._idle_ydla7_42
+[data-whatintent]:not([data-whatintent=touch]) ._card_ydla7_1:hover ._action_ydla7_46,
+[data-whatintent=keyboard] ._card_ydla7_1:focus ._action_ydla7_46
+._iconSlot_ydla7_61
+```
+⇒ ☆ 20 条规则／19 个不同串／3 个族；at 块 6 个＝`@layer components` ×3 ＋ `@media (width <= 747px)` ×1 ＋ `@media (width >= 748px)` ×1 ＋ 其中的 `@container web-shared-layout-main-wrapper (width >= 600px)` ×1。
+
+### 二、KaTeX 0.16.25 的 20 个 face（family／weight／style／首个 `src` 文件名）
+
+```
+KaTeX_AMS/400/normal/KaTeX_AMS-Regular-BQhdFMY1.woff2
+KaTeX_Caligraphic/700/normal/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2
+KaTeX_Caligraphic/400/normal/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2
+KaTeX_Fraktur/700/normal/KaTeX_Fraktur-Bold-CL6g_b3V.woff2
+KaTeX_Fraktur/400/normal/KaTeX_Fraktur-Regular-CTYiF6lA.woff2
+KaTeX_Main/700/normal／KaTeX_Main/700/italic／KaTeX_Main/400/italic／KaTeX_Main/400/normal  （4 支）
+KaTeX_Math/700/italic／KaTeX_Math/400/italic                                               （2 支，★ 只有斜体）
+KaTeX_SansSerif/700/normal／400/italic／400/normal                                          （3 支）
+KaTeX_Script/400/normal ／ KaTeX_Size1/400/normal ／ KaTeX_Size2/400/normal
+KaTeX_Size3/400/normal  ← ★ src 首选是 url(data:…) 内联（全文件唯一 1 处 data URI）
+KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
+```
+⇒ ☆ 20 face × 3 格式（`woff2`／`woff`／`truetype`）＝**60 个 `url()`**；`font-display` 全部 `block`。
+
+### 三、CJK 包（`fontdef.common.css`）的 45 个 face ＝**逐族 × 逐权重**（本轮实测分解）
+
+| 语言目录 | family | face 数 | 权重清单（逐字） |
+| --- | --- | --- | --- |
+| `_japanese` | `Noto Sans Mono JP` | 1 | `100 900` |
+| `_japanese` | `Pretendard JP` | 1 | `100 900` |
+| `_japanese` | `Source Han Serif JP` | 1 | `200 900` |
+| `_korean` | `Jetendard` | **16** | 100／200／300／400／500／600／700／800，**每档 × 2（normal＋italic）** |
+| `_korean` | `Nanum Square Round` | 4 | 300／400／700／800 |
+| `_korean` | `Pretendard` | 1 | `100 900` |
+| `_korean` | `Source Han Serif KR` | 1 | `200 900` |
+| `_simplified-chinese` | `Noto Sans SC` | 1 | `100 900` |
+| `_simplified-chinese` | `Noto Sans Mono SC` | 1 | `100 900` |
+| `_simplified-chinese` | `Source Han Serif SC` | 1 | `200 900` |
+| `_simplified-chinese` | `Resource Han Rounded SC` | **7** | 200／300／**350**／400／500／700／900 |
+| `_traditional-chinese` | 同上四族（`… TC`） | 1＋1＋1＋7＝10 | 与 SC 逐字相同 |
+| **合计** | **15 个 family** | **45** | ★ JP 3＋KR 22＋SC 10＋TC 10 |
+
+⇒ ☆ `format()` 只有 `woff2`（与 KaTeX 的三格式不同）；`font-display` 全部 `swap`；`src` 路径全部**回溯到语言目录**（`../../_japanese/mono/noto-sans-mono/noto-sans-mono-jp-variable.woff2`）。
+
+### 四、`unicode-range` 的两套分片法（★ 同为"分片"，粒度差两个数量级）
+
+| 包 | 片数 | 逐字样本 |
+| --- | --- | --- |
+| `fontdef.roboto-mono.css` | 12（6 区 × 2 style，**同区 normal／italic 范围逐字相同**） | `cyrillic-ext: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F`／`cyrillic: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116`／`greek: U+0370-03FF`／`latin-ext: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF`／`latin: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD`／`vietnamese: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB` |
+| `fontdef.m-plus-rounded-1c.css` | **354**（首片起于 CJK 扩展 B 区） | 首片 `U+25ee8, U+25f23, U+25f5c, U+25fd4, U+25fe0, U+25ffb, U+2600c, …`（★ **逐码点枚举**，不是区间）；末片 `U+20, U+2027, U+3001-3002, U+3041-307f, U+3081-308f, U+3091-3093, U+3099-309a, U+309d-309e, U+30a1-30e1, U+30e3-30ed, U…`（假名＋标点＋拉丁空格）；**每片码点引用数 min=2／max=211，合计 24,840** |
+
+⇒ ☆ 文件名两形＝roboto-mono 用**区名**（`roboto-mono-cyrillic-ext-wght-normal.woff2`）、m-plus 用**权重＋序号**（`m-plus-rounded-1c-400.0.woff2`、`…400.1…`、`…400.2…`，354 个文件）。⇒ m-plus 的 weight 只有 400／500／700 三档、style 只有 normal。
+
+### 五、白板 67 个 `--color-*` 全列（108 条定义＝有重复覆写，本轮按首次定义取值；★ 分组只是本节排版用，**不宣称组内条数**）
+
+| 组 | 名＝值（逐字） |
+| --- | --- |
+| primary | `--color-primary #6965db`｜`-darker #5b57d1`｜`-darkest #4a47b1`｜`-hover #5753d0`｜`-light #e3e2fe`｜`-light-darker #d7d5ff`｜`--color-brand-hover #5753d0`＋`--color-brand-active #4440bf` |
+| 选中／滚动条 | `--color-selection #6965db`｜`--color-slider-track hsl(240, 100%, 90%)`｜`--color-slider-thumb var(--color-gray-80)`｜`--color-icon-white #ffffff` |
+| gray | `-10 #f5f5f5`｜`-20 #ebebeb`｜`-30 #d6d6d6`｜`-40 #b8b8b8`｜`-50 #999999`｜`-60 #7a7a7a`｜`-70 #5c5c5c`｜`-80 #3d3d3d`｜`-85 #242424`｜`-90 #1e1e1e`｜`-100 #121212`（★ 含 `-85`，11 档） |
+| surface／on | `-surface-high #f1f0ff`｜`-surface-mid #f6f6f9`｜`-surface-low #ececf4`｜`-surface-lowest #ffffff`｜`-on-surface #1b1b1f`｜`-surface-primary-container #e0dfff`｜`-on-primary-container #030064`｜`-border-outline #767680`＋`-border-outline-variant #c5c5d0` |
+| danger | `#db6965`｜`-dark #db6965`（★ 与基色同值）｜`-darker #d65550`｜`-darkest #d1413c`｜`-text black`｜`-background #fff0f0`｜`-icon-background #ffdad6`＋`-color #700000`＋`-icon-color #700000` |
+| warning | `#fceeca`｜`-dark #f5c354`｜`-darker #f3ab2c`｜`-darkest #ec8b14`｜`-text var(--text-primary-color)`｜`-background var(--color-warning)`｜`-icon-background var(--color-warning-dark)`＋`-color`／`-icon-color` 同指 `--text-primary-color` |
+| success | `#cafccc`｜`-darker #bafabc`｜`-darkest #a5eba8`｜`-text #268029`｜`-contrast #65bb6a`｜`-contrast-hover #6bcf70`｜`-contrast-active #6edf74` |
+| muted／其他 | `--color-muted var(--color-gray-30)`｜`-darker var(--color-gray-60)`｜`-darkest var(--color-gray-100)`｜`-background var(--color-gray-80)`｜`-background-darker var(--color-gray-100)`；`--color-disabled var(--color-gray-40)`｜`--color-promo var(--color-primary)`｜`--color-logo-icon var(--color-primary)`｜`--color-logo-text #190064`｜`--color-badge #0b6513` |
+
+⇒ ★ 三个"看起来是规律"的读数＝① **`--color-danger` 是 `--color-primary` 的 R/B 互换**（`6965db`→`db6965`）＝白板色板是**派生自品牌色**的；② `--color-danger-dark` 与基色同值＝该档**实际无效**（可能是 vendor 遗留）；③ 灰阶 11 档里 **`-85` 是插入档**（暗色 UI 用）。
+
+### 六、`--st-*` 的两份清单（★ 21 条定义在 `styles.md §十三.三` 已逐字，本节给"消费面"）
+
+⇒ **被 `var()` 消费的 28 个名字**＝`--st-page-bg`、`--st-page-bg-hover-opaque`、`--st-selection-bg-opaque`、`--st-selection-hover-bg-opaque`、`--st-border-color`、`--st-border-radius`、`--st-index-bg`、`--st-index-bg-hover`、`--st-index-bg-selected`、`--st-index-bg-selected-hover`、`--st-scroll-left`、`--st-text-color`、`--st-max-height`、`--st-grid-columns`、`--st-row-height`、`--st-cell-padding-x`、`--st-cell-padding-y`、`--st-index-column-width`、`--st-font-family`、`--st-card-title-line-height`、`--st-accent-selection`、`--st-selection-color` ＋ 7 个 `--st-z-*`。
+⇒ **8 个"只消费不定义"＝宿主注入清单**＝`--st-page-bg-hover-opaque`／`--st-selection-bg-opaque`／`--st-selection-hover-bg-opaque`／`--st-border-color`／`--st-selection-color`／`--st-accent-selection`／`--st-grid-columns`／`--st-font-family`。
+⇒ **1 个"定义了却零消费"＝死变量**＝`--st-z-index-cell-header: 2`。
+⇒ ☆ 表格族前缀共 3 个（`_l4u28_`／`_1xjl6_`／`_z4j2j_`），`--st-*` 横跨三者 ⇒ **变量是"跨组件共享层"，类名是"组件私有层"**。
+
+### 七、名册取证数据（★ 记法本身要留档，否则下批复现不了"13 份"这个结论）
+
+⇒ `/all`（所有文档）屏 `pageAssets` 资产 **128 个** → 点侧栏「任务」进任务屏 **139 个**，差集里唯一新增的 CSS＝`TaskViews.css.DghTjfLb.css`；⇒ `AIChatPopup.css`／10 份 `fontdef.*`／`BlankFont.css`／两份 `vendor-*` 全部在 `/all` 屏就已出现（＝**不按需加载**）；⇒ ⚠ **`/calendar` 屏未复验**（`T.title()` 本地超时＝tab 级队列停摆，当场停手、`browsers.list()` 确认控制面存活后 `close()`）⇒ **"13 份"只对 `/all`＋`/tasks` 两屏负责**。
+
+### 八、★★★ 具名容器查询的逐字原文（★ 本批落盘时补做全库检索才拿到，与 §十三.九 互为"清单↔解释"）
+
+```
+/* 声明（全 13 份里唯一 1 处 container-type，在 index.css @134,582）*/
+._mainWrapper_6sjpd_20{display:flex;flex-direction:column;height:100%;
+  container-type:inline-size;container-name:web-shared-layout-main-wrapper}
+._scrollRoot_6sjpd_28{flex:1;min-height:0}
+
+/* 消费点（6 处）*/
+@container web-shared-layout-main-wrapper (width < 452px){._docGrid_6sjpd_59{gap:8px;grid-templ…}}
+@container (width >= 768px){._divider_1m9yz_56{left:14px;right:16px}}
+@container (width >= 768px){._listRow_1m9yz_142{padding:12px 16px 12px 14px}}
+@container (width >= 768px){._colUpdated_1m9yz_212,._colCreated_1m9yz_216{display:flex}}
+@container (width >= 1024px){._colLastViewed_1m9yz_208{display:flex}}
+@container web-shared-layout-main-wrapper (width >= 600px){…TaskViews 页头三条覆写…}
+      ← 这条外面还包着 @media (width >= 748px){…}＝合取，不是替代
+```
+
+⇒ ☆ 检索口径（可复现）＝对 13 份逐份 `grep -o '@container'` 与 `grep -o 'container-type'` ⇒ **只有 `index.css`（5 ＋ 1）与 `TaskViews.css`（1 ＋ 0）非零**；⇒ ★ 其余 11 份（含两份 vendor 与十份字体包）**一处容器查询都没有**＝容器策略只用在 Craft 自写的浏览／列表／任务三面。
+
+**仍未采到（本节）**：84 个哈希族里除 `_fdch5_／`_11co4_`／`_ydla7_`／`_apokp_` 之外**全部未逐条读**；KaTeX 150／151 条差集**只给了计数与 20 条样本**，未出全表；白板 108 条 `--color-*` 定义里的**重复覆写位置**（谁在后、是否暗色注入）未定位；`--st-*` 的注入方（组件 props／内联 `style`／JS）未反编译；`AdobeBlank` 的消费点未找到；m-plus 354 片的**权重×序号分布**（400／500／700 各多少片）未拆；`fontdef.*` 的 `src` 指向的 **woff2 本体未落盘**（只取了 CSS）；★ 官方**是否存在第 14 份 CSS**（日历屏）未证。

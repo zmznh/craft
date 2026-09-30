@@ -2813,3 +2813,48 @@ HJe = (t, e) => { let n = {};
 ⇒ ☆ 对本地 schema 的含义：**这些状态里只有"勾选／半选／禁用"进了数据模型**（`checked`/`disabled` 是块属性），其余（`_isStatic`、`_isActive`、`[data-popup-open]`、`[data-ds=…]`）全是**视图期状态**，不应落库；⇒ 本地若把"当前选中项"当数据存，就会与官方在撤销粒度／同步面上不一致。
 
 **仍未采到（本节）**：`[data-interactive]` 的**实际使用者**（哪些自绘控件挂它）未统计，需要读 JS 或全 DOM 扫描；`data-whatintent` 的**写入方与取值全集**未读到（在 JS 里，不在 CSS）；`_isStatic` 由谁设置（是"非交互渲染"还是"性能优化"）未证；`[data-ds=…]` 的取值全集（本批只撞到 `avatar` 一个）未枚举。
+
+
+## 一之六十四、**字体不是自由字符串＝21 个 family 的封闭名单（429 faces／CJK 靠 `unicode-range` 自动分流，"语言"不进模型）；白板 67 个 `--color-*` 与 `--st-*` 8 个宿主注入名都是运行时态、不是字段**（✓盘上 第 106 批 2026-09-30 14:3x–15:2x，来源＝新落盘的 12 份官方 CSS；逐字全表在 `styles.md §十三.六／七`，机制解释 `internals.md §四十五`，gap 行 `gap.md` G1072／G1073／G1074／G1075）
+
+### 一、字体名单（family 全集 21 个，逐字；★ 这是一份"可选值枚举"，不是实现细节）
+
+| family（官方逐字） | faces | `font-weight` 写法 | 分片 | 归属 |
+| --- | --- | --- | --- | --- |
+| `Inter` | 2 | `100 900`（**variable**） | 否 | UI 主字体（＋italic 一支） |
+| `Source Serif` | 2 | `200 900`（variable） | 否 | 衬线 UI |
+| `Avenir Next Rounded` | 8 | 400／500／600／700 离散 | 否 | 圆体 UI（× 2 style） |
+| `Untitled Serif` | 6 | 400／500／700 离散 | 否 | 展示衬线（× 2 style） |
+| `Roboto Mono` | 12 | `100 700`（variable） | **6 区**（cyrillic-ext／cyrillic／greek／latin-ext／latin／vietnamese）× 2 style | 等宽 |
+| `Noto Sans SC`／`Noto Sans TC` | 各 **1** | `100 900`（variable） | 是 | 简／繁黑体 |
+| `Noto Sans Mono SC`／`TC`／`JP` | 各 **1** | `100 900`（variable） | 是 | 三语等宽 |
+| `Source Han Serif SC`／`TC`／`KR`／`JP` | 各 **1** | `200 900`（variable） | 是 | 四语衬线（★ KR 也归在 Source Han Serif 名下） |
+| `Pretendard`／`Pretendard JP` | 各 **1** | `100 900`（variable） | 是 | 韩文主字体；日文复用 Pretendard JP |
+| `Jetendard` | **16** | 100–800 **离散 8 档 × 2 style** | 是 | 韩文等宽（＝45 faces 里最占数的一族） |
+| `Nanum Square Round` | **4** | 300／400／700／800 离散 | 是 | 韩文圆体 |
+| `Resource Han Rounded SC`／`TC` | 各 **7** | 200／300／**350**／400／500／700／900 离散 | 是 | 中文圆体（★ 官方唯一出现 **350** 权重的族） |
+| `M PLUS Rounded 1c` | **354** | 400／500／700 | **354 片**（逐码点枚举，每片 2–211 个引用、合计 **24,840** 个码点引用） | 日文圆体，★ 唯一不并入 `common` 的包 |
+| `AdobeBlank` | 1 | 无描述符 | 否 | ★ 空白兜底（base64 内嵌，CSS 层零引用） |
+| `KaTeX_*` × 12（AMS／Caligraphic／Fraktur／Main／Math／SansSerif／Script／Size1／Size2／Size3／Size4／Typewriter） | 20 | 400／700 | 否 | 数学排版专用 |
+| `Assistant`（白板） | 4 | 400／500／600／700 | 否 | ★ 白板自己的 UI 字体，与主 app 的 Inter 并存 |
+
+⇒ ★ **45 个 CJK face 的分解（本轮逐字统计）＝JP 3＋KR 22＋SC 10＋TC 10＝45**；⇒ 三语主字体走 variable（1 face 覆盖 100–900），只有 `Jetendard`／`Nanum Square Round`／`Resource Han Rounded SC·TC` 是离散档位 ⇒ **同一个"字体"概念在官方数据里是两种粒度**（一 face 覆盖全字重 vs 每字重一 face）。
+⇒ ★★ **对模型的第一条含义＝"文档语言"不是字段**＝官方 45 个 CJK face 全靠 `unicode-range` 分流，**同一段文字里混中英文会逐字符切换字体**，不需要 `locale`／`language` 属性 ⇒ 本地若加"中文字体开关"是错的方向；正确做法是把字体栈写成**带 `unicode-range` 的多 face**（本地现在只有 `Inter subsets:['latin']`，中文落系统栈＝`src/app/layout.tsx:8-11`）。
+⇒ ★ 第二条含义＝**字体候选集是封闭枚举**（21 个 family，其中真正给用户的 UI 字体是 Inter／Source Serif／Avenir Next Rounded／Untitled Serif／Roboto Mono ＋ 15 个 CJK ＋ 兜底与 vendor）⇒ 本地 `document` 级字体偏好字段（若有）应校验在这个集合内，而不是自由文本。
+⇒ ☆ 第三条＝**两种 `font-display` 策略是数据语义的反映**＝数学 20 faces 全 `block`（式子不能先闪替代字形）、UI 与 CJK 全 `swap`；白板那 4 个 face 写的是 `display:swap`（**描述符拼错、实际未生效**＝vendor 缺陷，见 `internals.md §四十五.一`）。
+
+### 二、白板与表格＝**运行时态，不进文档模型**（★ 本节的判据价值在这条）
+
+| 观测 | 逐字证据 | 模型判定 |
+| --- | --- | --- |
+| 白板主题 | `--color-*` 67 个名／108 条定义，**整份文件 0 处 `[data-theme]`／`prefers-color-scheme`** | ⇒ 暗色**不是存储字段、也不是 CSS 双档，而是运行时覆写变量** ⇒ 本地不应把白板配色入库（与历批"偏好分纯本地 vs 服务端同步"的分界线一致，见 `internals.md` 的 `CACHE_KEY` 一节） |
+| 表格列模板 | `--st-grid-columns` **只被消费、从不定义**，兜底 `none` | ⇒ 列宽由宿主**逐实例注入**（JS 算完写内联变量）⇒ **列宽属于视图配置而不是块属性**（与 §一之十 的"`views: []` 挂在 `objectList` 块上"同族，本地对应 `CollectionView` 表） |
+| 表格滚动位 | `--st-scroll-left: 0px` ＋ `--st-index-bg: var(--st-page-bg, #fff)` | ⇒ 滚动偏移是**会话内视口态**，官方把它做成变量而非 state ⇒ 本地不需要为它建字段 |
+| 表格选中色 | `--st-selection-bg-opaque` 兜底 `rgb(194, 223, 255)`、hover `rgb(173, 212, 255)` | ⇒ 选中态是 UI 态，不入数据；但**不透明版本的存在**说明"冻结列必须遮住内容"＝渲染约束，不是数据约束 |
+
+### 三、★ 数学块的跨版本风险＝**序列化不受影响、渲染类名受影响**
+
+⇒ 官方 KaTeX **0.16.25** 用无前缀类名（`.base`／`.strut`／`.rule`／`.sqrt>.root`），本地 **0.18.7** 用前缀（`.katex-base`…），**368 vs 369 条选择器里只有 218 条同名**。
+⇒ 对模型的含义＝**块内容里存的 LaTeX 源不受影响**（数学块的持久化是源字符串，历批已证子树序列化成 markdown），但**任何"导出 HTML 再回灌"的通路会类名不通**⇒ 若本地做"官方导出的 HTML 直接渲染"，必须锁版本（0.16.x）或只做视觉对齐（`gap.md` G1070 的两条路）。
+
+**仍未采到（本节）**：官方**用户可选的字体列表**（是全部 21 个还是 UI 那 5 个）未从界面确认，需要读设置屏或 i18n 的 `style.*` 命名空间；`AdobeBlank` 与 `--st-*` 的 JS 侧写入方未反编译；CJK 各 family 的**具体 face 数**（本轮只给 15 族的名单与合计 45，未逐族拆）；`--st-grid-columns` 的实际值形态（`repeat(...)`？）未采到；白板主题在本地 tldraw 下的实现未读（`src/components/whiteboard/` 本轮未开）；★ 字体偏好是否**随文档持久化**（本地字段该不该存在）未验证，需要一次屏上写入实验（属写入批）。
