@@ -2530,3 +2530,38 @@ if (type === "fixed") {
 ⇒ ☆ **中断即停执行记录**＝挂死后立即停止屏上动作，**没有**在挂死的队列上重试点击，**没有**为了"把现场收干净"去做不可逆动作。
 
 **仍未采到（本节）**：① 主题面板触发器（只剩块把手一条候选）；② 屏上选择模式能否勾到"屏上列不出"的条目（未跑）；③ 屏上回收站的查询条件（为什么不含 MCP 软删项）；④ 焦点在块内时 `Ctrl+Z` 的撤销归属（每块一个实例 ⇒ 跨块是否合并）；⑤ 五档无 grammar 的语言在**导出 markdown** 里语言名是否仍写对；⑥ 本地配色的屏上视觉自证（没来得及开 `localhost:3000`）；⑦ ☆ 用户标签页那条"未还原"欠账的结案方式＝现场消失（**没有**拿到"通过通路还原"的证据，要按此置信度使用）。
+
+## V108〔第 114 批 2026-10-01 04:4x–05:2x 本地＝UTC 09-30 20:4x–21:2x〕**零屏上动作批＝盘上反编译 ＋ 本地配色自证；★ 官方屏幕一次都没碰（连接器仍挂死，本批未尝试），建／删实体零件 ⇒ `manifest.jsonl` 本批零追加**（☆ 结论在 `gap.md` §三点一〇六四 G1192–G1208，机制在 `internals.md` §五十三，逐字在 `longtail.md` §四十）
+
+### 一、★★★ 本批"动作面"只有两处，都在本机
+
+⇒ ① **盘上反编译**＝对 `_harvest/js`（105 个 chunk，历批缓存，本批未新增下载）做定点抓取；工具＝`_harvest/dump.mjs`（大括号配平＋偏移打印）＋ 三个本批新脚本（`b114-style-precedence.cjs`／`b114-style-precedence2.cjs`／`b114-factory-names.cjs`）。
+⇒ ② **本地配色自证**＝`_harvest/b114-palette-proof.cjs`（Playwright 直连本机 `next dev`）。
+
+### 二、★★ 本地配色自证的完整操作序列（13 步，全部可复跑）
+
+1. `PORT=3100 npx next dev`（后台）⇒ ☆ **不复用 3000**（用户的另一棵树占着；本批实测两端口同时活着，且**只有 3100 那份 CSS 里含 `--code-background`**＝抓两端口同名的 `[root-of-the-server]__1t_mbw6._.css` 各自扫一遍，一有一无 ⇒ ★ **同名 chunk 文件不等于同一棵树**，别按 URL 判同源）。
+2. `curl -s -D - http://127.0.0.1:3100/` ⇒ 逐字 `HTTP/1.1 307 Temporary Redirect` ＋ `location: /login?callbackUrl=%2F` ⇒ ☆ 本 worktree **无 `.env`**（`ls -a` 只有 `next-env.d.ts`）⇒ 未登录。
+3. 先按"提交一条 e2e 测试"做：写 `e2e/code-block-palette.spec.ts`（真编辑器＋`getComputedStyle`）＋ 临时 `playwright.palette.config.ts`（baseURL 指 3100、只让 Playwright 起两个协作服务）。
+4. `E2E_BASE_URL=http://localhost:3100 npx playwright test --config playwright.palette.config.ts ...` ⇒ **失败在起服务阶段**：`src/collab/secrets.mjs:11` 逐字抛 `Error: 缺少签名密钥：请设置 COLLAB_SECRET 或 AUTH_SECRET 或 NEXTAUTH_SECRET（至少 32 字符随机值）` ⇒ `Error: Process from config.webServer was not able to start. Exit code: 1`。
+5. ☆ **判定＝不伪造、不绕过**：没有去造 `.env`／塞假密钥（那是给仓库落一份凭据文件），而是**撤掉未跑过的测试**＝`rm e2e/code-block-palette.spec.ts playwright.palette.config.ts` ⇒ `git status` 回到干净（★ 规则化＝**不提交没跑过的测试**）。
+6. 换切口＝**不依赖登录态**：在 `/login` 这一页（它已加载 `globals.css`）注入与编辑器同构的 DOM＝`<div class="tiptap"><pre><code>` ＋ 31 枚 `<span class="hljs-…">`（★ 覆盖八组规则的**全部选择器形态**，含 `hljs-title class_` 这种双类名，以及八枚"官方没着色"的守卫类）。
+7. 亮档读数＝逐枚 `getComputedStyle(span).color` ＋ `pre` 的 `background-color` ＋ `code` 的 `color` ⇒ 逐字 `light spans=31 pre=rgb(251, 251, 251) code=rgb(61, 61, 61) ALL MATCH`。
+8. 切暗档＝`document.documentElement.classList.toggle('dark', true)`（☆ **不需要 reload**，因为十枚 token 定义在 `.dark` 上、next-themes 也是往 `<html>` 挂 class ⇒ 与真实换档同一条 CSS 通路）。
+9. 暗档读数＝逐字 `dark spans=31 pre=rgb(40, 41, 43) code=rgb(206, 207, 208) ALL MATCH`。
+10. 两档各截一张（`clip` 到 `pre` 外扩 12px）⇒ `_harvest/b114-local-codepalette-light.png`／`-dark.png`（各 760×726）。
+11. ★ **两张都读过图**（不是只看字节）＝亮档：注释灰、符号紫、字面量蓝、关键字红、字符串深藏青、名字／引用绿、`section` 粗体、`emphasis` 斜体、`deletion` 红，**最后八枚继承前景灰**；暗档同分组换色，且 `section`／`emphasis` 与符号同为 `#d2a8ff`＝**官方值本身如此**（不是 bug）。
+12. 落机器可读证据＝`_harvest/b114-palette-proof.json`（两档各 31 条读数与差集）。
+13. ☆ **证据等级自标**＝CSS 层（合成 DOM），**不是编辑器实景**；实景需要一份能跑的本地栈（凭据＋库）⇒ 进台账「十三」阻塞行，不混进步骤 11 的结论。
+
+### 三、★★ 盘上侧的"一次判错与纠正"（要留，否则会以为结论是白捡的）
+
+⇒ ① **`grep -c "HighlightStyle"` 全 0** ⇒ 差点判成"CM6 的 `HighlightStyle` 不在这个 bundle"；⇒ 改用结构关键字 `hierarchical` 探，结果命中的**全是 ELK（J2CL 编译的图布局库）**，绕了一段；⇒ 最后用**使用点反查**（上批已录的 `uE.define`）定位到 `class uE`@300,114 ⇒ ☆ 规则＝**混淆名要用"使用点＋形状"反查，不要用可读名 grep 计数**。
+⇒ ② **`CE` 有四份同名定义**（`vendor-code-editor` 里是 ELK 的 setter、`vendor-excalidraw` 里是构造器、`vendor-react` 里是 `dns-prefetch`、`index` 里才是 zod 枚举工厂的**导入别名**）⇒ 前三个都是**假命中**；⇒ ☆ 规则＝别名必须沿 `import{X as Y}` → 目标 chunk `export{real as X}` 两跳查，**不能按字母猜、也不能按名字取第一个命中**。
+⇒ ③ **审计脚本少数两档**（箭头式与函数声明两种语法形态）⇒ 见 `longtail.md` §四十.八.①。
+
+### 四、☆ 禁区与写入面复核（本批）
+
+⇒ 未动官方屏幕 ⇒ 没有点击、没有导航、没有建／删实体、没有改任何账户级偏好；未读 cookie／storage／token；`craft` MCP 本批零调用；⇒ 本地侧只写了 `_harvest/`（gitignore）与两个**随后删除**的临时文件；⇒ ☆ 三条沙盒残留（`B109-CODEFIELD`／`B111-THEME`／`B113-CODEBLOCK`）本批**一条都没清**（连接器挂死＋不可逆动作需新的具名授权）⇒ 仍按第 113 批登记的现场原样保留。
+
+**仍未采到（本节）**：① 编辑器**实景**截图（真 TipTap 渲染的代码块，含表头语言选择条）＝需本地栈凭据与库；② 低亮度下"官方 inline 摊平"与"本地无条件摊平"的**视觉差**（要造一个含代码块的表格单元格，属官方写入面 ⇒ 需点头）；③ `?dark`／`?light`／`?system` 三个 URL 开关在**官方屏上**是否真的生效（本批只读到代码，未做屏上验证＝☆ 零成本候选，且**不改偏好、不碰禁区**，下批可优先试）；④ 两枚强制明暗特性开关的键名。

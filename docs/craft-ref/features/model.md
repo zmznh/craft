@@ -3078,3 +3078,28 @@ HJe = (t, e) => { let n = {};
 6. ☆ **MCP 写侧回包形态两条新基线**＝① `blocks add` 多块＝`Added N blocks.` ＋ 枚举多数 id ＋ `(+1 more)`（⇒ 要全量 id 就 `blocks get <root> --depth 1 --format json`，本批就是这么把六块的 `id`／`language`／`rawCode`／`markdown` 逐键读回的）；② `documents create` 的第二个 id **只在 app link 行**，不要指望有独立字段。
 
 **仍未采到（本节）**：① 屏上回收站的查询条件（哪个字段决定"进不进屏上列表"）；② 两 id 的正向映射是否存在（非 URL 通路）；③ `restore` 类动词在 MCP 面到底有没有（历批结论＝没有，本批未复探）；④ 每块一个 CM6 实例 ⇒ 跨块撤销是否合并（行为未跑）；⑤ grammar 缺失的五档在**导出 markdown** 里是否仍写对语言名（本批只看了读回，没看导出）。
+
+## 一之七十二、**第 114 批＝"明暗"其实是三条互不相干的轴（界面 `forcedDarkOrLightMode` 两值＋null、页面纸色 `colorMode` 三值含 `dynamic`、代码块主题 `theme` 字面量两分支），而"导出"这条通路不是只读的：它会改写传进去的块模型**（✓盘上 2026-10-01 04:4x–05:2x；★ 机制在 `internals.md` §五十三，逐字在 `longtail.md` §四十，gap 在 `gap.md` §三点一〇六四 G1205–G1207）
+
+### 一、★★★ 三条轴的字段表（本地建模时**不要合并**，官方就没合并）
+
+| 轴 | 载体 | 取值域（存储） | 取值域（UI） | 默认 | 校验器 | 是否入库 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 界面明暗 | `forcedDarkOrLightMode` | `light`／`dark`／**`null`** | `light`／`dark`／`system` | `"system"` | zod 枚举 `CE(["light","dark"])`（⇒ **只校验显式写入**） | 是（`system` 存成 `null`） |
+| 界面明暗·派生 | `resolvedColorScheme` | `light`／`dark` | 同左 | 运行时算 | 无（`Ik()` 的输出） | ★ **不入库**（每次从 开关＞URL＞存储＞matchMedia 现算） |
+| 页面纸色 | `colorMode`（页面样式预设自带） | `light`／`dark`／`dynamic` | 同左 | 由 `calcPaperColorMode` 从 `{light,dark}` 两个色**算出来** | `Bet()`：非法值兜成 **`dynamic`** | 随页面样式预设走（不是账户级偏好） |
+| 代码块主题 | 名册工厂里的 `theme` 字面量 | `light`／`dark` | 屏上是 20 档主题名，不是明暗档 | 每档写死（★ 与档名可以相反） | 无（解构默认值，参数进不来） | 随块 `pluginData` 与账户 `codeEditorDefaultTheme` 两层 |
+⇒ ⇒ ★★★ **一条建模结论**＝"明暗"在官方**不是一个枚举被三处复用**，而是三套各自成立的机制；⇒ ☆ 本地现状（本轮实扫）＝`src/actions/user/preferences.ts:6` 把 `light|dark|system` 三值**全部入库**、`src/components/theme/ThemeProvider.tsx:8-10` 交给 next-themes 在渲染期解析 ⇒ 本地**没有** resolved 字段这一层，也没有页面纸色轴。
+
+### 二、★★★ "导出"不是只读操作＝块模型会被就地改三处
+
+⇒ 触发条件＝**表格某个单元格里的那个块自己有子块**（`S = P.subBlocks?.length`）；⇒ 改动逐字（`vendor-craft-export` @40,151 一带）＝① `P.content = Ri.getUUID()`（★ 仅当 content 为空）＋ `P.styleAttributes.textRuns = [{text:P.content, range:[0,P.content.length]}]`；② 该块在表格里的渲染结果被丢弃、换成 `**[[#<content>]]**`；③ 表后重出时 `g.styleAttributes.textStyle = "title"` ＋ `g.styleAttributes._runAttributes = []`。
+⇒ ⇒ ★★★ **含义**＝导出一次，内存里的块模型就被改脏（标题可能被换成一个 UUID 字符串、行内样式被清空、层级被压平成一个 `# ` 块）；⇒ ☆ 这不是"导出结果不同"而是**副作用泄漏**——同一篇文档连续导出两次，第二次进的是第一次改过的模型（本批判为官方缺陷候选，未做屏上验证＝要写入实验，本批零预算）。
+⇒ ☆ 本地对照＝本轮实扫 `src/lib/document-codec/index.ts:61-215` 全文没有一条对入参 `node` 的赋值 ⇒ **本地是纯函数** ⇒ 记为"有意偏差（本地做法更稳，不照抄）"。
+
+### 三、★★ 单元格的内容在模型层"少三样东西"
+
+⇒ 官方 inline 语境（＝单元格）逐字三抑制＝① `{{#unless inline}}{{{getHeading ...}}}{{/unless}}` ⇒ **没有标题前缀**；② `{{#unless inline}}{{lineAfterBlock ...}}{{/unless}}` ⇒ **没有块间分隔**；③ `subBlocks: i?void 0:e.subBlocks` ⇒ **子块整个不进上下文**。
+⇒ ⇒ ★ **含义**＝"单元格里放一个带子块的块"这件事在官方导出里**只有两种结局**：要么内容被压成一行内联文本（无子块），要么（有子块时）走 §二那条"换成块链＋表后重出"。⇒ ☆ 本地现状＝`src/lib/document-codec/index.ts:128-137` 用 `textContent(cell)` ⇒ **永远走"压成一行"这一支**，且无条件摊换行 ⇒ 与官方差在"没有第二支"，而不是"第二支做得不对"。
+
+**仍未采到（本节）**：① 页面纸色 `colorMode` 在**数据面**的落点（是随 `pageStyle` 一起存，还是每次由 `calcPaperColorMode` 现算）；② `isBrightColor` 的阈值与色彩空间（决定"两值相等时"怎么分档）；③ 账户级是否还有第三条"跟随系统"的独立开关（本批只看到 `forcedDarkOrLightMode` 一枚）；④ 导出副作用能否在屏上观测（要一次写入实验：连续导出两次并比对块内容）。

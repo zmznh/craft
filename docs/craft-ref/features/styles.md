@@ -986,4 +986,71 @@
 
 ⇒ ☆ **为什么不单开一节**＝本批没有新的样式读数，只做了一件事＝**把 §十九.一 那张 `craftlight` 表拿去屏上复核**：同一篇文档里并排六块（五档无 grammar ＋ `python` 对照），实测 `python` 块出现三组色＝`def`／`return` 红、`f`／`x`／`1`／`+` 蓝、`# note` 灰，逐一对应 `keyword→#d73a49`、`variableName/attributeName/number/operator→#005cc5`、`comment/bracket→#6a737d`；☆ 另两条几何读数与历批一致＝**每块都有行号槽**、块底色浅灰白（`--code-background` 那档 `#FBFBFB`）。
 ⇒ ★ 由此把 §十九 的一条"未证"降级为"已证"＝**名册色板确实会渲染成屏上像素**（此前只有码路与 CSS 生成层证据，没有屏上像素）；☆ 同时**没有**给 §十九 的 `!important` 层加新值（`line-height:24px`／`font-size:14px`／`min-width:36.8px` 三条本批未重测）。
-⇒ ☆ 本地对应面（本轮实扫）＝`src/app/globals.css:172-186`（`:root`＝`craftlight` 逐字）／`:327-338`（`.dark`＝`craftdark` 逐字）／`:424-500`（八组 `.hljs-*` 规则）⇒ 提交 `0bc777b`；⚠ **本地侧的屏上自证仍欠**（连接器在本批末挂死，没来得及开 `localhost:3000`）⇒ 记在台账「十二」的 P1 行。
+⇒ ☆ 本地对应面（本轮实扫）＝`src/app/globals.css:172-186`（`:root`＝`craftlight` 逐字）／`:345-355`（`.dark`＝`craftdark` 逐字）／`:452-526`（八组 `.hljs-*` 规则）⇒ 提交 `0bc777b`；⚠ **本地侧的屏上自证仍欠**（连接器在本批末挂死，没来得及开 `localhost:3000`）⇒ 记在台账「十二」的 P1 行。
+
+### 十九之续（第 114 批）＝**第一次按"计算结果"而不是"声明"读 20 档色板：6 档的 `link` 实际不上色、4 档的 `annotation` 前一条是死声明；外加本地两档在真浏览器里的 62 个 computed 读数全部对上官方值**（✓盘上＋本地 2026-10-01 04:4x–05:2x 本地＝UTC 09-30 20:4x–21:2x；★ gap 在 `gap.md` §三点一〇六四 G1192–G1199／G1208，判据本体在 `internals.md` §五十三.一–四，逐字在 `longtail.md` §四十.一–四）
+
+#### 一、★★★ 为什么"声明表"和"有效表"不是一张（判据一句话）
+
+⇒ CM6 的 `styleFor`（本批逐字，`vendor-code-editor-BLm003PU.js` @275,545）把 `styles` 数组摊成一张 **`tag.id → class` 的平表**，逐条**后写覆盖前写** ⇒ ⇒ ★ 只要同一档里某个 tag 出现两次，**前一条就退化成"生成了 class 名、但没有任何元素引用它"的死 CSS**（class 仍在 `StyleModule` 里，屏上不可见）；⇒ ☆ 而 `...r` 尾串恒为空（§五十三.三）⇒ 这些重复**全是工厂自己写进去的**，不是运行时拼进来的。
+
+#### 二、★★★ 20 档"有效色"审计表（本轮实扫，逐档）
+
+| 档（名册键） | 工厂／`theme` 字面量 | 条目数 | 被覆盖的 tag | 覆盖前 → 覆盖后（有效值） |
+| --- | --- | --- | --- | --- |
+| `craftlight` | `io`／light | 9 | ☆ 无跨条覆盖（条内 `typeName` 写了两遍，同色无害） | — |
+| `craftdark` | `fo`／**light**（★ 与档名相反，承 G1118） | 9 | ☆ 同上 | — |
+| `atomone` | `co`／dark | 8 | 无 | — |
+| `aura` | `mo`／dark | 20 | ★ `link` | `#61ffca` → **只有 `text-decoration:underline`、颜色退回 foreground** |
+| `bbedit` | `po`／light | 13 | 无 | — |
+| `darcula` | `no`／dark | 9 | 无 | — |
+| `dracula` | `ko`／dark | 8 | `atom`（同色两次） | `#bd93f9` → `#bd93f9`（无视觉差） |
+| `githublight` | `xo`／light | 15 | ★ `link`；☆ 条内 `typeName` 重复；`regexp` 同色两次 | `#032f62` → **只有下划线、无颜色** |
+| `githubdark` | `vo`／dark | 14 | ☆ 条内 `typeName` 重复 | — |
+| `gruvboxdark` | `No`／dark | 34 | ★ `annotation` | `#fb4934d`（★ 7 位＝**非法色、整条声明被丢**）→ `#d3869b` |
+| `gruvboxlight` | `So`／light | 34 | ★ `annotation` | `#9d0006` → `#8f3f71` |
+| `materialdark` | `Lo`／dark | 36 | ★ `annotation` | `#ff5f52` → `#ffad42` |
+| `materiallight` | `Ao`／**dark**（★ 与档名相反） | 20 | ★ `link`；☆ `invalid` 用 8 位十六进制 | `#91B859` → **只有下划线、无颜色**；`#E5393570`＝**合法 CSS Color 4 `#RRGGBBAA`（alpha≈44%）** |
+| `noctislilac` | `Io`／light | 15 | 无 | — |
+| `nord` | `Eo`／dark | 36 | ★ `annotation` | `#d30102` → `#b48ead` |
+| `sublime` | `Oo`／dark（★ **函数声明形态**） | 11 | ★ `propertyName` | `#629ccd` → `#36b7b5` |
+| `tokyonightday` | `_o`／**dark**（★ 档名是 day） | 20 | ★ `link` | `#587539` → **只有下划线、无颜色** |
+| `tokyonightstorm` | `Wo`／dark | 20 | ★ `link` | `#b4f9f8` → **只有下划线、无颜色** |
+| `tokyonight` | `Ko`／dark | 20 | ★ `link` | `#b4f9f8` → **只有下划线、无颜色** |
+| `vscodedark` | `qo`／dark（★ **函数声明形态**） | 17 | ★ `number`、★ `regexp` | `#4ec9b0` → `#b5cea8`；`#d4d4d4` → `#d16969` |
+⇒ ★★★ **合计**＝跨条覆盖 **12 处**（`link` 6、`annotation` 4、`propertyName` 1、`number` 1、`regexp` 1，其中 `regexp` 那处是**同色**故无视觉差）＋ 条内 tag 写重 **4 处**（全是 `typeName`）＋ 非法色 **2 处**（同一档 `gruvboxdark`：`annotation` 的前一条与 `invalid` 的 `borderBottom:"1px dotted #fb4934d"`）；⇒ ☆ 计数口径＝按"档 × tag"计，不按声明行计（与 §十九 的"368 条逐字"两口径并存，不冲突）。
+
+#### 三、★★ 三种"看起来像 bug"的十六进制要分开判（本批把上批那条扩成三形态）
+
+| 形态 | 逐字例 | 出处 | 浏览器行为 |
+| --- | --- | --- | --- |
+| 缺 `#` | `backgroundColor:"ffeef0"` | `craftlight` 的 `deleted`（上批） | **整条声明丢弃** ⇒ 只有前景生效 |
+| 位数非法 | `#fb4934d`（7 位） | `gruvboxdark` 的 `annotation` 前一条 ＋ `invalid` 的 `borderBottom` | **整条声明丢弃**（后者连边框一起没了） |
+| 合法带 alpha | `#E5393570`（8 位＝`#RRGGBBAA`） | `materiallight` 的 `invalid` | **正常生效**（≈44% 不透明的红）⇒ ☆ 不是缺陷，别"顺手修" |
+
+#### 四、★★★ 本地两档在真浏览器里的 computed 实测（G1191 剩一格结案）
+
+⇒ 手法＝`_harvest/b114-palette-proof.cjs`（Playwright 直连本机 3100，在已加载 `globals.css` 的页面里注入 `.tiptap>pre>code` ＋ 31 枚 span 覆盖八组规则的全部选择器形态）；⇒ 逐字输出＝`light spans=31 pre=rgb(251, 251, 251) code=rgb(61, 61, 61) ALL MATCH` 与 `dark spans=31 pre=rgb(40, 41, 43) code=rgb(206, 207, 208) ALL MATCH`；
+⇒ ☆ 明暗切换用 `documentElement.classList.toggle('dark')`＝**与 next-themes 真实换档同一条 CSS 通路**（十枚 token 就挂在 `.dark` 上），不需要 reload；
+
+| token | 官方 `craftlight` | 本地实测（亮） | 官方 `craftdark` | 本地实测（暗） | 屏上类名（该组全部） |
+| --- | --- | --- | --- | --- | --- |
+| background | `#FBFBFB` | `rgb(251, 251, 251)` ✓ | `#28292B` | `rgb(40, 41, 43)` ✓ | `pre` 的 `background-color` |
+| foreground | `#3D3D3D` | `rgb(61, 61, 61)` ✓ | `#CECFD0` | `rgb(206, 207, 208)` ✓ | `pre>code` 的 `color` |
+| comment | `#6a737d` | ✓ | `#8b949e` | ✓ | `hljs-comment`／`hljs-punctuation`／`hljs-tag` |
+| symbol | `#6f42c1` | ✓ | `#d2a8ff` | ✓ | `hljs-title class_`（双类名）／`hljs-selector-class`／`hljs-attribute` |
+| literal | `#005cc5` | ✓ | `#79c0ff` | ✓ | `hljs-attr`／`hljs-variable`／`hljs-number`／`hljs-operator`／`hljs-params` |
+| keyword | `#d73a49` | ✓ | `#ff7b72` | ✓ | `hljs-keyword`／`hljs-type`／`hljs-built_in` |
+| string | `#032f62` | ✓ | `#a5d6ff` | ✓ | `hljs-string`／`hljs-meta`／`hljs-code`／`hljs-bullet` |
+| tag | `#22863a` | ✓ | `#7ee787` | ✓ | `hljs-name`／`hljs-quote` |
+| heading | `#24292e` ＋bold | ✓（粗体已读过图） | `#d2a8ff` ＋bold | ✓（与 symbol 同值＝官方本身如此） | `hljs-section`／`hljs-emphasis`（后者另带 italic） |
+| deleted | `#b31d28` | ✓ | `#ffdcd7` | ✓ | `hljs-deletion` |
+| —（不上色） | 无条目 | 8 枚全部继承 `#3D3D3D` ✓ | 无条目 | 8 枚全部继承 `#CECFD0` ✓ | `hljs-literal`／`hljs-strong`／`hljs-link`／`hljs-addition`／`hljs-title`／`hljs-function`／`hljs-selector-tag`／`hljs-doctag` |
+⇒ ★ 两条**读过图**才得到的结论（不是数字）＝① 亮档最后八枚与前景同灰（＝"官方没着色的本地也不许上色"那条反向守卫在**像素层**成立）；② 暗档 `hljs-section`／`hljs-emphasis` 与符号组同紫 ⇒ ☆ **别当 bug 改**（官方 `craftdark` 的 `heading`／`emphasis` 值就是 `#d2a8ff`）；
+⇒ ☆ 证据文件＝`_harvest/b114-local-codepalette-light.png`／`-dark.png`（各 760×726）＋ `_harvest/b114-palette-proof.json`；★ **证据等级＝CSS 层（合成 DOM），不是编辑器实景**（实景需本地栈凭据与库，见台账「十三」阻塞行）。
+
+#### 五、☆ 一条与 §十九.一 的衔接（改判而非新增）
+
+⇒ 上批 §十九 那张 `craftlight` 表是**按声明**录的（9 条、`deleted` 带非法 `ffeef0`）；本批**不推翻它**，只加一条限定＝**"声明表"与"有效表"在 `craftlight`／`craftdark` 两档上恰好重合**（这两档没有跨条覆盖，`link` 是"根本没定义"而不是"被覆盖"）⇒ ⇒ ★ 所以本地只做这两档时**不需要**实现 §二那套覆盖语义；一旦将来扩到 20 档，§二 这张表才是"该显示什么"的准绳。
+
+**仍未采到（本节）**：① `Hi.markdownTable` 的转义规则（表格里出现竖线／换行时官方怎么逃）；② `isBrightColor` 阈值（`colorMode` 两值相等时怎么分 light／dark）；③ 屏上实测 §二 那 6 档"链接无颜色"（要选那几档主题并放一段链接，属官方写入面 ⇒ 需点头）；④ `#fb4934d` 那两处非法在屏上是否表现为"完全没有边框／颜色退回"（同上，且要 `gruvboxdark`）；⑤ 编辑器**实景**两档截图。

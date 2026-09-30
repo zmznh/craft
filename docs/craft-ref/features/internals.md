@@ -1576,3 +1576,57 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ⇒ ③ ★★★ **窗口可见时点击也能把扩展串行队列挂死**＝`locator.click()` 打 `BUTTON[data-testid="browse-sort-button"]` 之后 cell 永久 running、`node_repl_wait` 回 `AbortError: Execution was cancelled`、随后**连 `title()` 都拿不到**（`Tool command waited too long in queue`），而**当时 `visibility.get()`＝true** ⇒ ☆ 历批"挂死＝窗口最小化"的归因**不充分**：点击本身就能挂（最可能是那枚 ⋯ 触发了扩展侧不返回的原生路径）。⇒ 处置＝按"中断即停"立刻停手，**没有**在挂死队列上重试点击，**没有**做任何不可逆动作。
 
 **仍未采到（本节）**：① 屏上「最近删除」的**查询条件**到底是什么（另一套删除标记？`trashedAt` 之类字段？还是"只列 UI 删的"）；② documentId→rootBlockId 有没有**非 URL** 的正向映射；③ 屏上选择模式能不能勾到"MCP 列得出、屏上列不出"的条目（本批在打开 ⋯ 那一步挂死）；④ 每块一个 CM6 实例 ⇒ **跨块撤销是否合并**（G1188 只给了机制，没跑行为）；⑤ 主题面板触发器（只剩块把手一条）。
+
+## 五十三、**第 114 批＝CM6 高亮优先级的四层判据（同档后写覆盖前写／沿 `tag.set` 链具体优先／多档拼接／fallback 只在主样式为空时生效），外加一条历批没看到的门控缺失：Craft 不传 `themeType` ⇒ token 色板永远不受明暗面门控**（✓盘上 2026-10-01 04:4x–05:2x 本地＝UTC 09-30 20:4x–21:2x，**零浏览器内容面调用、零官方写入**；★ gap 在 `gap.md` §三点一〇六四 G1192–G1208，逐字清单在 `longtail.md` §四十，20 档有效色审计在 `styles.md` §十九之续（第 114 批），两条明暗轴的含义在 `model.md` §一之七十二，本地自证操作在 `interactions.md` V108）
+
+### 一、★★★ 优先级不是一层，是四层（每层都要单独判，混起来就会判错"某档到底显示哪个色"）
+
+⇒ **第 1 层＝同一档 `styles` 数组内**：`n_t`（＝CM6 `styleFor`，`vendor-code-editor-BLm003PU.js` @275,545）逐字 `let s=Object.create(null); for(let p of r) if(!Array.isArray(p.tag)) s[p.tag.id]=p.class; else for(let g of p.tag) s[g.id]=p.class` ⇒ 一张 **`tag.id → class` 的平表**，后写覆盖前写 ⇒ ★★★ **数组序里"最后一条赢"**，前面的同名条目退化成"生成了 class、但没有任何元素引用它"的死 CSS（class 仍留在 `StyleModule` 里，因为构造函数对**每条** spec 都调一次 `O(...)` 生成名字）。
+⇒ **第 2 层＝tag 继承链**：`style:p=>{let g=O; for(let w of p) for(let Q of w.set){let S=s[Q.id]; if(S){g=g?g+" "+S:S; break}} return g}` 里那个 `break` ⇒ 沿 `tag.set` 找**第一个**有规则的；而 `set` 的顺序由 `Tag` 的静态工厂逐字决定＝`let O=new zxe(l,[],null,[]); if(O.set.push(O), s) for(let p of s.set) O.set.push(p)`（@273,252）⇒ **自身永远在链首** ⇒ ★ **具体 tag 优先于父 tag**（例：`t.className` 有规则时不会被 `[className, propertyName]` 之外的 `t.type` 规则抢走）。
+⇒ **第 3 层＝多档样式之间**：`function DQn(r,i){let s=null; for(let l of r){let O=l.style(i); O&&(s=s?s+" "+O:O)} return s}` ⇒ ★ **不是择一，是全部拼接**（空格连接）⇒ 若同时挂两档 `HighlightStyle`，一个 token 会**带两个 class**，最终由 CSS 层的**声明顺序＋特异性**决定 ⇒ 与"第 1 层的覆盖"是**完全不同的机制**（一层是 map 赋值，一层是 class 串接）。
+⇒ **第 4 层＝主样式与兜底样式之间**：`function DPe(r){let i=r.facet(qxe); return i.length?i:r.facet(d_t)}` ⇒ 主面（`qxe`）非空就**整条忽略**兜底面（`d_t`）⇒ 复核上批"名册路径与 `basicSetup` 的 `R6e(v2n,{fallback:!0})` 互斥"成立，且现在给出**判据本体**。
+
+### 二、★★★ 一条历批没看到的门控缺失＝token 色板不进明暗门控
+
+⇒ `R6e`（＝`syntaxHighlighting`）体逐字：`function R6e(r,i){let s=[Q2n],l; return r instanceof uE&&(r.module&&s.push(li.styleModule.of(r.module)), l=r.themeType), i!=null&&i.fallback?s.push(d_t.of(r)):l?s.push(qxe.computeN([li.darkTheme],O=>O.facet(li.darkTheme)==(l=="dark")?[r]:[])):s.push(qxe.of(r)), s}` ⇒ 三分支的**入口变量**是 `l=r.themeType`。
+⇒ 而 Craft 侧逐字只有 `w=uE.define(l)`（**没有第二个实参**），`uE` 构造尾部 `this.themeType=s.themeType`、`static define(i,s){return new uE(i,s||{})}` ⇒ `s={}` ⇒ **`themeType` 恒为 undefined** ⇒ ⇒ ★★★ **恒走第三条 `qxe.of(r)`＝无条件挂载**，只有 `define(specs,{themeType:"dark"})` 才会进 `computeN([darkTheme], …)` 的条件挂载。
+⇒ ⇒ ★★ **改判上批一条作用域**（不是推翻，是收窄）＝"名册 `theme` 字面量与界面明暗错配 ⇒ 取反分支"只成立于 `li.theme(O,{dark:i==="dark"})` 那条 **CSS**（含 `O["&"]` 的底色／前景色与 `.cm-gutters` 那一族），**语法色板永远来自所选档自己**；⇒ ☆ 屏上判据＝拿一档"名字与 `theme` 字面量相反"的档（上批错配名单里的），在**对面**明暗下看：**底色会跟着 CSS 分支走，token 色不会跟着走** ⇒ 两半可能"各取一边"。
+
+### 三、★★★ `...r` 结案＝一个永远为空的死扩展点（把上批对 `theme` 的判据推广到三参）
+
+⇒ 工厂统一形状（18 个箭头 ＋ 2 个函数声明，见 `gap.md` G1199）＝`io=o=>{const{theme:t="light",settings:a={},styles:r=[]}={}; return I({theme:t, settings:{...We,...a}, styles:[<本档条目>, ...r]})}` ⇒ ★ 解构源是**字面量 `{}`** ⇒ `t`／`a`／`r` **三个形参全部取默认值**，箭头入参 `o` 在体内**一次都没被引用** ⇒ `settings` 覆盖位与 `styles` 追加位都是"写好的接口、没人调用"；⇒ ☆ 直接推论＝名册**不可能被外部追加样式** ⇒ 第二节第 1 层的那些重复**全是工厂自己写进去的**，不是运行时拼进来的。
+
+### 四、★★★ 20 档名册的"有效色"审计（第一次按"计算结果"而不是"声明"来读名册）
+
+⇒ 仪器＝`_harvest/b114-style-precedence2.cjs`（第二版；第一版 `_harvest/b114-style-precedence.cjs` 因只匹配箭头式而**少数两档**，教训进 `longtail.md` §四十.五）；⇒ 三条结论：
+① **`link` 在 6 档实际不上色**＝`aura`／`githublight`／`materiallight`／`tokyonightday`／`tokyonightstorm`／`tokyonight` 里，`{tag:[e.url,e.escape,e.regexp,e.link],color:"…"}` 被后面的 `{tag:e.link,textDecoration:"underline"}` 覆盖 ⇒ 链接只剩下划线、颜色退回该档 `foreground`，而 `url`／`escape`／`regexp` 不受影响；⇒ ☆ `craftlight`／`craftdark` 是**另一种"不上色"**＝9 条里根本没有 `link` ⇒ 与本地 `code-token-palette.test.ts` 的 `UNSTYLED` 名单里那枚 `hljs-link` 两个独立源吻合。
+② **`annotation` 在 4 档被二次定义**（`gruvboxdark`／`gruvboxlight`／`materialdark`／`nord`）＋ `propertyName`（`sublime`）＋ `number`／`regexp`（`vscodedark`）⇒ 前一条全是死声明（逐值见 `styles.md` §十九之续）。
+③ **两种"看起来像 bug"要分开判**＝`#fb4934d`（7 位）非法、整条声明被丢；`#E5393570`（8 位）是**合法 CSS Color 4 `#RRGGBBAA`**（alpha≈44%）⇒ 与上批 `ffeef0`（缺 `#`）三形态三判据。
+
+### 五、★★★ flavour 表结案＝只有一份 29 字段，但可被模板改写、且只改写一半消费者
+
+⇒ `vendor-craft-export-DIm_3hRN.js`（108,281 字符）@922 的 `Z.defaultFlavour` 是**全库唯一**的 flavour 字面量（另两处命中是构造器注入 `this.flavour=e`）⇒ 逐值见 `longtail.md` §四十.三；★ 三条最值钱的：`indentationCharacters:"   "`＝**三个空格**、`pageCard`≡`pageRegular`≡`strong`≡`"#### "`（子页面与"强"文本块都成 H4 前缀）、`caption`≡`body`≡`""`（**空串＝没有前缀，不是没有该档**）。
+⇒ helper 逐字 `w.default.registerHelper("setFlavour",function(t){L=t?{...Ct.defaultFlavour,...t}:L, Et=new Lt.TextRunFormatter(L)})` ⇒ ① 覆盖是**浅合并**；② ★ **只重建 `Et`（行内格式器），`Wi`（`new Vi.TableFormatter(L)`）不重建** ⇒ 模板里改 flavour 之后表格通路仍用旧对象 ⇒ 记为官方缺陷候选（能不能观测取决于 `TableFormatter` 读哪几个字段，本批未展开）。
+
+### 六、★★★ `formatBlock` 第三参真值语义＝只有表格通路用得到（收窄上批一条推论）
+
+⇒ 两个调用点**都在** `TableFormatter.formatTable` 体内：`b=this.formatBlock(P,r,!0)`＝**单元格里的块**；`const v=this.formatBlock(g,r,!1)`＝**被踢出表格、排在表后的块** ⇒ ⇒ ★★ 上批"code 块必含反引号 ⇒ inline 语境软换行变空格 ⇒ 多行摊成一行"只在**表格单元格里的代码块**成立，正文代码块不受影响。
+⇒ 模板侧 `inline` 是一等公民（不只是解码器参数）＝两处 `{{#unless inline}}` 逐字抑制 `{{{getHeading this parentSubBlocks}}}` 与 `{{lineAfterBlock parentSubBlocks myIndexInParent}}` ⇒ inline 语境**没有标题前缀、没有块间分隔**；再加解码器那句 `subBlocks: i?void 0:e.subBlocks` ⇒ ★★★ **inline 语境下子块整个不进模板上下文**。
+⇒ ★★★ **导出器改写入参**（本批最意外的一条）＝单元格块若有子块：① 刚渲染的 `b` **整个丢弃**，换成 `**[[#<content>]]**`；② `content` 为空时**现场 `getUUID()` 写回 `P.content`** 并补一条覆盖全文的 `textRuns`；③ 该块进 `a` 队列，表后以 `textStyle="title"`（⇒ 取 flavour 的 `title:"# "` ⇒ **变成 H1**）＋ `_runAttributes=[]`（⇒ **行内样式全丢**）重出；④ 全程操作的是**调用方传进来的对象引用** ⇒ 导出一次把内存里的块模型改脏。⇒ ☆ 本地对照＝`src/lib/document-codec/index.ts:61-215` 全文没有一条对入参 `node` 的赋值 ⇒ 判"有意偏差（本地更稳，不照抄）"。
+
+### 七、★★★ 明暗其实是两条轴：`forcedDarkOrLightMode`（两值＋null）与页面纸色 `colorMode`（三值含 dynamic）
+
+⇒ **轴一＝界面明暗**：`$O=new K$("forcedDarkOrLightMode","system",CE(["light","dark"]))`，`CE` 的身份链＝`import{... dL as CE ...}from"./vendor-BZCR0rqu.js"` → 该 chunk 导出表 `enumType as dL` → `enumType=ZodEnum.create` ⇒ **`CE` 是 zod 枚举工厂**；⇒ ★ 默认值 `"system"` 不在枚举里**不是缺陷**＝setter 逐字 `setColorScheme:n=>{var s; $O.store(n==="system"?null:n), ...}` ⇒ **"跟随系统"落库为 `null`** ⇒ 存储域 `{light, dark, null}`、UI 域 `{light, dark, system}`。
+⇒ 解析链逐字 `function Ik(t,e,n){let o=n??t; return fn.isEnabled(tU)?o="dark":fn.isEnabled(nU)&&(o="light"), o==="system"?e:o}` ⇒ 优先级＝**特性开关 ＞ URL ＞ 存储值 ＞ system→matchMedia**；URL 那条是 `Dtt`＝`t.has("dark")?"dark":t.has("light")?"light":t.has("system")?"system":null` ⇒ ★★ **官方自带 `?dark`／`?light`／`?system` 三个隐藏开关**（以后采暗档可以不改偏好＝绕开禁区）；状态面另有**不入库的派生字段** `resolvedColorScheme`（逐字 `resolvedColorScheme:Ik(hY,Ltt,Tk)`）。
+⇒ **轴二＝页面样式纸色**＝`socket.worker-CMvBLZvP.js` @147,919 的**未混淆真名** `function calcPaperColorMode(e){const m=isColorGradient(e)?e.colorStops[0].color:e; return m.light!==m.dark?"dynamic":isBrightColor(m.light)?"light":"dark"}` ⇒ ★ `dynamic` 的语义是**"这一档自带两个值"**，不是"跟随系统"；validator 逐字 `Bet(t){return t==="light"||t==="dark"||t==="dynamic"?t:"dynamic"}`（**非法兜成 dynamic**）；消费侧逐字 `V=>{y(!V), V&&D!=="dynamic"&&K(D==="dark"), !V&&D!=="dynamic"&&K(x)}` ⇒ **预设不是 dynamic 时面板的明暗开关被钉回预设自身那档**（用户改不动）。
+⇒ ⇒ ★★ **方法学结论**＝上批"外观有第三档叫 `dynamic`"这条挂账**改判**＝那是**页面样式域**的第三档，与界面明暗的 `system`、代码块主题的 `light`／`dark` 分支**是三件事**；以后凡见 `light`／`dark` 字样必须先问"哪条轴"。
+
+### 八、☆ 仪器增补（本批）
+
+⇒ ① **别名还原要按"导出表"两跳**＝`CE` 不在本 chunk 定义，链路是 `import{dL as CE}` → 目标 chunk 的 `export{enumType as dL}` → `enumType=ZodEnum.create` ⇒ ☆ 只查一跳会判成"找不到定义"，进而误判"validator 是本地函数"。
+⇒ ② **同一 minified 名在不同 chunk 是不同对象**（本批实测）＝`CE` 在 `vendor-code-editor` 里是 `function CE(e,t){e.i=t}`（ELK 的 setter）、在 `vendor-excalidraw` 里是构造器、在 `vendor-react` 里是 `dns-prefetch` ⇒ ★ 按名字 grep 出多个定义时必须先用**引用它的 chunk** 收窄。
+⇒ ③ **数正则要覆盖两种语法形态**＝箭头工厂 18 ＋ `function` 声明 2 ⇒ 第一版少数两档（差点下错结论），修法见 `_harvest/b114-style-precedence2.cjs`。
+⇒ ④ **本地配色自证的正确切口＝计算值而不是源码**＝`_harvest/b114-palette-proof.cjs` 在真页面里注入 `.tiptap>pre>code` ＋ 31 枚 span（含 `hljs-title class_` 这种**双类名**形态），逐枚 `getComputedStyle().color` ⇒ 一次覆盖"token 是否定义／规则是否被 Tailwind layer 吃掉／`.dark` 是否真的重指"三件事，且**不依赖登录态与数据库**。
+⇒ ⑤ ☆ 一条流程自证＝本批**先试**过把自证写成 `e2e/code-block-palette.spec.ts`，实跑失败在 `src/collab/secrets.mjs:11`（缺 `AUTH_SECRET`／`COLLAB_SECRET`）⇒ **删掉了这个未跑过的测试**（不提交没跑过的测试），改走④那条切口 ⇒ 记入台账「十三」阻塞行。
+
+**仍未采到（本节）**：① `fn.isEnabled(tU)`／`fn.isEnabled(nU)` 两个强制明暗开关的**键名字面量**（只读到用法）；② `TableFormatter` 实际读 flavour 的哪几个字段（决定 §五.② 那条"半边更新"能否观测）；③ `isBrightColor` 的阈值与色彩空间；④ `blockLinkStyle:"blockLink"`／`subPageStyle:"flat"`／`artificialNewLines:false` 三个值的**消费点**（只拿到值）；⑤ 别的 chunk 里有没有第二份 flavour（HTML／打印导出路径，本批只扫了 `vendor-craft-export`）；⑥ `Q2n`（`R6e` 无条件 push 的那枚 facet）的身份。

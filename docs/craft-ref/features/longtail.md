@@ -1381,3 +1381,60 @@ Craft app link: craftdocs://open?spaceId=<spaceId>&documentId=d0710568-…
 ⇒ ③ ★★★ 一次 `locator.click()` 打 `BUTTON[data-testid="browse-sort-button"]` 把扩展串行队列**挂死**＝cell 永久 running → `node_repl_wait` 回 `[node_repl timeout] AbortError: Execution was cancelled` → 随后连 `title()` 都报 `Tool command waited too long in queue`；**而当时 `visibility.get()`＝true** ⇒ ☆ 历批"挂死＝窗口最小化"归因**不充分**，点击本身可挂；☆ 处置＝立刻停手、不在挂死队列上重试、不做不可逆动作。
 
 **仍未采到（本节）**：① 屏上回收站的**查询条件**（哪个字段决定可见性）；② documentId→rootBlockId 的**非 URL** 正向映射；③ 屏上选择模式对"屏上列不出"条目的可见性；④ 焦点在块内时 `Ctrl+Z` 的撤销归属；⑤ 五档无 grammar 语言在**导出 markdown** 里的语言名是否仍正确；⑥ `browse-sort-button` 菜单里到底有什么（本批一点就挂，未读到菜单文本集）。
+
+## 四十、**第 114 批＝CM6 高亮栈逐字七段（`uE` 构造／`n_t`／`DQn`／`DPe`／`R6e`／`Tag.define`／`tV` 三态）＋ flavour 表 29 字段逐字＋表格导出通路逐字＋明暗解析链逐字**（✓盘上 2026-10-01 04:4x–05:2x 本地＝UTC 09-30 20:4x–21:2x；★ 全部来自 `_harvest/js` 本地缓存，**零浏览器内容面调用**；☆ 机制解释在 `internals.md` §五十三，gap 在 `gap.md` §三点一〇六四）
+
+### 一、★★★ `HighlightStyle` 本体（`vendor-code-editor-BLm003PU.js` @300,114，逐字）
+
+⇒ `class uE{constructor(i,s){this.specs=i; let l; function O(w){let Q=u4.newName(); return (l||(l=Object.create(null)))["."+Q]=w, Q} const p=typeof s.all=="string"?s.all:s.all?O(s.all):void 0, g=s.scope; this.scope=g instanceof lp?w=>w.prop(y5)==g.data:g?w=>w==g:void 0, this.style=n_t(i.map(w=>({tag:w.tag,class:w.class||O(Object.assign({},w,{tag:null}))})),{all:p}).style, this.module=l?new u4(l):null, this.themeType=s.themeType} static define(i,s){return new uE(i,s||{})}}`
+⇒ ☆ 三条读法＝① class 名由 `u4.newName()`（＝`StyleModule`）自动生，**每条 spec 一个**（`Object.assign({},w,{tag:null})` 只用于生成键，不参与去重 ⇒ 内容相同的两条 spec 也拿两个 class 名）；② `all`／`scope` 两个选项 Craft 都没传 ⇒ `p=void 0`、`this.scope=void 0`；③ `themeType` 是**唯一**决定"进不进明暗门控"的字段，Craft 恒 undefined（见 §一.五）。
+
+### 二、★★★ `styleFor` 本体（@275,545，逐字）
+
+⇒ `function n_t(r,i){let s=Object.create(null); for(let p of r) if(!Array.isArray(p.tag)) s[p.tag.id]=p.class; else for(let g of p.tag) s[g.id]=p.class; let{scope:l,all:O=null}=i||{}; return{style:p=>{let g=O; for(let w of p) for(let Q of w.set){let S=s[Q.id]; if(S){g=g?g+" "+S:S; break}} return g}, scope:l}}`
+⇒ 多档聚合＝`function DQn(r,i){let s=null; for(let l of r){let O=l.style(i); O&&(s=s?s+" "+O:O)} return s}`；facet 取用＝`const qxe=Yi.define(), d_t=Yi.define({combine(r){return r.length?[r[0]]:null}}); function DPe(r){let i=r.facet(qxe); return i.length?i:r.facet(d_t)}`
+⇒ ☆ 注意 `d_t.combine` 只取 `[r[0]]` ⇒ **兜底面即使塞多条也只留第一条**，而主面 `qxe`（`Yi.define()` 无 combine）是**全量数组** ⇒ 两条轴的"多档语义"不同（主面拼接、兜底面择一）。
+
+### 三、★★★ `syntaxHighlighting` 三分支（@300,650 附近，逐字）
+
+⇒ `function R6e(r,i){let s=[Q2n],l; return r instanceof uE&&(r.module&&s.push(li.styleModule.of(r.module)), l=r.themeType), i!=null&&i.fallback?s.push(d_t.of(r)):l?s.push(qxe.computeN([li.darkTheme],O=>O.facet(li.darkTheme)==(l=="dark")?[r]:[])):s.push(qxe.of(r)), s}`
+⇒ Craft 名册路径逐字（`CodeEditorWrapper` 侧的 `gBn` 尾部，上批已录）＝`var g=li.theme(O,{dark:i==="dark"}), w=uE.define(l), Q=[g,R6e(w)]; return Q` ⇒ ⇒ ★★★ `R6e(w)` 的 `i` 是 undefined、`w.themeType` 是 undefined ⇒ **走第三分支 `qxe.of(r)`＝无条件挂载**。
+
+### 四、★★★ `Tag` 与继承链构造（@273,252，逐字）
+
+⇒ `j2=class zxe{constructor(i,s,l,O){this.name=i,this.set=s,this.base=l,this.modified=O,this.id=VQn++} ... static define(i,s){let l=typeof i=="string"?i:"?"; if(i instanceof zxe&&(s=i), s!=null&&s.base) throw new Error("Can not derive from a modified tag"); let O=new zxe(l,[],null,[]); if(O.set.push(O), s) for(let p of s.set) O.set.push(p); return O} static defineModifier(i){let s=new vre(i); return l=>l.modified.indexOf(s)>-1?l:vre.get(l.base||l, l.modified.concat(s).sort((O,p)=>O.id-p.id))}}`
+⇒ ⇒ ★★★ `tag.set` ＝ `[自身, ...父 tag.set]`（**自身先 push**）⇒ §二里那个 `break` 的语义就是"具体 tag 永远优先于父 tag"；修饰符（`strong`／`em`／`link` 之类 `defineModifier` 产物）另走 `vre`（＝`ModifiedTag`），其 `set` 由 `for(let w of i.set) if(!w.modified.length) for(let Q of g) O.push(vre.get(w,Q))` 生成（`g=LQn(s)`＝修饰符子集按长度降序的幂集）⇒ ☆ 一条可检验推论＝**带修饰符的 tag 的 `set` 里全是"祖先×修饰符组合"**，所以名册里若给 `t.strong(t.comment)` 单独配色，它会**先于** `t.comment` 命中。
+⇒ 节点标签表三态（@274,700 附近，逐字）＝`let tV=class{constructor(i,s,l,O){this.tags=i,this.mode=s,this.context=l,this.next=O} get opaque(){return this.mode==0} get inherit(){return this.mode==1} ...}; tV.empty=new tV([],2,null)` ⇒ ★ 三态＝0 opaque／1 inherit／2 普通；遍历侧逐字 `let S=O, x=BQn(i)||tV.empty, T=DQn(p,x.tags); if(T&&(S&&(S+=" "),S+=T, x.mode==1&&(O+=(O?" ":"")+T))), this.startSpan(Math.max(s,w),S), if(x.opaque) return` ⇒ ⇒ **inherit 模式把自己的 class 传给子孙**，opaque 模式**停止下钻**。
+
+### 五、★★★ flavour 表 29 字段逐字（`vendor-craft-export-DIm_3hRN.js` @922，全库唯一）
+
+⇒ `Z.defaultFlavour={caption:"", body:"", pageCard:"#### ", pageRegular:"#### ", strong:"#### ", heading:"### ", subtitle:"## ", title:"# ", focus:"> ", block:"> ", bold:"**", italic:"*", strikethrough:"~~", code:"`", highlight:"::", numberedListStyle:"{number}. ", bulletListStyle:"- ", toggleListStyle:"+ ", todoListStyleChecked:"- [X] ", todoListStyleUnchecked:"- [ ] ", lineStyle:"---", fixListOrders:!0, fixIndentationLevel:!1, indentationCharacters:"   ", artificialNewLines:!1, blockLinkStyle:"blockLink", base64Assets:!1, printFullCss:!1, subPageStyle:"flat"}`
+⇒ ☆ 分组读法＝**前缀类** 15 枚（`caption`／`body`／`pageCard`／`pageRegular`／`strong`／`heading`／`subtitle`／`title`／`focus`／`block`／`bold`／`italic`／`strikethrough`／`code`／`highlight`）、**列表样式类** 5 枚（`numberedListStyle`／`bulletListStyle`／`toggleListStyle`／`todoListStyleChecked`／`todoListStyleUnchecked`）、**几何与行为开关** 9 枚（`lineStyle`／`fixListOrders`／`fixIndentationLevel`／`indentationCharacters`／`artificialNewLines`／`blockLinkStyle`／`base64Assets`／`printFullCss`／`subPageStyle`）。
+⇒ ★ 四条"塌值"＝`pageCard`≡`pageRegular`≡`strong`（`"#### "`）、`focus`≡`block`（`"> "`）、`caption`≡`body`（`""`）；★ 三个硬数字＝缩进**三空格**、完成态**大写 `X`**、未完成态**空格占位**（`- [ ] `）。
+⇒ helper 逐字＝`qi.registerCommonHelpers(w.default); let L=Ct.defaultFlavour, It, Et=new Lt.TextRunFormatter(L), Wi=new Vi.TableFormatter(L); w.default.registerHelper("setFlavour",function(t){L=t?{...Ct.defaultFlavour,...t}:L, Et=new Lt.TextRunFormatter(L)})` ⇒ ☆ **`Wi` 不重建**（`this.flavour` 在构造时按值捕获）。
+
+### 六、★★★ 表格导出通路逐字（同文件 @39,571–@41,018）
+
+⇒ 入口＝`class Fi{constructor(e){this.flavour=e} formatTable(e,r){ var i,s,l,o,f; let u=[]; const h=e.pluginData.rows, p=e.pluginData.columns, d=e.pluginData.cells; if(h!=null&&p!=null&&d!=null){ const n=this.toMap(d, g=>this.cellCoordinate(g), g=>g), c=this.toMap((i=e.subBlocks)??[], g=>g.id, g=>g), a=[]; ... } ... }`
+⇒ 单元格分支逐字＝`const P=c.get(k.blockId); if(P!=null){ const S=(l=(s=P.subBlocks)===null||s===void 0?void 0:s.length)!==null&&l!==void 0?l:!1; b=this.formatBlock(P,r,!0), S&&((P.content==null||P.content.length===0)&&(P.content=Ri.getUUID(), P.styleAttributes=(o=P.styleAttributes)!==null&&o!==void 0?o:{}, P.styleAttributes.textRuns=[{text:P.content,range:[0,P.content.length]}]), b=`**[[#${P.content}]]**`, a.push(P)) } v.push(b)`
+⇒ 表后重出逐字＝`let m=Hi.markdownTable(u,{})+"\\dl"; if(a.length>0) for(const g of a){ g.styleAttributes=(f=g.styleAttributes)!==null&&f!==void 0?f:{}, g.styleAttributes.textStyle="title", g.styleAttributes._runAttributes=[]; const v=this.formatBlock(g,r,!1); m=m+v } return m } else return "" }`
+⇒ 解码器逐字（上批已录，此处补第三参来源）＝`formatBlock(e,r,i){let s=r({...e,flavourInfo:this.flavour,parentSubBlocks:e.subBlocks,inline:i,subBlocks:i?void 0:e.subBlocks}); s=s.split("\n").filter(o=>o.trim().length!==0).join(""); let l="\n"; return i&&(s.includes("`")?l=" ":l="<br>"), s=s.replace(/\\dl/g,"\n\n").replace(/\\sl/g,l).replace(/\\i__craft/g,this.flavour.indentationCharacters), s}`
+⇒ 坐标与映射逐字＝`toMap(e,r,i){return e.reduce((s,l)=>(s.set(r(l),i(l)),s),new Map)} cellCoordinate(e){return this.coordinate(e.columnId,e.rowId)} coordinate(e,r){if(!(e==null||r==null)) return `${e}_${r}`}` ⇒ ☆ 键形态＝`列id_行id`（★ **列在前**，与直觉的"行_列"相反，本地若做同类映射要注意）。
+
+### 七、★★★ 明暗解析链逐字（`index-DiTmKH3z.js` @867,646 与 @845,066）
+
+⇒ 偏好声明＝`const i0o=["blue","pink","green","purple","yellow","gray"], $O=new K$("forcedDarkOrLightMode","system",CE(["light","dark"])), HO=new K$("accentColor","blue",CE(["blue","pink","green","purple","yellow","gray"]))`
+⇒ 三个取值器＝`function ZO(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}`、`function Dtt(){const t=new URLSearchParams(window.location.search); return t.has("dark")?"dark":t.has("light")?"light":t.has("system")?"system":null}`、`function _tt(){return $O.get()}`、`function jtt(){return HO.get()}`、`function Rtt(){return window.matchMedia("(pointer: fine)").matches?"fine":window.matchMedia("(pointer: coarse)").matches?"coarse":"none"}`
+⇒ 解析＝`function Ik(t,e,n){let o=n??t; return fn.isEnabled(tU)?o="dark":fn.isEnabled(nU)&&(o="light"), o==="system"?e:o}`
+⇒ 状态面＝`const Tk=Dtt(), Ltt=ZO(), hY=_tt(), Xs=fc((t,e)=>($O.subscribe(n=>{const o=ZO(); t({colorScheme:n,resolvedColorScheme:Ik(n,o,Tk)})}), HO.subscribe(n=>{t({accentColor:n})}), {colorScheme:hY, resolvedColorScheme:Ik(hY,Ltt,Tk), accentColor:jtt(), primaryPointer:Rtt(), isScrollbarPersistent:!1, setColorScheme:n=>{var s; $O.store(n==="system"?null:n); const o=ZO(); t({colorScheme:n,resolvedColorScheme:Ik(n,o,Tk)}), (s=window.t...`
+⇒ 另一条轴（页面纸色）＝`function calcPaperColorMode(e){const m=isColorGradient(e)?e.colorStops[0].color:e; return m.light!==m.dark?"dynamic":isBrightColor(m.light)?"light":"dark"}`（`socket.worker-CMvBLZvP.js` @147,919，★ **真名未混淆**）＋ `function Bet(t){return t==="light"||t==="dark"||t==="dynamic"?t:"dynamic"}`（`index` @845,066）＋ 面板消费 `V=>{y(!V), V&&D!=="dynamic"&&K(D==="dark"), !V&&D!=="dynamic"&&K(x)}`、`C=>{tt(pi({ignoreAppTheme:!C, drawPageBackground:C}, d)), C&&b!=="dynamic"&&_(b==="dark"), !C&&b!=="dynamic"&&_(l)}`（`RenderOptionsPanel-Ce9vLC8i.js` @23,792）
+⇒ ☆ 顺带两条同段可复核事实＝`isScrollbarPersistent` **初值硬编码 `!1`**（上批那组滚动条常量的闸门在这里给默认值）、页面主题 id 把档位写进名字（逐字 `themeId:"brown-dynamic"`、`styleId:"luki"`）。
+
+### 八、☆ 本批仪器与踩坑（逐字留档，防下批重犯）
+
+⇒ ① 第一版审计（`_harvest/b114-style-precedence.cjs`）只匹配 `X=o=>{const{theme:t="..."...}` ⇒ 跑出 **18 档**并漏掉 `sublime`／`vscodedark`（它们是 `function Oo(o){...}` 形式）⇒ ☆ 差点下错"20 档里有 2 档不是工厂"；修法＝`_harvest/b114-style-precedence2.cjs` 用正则并集 `(?:([A-Za-z$_]{1,3})=o=>|function ([A-Za-z$_]{1,3})\(o\))` ＋ 用 `_harvest/b114-factory-names.cjs` 的"名册对象名→工厂名"映射反查档名（21 键含 `auto:null`）。
+⇒ ② 第一版还有一处**假阴性**＝`grep -c "HighlightStyle"` 在 105 个 chunk 上全为 0 ⇒ 差点判成"CM6 的 `HighlightStyle` 不在这个 bundle 里"；实际是**类名被混淆**、真身是 `class uE` ⇒ ☆ 判据要换成**结构关键字**（本批用的是 `hierarchical`，结果命中的全是 ELK/J2CL 的图布局代码，绕了一段才改用它的使用点 `uE.define` 反查）。
+⇒ ③ 一条 bash 教训（第 N 次）＝把含反引号与 `"..."` 的 JS 片段塞进 `node -e "..."` ⇒ 引号提前闭合、报 `syntax error near unexpected token '('` ⇒ ☆ 一律落成 `.cjs` 文件再跑（本批 `_harvest/b114-fix-gap.cjs` 就是这么来的）。
+⇒ ④ 一次**未跑就删**的测试＝本批先写了 `e2e/code-block-palette.spec.ts`（真编辑器＋计算样式），实跑卡在 `src/collab/secrets.mjs:11` 缺签名密钥 ⇒ **删掉**（连同临时 `playwright.palette.config.ts`），改走 §八.④ 那条不依赖登录态的切口 ⇒ ☆ 规则化＝"不提交没跑过的测试"。
+
+**仍未采到（本节）**：① `Q2n`（`R6e` 无条件 push 的那枚 facet）的身份；② `tU`／`nU` 两枚强制明暗 flag 的键名字面量；③ `LQn` 幂集与 `vre.get` 缓存策略对**实际渲染**的影响（名册里没有修饰符条目，故本批判"不影响 Craft"，但未证）；④ `Hi.markdownTable` 的实现（表格行→`|` 串的转义规则，尤其竖线与换行怎么逃）；⑤ `getHeading` 的**第二实参** `parentSubBlocks` 到底怎么用（本批只看到调用形态）；⑥ `It`（`setFlavour` 旁边那枚未初始化变量）的用途。
