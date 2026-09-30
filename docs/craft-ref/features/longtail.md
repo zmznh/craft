@@ -1438,3 +1438,98 @@ Craft app link: craftdocs://open?spaceId=<spaceId>&documentId=d0710568-…
 ⇒ ④ 一次**未跑就删**的测试＝本批先写了 `e2e/code-block-palette.spec.ts`（真编辑器＋计算样式），实跑卡在 `src/collab/secrets.mjs:11` 缺签名密钥 ⇒ **删掉**（连同临时 `playwright.palette.config.ts`），改走 §八.④ 那条不依赖登录态的切口 ⇒ ☆ 规则化＝"不提交没跑过的测试"。
 
 **仍未采到（本节）**：① `Q2n`（`R6e` 无条件 push 的那枚 facet）的身份；② `tU`／`nU` 两枚强制明暗 flag 的键名字面量；③ `LQn` 幂集与 `vre.get` 缓存策略对**实际渲染**的影响（名册里没有修饰符条目，故本批判"不影响 Craft"，但未证）；④ `Hi.markdownTable` 的实现（表格行→`|` 串的转义规则，尤其竖线与换行怎么逃）；⑤ `getHeading` 的**第二实参** `parentSubBlocks` 到底怎么用（本批只看到调用形态）；⑥ `It`（`setFlavour` 旁边那枚未初始化变量）的用途。
+
+## 四十一、**第 115 批＝特性开关层逐字（注册表 13 枚方法／三档白名单实参全量／服务端 meta 注入口／`_killMe` 第二条注入口）＋ 两条表格导出通路逐字（`Bi` 函数体全文与三个 helper／`g()` 三步转义）＋ `v2n`＝`defaultHighlightStyle` 19 条逐字＋`flavourInfo` 七枚消费点逐字＋存储写入语义逐字**（✓盘上 2026-10-01 05:3x–06:1x 本地＝UTC 09-30 21:3x–22:1x；★ 全部来自 `_harvest/js` 本地缓存（105 chunk，本批零新增下载），**零浏览器内容面调用、零写入**；☆ 机制解释在 `internals.md` §五十四，gap 在 `gap.md` §三点一〇六五；★ 机读来源＝`_harvest/b115-probe1.cjs`…`b115-probe11.cjs`（十一**全部只读、可原样复跑，每条把 `@偏移` 打进 stdout**）
+
+### 〇、☆ 本节竖线口径（先读这条，否则下面的"逐字"会被当成走样）
+
+⇒ 本节**表格外**的代码引文里，竖线一律写成**全角**`｜`／`｜｜`，官方源码里是**半角** `|`／`||`（为避开 Markdown 表格分隔符做的字形替换；复刻时写半角）。⇒ ☆ 代码围栏内的 `|` 是**真半角逐字**（围栏行不以`｜`开头，校验脚本按行首判表，不会误算）。
+
+### 一、★★ 开关注册表 `fn` 的方法面（`index-DiTmKH3z.js` @68,588，263 字符，逐字全长）
+
+⇒ ``{isEnabled:U_e,get:rce,initFromQueryString:q_e,initFeature:bd,isDefined:$_e,setUndefined:N_e,initFromCsvOrArray:Q_e,initFromLocalStorage:Y_e,makeUrlControllable:H_e,onFeatureChange:K_e,makeUrlDisableable:Z_e,makeLocalStorageControllable:V_e,setInLocalStorage:G_e}`` ⇒ **13 枚公开方法**（☆ 比" isEnabled 一个读接口"丰富得多：`isDefined`／`setUndefined` 说明**"没定义"本身是一等状态**，与"定义为假"不同）。
+⇒ 服务端注入口（@6,830,199，逐字）：`fn.initFromCsvOrArray(kC("luki:enable-fs"),kC("luki:disable-fs"))`。
+⇒ `kC`（getMetatag，@62,862，逐字）：`function kC(t){const e=document.getElementsByTagName("meta");for(const n of e)if(n.getAttribute("name")===t)return n.getAttribute("content");return null}`。
+⇒ `initFromCsvOrArray` 骨架（逐字语义）＝入参可为数组或逗号串 ⇒ `.split(",").filter(s=>s.length>0).forEach(s=>bd(s,!0))`，第二参走 `bd(s,!1)` ⇒ **enable 与 disable 两张名单、逗号分隔、空串丢弃**。
+⇒ 第二条注入口（@6,447,017，逐字）：`updateFeaturesFromShareResponse_killMe(e){var n,o;fn.initFromCsvOrArray(((n=e.features)==null?void 0:n.enabled)||null,((o=e.features)==null?void 0:o.disabled)||null)}` ⇒ ★ **方法名自带 `_killMe`**，做的是一次网络响应覆盖全局功能面。
+⇒ 两条硬默认值（逐字）：`const isDesktop=!1; fn.initFeature(FEATURE_SPELL_CHECK,isDesktop)` ⇒ **web 构建里拼写检查默认关**。
+
+### 二、★★★ 三档白名单**实参数组逐字**（调用点 @69,972／@70,065／@70,444；别名→字面量由 `b115-probe10.cjs` 解出，★ 不是手抄）
+
+⇒ **URL 可控 19 枚**，源码实参逐字＝`[sje,sU,X_e,dce,vC,eg,sI,gce,uce,fce,iU,lU,FE,x9,cje,oje,dje,OE,bce]`，按同序解出字面量＝`fs-debug-sync-log`／`fs-disable-sync`／`fs-show-title`／`fs-grammarly`／`fs-debug-reminder-options`／`fs-debug-allow-inbox-root`／`fs-debug-allow-past-task-dates`／`fs-debug-pseudo-localization`／`fs-import-docx`／`fs-export-docx`／`fs-legacy-sync-token`／`fs-quick-search-space-filter`／`pf-paddle-subscription`／`fs-show-tldraw`／`fs-debug-whiteboard-low-limit`／`fs-workflow-links`／`fs-debug-ai-chat-models`／`fs-mermaid-diagrams`／`fs-debug-posthog-market`。
+⇒ **URL 可关 6 枚**，实参逐字＝`[tje,fw,l1,a1,BE,jm]` ⇒ `fs-suggested-collaborators`／`fs-beta-redirect`／`fs-excalidraw`／`fs-service-worker`／`fs-offline-mode-rollout`／`fs-collection-kanban-view`。
+⇒ **localStorage 可控 2 枚**，实参逐字＝`[a1,rU]` ⇒ `fs-service-worker`／`fs-debug-fps-overlay`。
+⇒ ☆ ★ **`a1`＝`fs-service-worker` 同时在后两档** ⇒ 三档不互斥（三个独立 Set，一枚开关可落在零到三档）。
+⇒ ☆ **调用点用方法名、不用别名**（`fn.makeUrlControllable([...])`）⇒ 这是 `b115-probe9.cjs` 按别名搜调用点**零命中**的原因；⇒ ★ 规则＝**混淆代码里"找某方法的调用点"要搜它在注册表里的属性名，不是搜那个短别名**。
+
+### 三、★★ 38 枚 `fs-*` 名册逐字（＋非 `fs-` 前缀一枚）＝`new Set` 全量枚举结果（`b115-probe5.cjs`）
+
+⇒ `fs-address-book`、`fs-assertion-errors-popup`、`fs-beta-redirect`、`fs-check-orphans`、`fs-collection-kanban-view`、`fs-debug-ai-chat-models`、`fs-debug-allow-inbox-root`、`fs-debug-allow-past-task-dates`、`fs-debug-block-selection-borders`、`fs-debug-disable-sentry`、`fs-debug-dont-refetch-tasks-on-focus`、`fs-debug-extend-resize-observer-logs`、`fs-debug-fps-overlay`、`fs-debug-posthog-market`、`fs-debug-pseudo-localization`、`fs-debug-reminder-options`、`fs-debug-show-block-debug-info`、`fs-debug-sync-log`、`fs-debug-whiteboard-low-limit`、`fs-disable-sync`、`fs-excalidraw`、`fs-export-docx`、`fs-grammarly`、`fs-idea-starter-experiment`、`fs-import-docx`、`fs-legacy-sync-token`、`fs-mermaid-diagrams`、`fs-new-flash-message`、`fs-offline-mode-rollout`、`fs-onboarding-experiment-2025`、`fs-quick-search-space-filter`、`fs-service-worker`、`fs-show-title`、`fs-show-tldraw`、`fs-spell-check`、`fs-subscription-experiment-2025`、`fs-suggested-collaborators`、`fs-workflow-links`，另 `pf-paddle-subscription`。
+⇒ ☆ **消费方盲区（实测）**＝三枚名字（`fs-debug-sync-log`／`fs-assertion-errors-popup`／`fs-debug-show-block-debug-info`）在 105 个缓存 chunk 里**只命中名册所在的两份**（`index-DiTmKH3z.js` 与 `socket.worker-CMvBLZvP.js`），其余 103 个零命中 ⇒ 判"**名册里有＝实现存在于未缓存的懒加载 chunk**"（☆ 这条把 G1211 里"mermaid／excalidraw 是灰度特性"的确信度从"名册证据"降为"名册证据＋消费方未证"）。
+
+### 四、★★★ worker 那份实现的白名单预置逐字（`socket.worker-CMvBLZvP.js` @217,044）
+
+⇒ `const urlControllableFeatures=new Set([FEATURE_DARK_MODE,FEATURE_LIGHT_MODE])`（★ 该 chunk 里这两枚是**可读常量名**、没被混淆 ⇒ 与主 app 那份全是短别名形成对照，说明 worker 是**另一份未同批混淆的构建**）。
+⇒ ⇒ ★★★ **与主 app 那 19 枚不同**＝强制明暗两枚开关只在 worker 里可被 URL 拨 ⇒ 记入"两份实现漂移"家族（承历批"两份主题名册／两套回收站口径／两个按钮体系"）。
+
+### 五、★★★ 第一条表格通路：handlebars 注册的 `markdownTable`＝`Bi` 函数体逐字全文（`vendor-craft-export-DIm_3hRN.js` @37,883）
+
+⇒ 为可读做了**折行**，未删节、未改写；竖线此处是**真半角**（在围栏内）：
+
+```
+function Bi(t,e){const r=e||{},i=(r.align||[]).concat(),s=r.stringLength||Ti,l=[];let o=-1;
+const f=[],u=[],h=[];let p=0,d,n,c,a,m,g,v,_,y;
+for(;++o<t.length;){for(d=-1,n=[],c=[],t[o].length>p&&(p=t[o].length);++d<t[o].length;)
+  m=Di(t[o][d]),r.alignDelimiters!==!1&&(a=s(m),c[d]=a,(h[d]===void 0||a>h[d])&&(h[d]=a)),n.push(m);f[o]=n,u[o]=c}
+if(d=-1,typeof i=="object"&&"length"in i)for(;++d<p;)l[d]=ht(i[d]);else for(y=ht(i);++d<p;)l[d]=y;
+for(d=-1,n=[],c=[];++d<p;)y=l[d],v="",_="",y===99?(v=":",_=":"):y===108?v=":":y===114&&(_=":"),
+  a=r.alignDelimiters===!1?1:Math.max(1,h[d]-v.length-_.length),m=v+"-".repeat(a)+_,
+  r.alignDelimiters!==!1&&(a=v.length+a+_.length,a>h[d]&&(h[d]=a),c[d]=a),n[d]=m;
+f.splice(1,0,n),u.splice(1,0,c),o=-1;const k=[];
+for(;++o<f.length;){for(n=f[o],c=u[o],d=-1,g=[];++d<p;)m=n[d]||"",v="",_="",
+  r.alignDelimiters!==!1&&(a=h[d]-(c[d]||0),y=l[d],y===114?v=" ".repeat(a):y===99?a%2?(v=" ".repeat(a/2+.5),_=" ".repeat(a/2-.5)):(v=" ".repeat(a/2),_=v):_=" ".repeat(a)),
+  r.delimiterStart!==!1&&!d&&g.push("|"),
+  r.padding!==!1&&!(r.alignDelimiters===!1&&m==="")&&(r.delimiterStart!==!1||d)&&g.push(" "),
+  r.alignDelimiters!==!1&&g.push(v),g.push(m),r.alignDelimiters!==!1&&g.push(_),
+  r.padding!==!1&&g.push(" "),(r.delimiterEnd!==!1||d!==p-1)&&g.push("|");
+  k.push(r.delimiterEnd===!1?g.join("").replace(/ +$/,""):g.join(""))}
+return k.join(`
+`)}
+```
+
+⇒ 三个 helper 逐字（★ 关键＝单元格只过 `Di`）：`function Di(t){return t==null?"":String(t)}` @39,254；`function Ti(t){return t.length}` @39,297；`function ht(t){const e=typeof t=="string"?t.charCodeAt(0):0;return e===67｜｜e===99?99:e===76｜｜e===108?108:e===82｜｜e===114?114:0}` @39,328（＝C／c→99 center、L／l→108 left、R／r→114 right、其它→0 默认左）。
+⇒ ⇒ ★★★ **单元格内容没有任何转义分支**（只有 `String(t)`）⇒ 竖线直通；换行那一半由上批 `formatBlock(…,inline)` 在别处摊平。
+⇒ ☆ **一条必须记的形状判据**＝`Bi` 的选项面（`stringLength`／`alignDelimiters`／`delimiterStart`／`delimiterEnd`／`padding`／`align`）与 `mdast-util-to-markdown` 的 `markdownTable` 形状一致，且 Craft 调用点逐字 `Hi.markdownTable(u,{})`（★ 四枚选项一个没传）⇒ 准确表述＝**"上游库既有行为＋调用点全默认＝没补转义"**，不要写成"Craft 写了个不转义的表格器"。
+
+### 六、★★★ 第二条表格通路：`MarkdownExportApi-CkVOp9F7.js` @719 的转义函数逐字
+
+⇒ `function g(e){return e.replace(/\\/g,"\\\\").replace(/\｜/g,"\\｜").replace(/\n/g," ")}`（★ 半角竖线，本节写全角）。
+⇒ 调用点逐字：`m=[g(c),…p.map(d=>g(d.name｜｜"Untitled"))]; f.push("｜ "+m.join(" ｜ ")+" ｜"), f.push("｜ "+m.map(()=>"---").join(" ｜ ")+" ｜")` ＋ `const y=g(d.block.textContent｜｜"")`。
+⇒ ⇒ ★ 这条通路的读取面＝`a.properties.filter(d=>!d.isHidden)`、`contentProperty.name` 缺省 `"Title"`、属性名缺省 `"Untitled"` ⇒ **数据表／集合视图 → markdown 表格**；与文档导出通路互不复用（该 chunk 全文 8,670 字符，零 flavour 引用）。
+
+### 七、★★ `v2n`＝CM6 `defaultHighlightStyle` 19 条逐字（`vendor-code-editor-BLm003PU.js` @301,832）
+
+⇒ `v2n=uE.define([{tag:W.meta,color:"#404740"},{tag:W.link,textDecoration:"underline"},{tag:W.heading,textDecoration:"underline",fontWeight:"bold"},{tag:W.emphasis,fontStyle:"italic"},{tag:W.strong,fontWeight:"bold"},{tag:W.strikethrough,textDecoration:"line-through"},{tag:W.keyword,color:"#708"},{tag:[W.atom,W.bool,W.url,W.contentSeparator,W.labelName],color:"#219"},{tag:[W.literal,W.inserted],color:"#164"},{tag:[W.string,W.deleted],color:"#a11"},{tag:[W.regexp,W.escape,W.special(W.string)],color:"#e40"},{tag:W.definition(W.variableName),color:"#00f"},{tag:W.local(W.variableName),color:"#30a"},{tag:[W.typeName,W.namespace],color:"#085"},{tag:W.className,color:"#167"},{tag:[W.special(W.variableName),W.macroName],color:"#256"},{tag:W.definition(W.propertyName),color:"#00c"},{tag:W.comment,color:"#940"},{tag:W.invalid,color:"#f00"}])`
+⇒ ⇒ ★★★ 第 114 批那 6 档里的覆盖条目逐字＝`{tag:e.link,textDecoration:"underline"}`＝**与本表第 2 条同形** ⇒ "link 不上色"的来源是**从默认样式复制时丢了 color**，不是 CM6 语义。
+⇒ ☆ 同段 `Q2n` 逐字＝`const Q2n=N2.high(Nu.fromClass($2n,{decorations:r=>r.decorations}))` ⇒ ＝`Decorator.high(TreeHighlighter)`（`$2n` 带 `markCache`／`buildDeco`／`decoratedTo`）。
+
+### 八、★★ `flavourInfo` 七枚被读字段的消费点逐字
+
+⇒ `blockLinkStyle`：`==="pageLink"&&(e.linkType="rootBlock")`／`==="headerLink"&&e.linkType==="block"&&(e.linkType="block")`（默认 `"blockLink"` ⇒ 不改写）；`artificialNewLines`：`===!0` 时空文本块填一个空格并补一条覆盖全文的 `_runAttributes`；`fixListOrders`→`this.fixListOrders(h.subBlocks,…)`；`fixIndentationLevel`→`===!0 && this.fixIndentationLevel(h.subBlocks)`；`printFullCss`→`===!0 && this.setBlockModelExportClasses(h)`；`base64Assets`→`isBase64:this.flavourInfo.base64Assets`；`indentationCharacters`→`TableFormatter` 唯一读的字段（★ 类体 1,673 字符内 `this.flavour.X` 只出现这一枚）。
+⇒ ☆ `getHeading` 逐字：`registerHelper("getHeading",function(t,e){if(e===void 0)return L.title;const r=t.styleAttributes.textStyle;return r in L?L[r]:""})`；模板调用形态 `{{getHeading this parentSubBlocks}}` ⇒ **第二参从不被读，只当哨兵**。
+⇒ ☆ `It` 逐字：`registerHelper("setBlockTemplate",function(t){It=t})` ＋ `registerHelper("formatTable",function(t){return Wi.formatTable(t,It)})`，声明行 `let L=Ct.defaultFlavour,It,Et=new …` ⇒ **`It` 无初值**。
+
+### 九、★★ 存储与明暗的写入语义逐字（改掉上批一条表述）
+
+⇒ `store(e){var n;try{e==null?localStorage.removeItem(this.key):localStorage.setItem(this.key,JSON.stringify(e))}catch{}typeof window<"u"&&((n=window.topApi)!=null&&n.broadcastStorageChange)&&…}` @36,513 ⇒ ⇒ ★★★ **`system`＝删键，不是写 `null`**（☆ 判据＝"存 null"与"删键"在 `localStorage.length`／`for` 枚举／`Object.keys` 上可分辨，`getItem` 都是 `null` 所以不能作为判据）。
+⇒ 读侧归一化逐字：`const o=xl.darkModeSetting.get();return o==="dark"?"dark":o==="light"?"light":"system"`。
+⇒ 同键双声明逐字：`$O=new K$("forcedDarkOrLightMode","system",CE(["light","dark"]))` 与 `qje=new Lo("forcedDarkOrLightMode",null)` @78,867。
+⇒ 强制明暗键名逐字（@67,033）：`tU="dark",nU="light",Iq="text-context"`；两处读取：`fn.isEnabled(tU)?o="dark":fn.isEnabled(nU)&&(o="light")`（`Ik()`）／`fn.isEnabled(tU)?s=!0:fn.isEnabled(nU)&&(s=!1)`（`finalCalcDarkMode()` @5,189,322）。
+⇒ DOM 侧两条副作用逐字（`vn` 类体内，@5,189,1xx）：`document.querySelector("meta[name='theme-color']")?.setAttribute("content",_t.background(e))` 与 `document.documentElement.style.setProperty("color-scheme",e?"dark":"light")`。
+⇒ 亮度判据逐字（`socket.worker` @137,065）：`function isBrightColor(e){const{r:m,g:C,b:N}=toRGB(e);return .2126*(m/255)+.7152*(C/255)+.0722*(N/255)>.65}` ⇒ ☆ 与第 111 批"阈值 128"那条**不同域、不同阈值**（那条是代码主题底色、8 位整数域）。
+
+### 十、☆ 仪器留档（十一条探针各自答什么）
+
+⇒ `probe1`＝helper 消费面（`getHeading`／`setFlavour`）；`probe2`＝明暗键名（搜"右值是 `"dark"` 且同段有 `"light"`"的**赋值形态**，不是搜词）；`probe3`＝注册表方法面与 `flags[` 存储形态；`probe4`＝`Bi` 与三 helper；`probe5`＝`isBrightColor` 阈值＋名册全量枚举；`probe6`＝三档白名单调用点＋"有没有开关调试面板消费这 38 枚"（⇒ 未找到消费方）；`probe7`＝`Q2n`／`v2n`；`probe8`＝worker 交叉验证＋`luki:enable-fs`＋`kC`＋四枚别名字面量；`probe9`＝按别名搜调用点＝**零命中**（产出 §二末那条规则）；`probe10`＝别名→字面量对照；`probe11`＝`Bi` 全长重取。
+
+**仍未采到（本节）**：① 38 枚开关各自的**消费方 chunk**（需一次逐路由 `pageAssets` 采集）；② worker 里 `urlDisableableFeatures` 的完整成员（本批只取到初始化片段）；③ `initFromQueryString` 在 worker 那份里到底调不调；④ `ace`／`cce`／`oU` 三张 Set 有没有第二处追加；⑤ `blockLinkStyle` 非默认两档的设置方；⑥ `MarkdownExportApi` 的触发动作；⑦ ☆ 屏上三条（含竖线的单元格会不会串行／`?dark` 对主 app flag 层是否真无效／读一次 `luki:enable-fs` meta 的实际内容）＝全依赖连接器。

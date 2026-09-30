@@ -1630,3 +1630,39 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ⇒ ⑤ ☆ 一条流程自证＝本批**先试**过把自证写成 `e2e/code-block-palette.spec.ts`，实跑失败在 `src/collab/secrets.mjs:11`（缺 `AUTH_SECRET`／`COLLAB_SECRET`）⇒ **删掉了这个未跑过的测试**（不提交没跑过的测试），改走④那条切口 ⇒ 记入台账「十三」阻塞行。
 
 **仍未采到（本节）**：① `fn.isEnabled(tU)`／`fn.isEnabled(nU)` 两个强制明暗开关的**键名字面量**（只读到用法）；② `TableFormatter` 实际读 flavour 的哪几个字段（决定 §五.② 那条"半边更新"能否观测）；③ `isBrightColor` 的阈值与色彩空间；④ `blockLinkStyle:"blockLink"`／`subPageStyle:"flat"`／`artificialNewLines:false` 三个值的**消费点**（只拿到值）；⑤ 别的 chunk 里有没有第二份 flavour（HTML／打印导出路径，本批只扫了 `vendor-craft-export`）；⑥ `Q2n`（`R6e` 无条件 push 的那枚 facet）的身份。
+
+## 五十四、**第 115 批＝功能开关层的三档可控性与"服务端 meta 才是真源"，外加官方有两条表格导出通路而转义严格度不同（handlebars 那条不转义竖线），以及同一份 flavour 在一次渲染里有两种新鲜度**（✓盘上 2026-10-01 05:3x–06:1x 本地＝UTC 09-30 21:3x–22:1x，**零浏览器内容面调用、零官方写入、零网络**；★ gap 在 `gap.md` §三点一〇六五 G1209–G1224，逐字清单在 `longtail.md` §四十一，形状谱系在 `styles.md` §十九之续（第 115 批），模型含义在 `model.md` §一之七十三，本批自证操作在 `interactions.md` V109）
+
+### 一、开关层的真实形状：注册表 ＋ 三档白名单 ＋ 一个服务端注入口
+
+1. **注册表是一个对象，不是一张表**＝`fn` 逐字有 10 个方法（`isEnabled`／`get`／`initFromQueryString`／`initFeature`／`initFromCsvOrArray`／`makeUrlControllable`／`makeUrlDisableable`／`makeLocalStorageControllable`／`setInLocalStorage`／`onFeatureChange`）。⇒ 含义＝**同一个开关可以被三种不同通路控制，而且三种是叠加的**：URL 可控、URL 可关、localStorage 可控是三张**独立的 Set**，一枚开关可以同时不在任何一张里（＝只能由服务端下发），也可以同时在两张里（`fs-service-worker` 既 URL 可关又 localStorage 可控）。
+2. **白名单是运行期灌进去的**＝`const ace=new Set`（初值为空）＋ `fn.makeUrlControllable([…])` 在模块体某处调用一次。⇒ ★★ 采集含义＝**"这枚开关能不能用 URL 拨"没有静态名册可查**，必须读那一处调用的参数数组（本批已把 19 枚逐字抄进 `longtail.md` §四十一.二），或者屏上实测（后者被连接器挡住）。
+3. **真源是 HTML 里的两个 `<meta>`**＝`fn.initFromCsvOrArray(kC("luki:enable-fs"), kC("luki:disable-fs"))`。⇒ ★★★ 这条是本批最有**采集价值**的发现：**读一次 meta 的 `content` 就能拿到当前账户被灰度到的全部开关，零写入、不碰任何禁区**，而且它是"官方屏上找不到某功能"的**第三种解释**（前两种＝入口确实没有／通路被门控）——灰度未开。以后凡是"某功能在 bundle 里有实现、界面上找不到"，先查这枚开关在不在 `luki:enable-fs` 里，再考虑登记成缺口。
+4. **`_killMe` 那条是同一个注册表的第二个注入口**＝分享响应里的 `features.enabled/disabled` 会**整体覆盖**全局开关（`updateFeaturesFromShareResponse_killMe`）。⇒ ☆ 官方自己标了危险；本目录纪律＝照记不改名，但它给本地一条真启示＝**任何"远端响应能改全局功能面"的实现都要显式命名成危险**（本地没有灰度层，不构成差分）。
+
+### 二、"两份实现漂移"家族又多两例，而且这一族的判据已经成熟
+
+1. **主 app vs 协作 worker 的 URL 白名单不同**＝worker 那份逐字把 `FEATURE_DARK_MODE`／`FEATURE_LIGHT_MODE` 预置进 `urlControllableFeatures`，主 app 那份的 19 枚里没有这两枚。⇒ ★★★ 结论＝**同一个 `?dark` 在两条通路里语义相反**（worker 里是真开关、主 app 里对 flag 层无效）。⇒ ☆ 但这不等于"`?dark` 在主 app 完全无效"＝上批那条 app 级 `Dtt()` 直接读 `searchParams.has("dark")`，**和 flag 层互不相干**（两条独立通路碰巧用同一个词）。⇒ **本地复刻判据**：凡是"某参数有没有用"这类结论，必须写成"在 X 通路里有用／在 Y 通路里没用"，不许写全局的是或否。
+2. **同一个键名被两处声明、默认值不同**＝`forcedDarkOrLightMode` 一份带 zod 枚举且默认 `"system"`，一份无校验且默认 `null`。⇒ 两侧各自做了归一化所以不致出错，但**"从未写入过"这个状态在两个消费者眼里是不同值**。⇒ ☆ 与上面第 1 条同族：**同名不同源**是本产品代码层的常态，历批已见到（两份主题名册／两套回收站口径／两个按钮体系／两个删除入口）。
+3. **同一功能的两个优先级实现顺序不同**＝store 侧 `Ik()` 是"flag > URL > 存储 > matchMedia"，DOM 侧 `finalCalcDarkMode()` 是"systemDark → 存储覆盖 → flag 覆盖 → `calcDarkMode`"。⇒ ★ 判据（历批已立）：**遇到"谁赢"的问题不要外推**，两套实现要各自读到底。
+
+### 三、表格导出：两条通路，一条不转义、一条转义且顺序是要点
+
+1. **handlebars 那条（文档导出）＝`Bi`**：只做"字符串化＋算宽度＋对齐＋补空格＋首尾加分隔符"，单元格内容过一个纯 `String(t)`。⇒ ★★★ **没有任何竖线防护** ⇒ 单元格里的裸竖线把官方自己的表格串行。☆ 换行那一半**在别处被兜住**（上批的 `formatBlock` 第三参 `inline` 把 `\sl` 摊成空格／`<br>`），竖线这一半**没有兜底**。⇒ 判"缺陷候选，未屏上验证"，不写成官方事实。
+2. **`MarkdownExportApi` 那条（数据表／集合视图 → markdown）＝`g()`**：三步顺序＝**① 反斜杠翻倍 → ② 竖线转义 → ③ 换行变空格**。⇒ ★★ ②必须在①之后，否则第①步刚造出的 `\\` 会让第②步把下一个竖线判成被转过的、从而**吃掉分隔符**。⇒ ★★★ 这是一条**顺序即语义**的判据，本地正是栽在这个顺序上（见 §五）。
+3. **两条通路的共同盲区**＝它们**互不复用**（`vendor-craft-export` 里没有 `g()`，`MarkdownExportApi` 里没有 flavour）。⇒ ☆ 于是"官方的 markdown 表格"其实不是一个规格，而是**按产出路径分裂的规格**；历批那条"官方至少三条 markdown 产出路径"（文档 handlebars／数据表 API／块级 `formatBlock`）在本批拿到了逐字证据。
+
+### 四、flavour 的新鲜度：一次渲染里两种
+
+1. **helper 读模块级活变量 `L`**（`setFlavour`  shallow-merge 的就是它）；**`TableFormatter` 读构造期快照 `this.flavour`**（`new` 只在模块初始化跑一次，`setFlavour` 不重建）。⇒ ★★★ 结论＝**改 `indentationCharacters` 会得到混合结果**：标题前缀与列表样式用新档，表格缩进用旧档。⇒ ☆ 上批 G1201 说的是"半边不更新"，本批把范围**精确到一枚字段**——判据＝配平取到 `TableFormatter` 类体全文（1,673 字符），里面 `this.flavour.X` 只出现 `indentationCharacters` 一枚。⇒ **方法论**＝"某类读哪些字段"这种问题只能靠**取全类体再枚举成员访问**，不能靠 grep 字段名（字段名在别处也出现）。
+2. **`flavourInfo` 消费点本批补齐 7 枚**＝⇒ 三条含义：① 那批"看起来像导出选项"的字段其实和格式档混住在同一个对象里；② `blockLinkStyle` 是**唯一能改写块链语义**的字段（三档：`pageLink`→`linkType="rootBlock"`／`headerLink`→把 `block` 改回去／默认不改）⇒ 官方的"块链"落到 markdown 有三种形态；③ `artificialNewLines` 是**第二条"导出器造内容"**（空文本块填一个空格＋补一条覆盖全文的 run 属性），上批那条 UUID 改写不是孤例。
+
+### 五、本批唯一一条直接产出的本地缺陷（G1215）
+
+> ☆ 本节凡写"半角竖线／全角｜"，语义见 `longtail.md` §四十一.〇：产物里的全角｜＝官方源码里的半角竖线。
+
+- 本地 `renderMarkdownTable` 的单元格处理＝竖线转义 → 换行摊平 → `trim`，**缺第一步"反斜杠翻倍"**。⇒ 后果＝单元格文本以反斜杠结尾时（`a\`），本地产出＝`a` ＋ 一个反斜杠 ＋ 半角竖线（★ 这里不能照原样写进产物，否则会被表格解析器吃掉，故用文字描述）⇒ 这一对会被下游解析成"转义过的竖线"⇒ **分隔符被吃掉、表格塌一列**；官方产出＝`a` ＋ 两个反斜杠 ＋ 半角竖线＝先字面反斜杠、再转义竖线。⇒ ☆ 建议＝TDD 先行（两个用例：以反斜杠结尾的单元格、含竖线的单元格），补一次 `.replace(/\\/g,"\\\\")` 放在最前面。⇒ ★ 这是本批**不依赖任何未采到的信息**就能修的一条，且官方证据是逐字函数体，等级＝3/3。
+
+### 仍未采到（本节）
+
+① `ace`／`cce`／`oU` 三张白名单在运行期**是否还有别处追加**（本批只找到一处 `makeUrlControllable` 调用点）；② worker 那份 `Features` 到底有没有调 `initFromQueryString`（定义与预置都找到了，调用点没找到——**没找到不等于没调用**，可能是 `initFromCsvOrArray` 之外的形态）；③ `blockLinkStyle` 的 `pageLink`／`headerLink` 两档**由谁设置**（全仓只有一份 flavour 且默认 `blockLink` ⇒ 必有第二份配置源或运行期改写）；④ `MarkdownExportApi` 那条通路**由哪个用户动作触发**（chunk 只 8,670 字符，消费方未查）；⑤ `vn`（DOM 侧明暗管理器）完整生命周期、与 store 侧 `Xs` 谁驱动谁；⑥ ☆ 屏上三条＝单元格含竖线会不会真的串行／`?dark` 在主 app 是否真的对 flag 层无效／读一次 `luki:enable-fs` meta 的实际内容。
