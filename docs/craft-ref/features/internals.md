@@ -1081,9 +1081,18 @@ function m8n({ count, scrollContainerRef, enabled = true, initialScrollOffset, r
 
 ## 四十二、**落点判定函数不在主包坐标数学里＝中线规则可能是"命中元素后二分"而非显式阈值；并把"选择集累积"降级**（✓屏上反推＋bundle 搜证 第 103 批 2026-09-30 10:5x–11:3x；原始读数在 `gap.md` §三点一〇四九 G1043／G1044、`interactions.md` V97）
 
-1. ★★ **实现推断**＝官方主包里 `data-block-id` 邻近没有 `clientY` 数学（§四十.2），而屏上行为又精确到"整行中线"一格 ⇒ 两条候选：① 命中块后由**通用 helper** 做 `clientY > rect.top + rect.height/2` 二分（helper 不含 `data-block-id` 字样所以搜不到）；② 走 dnd-kit 的 `closestCenter` 语义（"离哪个块的中心近"在等间距下**数学上等价于中线**）。⇒ **②更能解释"为什么找不到显式阈值"**，且它同时预测：**当块高不等时（长文本块 vs 短行）落点会偏向"中心更近"的那块而不是几何中线** ⇒ 一条可证伪的预测，列入第 104 批。
+1. ★★ **实现推断**＝官方主包里 `data-block-id` 邻近没有 `clientY` 数学（§四十.2），而屏上行为又精确到"整行中线"一格 ⇒ 两条候选：① 命中块后由**通用 helper** 做 `clientY > rect.top + rect.height/2` 二分（helper 不含 `data-block-id` 字样所以搜不到）；② 走 dnd-kit 的 `closestCenter` 语义（"离哪个块的中心近"在等间距下**数学上等价于中线**）。⇒ **②更能解释"为什么找不到显式阈值"**，且它同时预测：**当块高不等时（长文本块 vs 短行）落点会偏向"中心更近"的那块而不是几何中线** ⇒ 一条可证伪的预测，列入第 104 批。**✎ 第 104 批作废＝两条候选同时排除**（四次拖拽 397 条 `dragover` 的 target **全部**是正文容器 `DIV.sc-vts49g-1 deoTMl`（rect `top 48 × h 504`）、**没有一条**落在 `[data-block-id]` 行上 ⇒ 既不是"命中块后交给 helper"，也不是 dnd-kit per-row droppable；且"不等高块"实验本身不可判＝扁平兄弟里 after A ≡ before B 同一槽位 ⇒ 见 §四十三.2 与 G1054／G1056）
 2. ★★ **"选择集累积"降级**＝该假说的预测是"同沙盒多枪后出现多位移"；本批同型操作（同沙盒 4 枪）**0/4 命中** ⇒ 从"假说"降为"偶发未证"。⚠ 未直接否证（第 102 批那枪的前序是 3 次**跨不同源块**的拖拽，本批也是跨源块 ⇒ 形状相同、结果不同 ⇒ 更可能是**那一次的抖动**，例如 drop 时正赶上预览重排的中间态）。
 3. ★ **锚点歧义的新教训**＝`/Plain MediumSmall/` 在新视口命中 3 枚按钮 ⇒ **类名锚点必须回读结果判据**（`role=menuitem` 非空）才算成功；本轮第一次尝试因此静默失败（**没有**误触发任何动作，四计数复核 0）。
 4. ☆ **仪器读数纪律再获一证**＝每枪的 `dragstart`/`drop` 计数都是"一枪一次"，与"模型只发生一次位移"互相咬合 ⇒ **事件计数＋几何序＋`blocks get` 三读一致**才算一条落点结论成立。
 
 **仍未采到（本内部面）**：候选 ②（`closestCenter`）的正面证据；正文块拖拽真实判定函数本体；`draggedIds` 清理时机（本批未见累积迹象，可能根本每次清）。
+## 四十三、**拖拽事件的 DOM 目标恒为正文容器＝逐块判定是 handler 内的 clientY 数学；`closestCenter` 与"命中行后二分"两条候选同时排除**（✓屏上事件日志＋bundle 反推 第 104 批 2026-09-30 12:2x–12:5x；原始读数在 `gap.md` §三点一〇五一 G1054／G1056）
+
+1. ★★★ **事件目标拓扑到手**＝`dragstart.target = DIV.sc-1iqnrwp-0 fchNe`（手柄，rect 高 31、top 逐次跟随源行）；**`dragover`／`drop`／`dragend` 的 target 分别是 `DIV.sc-vts49g-1 deoTMl`（正文容器，rect `top 48 × h 504`）与手柄自身**，四次拖拽 397 条 `dragover` 里**没有一条**落在 `[data-block-id]` 行元素上 ⇒ **"命中哪一行"完全由 handler 用 `clientY` 自算**，DOM 只提供事件。
+2. ★★★ **两条旧候选作废**＝第 103 批 §四十二.1 猜的"①命中块后通用 helper 二分"与"②dnd-kit `closestCenter`"都要求事件落在块元素上（dnd-kit 的 `closestCenter` 也仍需 droppable 注册到行），而实测事件目标是容器 ⇒ 新候选＝**容器单一 droppable ＋ 自算最近行带**（与 §四十.2"主包 `data-block-id` 邻近零 `clientY` 数学"仍然相容：数学在 styled 容器组件里，不在块节点上）。
+3. ★★ **一条实验设计教训（省预算）**＝"不等高块区分 `closestCenter` vs 中线"根本不可判——扁平兄弟列表里"after A"与"before B"是同一槽位，两模型必然同解 ⇒ **落点类假说先问"它能否产生不同槽位"**；本批改用"沟槽＋上下越界"才拿到区分度（G1056）。
+4. ☆ **一次拖拽的事件配额**（给后续批次定成本）＝`dragstart` 1 ＋ `dragover` ≈ 99 ＋ `drop` 1 ＋ `dragend` 1 ⇒ **计数事件不能用来数"命中了几次"**，只能用 `dragover` 的 `clientY` 序列反推轨迹。
+5. ☆ **本地同族但不同实现**＝本地也是"容器收事件＋自算"（`DragHandle.tsx:131-136` 遍历 `view.dom.children`）⇒ **不需要引入 dnd-kit 的 per-row droppable**；要补的只有命中带与上夹紧（见 `model.md §一之六十二.4`）。
+
+**仍未采到（本内部面）**：正文组件 `sc-vts49g-1` 的判定函数本体（未反编译，本轮预算给了行为）；插入指示线的 DOM 类名与它在沟槽里的落点归属；`draggedIds` 清理时机。

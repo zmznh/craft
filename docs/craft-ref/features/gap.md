@@ -8,6 +8,42 @@
 回归列：`基线`=会动视觉基线需重生成；`用例`=需新增/扩展 e2e。
 编号说明：**G09/G10 与 G25–G30 不存在**（早期去重时删除，全库零引用，不是丢失行）；现共 **233 行、最大 G241**。
 
+## 〇、复刻状态台账（第 104 批起立；此前 103 批**没有可测的复刻进度指标**）
+
+**为什么要有这一节**＝`gap.md` 的"判定"列在后半段被用作**取证方式**（`✓实测`／`✓盘上`），不是**对齐状态** ⇒ 1043 条事实里"本地改了没有"无列可读，历次"完成度"只能给估计。⇒ **约定**：① 本节台账**只逐条实扫、不推断**，每条必须带 `文件:行号` 或 commit 号；② 从第 104 批起，新批次的表格里若某行"本轮改了本地代码"，就在本台账追加一行（不回填旧批次表格的列，避免 1000＋ 个空格噪声）；③ 状态词表＝`未动`／`在做`／`已清(commit)`／`不做(有意偏差)`。
+
+### 一、P0 八条逐条实扫（2026-09-30，本轮 grep＋读码，非推断）
+
+| 状态 | 条目（`gap.md` 原编号） | 本轮实扫证据 |
+| --- | --- | --- |
+| 未动 | G01 · `@` 提及人员 | `src/components/editor/extensions/mention.tsx:13` 有 `Mention` 节点与 `setMention`，但 suggestion 触发器只有 `block-link-suggestion.tsx` 与 `emoji-suggestion.tsx`（全目录 grep `suggestion` 命中 5 个文件，无 mention 触发器） |
+| 未动 | G02 · 提醒投递与状态 | `grep -rln "setInterval\|cron\|scheduler" src/actions src/lib src/app/api` **只命中 `src/lib/task/recurrence.ts`**（循环计算，非投递）⇒ 无定时器／无通知／无邮件 |
+| 未动 | G03 · 通知三开关可配 | `src/components/settings/SettingsPanels.tsx:101` 仍是 `const [notify, setNotify] = useState({...})` ⇒ 不落库 |
+| 未动 | G04 · 分享 view／edit 两档 | `src/prisma/contract.prisma:318-332` `DocumentShare` 字段集＝`id/documentId/token/slug/passcode/isPublished/createdAt/updatedAt`，**无 permission 列** |
+| 未动 | G05 · 未发布不可访问 | `src/actions/document/share.ts:101-108` `getSharedDocument` 只判 `!doc || doc.isDeleted`，**不判 `isPublished`** ⇒ 拿到 token 即可读 |
+| **已清** | G06 · 成员档"可查看和评论" | `src/actions/comment/comment.ts:26` 建线程要求 `'commenter'`；`src/lib/authz/document-access.ts:39` `roleSatisfies` 不满足即抛 `AuthorizationError`；阶梯 `src/lib/authz/resource.ts:15-18`（viewer=1 < commenter=2）⇒ **viewer 评论已被拒**，与官方一致 ⇒ **早先登记为"只有壳"已过时，以本表为准** |
+| 未动 | G07 · 手柄菜单＝块操作主入口 | `src/components/editor/drag-handle/DragHandle.tsx` 渲染体里手柄只有 `<GripVertical className="size-4" />`（`data-drag-handle` 那个 div 内无 `+`／无 `⋮`） |
+| 未动 | G08 · 越权删除要报错 | `src/actions/document/delete.ts:11-16`（`restoreDocument` 同型 `:23-28`）仍是 `.where({id,userId}).update(...)` 且**不检查命中数** ⇒ 非本人时 0 行更新静默返回 |
+
+⇒ **P0 已清 1／8**（本轮唯一新清的是 G06，且它是"实扫发现早已修好"而非本轮动手）。
+
+### 二、近三批已清的本地条目（带 commit）
+
+| 状态 | 条目 | 落地 | commit |
+| --- | --- | --- | --- |
+| 已清 | G1028 · 回收站无"选择模式＋批量永久删除"通路 | `src/components/document/TrashList.tsx` 多选工具栏＋计数回显确认框，接 `src/actions/document/delete.ts:32` | `60cc5fc` |
+| 已清 | G1042 · 落点正中点归属与官方差一格 | 判定抽成 `src/components/editor/drag-handle/drop-band.ts`，正中点归 `before`；4 条单测锁官方几何 | `09874bc` |
+| 已清（屏上复验） | G1042 · 上面那条只有单测、无真浏览器证据 | `e2e/drag-drop-band.spec.ts` 真指针两枪（中线→前、中线＋1→后）；**对照实验**＝把 `<=` 改回 `<` 后单测 2 条失败＋e2e 失败 ⇒ 两层都真锁住 | `7a3aa31` |
+
+### 三、第 104 批新登记的待办（本轮未动代码）
+
+| 状态 | 条目 | 建议改法 | P |
+| --- | --- | --- | --- |
+| 未动 | G1052 · 沟槽内拖拽本地零动作 | `dropBandFor` 的命中带从"矩形内"扩到 `[top, top+pitch)`（pitch 取"下一行 top − 本行 top"，末行取 `height + 8`） | 2/1 |
+| 未动 | G1053 · 首块之上本地不夹紧 | 循环前加一次"y < 首行 top ⇒ 插到最前"；**尾部保持不夹紧**（与官方一致） | 2/1 |
+
+⚠ 下界确切像素未钉死 ⇒ 尾部实现按"末块底＋一个 pitch"起算即可与实测不冲突。
+
 ## 一、P0（先做：功能真实不存在但界面上有入口，或权限/正确性错）
 
 | # | 官方事实（证据） | 本地现状 | 类型 | 影响/成本 | 补齐判据 | 回归 |
@@ -2520,3 +2556,16 @@
 | G1051 | ☆ **第五次精确清除记录**＝`QODER-HARVEST-B103-BOUNDARY`（rootBlockId `3031…`）先按"删除类动作先读回内容"读回＝4 块 `D1 alpha`／`D2 target row: alpha bravo …`／`D3 charlie`／`D4 delta`（**零用户内容**）→ ⋯（testid 锚点）→「选择」→ **进入即默认选中首张＝恰好是授权项**（本轮无需反选，`untitledChosen:0` 天然成立）→ 闸门 `chosen:1／namedChosen:1／ok:true` → 截图核看 → `_variantPlainDanger_1bml7_165`（实时 `775,58,32×32`）→ **按新增文案判确认框**（`role=dialog` 仍 0、`已选 1 项`未变、卡片仍 4＝三项指纹全"没变"，**没有**判废重试）→「删除 1 个项目」→ 实时 rect `500,301,154×32` 落刀 → **五判据全过**（屏 3 行全「无标题文档」／`trash` 3 条逐 id＝保留集／`unsorted` 3 条逐 id 未动／`reminders` 0／`search QODER-HARVEST` 无命中／**硬重载**仍 3 行）。⚠ 回收站里剩 3 条无标题项（含第 96 批记过的历史残留 `4026…`）身份未明＝**禁区，不再碰**；☆ 消耗＝2 张截图（都已核看）＋约 12 次 `evaluate_script`＋1 次导航＋1 次 reload＋4 次 craft 读＋0 次 OS 调用 | 本地同型通路已实装并有回归覆盖（`e2e/trash-selection.spec.ts`）；☆ 本轮**未改本地代码**（除已获点头的落点等号） | 记录 | 0/0 |
 
 **⇒ 规模**：`gap.md` 1040 → **1043 条（最大 G1051，本段 ＋3）**；`interactions.md` **V97 追加 §六**（第五次清除＋锚点改判）；`features.md` 计数行；`todo-actions.md` 尾记日志；`manifest.jsonl` 144 → **145 行**。⚠ **`model.md`／`internals.md`／`longtail.md`／`styles.md` 本段无新节**（原因＝本段是清除尾记：零实体字段、零码路反编译、零几何读数、零样式读数；G1049 的锚点事实属采集通路，落在 gap 与交互面即可）。
+### 三点一〇五一、第 104 批〔★★★ **落点命中带＝行矩形＋其后 8px 尾沟槽（沟槽是有效落点），且上边界夹紧、下边界不夹紧＝上下不对称** ＋ ★★★ **`dragover`／`drop` 的 `e.target` 全程恒为编辑器容器 DIV（`sc-vts49g-1 deoTMl`，rect `top 48 × h 504`）⇒ 逐块命中不靠 DOM，是 handler 内的 clientY 数学** ⇒ 第 103 批 `internals.md §四十二.1` 的两条候选**同时被排除** ＋ ★★ **本地在沟槽里返回 `null` ⇒ 沟槽内拖拽本地零动作＝P1 差分**〕（2026-09-30 12:2x–12:5x 本地＝UTC 04:2x–04:5x；沙盒 `QODER-HARVEST-B104-GAPBAND`＝1 文档＋6 块，**已软删还原**；`manifest.jsonl` 145 → **147 行**）
+
+| ID | 官方事实（本轮实测） | 本地（本轮实扫） | 判定 | P |
+| --- | --- | --- | --- | --- |
+| G1052 | ★★★ **行间沟槽是有效落点**＝六行短块几何 `G1 173..201 / G2 209..237 / …`（行高 28、pitch 36 ⇒ 沟槽 8px）；E1 落 **y=205**（G1 底下方 4px、G2 顶上方 4px）⇒ 源块 G6 插到 **G1 与 G2 之间** ⇒ **每行的命中带＝`[top, top+pitch)`（矩形＋尾沟槽）**，不是"矩形内才算" | 本地 `computeDropTarget` 只在 `rect.top..rect.bottom` 内返回目标（`src/components/editor/drag-handle/drop-band.ts:8` 的 `clientY < rect.top \|\| clientY > rect.bottom ⇒ 'none'`，调用点 `DragHandle.tsx:131-136`）⇒ **沟槽里本地判 `'none'`＝拖拽零动作**＝**P1 差分**（改法＝命中带扩到 `top+pitch`，等价于"落在两行之间时归上行的 after"） | 行为不同 | 2/1 |
+| G1053 | ★★★ **上下边界不对称**＝E5 落 **y=150**（比首块顶 173 还高 23px、远在沟槽之外）⇒ 源块仍插到**最前**＝**上边界夹紧**；E3 落 **y=399**（末块底 381＋尾沟槽 389 之外 10px）⇒ `drop` 送达但**模型零变化**＝**下边界不夹紧**；对照 E4 落 **y=385**（尾沟槽内）⇒ 插到**最后** ⇒ 下界确切位置在 **(389, 399] 未钉死** | 本地两端都**不夹紧**（循环只匹配包含矩形，上方 y<firstTop 与下方 y>lastBottom 同样返回 `null`）⇒ **上夹紧这一半是差分**；☆ 本地连"尾沟槽"一起缺（见 G1052） | 行为不同 | 2/1 |
+| G1054 | ★★★ **拖拽事件的 DOM 目标恒为容器**＝四次拖拽的 capture 日志：`dragstart.target = DIV.sc-1iqnrwp-0 fchNe`（手柄本体，rect 高 31、top 逐次跟随源行 354／174／210／318），而 **`dragover` 与 `drop` 的 target 全是 `DIV.sc-vts49g-1 deoTMl`（rect `top 48 × height 504`）＝编辑器正文容器**，一次拖拽 `dragover` ≈ 99 次、`drop` 恰 1 次 ⇒ **逐块判定不在 DOM 命中层，而在 handler 内按 `clientY` 自算** | 本地是**反过来的**＝`computeDropTarget` 自己遍历 `editor.view.dom.children` 取 `getBoundingClientRect()`（`DragHandle.tsx:129-136`）⇒ **同族做法**（都是容器收事件＋自算），差别只在命中带与夹紧（G1052／G1053） | 机制（代码级）＋ 建模规格 | 1/1 |
+| G1055 | ★★ **"drop 送达但零变化"不能算静默失效**＝E3 的 `drop` 事件确实派发到容器（`drop:1`、`clientY 399`），但模型没动 ⇒ 与第 101 批"CDP 注入不发起拖拽"（零 `dragstart`）不同族；⇒ **判据补一条＝落点类实验要同时看 ①`dragstart`/`drop` 是否送达 ②落点是否在任何命中带内 ③模型是否变化**，三者齐了才允许写"官方此处无动作" | 本地同型（`pointerup` 里 `if (target) performMove(...)`，`target` 为 `null` 时静默返回＝`DragHandle.tsx:262-266`）⇒ **一致** | 判据 | 1/1 |
+| G1056 | ☆ **一条自我登记的设计缺陷（省一批预算）**＝原队列①"不等高块检验 `closestCenter`"**不可判**＝在扁平兄弟列表里"after A"与"before B"是**同一个槽位**，两种模型必然给出相同结果 ⇒ 该实验零信息量，本批改做"沟槽＋上下边界"实验才有区分度；⇒ **落点类假说必须先自检"能否产生不同槽位"** | 无本地对应（方法学） | 工具事实 | 1/1 |
+| G1057 | ☆ **执行与还原记录**＝沙盒 `QODER-HARVEST-B104-GAPBAND`（1 文档＋6 块 `G1…G6`）建→5 次 OS 拖拽（E1／E2／E3／E4／E5）→**软删还原**；残留三连＝`unsorted` 3 条逐 id 未动／`reminders` 0／`trash` 4 条（3 无标题＋本沙盒）；页内注入的 4 个 capture 监听器与 `__PT`/`__OV` 随页面销毁回收（**不是产品事实**） | 本轮**未改本地代码**（G1052／G1053 两条改法等点头） | 记录 | 0/0 |
+| G1058 | ☆ **换算式第三次独立复验＝零误差**＝OS 图像点 `(881,416)` → 页内实测 `pointerdown` 落 `(597,261)`（css）＝预测值逐位相同 ⇒ `image = ((css_x+333)/1.056, (css_y+178)/1.056)` 在同一窗口布局下**跨批复用有效**；☆ 消耗＝3 张整窗截图＋5 次 OS 拖拽＋1 次 OS 点击（换算复标）＋约 8 次 `evaluate_script`＋2 次导航＋5 次 craft 读 | 无本地对应 | 记录 | 0/0 |
+
+**⇒ 规模**：`gap.md` 1043 → **1050 条（最大 G1058，本段 ＋7）**；`interactions.md` **V98**（沟槽与边界五枪协议）；`model.md` **§一之六十二**（命中带＝矩形＋尾沟槽、上下不对称）；`internals.md` **§四十三**（事件目标恒为容器⇒判定在 handler 内，两候选排除）；`longtail.md` **§三十**（五枪落点几何表）；`features.md` 计数行；`todo-actions.md` 第 104 批日志＋第 105 批队列；`manifest.jsonl` 145 → **147 行**。⚠ **`styles.md` 本段无新节**（原因＝零样式读数；CSS 盘上批已连续四批未开工）。⚠ **第 103 批 `internals.md §四十二.1` 的"候选②`closestCenter`"就地 ✎ 作废**（见 G1054／G1056）。
