@@ -2775,3 +2775,41 @@ HJe = (t, e) => { let n = {};
 4. ☆ **对本地的含义**＝`drop-band.ts` 需要两处改动才等价：① 命中带从"矩形内"扩到"矩形＋尾沟槽"（否则沟槽内零动作）② 首块之上夹紧到"before first"（尾部保持不动＝与官方一致）。⚠ 本轮**未改**，等点头；下界确切位置（389 与 399 之间）未钉死，改的时候按"末块底＋一个 pitch"起算即可与实测不冲突。
 
 **仍未采到（本模型面）**：下界的确切像素位置；尾沟槽的归属在**最后一块是高块**时是否仍是"after last"；嵌套子块的沟槽（父子之间）是否也算带；水平方向落点。
+
+## 一之六十三、**"什么算可交互元素"的官方定义＝一条 `:where()` 名单（7 项，含一个 `data-interactive` 逃生舱）；"什么算被选中／被按下"则同时写在类与 `data-` 属性两处**（✓盘上 第 105 批 2026-09-30 13:1x–14:1x，来源＝主 CSS 的触摸按压全局规则；gap 行 `gap.md` G1063／G1065，机制 `internals.md §四十四.三`）
+
+### 一、可交互判定集（逐字）
+
+```
+:where(button, a[href], [role=button], [role=option], [role=menuitem], [role=tab], [data-interactive])
+```
+
+| 成员 | 覆盖的东西 | 本地对应 |
+| --- | --- | --- |
+| `button` | 原生按钮 | 有（Base UI `Button`，`src/components/ui/button.tsx`） |
+| `a[href]` | **带 href 的链接**（无 href 的 `<a>` 不算） | 无专门判定（全库无 `a[href]` 形式的选择器） |
+| `[role=button]` | 伪按钮（div 装的） | **源码里 `role="button"` 字面 0 个文件**（grep 实扫） |
+| `[role=option]` | **列表选项**＝命令面板／搜索结果行 | **只有 1 个文件**写 `role="option"`＝`src/components/editor/slash-menu/SlashCommandMenu.tsx` |
+| `[role=menuitem]` | **菜单项**＝侧栏树行右键菜单、⋯ 菜单 | **源码 0 个文件手写**＝依赖 Base UI 内部生成（本地不可按此名单做全局样式） |
+| `[role=tab]` | **标签页**＝设置弹窗左栏、文档标签 | 1 个文件＝`src/components/editor/tabs/RightPanel.tsx`（配 `aria-selected`，共 3 个文件用到） |
+| `[data-interactive]` | ★ **逃生舱**：任何元素挂上该属性就进入交互集合（用于自绘控件、不在上述 role 里的东西） | **全库零命中**＝没有这条扩展位 |
+
+⇒ ★ 含义＝**官方"可交互"是一等概念**，且**以 ARIA role 为准、不以标签名为准**；⇒ 任何"哪些东西该有按压反馈／焦点环／快捷键可达"的问题，官方都只需要问这一条名单。
+⇒ ☆ 名单**不含** `[role=checkbox]`／`[role=switch]`／`input`／`select`／`textarea` ⇒ **表单控件的按压反馈不走这条全局规则**（复选框自己用 `transition-property:…,transform` 表达勾选微动效，见 `styles.md §十二.七`）。
+
+### 二、状态记号的**双写**约定（本批新读到的命名层）
+
+| 状态 | 类 | `data-` 属性 | 备注 |
+| --- | --- | --- | --- |
+| 禁用 | — | `[data-disabled]` | 官方反馈规则一律 `:not(._isStatic,[data-disabled])` 前置 |
+| 静态（不参与反馈） | `._isStatic` | — | ★ 这是"**关掉反馈**"的标记，与"禁用"并列但语义不同 |
+| 选中 | `._isActive` | `[role=tab]` 走 ARIA `aria-selected` | 按钮族的"当前项"用类 |
+| 勾选／半选 | — | `[data-checked]`／`[data-indeterminate]` | 复选框两态**同换**底色与边框（`--accent-500`） |
+| 弹层已开 | — | `[data-popup-open]` | ★ **菜单触发按钮在弹层打开期间保持 hover 观感**（与 focus／hover 并列三态）；☆ 本地**有该属性**（`src/components/ui/dropdown-menu.tsx`／`navigation-menu.tsx` 两文件），但**没有任何 CSS 用它做"保持观感"**（本地弹层开合不改底色） |
+| 只有图标／带图标／下拉 | `._isOnlyIcon`／`._hasIcon`／`._isDropdown` | — | "只有图标"是**状态类不是尺寸档**（§十一.三）；☆ 本地用 `icon`／`icon-*` **尺寸档**表达同类需求（`button.tsx:22-34`）＝分类方式不同 |
+| 朝向 | — | `[data-orientation]` | 滚动条视口用；壳内 `[data-orientation]{z-index:2}` |
+| 设计系统槽位 | — | `[data-ds=avatar]` | ★ **条目内的子组件按 `data-ds` 值覆写**（头像尺寸／圆角在此被 `!important` 改写）；☆ 本地 **`data-ds` 全库零命中**＝没有"槽位类型"这一层 |
+
+⇒ ☆ 对本地 schema 的含义：**这些状态里只有"勾选／半选／禁用"进了数据模型**（`checked`/`disabled` 是块属性），其余（`_isStatic`、`_isActive`、`[data-popup-open]`、`[data-ds=…]`）全是**视图期状态**，不应落库；⇒ 本地若把"当前选中项"当数据存，就会与官方在撤销粒度／同步面上不一致。
+
+**仍未采到（本节）**：`[data-interactive]` 的**实际使用者**（哪些自绘控件挂它）未统计，需要读 JS 或全 DOM 扫描；`data-whatintent` 的**写入方与取值全集**未读到（在 JS 里，不在 CSS）；`_isStatic` 由谁设置（是"非交互渲染"还是"性能优化"）未证；`[data-ds=…]` 的取值全集（本批只撞到 `avatar` 一个）未枚举。

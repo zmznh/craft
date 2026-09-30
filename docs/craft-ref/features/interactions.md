@@ -2234,3 +2234,33 @@ if (type === "fixed") {
 5. 成本实测＝3 张整窗截图＋5 次 OS 拖拽＋1 次 OS 点击＋约 8 次 `evaluate_script`＋2 次导航＋5 次 craft 读。
 
 **仍未采到（本交互面）**：下界确切像素（只夹在 `389 < x ≤ 399`）；上界是否真的无限；高块与短行相邻时尾沟槽宽度；嵌套父子缝隙；水平方向落点；插入指示线在沟槽里画在哪条线上（唯一能区分"归上行 after"还是"归下行 before"的观测，OS 拖拽中途无法插拍）。
+
+## V99〔第 105 批 2026-09-30 13:1x–14:1x 本地＝UTC 05:1x–06:1x〕**触摸按压反馈＝全局一条 `:where()` 规则（scale .99 ＋ opacity .75，0.2s）＋ 一个豁免口 `.noPressFeedback`；鼠标档的"按下变深"只有 Action 组件有，且被包在 `@media (pointer: fine)` 里**（★ **盘上静态批＝证据只有 CSS，没有触摸屏、没有动态复验** ⇒ 本节每条都标 `✓盘上`，与 `✓实测` 不同档；原始读数 `gap.md` §三点一〇五二 G1063／G1064，逐字值表 `styles.md §十二.九／十`）
+
+**为什么这条值得单独成节**＝按下反馈是**用户能感觉到的**交互，而它在本地的实现（1px 位移）与官方（缩放＋降透明度）**不是同一类动作**；更关键的是官方把"什么时候给反馈"做成了**运行时输入意图判定**，本地完全靠 CSS 伪类 ⇒ 这不是数值差，是**机制缺**。
+
+### 一、触发条件（两档互斥，逐字）
+
+| 档 | 闸门 | 效果 | 覆盖对象 |
+| --- | --- | --- | --- |
+| 触摸 | `[data-whatintent=touch]`（写在祖先元素上的运行时属性） | `transform:scale(.99)` ＋ `opacity:.75`，`transition-duration:.2s` ＋ `transition-property:transform,opacity` ＋ `will-change:transform,opacity`，三属性全带 `!important` | `:where(button, a[href], [role=button], [role=option], [role=menuitem], [role=tab], [data-interactive])`，**排除 `.noPressFeedback`** |
+| 鼠标／精细指针 | `@media (pointer: fine)` ＋ `:not(._isStatic,[data-disabled]):active` | **只有底色**：`background:var(--foreground-200)`（按 §十二.五 的档位表＝**8% 前景底**），三条逐字同值 | **仅 Action 族 `_1j891_` 的 `variantDefault`／`variantFilled`／`variantActive` 三个变体** |
+
+⇒ ★ **DS 按钮族（`_1bml7_`，21 个变体）在鼠标档没有任何 `:active` 底色规则**（实测 0 条）⇒ 按钮在桌面端按下**只有触摸反馈路径被禁用、鼠标路径本来就没有**＝桌面端按钮"按下"是**无视觉变化**的（除了 hover 态在按住期间仍然生效）。
+⇒ ★ **`.noPressFeedback` 是唯一豁免口**，且全文件只出现在这两条规则自身里 ⇒ 它是**给组件作者留的开关**（有类即可豁免），不是产品级设置。
+
+### 二、伴随的焦点环（同族机制，一并记）
+
+- 通用环＝`[data-whatintent=keyboard] :focus{outline:1px solid var(--accent-500);outline-offset:1.5px}`；
+- **编辑器正文刻意无环**＝`[data-whatintent=keyboard] [contenteditable=true]:focus{outline:none}`；Action 组件同样 `outline:none`；
+- **tab 用另一种环**＝`outline:2px solid var(--accent-500);outline-offset:-2px`（★ 内偏移，与通用环的外偏移 +1.5px 不是同一套）。
+- 键盘闸门下共 58 条规则，其中动到 `outline` 的 15 条、`outline:none` 的 8 条。
+
+### 三、本轮没有采到的（必须写清，别当已结案）
+
+1. **没有任何触摸屏动态验证**＝本批是盘上批，未做"真长按＋截图看缩放/透明度"的指纹比对 ⇒ `scale(.99)`／`opacity(.75)` 的**实际观感**与**触发时序**（按下即变？还是延迟？）未证。
+2. **`data-whatintent` 由谁写入、写入时机未读到**（要读 JS，不在 CSS 里）⇒ 只能确认"存在这个属性闸门"，不能确认它的取值集合是否只有 `keyboard`／`touch` 两档。
+3. **`pointer: fine` 之外的指针档**（`coarse`／`none`）没有对应规则 ⇒ 触摸设备上的按钮按下**只有缩放一档**是否等价于官方的"触摸反馈设计意图"，未做主观判定。
+4. **本地对照的验证路径**＝本地 `src/components/ui/button.tsx:6` 只有 `active:not-aria-[haspopup]:translate-y-px`；要证实差异需要**触摸模拟**（Playwright `hasTouch:true` ＋ `tap`），本轮未跑。
+
+**⇒ 判据增量**＝"反馈类事实"如果只有 CSS 证据，必须写成 `✓盘上` 并附"未动态复验"，且**不得**据此断言"官方此处无动作"（那是需要指纹的结论）。
