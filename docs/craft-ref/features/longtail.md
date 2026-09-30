@@ -1104,3 +1104,69 @@ KaTeX_Size4/400/normal ／ KaTeX_Typewriter/400/normal
 ① `gruvboxdark`＝`{tag:[e.annotation], color:"#fb4934d"}` ⇒ **7 位十六进制＝非法**；⇒ ★ 同一条 styles 里 `annotation` **又出现在下一条** `{tag:[e.number,e.changed,e.annotation,e.modifier,e.self,e.namespace], color:"#d3869b"}` ⇒ CM6 首条命中 ⇒ **`annotation` token 实际永久无色**。② 同档 `{tag:e.invalid, color:"#fe8019", borderBottom:"1px dotted #fb4934d"}` ⇒ 同一个非法串，**虚线边框整条失效**。③ ☆ `materiallight` 的 `color:"#E5393570"` 是**合法的 8 位 RRGGBBAA**（alpha `0x70`），与 ①② 不同类 ⇒ **登记、不要"顺手补 `#` 或截断"**。④ 承第 108 批：`deleted` 档 `backgroundColor:"ffeef0"` **缺前导 `#`**（同类缺陷，非本批新发现）；⇒ ★★★ **本批按 20 档全量复扫后该条要改写**＝同一串在 **四档里逐字相同**（`craftlight`／`craftdark`／`githublight`／`githubdark` 的 `deleted` 都是 `{color:…, backgroundColor:"ffeef0"}`），上批归因为"暗档一处"是**抽样导致的错**（已就地 ✎）；★★ 且**两档暗色沿用的是亮档粉底**（`craftdark`／`githubdark` 的 `deleted` ＝ `color:"#ffdcd7"` ＋ `ffeef0`）⇒ 在 `#28292B`／`#0d1117` 底上等于**把删除行涂成不透明浅粉**＝第二处缺陷候选，与"缺 `#`"是两条独立问题（补上 `#` 也不对）。⇒ ☆ 四条的处置建议统一＝**照抄 ＋ 注释**，否则对不上官方渲染；要修就先在产物里把"官方此处错"写死，避免下个会话以为是本地引入的回归。
 
 **仍未采到（本节）**：① 其余 14 档 settings 的 `background` 逐字（判全表 `dark` 标记一致性）；② 各档 `settings` 里除 `background`／`foreground`／`caret`／`selection`／`gutter*` 之外的键全集；③ 第三方板与上游原版的差异（有没有被 Craft 改过色值——需要外部基准，本目录不引外部资料，默认**不做**）；④ `_statusCheckboxVisible`／`_isUnavailableOffline`／`_newDocTag` 三个状态类的触发条件；⑤ `rn` 的 `dragPreviewBase`／`dragPreviewInner` 在列表视图里的拖拽表现（与编辑器内拖拽是否同一套）。
+
+## 三十六、第 110 批＝主题名册 `V` 全 21 条逐字、`pluginData` 两种厚度、框选常量与三型命中器、列表档 22 枚类全表（2026-09-30 18:5x–19:4x；★ 源＝`_harvest/js/index-DiTmKH3z.js`（盘上缓存，本批新取 `CodeEditorWrapper-DB8UxA00.js` 一份、抽完即删）＋ 屏上只读实测）
+
+### 一、★★★ 代码块主题名册 `V` 全表（逐字 21 条，形状＝`{id,label,keywords,isDark,settings}`）
+
+| # | `id` | `label`（面板可见文案） | `keywords` | `isDark` | `settings` 引用 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `auto` | Auto | `["system"]` | **true** | **`null`**（⇒ 走 `De` 的 auto 分支，不查表） |
+| 2 | `craftdark` | Dark | `[]` | true | `Ue` |
+| 3 | `craftlight` | Light | `[]` | false | `We` |
+| 4 | `atomone` | Atom One | `["dark"]` | true | `Pe` |
+| 5 | `aura` | Aura | `["dark"]` | true | `Ke` |
+| 6 | `bbedit` | BBEdit | `["light"]` | false | `Ge` |
+| 7 | `darcula` | Darcula | `["dark"]` | true | `_e` |
+| 8 | `dracula` | Dracula | `["dark"]` | true | `qe` |
+| 9 | `githubdark` | GitHub Dark | `["dark"]` | true | `ze` |
+| 10 | `githublight` | GitHub Light | `[]` | false | `$e` |
+| 11 | `gruvboxdark` | Gruvbox Dark | `["dark"]` | true | `Ve` |
+| 12 | `gruvboxlight` | Gruvbox Light | `[]` | false | `Ye` |
+| 13 | `materialdark` | Material Dark | **`[]`** | true | `Bo` |
+| 14 | `materiallight` | Material Light | `["light"]` | false | `Qe` |
+| 15 | `noctislilac` | Noctis Lilac | `["light"]` | false | `Je` |
+| 16 | `nord` | Nord | `["dark"]` | true | `Ze` |
+| 17 | `sublime` | Sublime | `["dark"]` | true | `et` |
+| 18 | `tokyonight` | Tokyo Night | `["dark"]` | true | `at` |
+| 19 | `tokyonightday` | Tokyo Night Day | `["light"]` | false | `tt` |
+| 20 | `tokyonightstorm` | Tokyo Night Storm | `["dark"]` | true | `ot` |
+| 21 | `vscodedark` | **VS Code**（★ 唯一一条 label 不带明暗字样而 id 带 `dark`） | `["dark"]` | true | `rt` |
+
+⇒ ★★★ **同一档存在两个暗标记、且不同源**＝本表的 `isDark`（★ 21/21 与档名一致，含 `craftdark`＝true）与第 109 批读到的**色板工厂内部 `theme` 字面量**（该处实测 `craftdark` 自标 `"light"`、`materiallight` 与 `tokyonightday` 自标 `"dark"`）；⇒ ⇒ **CM6 侧只吃后者**（`li.theme(O,{dark:i==="dark"})` 的 `i` 是工厂里的 `theme`）⇒ ☆ 于是第 109 批 G1118 的影响面收窄＝**官方的明暗分类（名册 `isDark`、搜索 keywords、面板列表）是对的，错的只有 CM6 主题注册那一个字段**；⇒ ★ 本地若"照抄官方"必须把这两个标记分开抄，否则会把对的抄错。
+⇒ ⚠ **本表与第 109 批 §三十五.一 那张"工厂名／settings 对象名／tag 条目数／dark 标记"表不能直接互推**＝本表的 `settings` 引用（如 `materialdark`→`Bo`）与上批 `ue` 名册里的值（逐字 `materialdark:Mo`）**不是同一个标识符**，而上批表那一行同时给了 `Mo = Lo()`；⇒ ☆ 三种可能＝`settings` 是喂给工厂的入参、`Mo` 是工厂产出的 CM6 `Theme` 对象（则两表是链条上下游）／两 chunk 各自混淆出不同名／其中一张表读错；**本批没有证据判定是哪一种，故不做互推、也不改上批表**，登记为下批一条零预算盘上核对项（`Bo`→`Lo()`→`Mo`→`ue.materialdark` 是否成立）。
+⇒ ☆ `keywords` 的服务对象＝挑选面板的搜索框（逐字过滤式 `v.label.toLowerCase().includes(D.toLowerCase())`，另有 keywords 一并参与匹配）；☆ 名册顺序**不是字母序**＝`auto` → 官方两档 → 其余按 id 字母序（但 `tokyonight` 排在 `tokyonightday`／`tokyonightstorm` 之后＝纯字符串序里 `tokyonight` < `tokyonightday`，官方却排最后 ⇒ ☆ **面板展示序另有规则，本批未解**）。
+
+### 二、★★ `pluginData` 的两种厚度与按 `pluginName` 分派的序列化器
+
+codeBlock 家族（逐字，写入侧）＝`{pluginType:"codeBlock",pluginName:"codeBlock",pluginConfigurationData:{themeId:L.id},horizontalSizeClass:null,verticalSizeClass:null,surfaceShadowOpacity:1}` ⇒ **有效载荷只有一条 `themeId`**。
+card 家族（逐字，序列化器 `S1e` 内）＝`{fontStyle,pageStyle,backgroundData:{backgroundColor,backgroundColorGradientEnd,userInterfaceStyle,backgroundImageURL,isLightColor,key},decorations,contentStyle,themeAssetId}` ⇒ **九字段厚对象**。
+分派面（逐字）＝`case "card":{…z.themeAssetId=(G==null?void 0:G.themeAssetId)??void 0;…}` ／ `case "codeBlock":{…z.themeId=(G==null?void 0:G.themeId)??void 0;break}` ／ `default:`；白名单＝`nMe=Object.values(Xa)`，而 `Xa` 逐字＝`{Large:"card.large",Wide:"card.wide",SmallRight:"card.small.right",Subtle:"card.subtle",SmallSmallRight:"card.small.small.right"}`（★ 五条值都是 `card.*` ⇒ **`Xa` 是"卡片样式"枚举而不是 `pluginName` 枚举**，与 switch 里的裸 `"card"` 不同层，本批不合并处理）。
+⇒ ☆ 另两个页面样式侧枚举顺带到手＝`Pm={Dynamic:"dynamic",Fix:"fix"}`（分页宽类型）、`ys={FULL:"full",FADED:"faded",UNKNOWN:"unknown"}`（背景淡出档）；⚠ **`themeId` 是重载键**＝页面样式域也有 `themeId`／`themeAssetId`（`dictPageStyleToOldPageStyle`、`setCustomStyle` 一带），与代码块不是同一回事。
+
+### 三、★★★ 框选（rubber band）的常量、CSS 与三型命中器（逐字全案）
+
+| 项 | 逐字 | 含义 |
+| --- | --- | --- |
+| 命中判定 | `function j7e(t,e){return t.left<e.left+e.width&&t.left+t.width>e.left&&t.top<e.top+e.height&&t.top+t.height>e.top}` | **严格矩形相交**；四边都是严格不等号 ⇒ **边贴边不算命中**，"整行入框"候选被否 |
+| 起手否决 | `EVt=t=>t.closest("[data-item-id], a, button, input, textarea, select, [contenteditable='true']")!=null` | 命中这些元素则**不起手**（⇒ 从卡片上按下不是框选） |
+| 起手阈值 | `const AVt=5` 且 `if(Math.sqrt(Z*Z+V*V)<AVt)return;` | 指针须移动 **≥5px（欧氏距离）** 才进入框选 |
+| 自动滚动 | `const Uee=30,$ee=200` 与 `Y=±Uee*Math.pow(Math.min(越界/$ee,1),1.5)` | 越界 **200px** 内按 **1.5 次幂**加速，上限 **30px/帧**，上下对称反向 |
+| 选择集操作 | `no.getState().replaceSelection(te,te.at(-1)??null)`、`clearSelection()`、`selectedIds` | ★ **整体替换**（不是累加），锚点＝命中集最后一个；store 是 `getState()` 形状（zustand 家族） |
+| 起手副作用 | `no.getState().clearSelection()` 之前先 `y.current=new Set(no.getState().selectedIds)` | 记旧选择集（★ 用途本批未读到，动手前要补这一格） |
+| 矩形渲染 | `createPortal(<div className="_rubberBand_fdch5_1" style={top,left,width,height}/>,document.body)` | 挂到 `body`、内联四值 |
+| 矩形样式 | `._rubberBand_fdch5_1{position:fixed;background:var(--accent-100);border:1px solid var(--accent-500);border-radius:var(--radius-sm);pointer-events:none;z-index:10}` | ★ **`position:fixed`＝视口坐标**（不随容器裁剪）；配色走 `--accent-100/500` 同族 |
+| 期间屏蔽 | `addEventListener("dragstart",_Vt)` 与 `("selectstart",DVt)`，两函数都是 `t.preventDefault()` | 框选期间禁原生拖拽与原生选区 |
+| Escape | `bn.pushIntoFocus("BrowseSelectionRubberBandEscape",…)`（cleanup 里 `removeFromFocus`） | ☆ **与代码编辑器同一张焦点注册表**（`code_editor_{blockId}` 同源） |
+| 命中器分派 | `function IVt(t,e){if(e.type==="list")return Nee(t,e.items);const n=Nee(t,e.folderItems);return e.type==="cards"&&e.documentsGrid?n.push(...kVt(t,e.documentsGrid)):e.type==="waterfall"&&n.push(...vVt(t,e.columns)),n}` | **三型 `list`／`cards`／`waterfall` ＋ 一层 `folderItems` 永远参与**（cards 型把文件夹区与文档网格两组分别命中再合并） |
+| 网格命中器 | `kVt`＝`d=columnWidth+gap`、`u=rowHeight+gap`、`floor((band.left-left)/d)` 取列区间、`floor((band.top-top)/u)` 取行区间、圈内逐格回判 `j7e`、`itemCount` 夹尾 | ★ **纯算术剪枝**，输入是 `documentsGrid{top,left,columnCount,columnWidth,rowHeight,gap,itemIds,itemCount}` ⇒ ☆ **第 108 批那 12 个网格常量的用途在此** |
+| 瀑布流命中器 | `vVt`＝先按列 x 区间剪枝，再对 `itemTops` 二分（`s[d]+i[d]<t.top ? r=d+1 : c=d`）后线性扫到 `s[d]>t.top+t.height` | **O(log n＋k)**；输入是 `columns[].{left,width,itemTops,itemHeights,itemIds}` |
+| hook 入参 | `bW({enabled,scrollElementRef,layoutGeometryRef,remeasure})` | ⇒ 框选是独立 hook，几何靠 `layoutGeometryRef` 供数 |
+
+### 四、★★ 列表档实际渲染的 22 枚 `_1m9yz_` 类（对照第 109 批 27 条名册）
+
+逐字（类名去掉哈希后缀，按号序）＝`_headerRow_8`、`_columnHeader_29`、`_sortable_43`、`_active_51`、`_divider_56`、`_listItemWrapper_74`、`_virtualRow_92`、`_statusCheckbox_116`、`_listRow_142`、`_thumbnailCol_160`、`_nameCol_169`、`_rowTitle_179`、`_rowSubtitle_188`、`_dataCol_197`、`_colLastViewed_208`、`_colUpdated_212`、`_colCreated_216`、`_dataCellLastViewed_221`、`_dataCellUpdated_225`、`_dataCellCreated_229`、`_statusCol_249`、`_virtualBody_290`；⇒ ☆ **名册 27 条里有 5 条静止态不渲染**（含 `dragPreviewBase`／`dragPreviewInner` 一族与三个状态类）；★ 表头实测四列＝名称（宽 590）／上次浏览（**rect 0×0**，被容器查询藏）／已更新（112，带 `_active`＝当前排序列）／已创建（112）；★ 行壳逐字 `_listRow_1m9yz_142 no-select`、**行高 65**（与第 108 批盘上常量咬合）。
+
+**⇒ 本批另两处顺带**＝① 主题挑选面板有独立懒加载 chunk `themePreviews-BJcCJGmn.js`（⇒ 预览是异步取回，不是同步渲染 20 档）；② 浏览屏条目寻址属性是 **`data-item-id`**（实测当前档 8 枚、值为 uuid、挂在卡片 `_outerBox_` 上，同屏 `[data-block-id]` 为 0），而 `_isActive_1nu3o_62` 在静止态 8/8 全带 ⇒ **不能当选中判据**。
+
+**仍未采到（本节）**：① `y.current` 里那份"起手前的旧选择集"最后被怎么用（合并？shift 增选？取消时回滚？本批只读到写入点，没读到读取点）；② `shift`/`meta` 修饰键在框选中的分支（本批只读到无修饰路径）；③ `type` 的第四种取值有没有（`list`／`cards`／`waterfall` 之外）；④ 名册面板的展示序规则（§一 末条）；⑤ 表格档条目到底由哪个属性承载 id（本批未再切档复查）；⑥ `documentsGrid`／`columns` 两个几何模型的**更新时机**（`remeasure` 由谁调）；⑦ **本表 `settings` 名与上批 `ue` 名册值的对应链**（`Bo`→`Lo()`→`Mo`→`ue.materialdark` 是否成立）＝零预算盘上核对项，下批做。

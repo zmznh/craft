@@ -2945,3 +2945,50 @@ HJe = (t, e) => { let n = {};
 本轮把两布局的**类名族与组件面**都拿到了：网格＝模块 `6sjpd`（`docGrid`／`scrollViewport`／`viewWrapper`）＋ `1wotv`（`virtualBody`／`virtualCardRow`，★ **网格也是虚拟滚动**）＋ 卡片 `dhebv`（`aspectRatioStretch`／`container`／`titleRow`／`iconSlot`／`selectionCheckbox`）＋ 复选框 `1fgll`（`wrapper`／`checkbox`）；列表＝模块 `1m9yz` 的 27 键名册（表头四枚可排序按钮、六个无条件渲染的行槽、`dragPreviewBase`／`dragPreviewInner`、`isUnavailableOffline`、`newDocTag`）。⇒ 模型侧的含义＝**"同一份文档集合"在官方有两套渲染树、两套类名族、两套 checkbox 实现**（第三个复选框族 `1nu3o` 还自带具名 `focusRing` 子元素），所以本地若只补一种布局，另一种的交互（列排序、列显隐、行选择）会永远缺一块。
 
 **仍未采到（本节）**：① **`theme`／`isDark` 的真实作用域**（需要屏幕写侧一次）；② `language` 是否有独立的写入动词（MCP 无代码块主题旗标 ⇒ 只能靠 markdown 围栏）；③ 代码块的**其它属性**（有没有 `wrap`、字号、语言"最近使用"等）本轮没探到，因为读回只有那三个键＋派生 `markdown`；④ 列表／网格的**选择集模型**（`selectionCheckbox` 与 `selected` 类背后的状态是否共享一套 Set，与第 102–103 批"选择集跨操作累积"假说相关）；⑤ 卡片与行的 `isUnavailableOffline` 触发条件（离线态未采）。
+
+## 一之六十八、第 110 批＝块模型新增一层 `pluginData`（两种厚度）、浏览屏"型制"几何模型、选择 store 与条目寻址（2026-09-30；★ 源＝逐字反编译 `_harvest/js/index-DiTmKH3z.js` ＋ 屏上只读实测；置信度＝除标注项外全部"逐字＋读数双证"）
+
+### 一、★★★ 代码块的真实字段集（把上批的结论改写到正确键路径上）
+
+| 字段 | 键路径 | 是否落库 | 逐字来源 |
+| --- | --- | --- | --- |
+| 块类型 | `type` ＝ `"code"` | 是 | 第 109 批写侧读回（`{"type":"code","language":"python","rawCode":"…"}`） |
+| 语言 | **块本体 `.language`**（读侧 prop 名 `storedLanguage`） | 是；★ 不在名册里的语言 ⇒ **整键省略**（不写空串、不写 `plaintext`） | 上批读回 ＋ 本批 prop 列表 `storedLanguage:t.language` |
+| 代码正文 | **块本体 `.content`**（写侧序列化键是 `rawCode`） | 是 | 上批读回 ＋ 本批 `storedContent:t.content` |
+| 主题 | **`pluginData.pluginConfigurationData.themeId`** | 是（★ 但**不在 attrs 顶层**） | 读侧 `e:{const Q=m.pluginData;if(!Q｜｜Q.pluginName!=="codeBlock"｜｜!Q.pluginConfigurationData){b=null;break e}b=Q.pluginConfigurationData.themeId}`（★ 表内逻辑或写作全角 `｜｜`，真机逐字是半角双竖线） ＋ 写侧 `Ut([o],{…pluginConfigurationData:{themeId:L.id}…})` |
+| 缺省态 | `pluginData` 缺失或不匹配 ⇒ 取 `null` ⇒ prop 收到**空串**（`y??""`） | — | 同上 ＋ `const z=y??""` |
+| 暗档标记 | **不落库**（每档色板自带 `isDark`／工厂内 `theme` 字面量两路，见 `longtail.md §三十六.一`） | — | 名册 `V` 逐字 |
+
+⇒ ★★★ **改判第 109 批 §一之六十七 的一条措辞**＝上批写"主题不是块级落库字段（塞 `theme`/`isDark` 被静默丢弃）"，正确说法是**块级成立、但键在 `pluginData` 里**；上批之所以证否，是因为把 `theme` 当顶层 attr 塞 ⇒ 属于"测错键"，不是"官方不落库"。⇒ ☆ 这条改判已同步写进 `gap.md` 的 G1120 与 §三点一〇五九 的「仍未采到」①。
+
+### 二、★★ `pluginData` 是通用槽：固定六字段外壳 ＋ 按 `pluginName` 分派的可变载荷
+
+外壳（写入侧逐字）＝`{pluginType, pluginName, pluginConfigurationData, horizontalSizeClass, verticalSizeClass, surfaceShadowOpacity}`；
+已知三种 `pluginName` 字面量＝`"card"`／`"codeBlock"`／`"unknown"`（`unknown` 是兜底 `return{pluginType:"unknown",pluginName:o,…}`）；
+载荷两种厚度＝codeBlock 只有 `{themeId}`；card 有 `{fontStyle,pageStyle,backgroundData{backgroundColor,backgroundColorGradientEnd,userInterfaceStyle,backgroundImageURL,isLightColor,key},decorations,contentStyle,themeAssetId}`（九字段，序列化器 `S1e`）。
+⇒ ★ **建模要求**＝`pluginConfigurationData` 必须是"按 `pluginName` 判别的联合类型"，不能定死单一 interface；⇒ ☆ `horizontalSizeClass`／`verticalSizeClass`／`surfaceShadowOpacity` 三字段在代码块路径下恒为 `null`／`null`／`1` ⇒ 它们是给"网页预览／图形"类插件块用的（★ 那两类的 `pluginName` 本批未采到）。
+
+### 三、★★★ 浏览屏的"型制"几何模型（框选命中器的输入，本地要复刻必须先有这一层）
+
+`IVt(bandRect, geometry)` 的分派面逐字给出三种型 ＋ 一个通用层：
+
+| 型 | `geometry.type` | 输入字段 | 命中算法 |
+| --- | --- | --- | --- |
+| 列表 | `"list"` | `items[]`，每项含 `{id,left,top,width,height}` | 遍历逐个严格相交（`Nee`→`j7e`） |
+| 卡片网格 | `"cards"` | **两组**＝`folderItems[]`（同列表）＋ `documentsGrid{top,left,columnCount,columnWidth,rowHeight,gap,itemIds,itemCount}` | 文件夹区遍历；网格区**纯算术剪枝**（列区间＝`floor((band.left−left)/(columnWidth+gap))`，行区间同理，圈内逐格回判、`itemCount` 夹尾） |
+| 瀑布流 | `"waterfall"` | `columns[]`，每列含 `{left,width,itemTops[],itemHeights[],itemIds[]}` | 先按列 x 剪枝，再对 `itemTops` **二分**找首个底边越带顶的项、顺序扫到带底为止（O(log n＋k)） |
+
+⇒ ★ **`documentsGrid`／`columns` 是"派生态"而不是 DOM 量测**（框选不读 DOM rect，只读这份模型）⇒ ☆ 这解释了第 108 批那 12 个网格常量的去处，也意味着**本地复刻框选的前置是先把几何模型建出来**（`bW({enabled,scrollElementRef,layoutGeometryRef,remeasure})` 的 `layoutGeometryRef`）；⇒ ⚠ 模型的更新时机（谁调 `remeasure`）本批未读到。
+
+### 四、★★ 选择集与"当前编辑块"的态归属
+
+| 态 | 归属 | 逐字证据 |
+| --- | --- | --- |
+| 条目选择集 | 一个 `getState()` 形状的 store（zustand 家族）＝`selectedIds`、`replaceSelection(ids, anchor)`、`clearSelection()` | 框选每帧 `no.getState().replaceSelection(te,te.at(-1)??null)` ⇒ **整体替换、锚点＝命中集最后一个** |
+| 是否正在框选 | **`uiStore.isSelectionDraggingActive`** | selector 逐字 `isSelectionDragging:X.isSelectionDraggingActive` |
+| 哪一块在编辑代码 | **`uiStore.codeEditorState.blockId`**（不落块） | selector 逐字 `inCodeEditing:X.codeEditorState!=null&&X.codeEditorState.blockId===t.blockId` |
+| 条目寻址 | DOM 属性 **`data-item-id`**（值是 uuid）；★ 浏览屏**没有** `data-block-id`（同屏实测 0 枚） | 实测 8 枚挂在 `DIV._outerBox_1nu3o_20` 上 ＋ 起手否决式 `t.closest("[data-item-id], a, button, input, textarea, select, [contenteditable='true']")` |
+
+⇒ ☆ 三条门槛由此而来＝① 判"选中"不能看 `_isActive_1nu3o_62`（静止态 8/8 全带）；② 判"正在拖选"要读 store 而不是 DOM；③ 浏览屏行/卡 e2e 选择器应当用 `data-item-id`，别沿用编辑器屏的 `data-block-id`。
+
+**仍未采到（本节）**：① 除 `card`／`codeBlock`／`unknown` 之外的 `pluginName`（网页预览／图形块）；② `codeEditorState` 的完整字段（只读到 `blockId`）；③ 选择 store 的其余动作（有没有 `addToSelection`／`toggleSelection`，本批只读到 `replaceSelection`／`clearSelection`）；④ `waterfall` 型对应官方哪一屏（本批三枚按钮只证到两枚的类归属）；⑤ `items`／`documentsGrid`／`columns` 三份模型的构建处（谁算的、什么时机）。

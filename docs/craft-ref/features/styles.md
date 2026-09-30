@@ -862,3 +862,63 @@
 ⇒ **就地 ✎**＝`styles.md` §十五 的「仍未采到」第一条（"`--ui-*`／`--caption-*`／`--body-*` 在界面上的实际消费分布只读到一处屏上样本＝任务卡片 `typography-ui-md-500`"）本批**结一半**＝列表视图四档消费点逐字到手（§四：`caption-md-500`／`ui-md-600`／`ui-xs-500`／`ui-sm-500`），★ 且样本从 1 处变 4 处；仍缺**编辑器正文与标题档**的消费点，该条不整条划掉。
 
 **仍未采到（本节）**：① **触摸档的环／`active` 替代**（本批窗口有真焦点但没有触摸模拟，`:hover`→`:active` 那条编译产物仍未屏上复现）；② 复选框 `focusRing` 子元素的**实测尺寸与颜色**（本轮 `role=checkbox` 在 `/all` 静止态不存在，需要进选择模式＝会改视图态，未做）；③ `--accent-500` 在**亮档**下的环色实测（亮档值逐字是 `46 109 233`，未屏上复验）；④ 三档 DS 按钮尺寸各自的环偏移（只测了 `MediumSmall`）；⑤ 卡片"换脸"在键盘档的实测（只拿到规则）。
+
+## 十七、第 110 批＝框选矩形的官方 CSS、卡片焦点环实测、容器查询与列宽的运行值、`initial` 档对样式的作用（2026-09-30；★ 源＝盘上 CSS/JS 逐字 ＋ 屏上 `getComputedStyle` 实测；DPR 换算律见 §十六）
+
+### 一、★★★ 框选矩形的官方声明（逐字，来自 `_harvest/css/TaskViews.css.DghTjfLb.css`，同一条也在 `css/index.css.*` 里）
+
+```
+._rubberBand_fdch5_1{position:fixed;background:var(--accent-100);border:1px solid var(--accent-500);border-radius:var(--radius-sm);pointer-events:none;z-index:10}
+```
+
+⇒ ★ **`position:fixed` ＋ `createPortal(…, document.body)` ＋ 内联 `top/left/width/height`**（渲染侧逐字见 `longtail.md §三十六.三`）⇒ 矩形用的是**视口坐标**、不受容器裁剪，且它挂在 `body` 上而不是浏览屏容器里（⇒ 本地若把它放进滚动容器会出现滚动错位）；⇒ ☆ 配色＝`--accent-100` 底 ＋ `--accent-500` 描边（与 §十六 DS 按钮焦点环同族，但环宽 1px vs 按钮 1px vs 卡片 3px ⇒ **官方三套环/框三种粗细**）；⇒ ☆ `z-index:10` 是有意的低层（在浮层栈之下，见第 107 批两档 z 层）。
+
+### 二、★★★ `data-whatintent="initial"` 这一档**对样式选择器的实际作用**（本批最容易被漏掉的一条）
+
+盘上选择器形态（历批已录）＝`[data-whatintent]:not([data-whatintent=touch]) X:hover` 之类；屏上实测全新载入（清掉持久键后重载）时两属性逐字为 **`initial`**。
+⇒ ★★★ **`initial` 同时满足"属性存在"与"不等于 touch"两个条件 ⇒ 首帧就按"非触摸档"渲染 hover/active 规则**，即：官方**没有**"意图未知 ⇒ 不给 hover"这一档；
+⇒ ☆ 本地复刻的含义＝如果只写"检测到 mouse 时才写属性"，首帧的 hover 类样式就会与官方不同（官方首帧已生效）⇒ **正确做法是装载即写 `data-whatinput="initial"` 与 `data-whatintent="initial"`**（已并入 `gap.md` 台账「九」第 5 行）。
+
+### 三、★★★ 容器查询的实测值（把第 109 批的盘上断点变成运行时事实）
+
+| 元素 | `container-type` | `container-name` | `clientWidth` |
+| --- | --- | --- | --- |
+| `div._mainWrapper_6sjpd_20` | `inline-size` | **`web-shared-layout-main-wrapper`** | **916** |
+| 一颗未命名 DIV（祖先） | `size` | `none` | 1204 |
+| `div.sc-1r02f4x-5`（`[data-testid="browse-document-list"]`） | `inline-size` | `none` | 884 |
+
+同屏 `innerWidth`＝**1204**；`_colLastViewed` 的 computed `display:none`、`min-width` 仍声明 `112px`、`offsetWidth:0`；`_colUpdated` 的 computed `display:flex`、`width:112px`。
+⇒ ★★★ **1204 ≥ 1024 而「上次浏览」仍隐藏 ⇒ 断点吃的是容器 916**（若是 `@media (min-width:1024px)` 就该显示）⇒ 第 109 批读到的 `@container web-shared-layout-main-wrapper (width>=768px｜1024px)` 两条**运行时成立**；⇒ ☆ 中间夹一颗**无名 `inline-size` 容器（884）不阻断具名查询** ⇒ 官方具名容器可以隔级生效。
+
+### 四、★★★ 列宽自定义属性的运行值＝`0px` 会覆盖 CSS 兜底
+
+`[data-testid="browse-document-list"]`（★ styled-components 壳，不是 CSS Module 类）内联样式逐字三条＝
+
+```
+--col-last-viewed-width: 0px
+--col-updated-width: 112px
+--col-created-width: 112px
+```
+
+⇒ ★★★ 上批读到的消费式 `width:var(--col-last-viewed-width, 8rem)` 里 **`8rem` 只在属性"未定义"时参与**，而写入方量的是 `offsetWidth`（元素被 `display:none` 时恒为 0）⇒ **列被藏起来时写进去的是 `0px`，兜底值永不生效**；⇒ ☆ 复刻要求＝"隐藏时也照样写 `0px`"，否则与官方差一个 8rem；☆ 这也给出一个可复现的抖动来源（切档瞬间先写 0px 再被容器查询恢复）。
+
+### 五、★★ 两档卡片网格的实测几何（对照第 108 批的 12 个常量）
+
+| 档（按钮图标） | 行容器 | 每行列数 | 卡宽 | `height/width` |
+| --- | --- | --- | --- | --- |
+| `Rectangle Grid2x2`（开场档） | `_virtualBody_1wotv_2` ＋ `_virtualCardRow_1wotv_8` | **2** | **308.5**（超出上批"上限 268"） | **1.25** |
+| `Rectangle3 Group` | 无 `_virtualCardRow_`（另一套列表壳） | 未逐行量 | **268**（＝上批常量） | 1.242 |
+
+⇒ ☆ 于是上批那条"卡宽上限 268"**只适用于第二档**；第一档实测 308.5 ⇒ 官方两档用的是两套布局公式（与 §三十六.三 的 `documentsGrid` 剪枝模型一致：一档有 `columnCount/columnWidth/rowHeight/gap` 可算，另一档走 `columns` 列模型）；⇒ ★ 比值 1.25 两档一致 ⇒ "卡片宽高比 1/1.25"这条常量仍然成立。
+
+### 六、★★ 卡片焦点环与复选框的实测声明值
+
+`_focusRing_1nu3o_7`（静止态）computed＝`position:absolute`、`inset:-1px`、`border:2.4px solid rgb(113,178,255)`、`z-index:1`、`display:none`、尺寸 0×0；父元素 `_outerBox_1nu3o_20 _isActive_1nu3o_62`。
+⇒ ★ 按 §十六 的 DPR 律还原：2.4 × 1.25 ＝ **声明值 3px**；☆ `inset` 报 `-1px`（未被量化）⇒ **只有 `*-width` 一族会被量化，`inset` 不会**（这条把上批的律收窄了一格）；⇒ ★ `rgb(113,178,255)` 与 `--accent-500`／`brand-blue` 浅端同值族（§十一.一）⇒ 官方三处环都取 accent 族，只是粗细与载体不同（按钮 `outline:1px`／卡片 `border:3px` 子元素／框选 `border:1px`）。
+复选框实测＝`SPAN[role="checkbox"][tabindex="-1"][data-unchecked=""][aria-checked="false"][id^="base-ui-"]`（类 `_checkbox_1fgll_11`，18×18，位于行右端）＋ 同级隐藏 `INPUT[type="checkbox"][tabindex="-1"][aria-hidden="true"]`（内联 `clip-path: inset(50%)`）；⇒ ★ 两枚都 `tabindex=-1` ⇒ **列表/网格行的选择不可 Tab 达到**；⇒ ✎ **上批 G1116 归位**＝`focusRing` 属卡片模块 `1nu3o`，**不属复选框模块 `1fgll`**（本轮实测 `1fgll` 只有 `_wrapper_1fgll_1` 与 `_checkbox_1fgll_11` 两枚，且表格档全页 `[class*="focusRing"]` 0 命中）。
+
+### 七、☆ 盲区一条（会骗人）
+
+静止态 `[class*="_isActive_"]` 命中 **8/8 张卡** ⇒ **`_isActive_` 不是"被选中"**；卡片档的选中判据只能走 `role="checkbox"` 的 `aria-checked`（本批框选起手时确有 1 枚翻 true）或选择 store（`selectedIds`）。
+
+**仍未采到（本节）**：① 卡片环 `_focusRing_` 真正显示时的态（要 `:focus-visible` 或选中态，本轮静止）；② 框选矩形的屏上运行值（`top/left/width/height` 实数与是否被滚动改写）；③ 第二档与第三档下的 `--col-*-width`（本批只在表格档读到三条）；④ 具名容器在**更窄视口**下（<768）两列是否也一起消失；⑤ `_divider_1m9yz_56` 与 `_thumbnailCol_1m9yz_160` 的可见条件与实宽；⑥ `--radius-sm` 与框选圆角的实测值（未量）。

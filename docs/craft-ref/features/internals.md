@@ -1314,3 +1314,90 @@ Sources:   （15 行路径）
 CM6 侧逐字（在 `vendor-code-editor-BLm003PU.js`，不在 `CodeEditorWrapper`）＝`var g=li.theme(O,{dark:i==="dark"}), w=uE.define(l), Q=[g,R6e(w)]; return Q`，其中 `i` 就是面板工厂传进来的 `theme` 字段 ⇒ ⇒ **界面明暗不参与这个判断**，只有 `auto` 换档时才会挑到另一档面板。⇒ ★ **错配 3 档（逐字）**＝`craftdark` 工厂写 `theme:t="light"` 而它 spread 的 `Ue` 底色是 `#28292B`；`materiallight` 写 `"dark"` 而 `Qe` 底色 `#FAFAFA`；`tokyonightday` 写 `"dark"` 而 `tt` 底色 `#e1e2e7`；✓ 对照＝`craftlight`/`noctislilac`/`bbedit` 都 `"light"` 且底色确为浅色，其余 9 档 `"dark"` 与底色一致。⇒ ☆ **影响面判断要克制**＝Craft 把 `background`／`foreground`／`caret`／`selection`／`gutter*` 都在 settings 里写死了，所以错配大概只波及 settings 未覆盖的 CM6 内建项（matchingBracket、搜索高亮、tooltip 色系一类），**本批没有屏上证据**，只登记"标记与真实明暗相反"这条确定事实；⚠ 但因为 **`auto` 在暗档下解析成 `craftdark`**，这条错配命中的是**默认路径**，不是冷门档。
 
 **仍未采到（本节）**：① **代码块主题的真实作用域**（块级已被否；要 UI 里改一次再读回）；② **错配 3 档的可见影响**（要看 matchingBracket／搜索高亮在暗档下的实际取色）；③ **列可见性的屏上对照**（要做必须把布局切到列表＝空间级持久偏好，属禁区等点头）；④ 表头三变体各自对应哪一屏**只有枚举与标签证据**；⑤ `pa` 主分支；⑥ `_statusCheckboxVisible`／`_isUnavailableOffline`／`_newDocTag` 的触发条件；⑦ `rn` 名册里 `dragPreviewBase`／`dragPreviewInner` 在列表视图的拖拽行为（与第 102–104 批编辑器内拖拽是不是同一套）。
+
+## 四十九、第 110 批＝`pluginData` 是主题的真正落点、两属性更新条件不对称、布局三档的组件归属（2026-09-30 18:5x–19:4x 本地＝UTC 10:5x–11:4x；屏上只读＋盘上反编译；★ 源＝`static/js/index-DiTmKH3z.js`（6,841,180 字符）与 `static/js/CodeEditorWrapper-DB8UxA00.js`（59,843 字符）两份页内 `fetch` 落盘后本地 grep，两条 dump 已删、逐字片段留档 `_harvest/b110-probe6.txt`）
+
+### 一、★★★ 主题的读路径＝`pluginData.pluginConfigurationData.themeId`（结第 109 批"块级假设被否"）
+
+index 逐字（@3,633,4xx 一带）：
+
+```
+let b;e:{const Q=m.pluginData;if(!Q||Q.pluginName!=="codeBlock"||!Q.pluginConfigurationData){b=null;break e}b=Q.pluginConfigurationData.themeId}const y=b;
+```
+
+同一函数往下：`const W=(t.isCursorText,"text"),z=y??"";` 再往下把值以 prop 形式交进编辑器子组件：
+
+```
+a.jsx(Ttn,{blockId:t.blockId,ref:o,inCodeEditing:h,storedLanguage:t.language,storedContent:t.content,onSave:w,onCodeEditorClick:F,onCopy:O,onFocusModeClick:v,inFocusMode:!1,storedThemeId:z,features:t.features,threeDotsMenuWrapperRef:N,isSelectionDragging:g})
+```
+
+⇒ ★★★ **同一个组件的 prop 列表把"两种存储层"并排暴露了出来**：`storedLanguage:t.language` 与 `storedContent:t.content` 取的是**块本体字段**，而 `storedThemeId:z` 取的是**插件数据槽**；⇒ ☆ 上批"往 `--json` 里塞 `theme`／`isDark` 被静默丢弃"因此不是"官方不落库"，而是**测错了键**（正确路径是 `pluginData.pluginConfigurationData.themeId`）；⇒ ★ 缺省态写的是**空串**（`y??""`），而解析函数是 `De(o,t)=>o==="auto"?…:ue[o]` ⇒ 空串会去查 `ue[""]`＝取不到色板；☆ 这条空串路径的渲染后果**本批未屏上取证**（下批若进编辑器可用"两块对照"一次判掉）。
+
+### 二、★★★ 主题的写路径＝一条独立的 `pluginData` action，载荷六字段固定、第一参是数组
+
+CodeEditorWrapper 逐字（`S`＝`docDispatch`、`o`＝blockId、`L`＝名册里选中的主题对象）：
+
+```
+(L)=>{B(L),S(Ut([o],{pluginType:"codeBlock",pluginName:"codeBlock",pluginConfigurationData:{themeId:L.id},horizontalSizeClass:null,verticalSizeClass:null,surfaceShadowOpacity:1}))}
+```
+
+与内容侧对照（index 同函数逐字）：`x=(Q,Y)=>{r(bRe(t.blockId,Q??"",Y))}`＝第 108 批认出的 `updateCodeBlock{blockId,content,language}`，**三个位置参数里没有 theme 位**。
+
+⇒ ★★★ **主题与内容/语言分属两条 action** ⇒ 改主题与改代码在撤销栈上是两步、互不合并；⇒ ★ **载荷六字段是固定形状**（`pluginType`／`pluginName`／`pluginConfigurationData`／`horizontalSizeClass:null`／`verticalSizeClass:null`／`surfaceShadowOpacity:1`）⇒ 后三条是给"网页预览／图形"类插件块用的，代码块一律置 `null`／`1` ⇒ **`pluginData` 是一个跨插件块共用的通用槽位**；⇒ ☆ 第一参是**数组**（`[o]`）⇒ 多选状态下可一次改多块，这条与第 100～103 批"选择集跨操作累积"的未决问题相邻但**不构成证据**。
+
+### 三、★★ 同一槽位的第二种厚度＝card 家族，以及按 `pluginName` 分派的序列化器
+
+序列化器逐字（index `S1e`）：
+
+```
+function S1e(t){const e=t,n=si(t.pluginConfigurationData),o=t.pluginName;if(nMe.includes(o)){let s=null;if(n!=null){const i=n.backgroundData;s={fontStyle:n.fontStyle,pageStyle:n.pageStyle,backgroundData:{backgroundColor:Yt(i.backgroundColor),backgroundColorGradientEnd:Yt(i.backgroundColorGradientEnd),userInterfaceStyle:i.userInterfaceStyle,backgroundImageURL:i.backgroundImageURL,isLightColor:aI(i.isLightColor),key:i.key},decorations:n.decorations,contentStyle:n.contentStyle,themeAssetId:n.themeAssetId}}return{plugi…
+```
+
+导出分派逐字（两案并列）：`case "card":{const G=t.pluginData.pluginConfigurationData;z.themeAssetId=(G==null?void 0:G.themeAssetId)??void 0;z.fo…` ／ `case "codeBlock":{const G=t.pluginData.pluginConfigurationData;z.themeId=(G==null?void 0:G.themeId)??void 0;break}default:`
+
+⇒ ★ **同一个 `pluginConfigurationData` 键，codeBlock 家族只装 `{themeId}`、card 家族装 9 字段厚对象** ⇒ 本地建模必须把它当作"按 `pluginName` 分派的可变形状"，不能定死一个 interface；⇒ ☆ 两文件穷尽枚举到的字面量＝`card`／`codeBlock`／`unknown`（`unknown` 是兜底：`return{pluginType:"unknown",pluginName:o,…}`）；⇒ ⚠ **`themeId` 是重载键**＝页面样式域里也有 `themeId`／`themeAssetId`（`dictPageStyleToOldPageStyle`、`setCustomStyle` 那一带），与代码块的不是同一回事 ⇒ 别把两处合并成一条事实。
+
+### 四、★★★ 两属性更新条件不对称＝intent 冻结的主分支（结第 107 批判据、第 109 批两次失败）
+
+盘上三段序列（全程**不手写任何 `data-what*` 属性**）：
+
+1. `press_key Tab`（`activeElement` 由 `BODY` 变 `BUTTON#sidebar-toggle`）⇒ `data-whatinput=keyboard`、`data-whatintent=keyboard`、`data-whatelement=button`；⇒ 事件 target 不是 `pa` 成员时，键盘路径**两个都改**。
+2. 派发带 `pointerType:"mouse"` 的真 `PointerEvent('pointerdown')` 到 `input[data-testid="quick-search-input"]` 上 ⇒ 两属性都变 `mouse`，`activeElement` 仍是该 input。
+3. `press_key` 一发可信键（判据＝输入框 `value` 由 `z` 变 `zq`）⇒ **`data-whatinput` 翻成 `keyboard`，`data-whatintent` 保持 `mouse`**，`sessionStorage` 两键与 DOM 同步（`what-input=keyboard`、`what-intent=mouse`）。
+
+⇒ ★★★ **`pa=["button","input","select","textarea"]` 名单的冻结只作用于 intent 这一路**＝键盘在表单控件里能改 `data-whatinput`、**不能**改 `data-whatintent`；⇒ ☆ 这解释了一条官方观感＝**在搜索框里打字时，页面上 hover 类样式不会跟着跳到 keyboard 档**（因为 hover 类闸门读的是 `data-whatintent`，见第 107 批 §四十六／第 109 批 §四十八）；⇒ ★ 本地落地参数因此是三条而不是一条：两个属性都写、默认值 `initial`、**冻结规则照抄**（只冻 intent 不冻 inputType）。
+
+### 五、★★ 布局三档的组件归属与"哪一块在编辑代码"的态归属
+
+selector 逐字（index，同一函数）：
+
+```
+p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null&&X.codeEditorState.blockId===t.blockId,block:Y.blocks[t.blockId],isSelectionDragging:X.isSelectionDraggingActive}}
+```
+
+⇒ ★ **"当前哪一块在编辑代码"＝`uiStore.codeEditorState.blockId`**（视图态，不落块）；⇒ ★ **框选的状态名＝`uiStore.isSelectionDraggingActive`**（本批屏上起手已证、见 §四十九.七）；☆ 另读到每块一枚焦点注册 id `code_editor_{blockId}`，配 `bn.pushIntoFocus`／`bn.removeFromFocus` 的进／出对称调用（同 effect 的 cleanup 里 remove）。
+
+布局三档的类模块归属（屏上实测）＝档 A（`Rectangle Grid2x2`）与档 B（`Rectangle3 Group`）共用卡片模块 `_1nu3o_`＋`_dhebv_`（档 A 另有行容器 `_virtualBody_1wotv_2`／`_virtualCardRow_1wotv_8`，**档 B 没有 `_virtualCardRow_`**）；档 C（`Line3 Horizontal`）独占表格模块 `_1m9yz_` ⇒ **三档不共享行/卡组件** ⇒ 本地"同一套卡片换 CSS 换档"的做法会做错。
+
+### 六、★★★ 容器查询与列宽同步的运行时真相（结 G1101／G1114／G1125）
+
+| 量 | 屏上实测值 | 含义 |
+| --- | --- | --- |
+| `div._mainWrapper_6sjpd_20` 的 `container-type`／`container-name` | `inline-size`／`web-shared-layout-main-wrapper` | 官方 CSS 里那条 `@container web-shared-layout-main-wrapper (…)` 的**容器本体**第一次找到 |
+| 同一容器 `clientWidth` 对 `innerWidth` | **916** 对 1204 | 视口已过 1024 断点而「上次浏览」列仍 `display:none` ⇒ **门限吃容器宽**（不是媒体查询） |
+| 全页带 `container-type` 的元素 | 3 颗（上述具名 916、一颗未命名 `size` 1204、`browse-document-list` 未命名 `inline-size` 884） | ⇒ **具名容器查询可隔级生效，中间夹无名容器不阻断** |
+| `[data-testid="browse-document-list"]` 的内联自定义属性 | `--col-last-viewed-width:0px`、`--col-updated-width:112px`、`--col-created-width:112px` | ★ 隐藏列**照样写**、写的是 `0px` ⇒ `width:var(--col-last-viewed-width, 8rem)` 的 `8rem` 兜底**永不参与** |
+
+⇒ ☆ 该容器是 **styled-components 壳**（`div.sc-1r02f4x-5 kfCFoF`）而不是 CSS Module ⇒ 官方的属性写入点在样式化外壳上，本地若用 Tailwind 类壳要另找载体；⇒ ★ 本地复刻的等价要求＝**"列隐藏时也把 `--col-*-width` 写成 0px"**，否则与官方差一个 8rem 的列宽。
+
+### 七、★ 框选：起手已证、机制半边、矩形未采到
+
+在 `_virtualBody_1wotv_2` 上（起手点先用 `elementFromPoint(1024,408)` 校验命中该校验过的空白虚线体、非卡片非按钮）依次派发 `pointerdown`＋`mousedown`＋`pointermove(0,+112)`＋`mousemove` ⇒ ① 卡片容器类新增 `_selectionMode_dhebv_393`（逐字 `_container_dhebv_49 _selectionMode_dhebv_393`）；② 8 枚 `role="checkbox"` 里 1 枚 `aria-checked` 翻成 `true`。⇒ **未派发 `pointerup`，一个往返后再读＝`_selectionMode_` 与勾选双双自行回退**（`checked:0`、`selMode:0`、`activeElement:BODY`）⇒ 官方把"按下但没抬起的拖选"按可弃处理。⚠ **矩形本体与落点判据仍未采到**＝两次启发式扫描（绝对定位且宽高>24 且带边框或背景；以及 `pointer-events:none` 的绝对定位元素）均 0 命中，合成 pointer 不保持按下态 ⇒ 按"指纹没变＝采到的是静默失效，不是官方没有"的纪律，**不得记成官方无矩形**；要拿需要 OS 级真拖拽＋中途截图，而"拖拽中途没有截图窗口"是已判定的通路限制（见技能失败表）。
+
+### 八、方法论（本批三条，都可复用）
+
+1. ★★★ **判"某字段到底存在哪"不要只测写侧，先把"同一个组件的 prop 列表"读全**＝本批一次 `storedLanguage:t.language`／`storedContent:t.content`／`storedThemeId:z` 三 prop 并排，直接暴露出"两种存储层"，比在 UI 里改主题再读回便宜且更硬；⇒ 通用式＝**沿 prop 名往回找定义点（`z=y??""` ⇒ `y=b` ⇒ `e:{…}` 标签块），比往前的渲染分支找更快命中存储**。
+2. ★★ **要拿"两个属性是否同步更新"这类判据，先把两属性摆成分歧态，再打一发能被独立佐证的可信输入**＝本批用"输入框 `value` 变了"作为键真送达的旁证，避免了第 109 批"读数没变到底是冻结还是没送达"的两难；⇒ ☆ 与 G1112（手写属性）合起来读＝**摆态要用手能产生的事件（`PointerEvent` 带 `pointerType`），判据要用可独立佐证的副作用**。
+3. ★☆ **选择器要按 CSS Module 的哈希段写，不要按语义前缀写**＝本批先按 `[class*="_col"]` 查列，结果整批命中 `_collectionName_*`（`_col` 前缀同名冲突），改按 `[class*="_1m9yz_"]` 才拿到真正的 22 枚列类；⇒ ☆ 顺带一条＝**一枚哈希可反查该组件全部类名册**（承 G1113 的方法），而语义前缀反查会跨组件串味。
+
+**仍未采到（本节）**：① `De("",isDark)` 这条空串路径的实际渲染后果（缺省主题到底等价于 `auto` 还是取不到色板）；② `pluginData` 会不会出现在 MCP `blocks get --format json` 的读回里（若出现＝主题对账可以走数据面，不必开屏）；③ `Ut` 这个 action 构造器的**真名与完整字段**（只读到调用点，未回到第 108 批那张 88 项分派表上定位它的 case 标签）；④ `nMe`（card 家族白名单）除 `Xa` 五档外还有没有别的成员；⑤ 框选矩形与落点判据（承 §七）；⑥ 档 A／B 的列数公式（只量到 308.5 与 268 两个值，没拿到 CSS 侧的 minmax 表达式）。

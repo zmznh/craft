@@ -2345,3 +2345,62 @@ if (type === "fixed") {
 改动清单＝① 注入的 `window` 捕获 `keydown`／`keyup` 日志器 ⇒ **已 `removeEventListener` 并把 `globalThis.__k`／`__h` 清掉**（回读 `loggerGone:true`）；② `data-whatinput`／`data-whatintent` 与 `sessionStorage` 的 `what-input`／`what-intent` ⇒ **已回写 `mouse`／`mouse` 并读回确认**；③ 焦点 ⇒ 已 `blur()`，`activeElement` 回 `BODY`；④ 诊断属性 ⇒ `data-whatelement`／`data-whatclasses` 回 `null`（与进屏前一致）；⑤ 导航 ⇒ `/trash` → `/all` 同站路由跳转，**未点任何可点项、未进选择模式、未开任何浮层**（收尾读 `dialog:0`／`menu:0`／`checkbox:8`（网格静止态计数，与 `/trash` 的 3 不同屏不可比））；⑥ 数据面＝沙盒 `QODER-HARVEST-B109-CODEFIELD`（1 文档＋6 代码块）**已软删**，`unsorted` 回 3 条逐 id 相同、`tasks list --scope all` 9 条零 QODER 串、`reminders list --status all` 为 `No reminders found`，`manifest.jsonl` 149 → **150 行**。
 
 **仍未采到（本节）**：① `pa` 主分支（表单控件里冻结 intent）——两次通路都失败，**下一条最可能的通路是请用户手按 `Tab` 走进搜索框**（本桥 `press_key` 会把焦点送进 app 的托管控件还是外层容器，未判）；② **触摸档**下 `:hover`→`:active` 的屏上实证；③ 卡片／复选框的环实测（要进选择模式才会有 `role=checkbox`，而那是视图态改动）；④ 列可见性与容器宽的对照（要切列表布局＝空间级持久偏好＝禁区）；⑤ 亮档下环色实测；⑥ "DS 按钮环出来、任务卡片环不出来"那条预测的正/反裁决。
+
+## V104〔第 110 批 2026-09-30 18:5x–19:4x 本地＝UTC 10:5x–11:4x；屏上只读＋布局档切换（本轮具名授权）〕
+
+**前置条件（逐条实测）**：`visibilityState` 开场＝`visible`、`hasFocus:false`、`devicePixelRatio:1.25`、`innerWidth` 三次读数 **1204 → 958 → 1044**（★ 同一会话内漂移，⇒ 一切硬编码坐标作废，本批全部坐标都现取）；`data-whatinput`/`whatintent` 开场＝`mouse`/`mouse`；页面＝`/all`（已登录，标题「所有文档」）；☆ 导航后 URL 未再被追加 `?s=`（本批读回的 `location.href` 已按纪律剥参）。
+
+### 一、★★★ 布局三档的切换与还原（本批唯一的账户级持久偏好动作）
+
+| 步 | 动作 | 读数 |
+| --- | --- | --- |
+| 1 | 枚举行内控件（只读） | 三枚按钮位于 `div[data-testid="browse-layout-toggle"]`（rect x1032 y56 112×36），图标 `Rectangle Grid2x2`／`Rectangle3 Group`／`Line3 Horizontal`；★ **外层是 DIV 且三枚的 `aria-pressed`/`aria-checked`/`aria-selected` 全 null** |
+| 2 | 读初始选中态 | 类遮罩 `F..`（第一枚带 `Filled`，其余 `Plain`） |
+| 3 | `elementFromPoint(1123,74)` 命中校验 | 命中链末端＝`BUTTON.sc-wrwa8u-4 … Plain MediumSmall hasIcon isOnlyIcon`（无遮罩层）⇒ 才允许动手 |
+| 4 | 程序 `click()` 第三枚（表格） | 遮罩变 `..F`；★ **`data-what*` 两属性全程不动**（程序 click 不产生 pointer 事件） |
+| 5 | 采列表档全套 | 111 个带 `_1m9yz_` 的元素、22 枚类、表头四列、行高 65（见 `styles.md §十七`、`longtail.md §三十六.四`） |
+| 6 | 切第二枚 | 遮罩 `.F.`；★ **`_1m9yz_` 归 0**（⇒ 表格组件整块卸载）而卡片模块 `1nu3o`／`dhebv` 仍在 ⇒ 档 B 与档 A 同为卡片系、但档 B 无 `_virtualCardRow_1wotv_8` |
+| 7 | 量两档卡宽 | 档 A＝每行 2 列、卡宽 **308.5**、`height/width`=1.25；档 B＝卡宽 **268**、比值 1.242 ⇒ **两套公式** |
+| 8 | 切回第一枚 | 遮罩 **`F..`** ＝ 与步 2 同值（还原判据） |
+| 9 | 同 URL 导航一次（为清仪器污染） | 重载后遮罩仍 **`F..`** ⇒ ★ **布局档是持久态**（不是组件内存态） |
+
+⇒ ☆ 全程**未点任何行、未进选择模式、未改排序与显示开关**；★ 一次偏好的"改—回"序列里，第 6 步是临时决定多测的一档（同一控件、同一还原路径），已在 `manifest.jsonl` 记一行"偏好切换＋还原"。
+
+### 二、★★★ 意图冻结主分支的三判据序列（结第 107 批判据、第 109 批两次失败）
+
+1. `press_key Tab` ⇒ `activeElement` 由 `BODY` 变 **`BUTTON#sidebar-toggle`**（`aeY:8`）、`data-whatinput=keyboard`、`data-whatintent=keyboard`、`data-whatelement=button`。⇒ ☆ **`data-whatelement` 记的是事件 target 的标签名**（不是 `activeElement`）；★ **`Tab` 在浏览屏的第一个落点是侧栏折叠按钮**。
+2. `press_key Control+k` ⇒ 面板出现＝`input[data-testid="quick-search-input"]`（`placeholder="打开"`）且**自动持焦**；此时读到的是一对**分歧值**＝`data-whatinput=mouse`、`data-whatintent=keyboard`（★ chord 落在 `BODY` 上 ⇒ 走的是"未冻结"分支，而两属性之所以不同步，是因为 input 值此刻还停在 chord 之前的 `mouse`——☆ 这条推读本批不再加固，只记录现象）。
+3. 摆分歧态 ⇒ 对输入框派发**带 `pointerType:'mouse'` 的真 `PointerEvent('pointerdown')`** ⇒ 两属性都成 `mouse`，`activeElement` 仍是该 INPUT。
+4. `press_key z` ⇒ **`data-whatinput=keyboard`、`data-whatintent` 保持 `mouse`**；★ 同次调用里用 `input.value` 由 `z` 变 `zq` 独立佐证"这发键真的送达并进框"（⇒ 排除"没送达所以没变"这一整类歧义）；☆ `sessionStorage` 两键与 DOM 同步（`what-input=keyboard`、`what-intent=mouse`）。
+
+⇒ ★★★ **结论＝表单控件里 `intent` 冻结、`inputType` 不冻结**，且冻结只作用于 `pa=["button","input","select","textarea"]` 命中的键盘路径；⇒ ☆ 本地落地参数三条（都写两属性、默认 `initial`、只冻 intent）已并进 `gap.md` 台账「九」第 5 行。
+
+### 三、★★☆ 判活与送达闸门（本批把旧口径钉死）
+
+| 观测 | 结果 | 结论 |
+| --- | --- | --- |
+| 导航后 `visibilityState` 变 `hidden`、`hasFocus` **true**、`innerWidth:958` | `press_key Tab` 返回"成功"，但两属性仍是 `initial`、`activeElement` 仍是 `BODY` | ★★★ **`hasFocus()` 不能当送达判据**；☆ `press_key` 的"Successfully pressed"也不构成送达证据（要读一个会被键改动的面当 canary，本批用 `data-whatinput`） |
+| 同一页面重新可见后（`visible`、`innerWidth:1044`）再按 `Tab` | 焦点真的从 `BODY` 走到 `sidebar-toggle` | ⇒ **恢复动作＝用户把内置浏览器面板带回前台**，与既有"恢复动作永久归用户"一致 |
+| `sessionStorage` 的 `what-input`/`what-intent` | 全程与 DOM 属性同步（含 `"undefined"` 那次） | ☆ 持久层也会被探针写穿（见 §四） |
+
+### 四、★★★ 自我作废与自我修复（本批污染仪器一次）
+
+用 `new MouseEvent('pointermove', …)` 派发"鼠标移动" ⇒ **`data-whatintent` 被写成字符串 `"undefined"`，且 `sessionStorage['what-intent']` 同步变 `"undefined"`**（因为 `MouseEvent` 没有 `pointerType`，库把 `void 0` 写进了属性）；随后改派合法的 `PointerEvent('pointermove',{pointerType:'mouse'})` ⇒ **属性不变**（救不回来）。⇒ 处置＝① 该轮读数**作废**（不记成官方行为）；② 复原＝清 `sessionStorage` 两键 ＋ 重新载入，复核两属性回到 **`initial`**；③ ★ 顺带得到一条新事实＝**两属性的第 4 个取值是 `initial`**（不是"属性缺席"）⇒ 本地复刻要写默认 `initial`。
+⇒ ☆ 这与第 109 批 G1112（手写属性造成失同步）同族，区别是**这条会写穿到持久层、跨重载存活**；两条都已写进 `project-crafty-harvest-tooling-discipline.md`。
+
+### 五、★★ 框选起手（合成通路，落点判据不在此）
+
+在 `_virtualBody_1wotv_2` 上起手（先用 `elementFromPoint(1024,408)` 校验命中的是虚线体本身、非卡片非按钮），依次派发 `pointerdown`＋`mousedown`＋`pointermove(0,+112)`＋`mousemove` ⇒ ① 卡片容器类新增 **`_selectionMode_dhebv_393`**；② 8 枚 `role="checkbox"` 里 **1 枚 `aria-checked` 翻 true`**。⇒ **未派发 `pointerup`**，一个往返后再读＝两处**双双自行回退**（`checked:0`、`selMode:0`、`activeElement:BODY`、`Escape` 是在这之后才按的，故不是 Escape 所致）。
+⇒ ⚠ 矩形本体这两轮都没扫到（两次启发式：绝对定位＋宽高>24＋带边框或背景；绝对定位＋`pointer-events:none`），**但盘上已给出原因**＝矩形只在拖拽进行中由 rAF 帧挂载、且 `createPortal` 到 `document.body`、`position:fixed`（`longtail.md §三十六.三`）⇒ ⇒ ☆ **本条屏上读数的边界要说清**＝"起手进选择模式"已证；"拖拽过程中矩形长什么样、命中集怎么算"**不是屏上证到的**，是从逐字反编译结的案（G1135／G1136）；两者证据等级不同，别混用。
+
+### 六、判据增量（下批直接可用）
+
+1. ★★★ 布局档选中态**只能看 `Filled`/`Plain` 类**（零 ARIA）；☆ 档内组件卸载/挂载可作副证（切档时 `_1m9yz_` 计数 111↔0）。
+2. ★★★ 测 `data-what*` 类闸门＝**只允许真事件驱动**（`PointerEvent` 要带 `pointerType`、键要经连接器）＋ 每次读数都要配一个"该事件确实生效"的独立佐证（如 `input.value`）。
+3. ★★ 判"某类元素不存在"前先判布局档（本批第一次用 `[class*="_col"]` 命中 5 枚，全是 `_collectionName_*` 假阳性 ⇒ 改按哈希段 `_1m9yz_` 查才对）。
+4. ★★ 判"选中"别看 `_isActive_`（静止态 8/8 全带）；浏览屏条目 id 用 `data-item-id`，别找 `data-block-id`（同屏 0 枚）。
+5. ☆ 视口跨批**也跨调用**漂移（1204→958→1044）⇒ 任何写死坐标的探针都要现取现用。
+
+**⇒ 现场还原（本批末状态）**：布局遮罩 `F..`（＝开场值）；两属性 `mouse`/`mouse`；`activeElement=BODY`；⌘K 面板已关（`quick-search-input` 不存在）；`data-whatelement`/`data-whatclasses` 为空；无新建实体（`manifest.jsonl` 150 → **151 行**，仅追加一条"偏好切换＋还原"）；☆ 一次 `sessionStorage` 清理属**仪器自修**（只删 `what-input`/`what-intent` 两键，未碰任何鉴权或偏好键）。
+
+**仍未采到（本节）**：① 拖拽进行中的矩形视觉与 `position:fixed` 下的实际视口坐标（屏上未证，仅盘上）；② `shift`/`meta` 修饰键对框选命中集的分支；③ 起手前那份旧选择集 `y.current` 的用途；④ ⌘K 面板在 `Escape` 下的行为（本批改用重载关闭，未复测 V3 那条"Escape 关不掉「跳转到」"是否仍成立）；⑤ 第二枚按钮（档 B）的正式名称与"waterfall 是否就是它"（型制枚举里有 `waterfall`，三枚按钮的标签只有图标 `aria-label` 可读）；⑥ 键盘在浏览屏的完整 tab 序（只测到首枚落点）。
