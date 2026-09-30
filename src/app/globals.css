@@ -169,6 +169,22 @@
   --highlight-pink: rgb(246 51 142 / .18);
   --highlight-blue: var(--highlight-blueLight);
 
+  /* Code block palette — craft.do's `auto` theme resolves to craftlight (light)
+     and craftdark (dark); these are those two palettes' `styles` arrays verbatim,
+     plus their `background` / `foreground`. Official `deleted` also carries
+     backgroundColor "ffeef0", which is not valid CSS and the browser drops it,
+     so only the foreground is reproduced here. */
+  --code-background: #FBFBFB;
+  --code-foreground: #3D3D3D;
+  --code-comment: #6a737d;
+  --code-symbol: #6f42c1;
+  --code-literal: #005cc5;
+  --code-keyword: #d73a49;
+  --code-string: #032f62;
+  --code-tag: #22863a;
+  --code-heading: #24292e;
+  --code-deleted: #b31d28;
+
   /* Focus bar colors (left border accent) */
   --focus-red: oklch(0.63 0.24 25);
   --focus-orange: oklch(0.7 0.19 55);
@@ -326,6 +342,18 @@
   --highlight-pink: rgb(246 51 142 / .28);
   --highlight-blue: var(--highlight-blueLight);
 
+  /* Code block palette — craftdark verbatim (factory `fo` in vendor-code-editor). */
+  --code-background: #28292B;
+  --code-foreground: #CECFD0;
+  --code-comment: #8b949e;
+  --code-symbol: #d2a8ff;
+  --code-literal: #79c0ff;
+  --code-keyword: #ff7b72;
+  --code-string: #a5d6ff;
+  --code-tag: #7ee787;
+  --code-heading: #d2a8ff;
+  --code-deleted: #ffdcd7;
+
   /* Focus bar colors (dark) */
   --focus-red: oklch(0.58 0.22 25);
   --focus-orange: oklch(0.65 0.17 55);
@@ -422,8 +450,8 @@
   }
 
   pre {
-    background: oklch(0.2 0.005 260);
-    color: oklch(0.92 0 0);
+    background: var(--code-background);
+    color: var(--code-foreground);
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin: 0.75rem 0;
@@ -437,6 +465,63 @@
       border-radius: 0;
       color: inherit;
       font-size: inherit;
+    }
+
+    /* lowlight emits highlight.js class names; official ships CodeMirror lezer
+       tags, so each group below is the lezer tag list of one craftlight rule.
+       Tags craftlight/craftdark never style (literal, strong, link, addition,
+       title, function, selector-tag, doctag) stay uncolored on purpose and
+       inherit the palette foreground. */
+    .hljs-comment,
+    .hljs-punctuation,
+    .hljs-tag {
+      color: var(--code-comment);
+    }
+
+    .hljs-title.class_,
+    .hljs-selector-class,
+    .hljs-attribute {
+      color: var(--code-symbol);
+    }
+
+    .hljs-attr,
+    .hljs-variable,
+    .hljs-number,
+    .hljs-operator,
+    .hljs-params {
+      color: var(--code-literal);
+    }
+
+    .hljs-keyword,
+    .hljs-type,
+    .hljs-built_in {
+      color: var(--code-keyword);
+    }
+
+    .hljs-string,
+    .hljs-meta,
+    .hljs-code,
+    .hljs-bullet {
+      color: var(--code-string);
+    }
+
+    .hljs-name,
+    .hljs-quote {
+      color: var(--code-tag);
+    }
+
+    .hljs-section {
+      color: var(--code-heading);
+      font-weight: bold;
+    }
+
+    .hljs-emphasis {
+      color: var(--code-heading);
+      font-style: italic;
+    }
+
+    .hljs-deletion {
+      color: var(--code-deleted);
     }
   }
 
