@@ -45,8 +45,8 @@
 ## 三、搜索与浏览操作（`✓`）
 
 - 排序枚举：`["relevance","dateCreated","dateModified"]`（搜索）、`["dateCreated","dateModified"]`（列表）。
-- 过滤器：`starred: true/false`（"only starred (true) or non-starred (false)… Default undefined, so no filtering"）、`dailyNote: true/false` 同样三态。
-- 文件夹名过滤：**大小写不敏感正则**（"Filter folders by name pattern (case-insensitive regex). Example: 'Performance'…"）。
+- 过滤器：`starred: true/false`（"only starred (true) or non-starred (false)… Default undefined, so no filtering"）、`dailyNote: true/false` 同样三态。⇒ ☆ **第 125 批一条同族提醒**＝官方自报清单里 `documents list` 自己写着"optional location, folder, date, and metadata **filters**"，而实测该动词把 `--filter` 整个吞掉（G1251）⇒ 本文件里的"声明"一律只算**候选清单**，能力判定只能靠逐动词实调。
+- 文件夹名过滤：**大小写不敏感正则**（"Filter folders by name pattern (case-insensitive regex). Example: 'Performance'…"）。⇒ ✎ **第 125 批实测为真**（仅对 `folders list`）＝锚点、交替、大小写三项各自验过 ⇒ 见 `gap.md` G1251；⚠ 但**不许据此推广到别的动词**＝`documents list` 与 `blocks explore-themes` 上同一枚 `--filter` 被静默吞（G1185＋G1251）。
 - 返回附带：文档创建/修改日期、**块数量**、starred 与 dailyNote 标记（默认 true）；`includeBlockMatches`（默认 true）→ 搜索结果带**块级命中**；带 `total`（匹配总数）。
 - 上下文收窄："If the current context is tied to a folder (when the user opened the assistant from a folder), the folder Id can be provided here to limit the results" → **AI 有"当前文件夹上下文"概念**。
 

@@ -1759,3 +1759,39 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 
 **仍未采到（本节）**：① `blocks learn` 的另两份指南（`concepts`／`limitations`）正文本轮没读；② `explore-icons` 是否也有 detail 层（`--pattern` 之外的子选择还有没有）；③ `--location templates` 与 `--location daily_notes` 在 `search` 上是否可用（本轮只测了默认档与 `trash`）；④ 只读面自报的 5 条动词与契约头行里 `whiteboards …`／`collections …` 是否同面（拿一条不存在的动词名去逼它报名单即可判，本轮没做）；⑤ 屏幕面全部（缺登录标签页）。
 
+
+## 五十八、**第 125 批＝旗标可达性表的第二版：把四枚旗标摊到五个动词上，结论是"旗标不是属性、是每条动词各自的一段实现"，并且失败有两种长相（显式报错／静默吞掉）**（✓数据面只读 2026-10-01 21:0x–21:3x 本地；★ 零屏幕、零写入、零新建实体 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七六 G1251–G1255，逐字在 `longtail.md` §四十五，判据在 `interactions.md` V119，清除协议的修正见 `interactions.md` V93 原地 ✎）
+
+### 一、四枚旗标 × 五个动词（本批把第 124 批那张三行表扩成矩阵）
+
+| 旗标 | `folders list` | `documents list` | `search` | `blocks explore-themes` | `blocks explore-washi` |
+| --- | --- | --- | --- | --- | --- |
+| `--filter <regex>` | ★ **生效**（不可能命中的串 ⇒ `No folders matching …`；`^日` 只中一条；`how` 中 `How to use Craft` ⇒ 大小写不敏感；两词并立的交替式两条全中 ⇒ 真正则而非子串，逐字见 `longtail.md` §四十五） | ☆ **静默吞**（G1185 在册＋本批范围内正控制：`--filter Welcome` 该剩 1 条却回 3 条） | 未测（本面 `search` 无此旗标声明） | ☆ **静默吞**（G1185 扩展） | 未测 |
+| `--offset <n>` | ★ **生效且有校验**（`--offset 99` ⇒ `Offset 99 exceeds total of 2 folders.`） | ☆ **静默吞**（`--offset 2`／`--offset 99` 都回全量 3 条） | 未测 | ☆ **静默吞**（`--offset 15` 仍回 19 档全量） | 未测 |
+| `--pattern <name>` | 不适用 | 不适用 | 不适用 | 不适用 | ★ **生效**（只回指定那档的 detail，G1247） |
+| `--location <档>` | 不适用 | ★ **生效**（`unsorted`／`trash` 两档各回各的，G1155） | ★ **生效且排他**（默认档不含回收站；G1249） | 不适用 | 不适用 |
+
+⇒ ★★★ 机制结论＝**"通用旗标"在这套 CLI 里不存在**：同一枚 `--filter` 在 `folders list` 上是一段真正则过滤器、在 `documents list` 上根本没人读；`--offset` 同形。⇒ 与历批"参数名按动词语境各写各的（官方无共享常量表四例）"是同一根因的**另一面**＝不止名字不共享，**实现也不共享**。
+⇒ ★ 两种失败长相要分开对待：**显式报错**（`folders list --offset 99`）是友好失败，调用方能立刻知道旗标被理解了；**静默吞掉**是危险失败，因为回包长得与"旗标生效且恰好全命中"完全一样 ⇒ ☆ 所以测旗标必须做**范围内正控制**（挑一个一定命中的值、和一个一定不命中的值各测一次），单向测"不可能命中"仍不可判。
+
+### 二、"逼它自报家门"这招的收益与边界（G1251／G1252 的机制侧）
+
+⇒ 收益＝打一条不存在的**实体名**（`bogus`）会换回整棵命令树：**10 个实体段／18 条叶子动词**，三层嵌套只有一处（`whiteboards` → `whiteboards elements` → `elements get`）⇒ 比工具自带的那段压缩描述完整得多，且零成本；
+⇒ ★☆ 边界＝**名单会漏项**：`images view` 不在自报名单里，但它真实可用（打 `images view --url x` 得到的是参数校验错 `Invalid asset URL format. Expected res.craft.do/user/... or r.craft.do/...`，不是 `Unknown command`）；
+⇒ ⇒ 判据＝**只有 `Unknown command` 能证明"不存在"；参数校验错反而证明"存在"**；自报清单默认按"可能不完整"处理（与历批"虚拟滚动屏上零命中 ≠ 不存在"同族）。
+⇒ ☆ 同批复现＝分号批处理**第一条失败即停**（`Stopped after failure; earlier commands were already applied.`，第三次复现）⇒ 对"会失败的命令"，"同一调用内跑两遍"这条纪律失效，只能改两次独立调用。
+
+### 三、`blocks learn` 两份指南给协议层的三处补齐（G1254／G1255）
+
+⇒ ① `--position` 的**词表随锚类型切换且默认档不对称**＝`--id`／`--date` ⇒ `start`／`end`（默认 `end`）；`--siblingId` ⇒ `before`／`after`（默认 `after`）⇒ 承 G672"（锚类型 × 方向）二维"，本轮补上两处默认值；
+⇒ ② `blocks update` 的 id 有**两条来源**＝`--markdown` 必须配 `--id`；`--json` 传单对象时可省 JSON 内的 `id`、前提是外层给 `--id`（数组则每条都要 `id`）；
+⇒ ③ `limitations` 把"写侧不可达"成文为四类（集合行／某些表格布局／回收站里的块／`blocks delete` 的跳过并警告）⇒ 其中回收站那条与 G1176 的**实测报错**双源咬合（`Cannot modify document in trash. Restore it first.`）⇒ 该约束从"单点实测"升为"契约＋实测"两源。
+⇒ ☆ 三处全部停在「官方声明了 X」档（本批零写入，没做写侧验证）。
+
+### 四、对采集流程本身的两条改写
+
+⇒ **清除协议改一条**＝V93 五判据的第④条（`search <采集串>` 零命中）在本批被 G1249 判为**不可能失败** ⇒ 替换为 `search <采集串> --location trash`（清除前有命中、清除后应为 0），本批已凑齐正／负例 ⇒ 详见 `interactions.md` V93 原地 ✎ 与 G1255；
+⇒ **一条采集路判死**＝"用 `--offset` 二分数名册、从而不必把整表抄进上下文"对 `documents list`／`blocks explore-themes` 不成立（旗标被吞）⇒ 台账「二十三」②"页面主题名册逐字差集"仍只能等名册原文落盘的通路。
+
+**仍未采到（本节）**：① `--filter` 在 `tasks list`／`collections list` 上是否生效（矩阵里四格未测）；② `explore-icons` 的 `--offset` 越界行为（在册挂着，本批仍未测）；③ `--location templates`／`daily_notes` 在 `search` 上是否可用；④ 自报名单的其余漏项（`images view` 是第一个被抓到的，不会假设是最后一个）；⑤ `limitations` 里"某些表格布局只读"具体是哪些（要造出该报错）；⑥ 屏幕面全部。
+

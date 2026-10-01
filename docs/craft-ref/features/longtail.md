@@ -1739,3 +1739,148 @@ Search results: 1 match(es)
 
 **仍未采到（本节）**：① `blocks learn concepts`／`blocks learn limitations` 两份指南正文；② `explore-icons` 是否也有 detail 层；③ `--location templates` 与 `--location daily_notes` 在 `search` 上是否可用；④ washi 六档的**观感**与**导出形状**（要写入或导出才能读）；⑤ 只读面自报的 5 条动词与契约头行里 `whiteboards …`／`collections …` 是否同面；⑥ 官方移动端整族。
 
+
+## 四十五、**第 125 批逐字清单＝`blocks learn concepts`／`limitations` 两份指南全文 ＋ 只读面命令树全量自报 ＋ 四枚旗标的六组回包**（✓数据面只读 2026-10-01 21:0x–21:3x 本地；★ 全部只读、零写入、零屏幕；☆ 原始读数＝`_harvest/b125-flag-audit.txt`（队列①）＋`_harvest/b125-flags-and-tree.txt`（队列②③）；机制在 `internals.md` §五十八，gap 在 `gap.md` §三点一〇七六 G1251–G1255，判据在 `interactions.md` V119）
+
+### 一、`blocks learn concepts, limitations` 全文（同一次调用内两遍，逐字相同）
+
+```
+concepts — How blocks read/write commands fit together (markdown vs JSON, targets, positions).
+
+blocks get reads a page or daily note as markdown (and optional JSON with --format json).
+
+blocks add needs a target plus content:
+  • --id <page root block id> or --date <daily note> or --siblingId <block>
+  • --position: with --id/--date → start|end (default end); with --siblingId → before|after (default after)
+  • Content: --markdown <text> OR --json <object|array> (mutually exclusive)
+
+blocks update needs:
+  • --markdown: requires --id
+  • --json: object or array; each update needs id. For a single object you may omit id in JSON if you pass --id.
+
+JSON payloads are validated against the same schemas as MCP block tools (partial typed updates allowed where the schema allows).
+
+────────
+
+limitations — Operations that blocks add/update cannot replace (collection items, some tables, trash).
+
+Collection items: rows inside a collection are not edited with blocks update. Use collection item tools.
+
+Tables: some table layouts are read-only or only safely edited via markdown; service errors include hints when that applies.
+
+Trash: blocks inside trashed documents cannot be mutated until the document is restored.
+
+Delete: blocks delete skips collection-like and trashed targets with warnings (see blocks delete help).
+```
+
+⇒ ★ 三处新细节＝`--position` 的两套词表与**两处默认档**（`end`／`after`）、`blocks update --markdown` 必须配 `--id` 而 `--json` 单对象可省、`limitations` 明写回收站不可写（与 G1176 实测报错双源咬合）；⇒ ☆ 全部按「官方声明了 X」登记。
+
+### 二、只读面命令树全量自报（★ 打一条不存在的实体名逼出来的，G1252）
+
+⇒ 输入＝`bogus`；输出首行 `Unknown command: bogus`，之后是整棵树（**10 个实体段／18 条叶子动词**，脚本数）：
+
+```
+  connection - Read MCP connection metadata and timezone information
+    connection info - Show connection metadata, space timezone, requester timezone, and current dates
+  folders - Browse and search folders
+    folders list - List folder tree (--filter <JS regex> --offset <n>)
+    folders explore-icons - Search available folder icons by name
+  documents - Browse and list documents
+    documents list - List documents with optional location, folder, date, and metadata filters
+    documents resolve-link - Resolve a Craft document link to a rootBlockId
+  search - Search across the entire space with optional filters
+  tasks - Browse and filter tasks. Task dates notify in-app. For timed alerts on any block: reminders --help.
+    tasks list - List tasks by scope (--scope active|upcoming|inbox|logbook|document|all). ...
+  reminders - Block reminders belong to the connected Craft user with OAuth, or the creator of a single-user-space link. Document scope always applies.
+    reminders list - List reminders
+  collections - Browse and search collections
+    collections list - List all collections in the space or a specific document
+    collections schema - Show collection schema with item-title guidance, property keys, and types
+    collections views-list - List collection views
+    collections items-get - Get items from a collection
+  whiteboards - Read whiteboard content
+    whiteboards elements - Read whiteboard elements
+      whiteboards elements get - Get elements, assets, and app state for a whiteboard block
+  images - View images from Craft resource URLs or short links
+    images view - Return an image payload for a Craft image URL
+  blocks - Read document content
+    blocks get - Read document content as markdown (by ID or --date)
+    blocks learn - Explain block JSON types, concepts, and limitations for craft_write; pass multiple topic names in one call when useful
+    blocks explore-washi - Browse available washi tape patterns
+    blocks search-unsplash - Search Unsplash for hero cover or background images
+    blocks explore-themes - Browse available page styling and code themes
+```
+
+⇒ ☆ 两处"声明与实测相反"（本目录自报清单里的官方文案 vs 历批实测）＝`documents list` 写着"…and metadata filters"而 `--filter` 在该动词上被吞（G1251）；`search` 写着"across the **entire space**"而默认档不含回收站（G1249）；
+⇒ ★☆ **该名单不完整**＝`images view` 不在树里却真实可用：
+
+```
+--- images view --url x; images view --url x
+Command 1 failed: images view --url x
+{"status":"Action failed","error":"Validation error: Invalid asset URL format. Expected res.craft.do/user/... or r.craft.do/..."}
+Stopped after failure; earlier commands were already applied.
+```
+
+⇒ ⇒ 回包是**参数校验错**而不是 `Unknown command` ⇒ 判据＝报 `Unknown command` 才算动词不存在；☆ 且"两遍相同"对会失败的命令无效（分号批处理第一条失败即停，第三次复现）。
+⇒ ☆ 单实体探测也给同一层信息（七次独立调用＝`documents`／`folders`／`tasks`／`collections`／`whiteboards`／`reminders`／`connection` 各加 `bogus`）⇒ 每个实体段只报**自己那一段**，所以全量必须靠顶层那条。
+
+### 三、`folders list` 的四种旗标形态逐字（★ `--filter` 在这条动词上确实生效，G1251）
+
+```
+--- folders list
+Showing 1-2 of 2 folders with the following format: <folderId> Folder Name (document count)
+
+* <id-F1> How to use Craft (3 docs)
+  * <id-F2> 日记 (2 docs)
+
+--- folders list --filter zzz-never-matches
+No folders matching "zzz-never-matches".
+
+--- folders list --offset 99
+Command 3 failed: folders list --offset 99
+Offset 99 exceeds total of 2 folders.
+
+--- folders list --filter ^日
+Showing 1-1 of 1 folders with the following format: <folderId> Folder Name (document count)
+
+* <id-F1> How to use Craft (3 docs)
+  * <id-F2> 日记 (2 docs)
+
+--- folders list --filter how
+Showing 1-1 of 1 folders with the following format: <folderId> Folder Name (document count)
+
+* <id-F1> How to use Craft (3 docs)
+  * <id-F2> 日记 (2 docs)
+
+--- folders list --filter 日|H
+Showing 1-2 of 2 folders with the following format: <folderId> Folder Name (document count)
+
+* <id-F1> How to use Craft (3 docs)
+  * <id-F2> 日记 (2 docs)
+```
+
+⇒ ★ 三条判据从这组里出来＝① `--filter` 是**真·大小写不敏感 JS 正则**（锚点、交替、不敏感三项各自验过）⇒ `api-contract.md:49` 那条声明**为真**（仅对该动词）；
+⇒ ★ ② **树形过滤保留祖先但计数只数命中项**＝头行 `1-1 of 1` 而树里两行 ⇒ 数行＝2、数计数＝1 ⇒ G1253；
+⇒ ★ ③ `--offset` 越界会**显式报错**（`folders` 族）⇒ 与 `documents list` 的静默吞形成两类失败长相 ⇒ 内部机制含义见 `internals.md` §五十八.1。
+
+### 四、`documents list --location unsorted` 的四条并排回包（★ 范围内正控制，逐字相同）
+
+⇒ 四条命令＝不带旗标／`--offset 2`／`--filter Welcome`／`--filter zzz-never-matches`，回包**四条逐字相同**：
+
+```
+3 document(s) — format: <rootBlockId> Title
+
+  <id-D1> Welcome to Craft
+  <id-D2> （无标题）
+  <id-D3> （无标题）
+```
+
+⇒ ⇒ 若 `--offset 2` 生效该剩 1 条、若 `--filter Welcome` 生效该剩 1 条、若 `--filter zzz-never-matches` 生效该 0 条或报错 ⇒ **三枚旗标全部被吞且不报错**；
+⇒ ☆ 这正是"危险的那一类失败"＝回包与"旗标生效且恰好全命中"无法区分 ⇒ 单靠"不可能命中"的探针不足以判，必须同时做范围内正控制。
+
+### 五、☆ 本批刻意**没有**做的事
+
+⇒ 没有重抄任何名册（代码主题 19 档只做第三遍复跑比对，本轮逐字与 G1148 在册零差集）；⇒ 没有测 `--filter` 在 `tasks list`／`collections list` 上是否生效（矩阵留四格未测，挂"仍未采到"）；⇒ 没有任何写侧探针（`limitations` 那四类禁地只读契约文案，未造报错）。
+
+**仍未采到（本节）**：① `--filter` 在 `tasks list`／`collections list`／`documents list --folder` 上的可达性；② `explore-icons` 的 `--offset` 越界行为（在册挂着，本轮仍未测）；③ `--location templates`／`daily_notes` 在 `search` 上是否可用；④ 只读面自报名单的其余漏项；⑤ `limitations` 里"某些表格布局只读"的具体档位；⑥ 官方移动端整族。
+
