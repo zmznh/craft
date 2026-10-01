@@ -3070,7 +3070,7 @@ HJe = (t, e) => { let n = {};
 
 ## 一之七十一、**第 113 批＝文档身份其实是两个 id、"在不在回收站"也不是一个布尔：`rootBlockId`（块层）与 `documentId`（链接层）不互通，回收站可见性按通路分两套；代码块语言档还带第三个隐式属性"有没有 grammar"**（✓屏上＋MCP 第 113 批 2026-10-01 04:1x–04:4x 本地＝UTC 09-30 20:1x–20:4x；★ 机制在 `internals.md` §五十二，gap 在 `gap.md` §三点一〇六三 G1180–G1191，逐字在 `longtail.md` §三十九；☆ 本节接 §一之六十九（读写契约）与 §一之七十（多张名册））
 
-1. ★★★ **一篇文档有两个 id、两个命名空间**＝`rootBlockId`（块层，`blocks get/add/update` 只认它）＋ `documentId`（链接层，出现在 `craftdocs://open?…&documentId=` 与 web URL `editor/d/<spaceId>/<documentId>`，也是**屏上 DOM 里 `data-item-id` 的值**）；⇒ ☆ 两者**互不能直接喂给对方**（`blocks get <documentId>` 报 `Block not found`），唯一翻译器＝`documents resolve-link <url>`（且只吃 URL）；⇒ ★ 与第 112 批 `langCode`／`storedLangCode` 同形＝**Craft 反复把"给人/给链接的标识"与"给块层的标识"分成两套**，任何按 id 寻址的建模都要先回答"哪一层"。
+1. ★★★ **一篇文档有两个 id、两个命名空间**＝`rootBlockId`（块层，`blocks get/add/update` 只认它）＋ `documentId`（链接层，出现在 `craftdocs://open?…&documentId=` 与 web URL `editor/d/<spaceId>/<documentId>`，也是**屏上 DOM 里 `data-item-id` 的值**）；⇒ ☆ 两者**互不能直接喂给对方**（`blocks get <documentId>` 报 `Block not found`），唯一翻译器＝`documents resolve-link <url>`（且只吃 URL）⇒ ✎ **第 127 批收窄（原地）**＝它是**逐条 URL 的语义解析器、不是唯一通路**：`documents list --metadata` 一次把 **14 行**"rootBlockId ↔ raw documentId"并排打出来（批量对照器），而 `resolve-link` 的价值收窄为三件＝校验 URL 形／回显 Title／给 `Next: blocks get <rootBlockId>` 接续提示；☆ 这枚旗标还是**官方在报错 Hint 里自己指出来的**（见 `gap.md` G1262、`model.md` §一之七十八）；⇒ ★ 与第 112 批 `langCode`／`storedLangCode` 同形＝**Craft 反复把"给人/给链接的标识"与"给块层的标识"分成两套**，任何按 id 寻址的建模都要先回答"哪一层"。
 2. ★★★ **"是否已删除"至少两个口径**＝MCP 的 `--location trash`（本批 6 条）与屏上「最近删除」列表（同刻 4 条），**双向都有对方独有的条目**（屏上含第 75 批已结案那条、MCP 含本批刚软删那两条）；⇒ ☆ 模型含义＝文档上不止 `isDeleted` 一个位，**"删除"与"进屏上回收站"是两个可分离的状态**；⇒ ★ 复刻口径建议＝本地只有单一 `deletedAt`（`prisma/schema.prisma`）⇒ **不要**为了对齐而凭空造第二个标记，但要在产物里写清"官方两套名单不同步"，否则下批会把"屏上看不见"当成"没删掉"。
 3. ★★ **回收站的写侧模型＝读放行／写拒绝**＝同一篇回收站文档，`blocks get` 两条通路都完整返回（第 111 批 G1155），`blocks update` 逐字被拒 `Cannot modify document in trash. Restore it first.`；⇒ ☆ 拒绝点在**块级 action 入口**，不在文档级动词层（`documents` 根本没有 purge/restore 动词＝G678 那条）。
 4. ★★ **语言档的第三个隐式属性＝"有没有 grammar"**＝§一之六十五 给了三元组 `{label, langCode, storedLangCode}`、§一之七十 给了 `jTe` 119 键；本批补上**行为后果**＝挑选名册 38 条 string `langCode` 里 5 条（`ada`／`bash`／`matlab`／`prolog`／`vbnet`）**选了之后整块单色**（屏上实测，对照组 `python` 正常上色）⇒ ☆ 所以"语言档"这个实体的完整属性集＝`label`（展示）＋`storedLangCode`（落库）＋`langCode`（取 grammar）＋**派生态"能否高亮"＝`langCode ∈ jTe`**。
@@ -3222,3 +3222,28 @@ HJe = (t, e) => { let n = {};
 ⇒ ★★★★ **对照出来的三条确定事实**＝① **同一枚"分页符"档在 B 面写作 `pageBreak`、在 A／C 面写作 `pageSeparator`** ⇒ 两条通路各自用词，官方内部**没有共用一枚枚举名**（这是历批"两向字段名不一致五组"（G538）之后**又一个同族实例**，而且是同一个值在两份官方文本里不同名，比换字段名更隐蔽）；② **`none` 档只存在于 A 面**＝B 面的可写枚举里没有"无"，C 面的围栏表也产不出它 ⇒ ⇒ "没有线"这个态在官方模型里是**解析层的一个兜底档**，不是一个可写入的值；③ **两个面的缺省值相反**＝A 面缺省 `none`（＝没有线）、B 面缺省 `regular`（＝一条常规线）⇒ ☆ 这不是笔误级差异，而是**语义层不同**＝A 面的缺省是"属性没写时的解析兜底"，B 面的缺省是"插入时不传 `lineStyle` 会得到什么"。
 ⇒ ⚠ **一条推论，标为未实测（严禁写成官方行为）**＝如果 B 面的 `pageBreak` 原样送进 A 面的解析器（白名单是 `$t` 六值），按 G530 在册的"未知值静默回退"，它应当会落到 `none` 而不是 `pageSeparator` ⇒ **但本批零写入 ⇒ 没有做过一次真实的 `blocks update --json` 往返** ⇒ 登记为候选，结案需要写侧（挂第 127 批队列，需要当轮具名授权）；☆ 若成立，含义＝**从 MCP 写"分页符"会得到一条隐形的线**，这是一条值得盯的产品级陷阱。
 ⇒ ★★ **本地侧的唯一含义（不是差分，是映射工作量）**＝本地分隔线只有 `DividerStyle = 'thin'／'medium'／'thick'／'dashed'` 四档、默认 `thin`（`src/components/editor/extensions/divider.tsx:4`，速记表在 `:7`，已在册见 G101 与 G1229）⇒ 本地既没有"分页符"档也没有"无"档；⇒ ☆ 所以对齐官方 JSON 时**要建的是一张三向映射表**（本地四档 ↔ A 面六档 ↔ B 面五档），而不是一一对位；★ 并且要显式决定"未知值怎么办"＝**别照抄 A 面的静默回退**（那条在官方是缺陷温床，历批已记 G530"未知值处置方式未取到"）。
+
+## 一之七十八、**第 127 批＝两枚 id 的"批量对照器"到手（`documents list --metadata` 逐行并排打 rootBlockId 与 raw documentId）⇒ 上一节那条"唯一翻译器"收窄；外加五条块模型真数据实读（shared 四字段、decorations 形态、backdrop 是字符串、lineStyle 落五值内、image／richUrl 字段名）**（✓数据面只读 2026-10-01 22:2x–23:3x 本地；★ 零屏幕、零写入 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七八 G1262–G1267，机制在 `internals.md` §六十，逐字在 `longtail.md` §四十七，判据在 `interactions.md` V121，色值在 `styles.md` §二十二）
+
+### 一、★★★ 双 id：从"单一翻译器"到"一份对照表＋一个语义解析器"
+
+⇒ 原句在 §一之七十一 1（第 113 批），逐字＝`唯一翻译器＝documents resolve-link <url>（且只吃 URL）`，**本批原地 ✎ 收窄为**：
+⇒ ★ **`documents list --metadata` 是第二个翻译器，且是批量的**＝回包逐行格式（逐字）＝`<rootBlockId> Title (createdAt, lastModifiedAt)` ＋ `→ craftdocs://open?spaceId=<spaceId>&documentId=<rawId>` ⇒ **14 行一次给齐两枚 id 的对照**，而且每篇的两枚都不同（例：样本文档的 rootBlockId 与 raw id 各自独立，本产物折作 `<rootBlockId-W>`／`<rawId-W>`）；
+⇒ ★★ **而这个旗标是官方自己在报错 Hint 里指给我的**（逐字 `Hint: run documents list --metadata to see accessible documents and their rootBlockIds.`）⇒ 结构上＝**失败路径自带导航**（与 `Next page: … --page 2`、`Supported options: …` 同族，第三次）；
+⇒ ★ **resolve-link 的价值收窄为三件**＝① 单条 URL 的**语义解析**（校验 URL 形、拒绝"不是链接的东西"）② 输出 Title（对照用）③ 给下游一个 `Next: blocks get <rootBlockId>` 的接续提示；
+⇒ ★★ **正／负对照才把模板语义钉死**＝负＝拿 rootBlockId 当 web URL 尾段 ⇒ `Could not find this document in the current MCP scope.`（回包还回显 `Raw URL documentId: <我喂进去的那枚>` ⇒ 官方**告诉我它把哪一格当成了 raw id**）；正＝换 raw id ⇒ 成功 ⇒ `https://docs.craft.do/editor/d/<spaceId>/<rawDocumentId>` 的**尾段＝raw documentId** 结案，且 web 形与 `craftdocs://` 形共用同一套 raw id；
+⇒ ☆ **本地含义（不是差分）**＝本地是单 id 体系（`src/actions/document/search.ts:42`／`:70` 只用自家 uuid），没有两枚 id 的翻译层 ⇒ 官方这层"标识分叉"（G538 那族）在本地**根本不存在**，对齐时不要凭空造出来。
+
+### 二、★★★ 五条块模型真数据实读（声明层第一次和数据层对上）
+
+1. **G1250 的 shared optional fields 有四枚同时出现**＝`indentationLevel: 1`（Quick Start 里两张缩进的图块）、`taskInfo: {"state":"todo"}`（四个任务块）、`decorations`、`color: "#00ca85"`（**六位 hex** ＝ 与契约 `color (#RRGGBB)` 一致；☆ G1146 记过屏上存在 8 位带 alpha 的值 ⇒ 两种都存在、不改判）；
+2. ★ **`decorations` 的实读形态是数组**（值形如 `["quote","callout"]`），而 G530 记的**默认值是 `{}`（对象）**⇒ 默认与填充两种形态不一致的候选（只登记实读，不判谁对）；☆ 本地仍只有巧合同名的 ProseMirror `decorations(state)`（`sidebar-drop.ts:38`）；
+3. ★★★ **`styling.backdrop` 是 JSON 字符串而不是对象**＝值逐字形如 `{"image":{"imageBgColor":"#ffe5cf","imageBlurHash":"@HT8Xdu…","imageIsBlurred":true,"imageUrl":"https://res.craft.do/user/full/…"},"size":"full","type":"image"}` ⇒ **同一层里既放了结构又把它序列化成字符串**；同层 `pageWidth` 的值是**字符串 `"false"`**（不是布尔）⇒ **G538 那族"两向形态不一致"的最新一例是对象→字符串**；⇒ ★ 对齐含义＝本地若要吃这份数据，**必须先按字符串再解析一层**，照抄成对象会静默丢整个封面；
+4. ★ **`lineStyle` 真数据落在这五值契约内**＝实见 `"lineStyle":"light"`（Watch／Handbook 的分隔线）与 `"extraLight"`（Quick Start／Import 段的分隔线）⇒ 与 `blocks learn line` 的五值枚举、与 §一之七十七 的三面对照表**同向**（本批没见到第六个值，也没见到 `pageBreak`／`pageSeparator`）；
+5. ☆ **字段名两处实读**＝`type:"image"` 的图块用 **`url`**（不是 `src`）且带 `indentationLevel`；`type:"richUrl"` 带 `url`／`title`／`description`／`markdown` 四字段（与 G681"richUrl 是 link 卡"对上）。
+
+### 三、☆ 覆盖范围必须一起记的原因
+
+⇒ 本批的 JSON 扫描用的是 `--depth 1`，而**深度 1 也会对子树做摘要**＝子页给 `contentPreviewMd` ＋ 尾行 `…and N more blocks`、集合给 `itemsPreviewMd`（`<collectionItem>` 模板）⇒ **"扫过"只覆盖到第一层与摘要行**；⇒ 所以 G1266 的覆盖要写成"11 篇一级＋3 个子页下钻"，而不是"全空间扫过"。
+
+⇒ ☆ **仍未采到（本节）**：① `documents list --metadata` 的**带值过滤**形态（描述行写作复数 `metadata filters`，本批只跑过裸跑）＝`gap.md` 台账「二十六」③；② `decorations` 的默认 `{}`（G530 在册）与实读数组两种形态里，哪一条是写侧产生的＝需写侧或盘上反编译，本批零 bundle 读取；③ `styling.backdrop` 本批只在**两篇**（Craft Handbook／Quick Start）实见、两处都是字符串形态，其余 12 篇是否同形态未验；④ `pageWidth` 除字符串 `"false"` 之外的取值集合未穷举（同一 `styling` 层里是否还有别的字符串化布尔也未扫）；⑤ 白板那一格的模型侧读数＝等屏幕授权（`gap.md` G1267 与台账「二十六」②）；⑥ `richUrl` 的四字段是否恒为四字段（本批只见一处形状，未穷举）。

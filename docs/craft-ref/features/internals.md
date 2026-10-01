@@ -1829,3 +1829,46 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ### 四、☆ 复证四条（不新登记）
 
 ⇒ `blocks learn` 插入 9 项／更新 12 项**第四次零漂移**（与 G681 逐字同）；`blocks explore-themes --type code` 再回 **19 档**（含 `tokyonightstorm`，无 `craftlight`／`craftdark`＝承第 111 批"两面名册不等长"）；`search welcome` 默认档仍 3 条；`documents get` 在本面**不存在**（`Unknown command`＝与第 124 批 `blocks update` 同形）。
+
+## 六十、**第 127 批＝三段探针把"旗标可达性"这件事从"列一张表"升级成"列五种形态＋三层判据"，并把白板那一格用契约而非穷举判成结构性不可测**（✓数据面只读 2026-10-01 22:2x–23:3x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七八 G1262–G1267，逐字在 `longtail.md` §四十七，判据在 `interactions.md` V121，模型含义在 `model.md` §一之七十八）
+
+### 一、★★ 三段探针各自的"问的问题"（同一座桥、三个判据）
+
+| 段 | 问的问题 | 手段 | 结果 |
+| --- | --- | --- | --- |
+| ①名单复审（队列①） | 上批那次 4→5 是懒注册还是读数不稳？ | 开场先三连打 `blocks bogus`（不夹别的命令），再把**从未被调用过的** `search-unsplash` 真调一次，前后各比一次名单 | 懒注册被**两条实验否掉**（从未调用者 7/7 在场；真调前后逐字不变）；4 连读全 5 行 ⇒ 那次 4 行改判为**一次尾行截断** |
+| ②矩阵下半＋未测五项（队列②＋⑤项） | 旗标到底有几种形态？ | 每格都带"不带旗标的基线"并排；`reminders` 空档先问选项层；`images view` 先用无效 URL 探校验次序 | 五种形态齐了（见 §二）＋三层判据（见 §三） |
+| ③白板扫描（队列⑨） | 空间里有没有白板块？ | 14 篇 `blocks get --format json --depth 1` ＋ Handbook 三子页下钻 | 零命中；**但决定性理由来自契约**＝`whiteboard` 不在可插入 9 类 ⇒ 写侧造不出 ⇒ 结构性不可测 |
+
+### 二、★★★ 旗标形态五档（本批长出第五档）
+
+1. **生效**（`folders list` 的 `--filter`／`--offset`、`search-unsplash` 的 `--page` 之"页码生效"半格）；
+2. **静默吞**（11 条动词的 `--filter`、11 格 `--offset`：回包与不带旗标逐字相同）；
+3. **值被挪用**（`folders explore-icons`：旗标值顶掉位置参数）；
+4. **越界继续**（`search-unsplash --page 99`：不报错、页码照递增、结果照出）；
+5. ★★★ **选项层显式拒绝**（本批新增，`reminders list` 上的 `--filter`／`--offset`）⇒ 拒绝串**逐条列出该动词的选项白名单**＝`Supported options: --status, --limit, --cursor.`；
+⇒ ☆ 由此浮出两枚新旗标＝`--limit`（`--limit 1` 被接受）与 `--cursor` 的**真实现**（`--cursor bogus` ⇒ `Pagination cursor invalid: Reminder no longer exists. Restart without cursor.`）；
+⇒ ★ 且**校验本身逐动词**＝`images view` 对同一批旗标不报选项错（先报 URL 校验）、`documents list --metadata foo=bar` 也不报 ⇒ **"没拒绝"不等于"支持"**。
+
+### 三、★★★ 三层判据（比第 126 批多一层）
+
+1. **有没有报错**（错误本身分四种形态：纯文本行／JSON 错误包 `{"status":"Action failed",…}`／选项白名单行／错误码行 `error(NOT_FOUND_ERROR): …`）；
+2. **回包逐字是否相同**（＝吞的判据）；
+3. ★★★ **回包形态是否改变**（＝本批新增层）：`images view` 基线两次都回**图像内容块**（模型无视觉 ⇒ 被 harness 吞成占位，**可复现**），加任一旗标后变**文本** `Image returned.` ⇒ 形态变了 ⇒ 旗标改了响应分支；⇒ ☆ 这一层在 `screenshot().length` 一族旧判据之外，是**文本面**的对应物。
+
+### 四、★★ 选项层先于数据层 ⇒ 空档也能判"旗标存在性"
+
+⇒ `reminders list --status all` 在本账户**零条**，但 `--filter`／`--offset` 仍被选项层拒掉 ⇒ **第 125 批"空档＝不可判"被部分推翻**＝对**旗标存在性**（选项层）空档照样可判、对**生效语义**（数据层）仍不可判；
+⇒ 分页／限额参数族至此**四套并存**＝`--offset`／`--page`／`--limit`／`--cursor`，而契约头 `Common flags: --offset, --cursor, --filter` **漏 `--limit` 与 `--page`** ⇒ 这一行**三重不可用**（漏实现／漏旗标名／逐动词失真，分别出自第 125／127／126 批）。
+
+### 五、★★★ 白板格：用契约判、不靠穷举
+
+⇒ 推理链三步＝① `blocks learn` 的可插入 9 类**不含** `whiteboard`（可更新 12 类含）⇒ **MCP 写侧造不出白板块**；② 已扫覆盖＝11 篇一级＋3 子页下钻零命中（未下钻约 12 子页、三篇自建沙盒跳过）⇒ 现存也没有；③ ⇒ 该格只剩两条路＝**屏幕面造一枚**（需当轮授权）或等空间里出现现存白板 ⇒ 判"**结构性不可测**"并转队列；
+⇒ ☆ **方法论**＝"找一枚实体"的探针要先问"写侧能不能造出它"：能 ⇒ 穷举有上限；不能 ⇒ 直接换通路，扫描只用来**写下界**；
+⇒ ☆ 覆盖的下界必须写清的原因＝`--depth 1` 也对子树做摘要（子页 `contentPreviewMd` ＋ `…and N more blocks`、集合 `itemsPreviewMd`）⇒ **扫一层 ≠ 扫全树**。
+
+### 六、☆ 三条"官方自己指路"（失败路径自带导航，本批第三次）
+
+⇒ ① `Hint: run documents list --metadata to see accessible documents and their rootBlockIds.`（resolve-link 失败时）；
+② `Next page: blocks search-unsplash "mountains" --page 2`（结果尾部）；③ `Supported options: --status, --limit, --cursor.`（选项拒绝时）；
+⇒ 判据＝**读报错串别只读前半**，后半常带着"下一通路"。

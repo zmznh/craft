@@ -1965,3 +1965,94 @@ Examples:
 ### 八、☆ 读侧失败形态一条
 
 ⇒ `documents --help; blocks --help` ⇒ **`MCP error -32603: MCP tool invocation did not complete`**（☆ 带动作名的 `--help` 历批可用，**不带**动作名的不可用）；⇒ ☆ 同会话紧接着 `connection info` 正常返回 ⇒ 读侧 `-32603`＝本次调用未成立，**不等于桥挂**。
+
+## 四十七、**第 127 批逐字清单＝选项白名单拒绝串 ＋ 五种错误／回包形态各一条 ＋ resolve-link 正负两套回包 ＋ `--metadata` 回包头部 ＋ 块模型真数据片段**（✓数据面只读 2026-10-01 22:2x–23:3x 本地；★ 零写入；☆ 用户个人文本（一篇日记、一段用户自己的指令）**未抄入本文件**，只登记"存在"；id 一律折占位；gap 在 `gap.md` §三点一〇七八，机制在 `internals.md` §六十，判据在 `interactions.md` V121）
+
+### 一、★ 选项白名单拒绝串（旗标级自报，两枚旗标同一句式）
+
+```
+Invalid, duplicate or missing option: --filter. Supported options: --status, --limit, --cursor.
+Invalid, duplicate or missing option: --offset. Supported options: --status, --limit, --cursor.
+```
+⇒ 同动词两次调用、句式逐字相同（只有被拒旗标名变）；⇒ ☆ 顺带两格＝`reminders list --status all --limit 1` ⇒ `No reminders found.`（`--limit` **被接受**，而该档零条目 ⇒ 数据效果不可判）；`reminders list --status all` 基线同为 `No reminders found.`（**空档**）。
+
+### 二、★ `--cursor` 的值校验串（该动词上 `--cursor` 有真实现）
+
+```
+Pagination cursor invalid: Reminder no longer exists. Restart without cursor.
+```
+
+### 三、四种错误／回包形态各一条
+
+① **纯文本行**（最常见）：`No folders matching "zzz-never-matches".`（第 125 批在册，本批复用为对照）；
+② **JSON 错误包**（`images view`）：
+```
+{"status":"Action failed","error":"Validation error: Invalid asset URL format. Expected res.craft.do/user/... or r.craft.do/..."}
+```
+③ **选项白名单行**＝本节一；
+④ **错误码行**（`whiteboards elements get`，按**块 id** 找）：
+```
+error(NOT_FOUND_ERROR): Whiteboard block not found
+```
+
+### 四、★★ resolve-link 的负／正两套回包（同一 URL 模板、尾段换成两枚 id）
+
+负（尾段喂 rootBlockId）：
+```
+Command 1 failed: documents resolve-link https://docs.craft.do/editor/d/<spaceId>/<rootBlockId-W>
+Could not find this document in the current MCP scope.
+Raw URL documentId: <rootBlockId-W>
+Hint: run documents list --metadata to see accessible documents and their rootBlockIds.
+
+Stopped after failure; earlier commands were already applied.
+```
+正（尾段喂 raw documentId，三档带／不带 `--filter`／`--offset` **逐字相同**）：
+```
+Resolved link to rootBlockId <rootBlockId-W>
+Title: Welcome to Craft
+Raw URL documentId: <rawId-W>
+Next: blocks get <rootBlockId-W>
+```
+
+### 五、★★ `documents list --metadata` 回包头部（批量对照器）
+
+```
+14 document(s) — format: <rootBlockId> Title (createdAt, lastModifiedAt)
+
+  <rootBlockId-1> Quick Start: get going (created: …, modified: …) → craftdocs://open?spaceId=<spaceId>&documentId=<rawId-1>
+  …（14 行同形，每行两枚 id 各不相同）
+```
+⇒ ☆ 两条附带读数＝① **本批没有重跑裸 `documents list`**（14 行这个数是 `--metadata` 那次自己给的；在册的裸跑是第 125 批的 `--location unsorted`＝3 行，两者差异来自 `--location` 档不是 `--metadata`）；② **默认档含回收站复证（G1155）**＝这 14 行里能看见三篇 `QODER-HARVEST-*` 沙盒（它们在回收站里）⇒ 与在册口径同向。
+
+### 六、★★ 块模型真数据片段（`blocks get --format json --depth 1` 抽样，id 折占位）
+
+```
+{"id":"…","type":"page","textStyle":"page",
+ "styling":{"pageWidth":"false",
+   "backdrop":"{\"image\":{\"imageBgColor\":\"#ffe5cf\",\"imageBlurHash\":\"@HT8Xdu…\",\"imageIsBlurred\":true,\"imageUrl\":\"https://res.craft.do/user/full/…\"},\"size\":\"full\",\"type\":\"image\"}"},
+ "markdown":"…","content":[ … ]}
+```
+⇒ 三处要点＝**`styling.backdrop` 的值是一整段 JSON 字符串**、`pageWidth` 的值是**字符串 `"false"`**、backdrop 内的 `imageUrl` 是 `res.craft.do/user/full/…` 形（与 `images view` 的 URL 校验串对上）。
+```
+{"id":"…","type":"text","textStyle":"h4","decorations":["quote","callout"],"markdown":"<callout>…</callout>"}     ← decorations 实读＝数组
+{"id":"…","type":"text","taskInfo":{"state":"todo"},"listStyle":"task","markdown":"- [ ] …"}                        ← taskInfo 实读
+{"id":"…","type":"line","lineStyle":"light","markdown":"****"}                                                      ← lineStyle 实读（五值内）
+{"id":"…","type":"image","url":"https://r.craft.do/<code>","indentationLevel":1,"markdown":"  ![Image](…)"}
+{"id":"…","type":"richUrl","url":"https://youtu.be/…","title":"…","description":"…","markdown":"[…]"}
+```
+⇒ ☆ 另一枚真色值实读＝`"color":"#00ca85"`（callout 文字色，六位 hex；同批另见 `#0064ff`／`#0085a4`／`#ef052a` 与封面 `imageBgColor` `#ffe5cf`／`#ffb28e` ⇒ 全部进 `styles.md` §二十二）。
+
+### 七、☆ 官方 markdown／页面形态两条（`blocks get --format markdown` 抽样）
+
+```
+<page id="<docId>"><pageTitle>…</pageTitle><content>… <callout>…</callout> … ![Image](https://r.craft.do/<code>) … </content></page>
+```
+⇒ 图块在 markdown 里就是 `![Image](url)`；`<highlight color="gradient-purple|red|yellow|blue|mint|green">` 六枚颜色名（`gradient-*` 的 CSS 值第 112 批已在册，本批不重复登记）。
+
+### 八、☆ 失败路径自带导航的第三次（三串并列）
+
+```
+Hint: run documents list --metadata to see accessible documents and their rootBlockIds.
+Next page: blocks search-unsplash "mountains" --page 2
+Supported options: --status, --limit, --cursor.
+```
