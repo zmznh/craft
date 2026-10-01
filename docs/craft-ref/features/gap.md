@@ -20,12 +20,14 @@
 | 未动 | G02 · 提醒投递与状态 | `grep -rln "setInterval\|cron\|scheduler" src/actions src/lib src/app/api` **只命中 `src/lib/task/recurrence.ts`**（循环计算，非投递）⇒ 无定时器／无通知／无邮件 |
 | 未动 | G03 · 通知三开关可配 | `src/components/settings/SettingsPanels.tsx:101` 仍是 `const [notify, setNotify] = useState({...})` ⇒ 不落库 |
 | 未动 | G04 · 分享 view／edit 两档 | `src/prisma/contract.prisma:318-332` `DocumentShare` 字段集＝`id/documentId/token/slug/passcode/isPublished/createdAt/updatedAt`，**无 permission 列** |
-| 未动 | G05 · 未发布不可访问 | `src/actions/document/share.ts:101-108` `getSharedDocument` 只判 `!doc` 或 `doc.isDeleted`，**不判 `isPublished`** ⇒ 拿到 token 即可读 |
+| **已清** | G05 · 未发布不可访问 | ✎ **第 116 批已清（commit `52ee7af`）**＝原判据准确但**层级说错了一半**：`src/app/p/[slug]/page.tsx:17`／`:39` 与 `src/app/s/[token]/page.tsx:15` **早就在页面层判 `!doc.isPublished`** ⇒ 但 `src/actions/document/share.ts:1` 是 `'use server'` 模块 ⇒ 客户端可以**不经路由直接调 action** ⇒ 页面层那道判据挡不住，漏洞是真的；改法＝闸门下沉到 action 层＝新增纯判据 `isOpenableShare(share)`（`src/lib/share/resolve.ts`）＋ `getSharedDocument` 里 `if (!isOpenableShare(share)) return null` |
 | **已清** | G06 · 成员档"可查看和评论" | `src/actions/comment/comment.ts:26` 建线程要求 `'commenter'`；`src/lib/authz/document-access.ts:39` `roleSatisfies` 不满足即抛 `AuthorizationError`；阶梯 `src/lib/authz/resource.ts:15-18`（viewer=1 < commenter=2）⇒ **viewer 评论已被拒**，与官方一致 ⇒ **早先登记为"只有壳"已过时，以本表为准** |
 | 未动 | G07 · 手柄菜单＝块操作主入口 | `src/components/editor/drag-handle/DragHandle.tsx` 渲染体里手柄只有 `<GripVertical className="size-4" />`（`data-drag-handle` 那个 div 内无 `+`／无 `⋮`） |
 | 未动 | G08 · 越权删除要报错 | `src/actions/document/delete.ts:11-16`（`restoreDocument` 同型 `:23-28`）仍是 `.where({id,userId}).update(...)` 且**不检查命中数** ⇒ 非本人时 0 行更新静默返回 |
 
 ⇒ **P0 已清 1／8**（本轮唯一新清的是 G06，且它是"实扫发现早已修好"而非本轮动手）。
+
+⇒ ✎ **第 116 批复扫＝P0 已清 2／8**（新清 **G05**＝commit `52ee7af`，闸门从页面层下沉到 action 层，纯判据三条单测锁住；☆ 但**接线本身没有行为级证据**＝本仓**没有 action 层测试基建**（`src/actions/**` 零测试文件、全仓零 `vi.mock` 先例），要真验得有库或 fake prisma ⇒ 已登记为一条工程欠账）。
 
 ### 二、近三批已清的本地条目（带 commit）
 
@@ -34,6 +36,7 @@
 | 已清 | G1028 · 回收站无"选择模式＋批量永久删除"通路 | `src/components/document/TrashList.tsx` 多选工具栏＋计数回显确认框，接 `src/actions/document/delete.ts:32` | `60cc5fc` |
 | 已清 | G1042 · 落点正中点归属与官方差一格 | 判定抽成 `src/components/editor/drag-handle/drop-band.ts`，正中点归 `before`；4 条单测锁官方几何 | `09874bc` |
 | 已清（屏上复验） | G1042 · 上面那条只有单测、无真浏览器证据 | `e2e/drag-drop-band.spec.ts` 真指针两枪（中线→前、中线＋1→后）；**对照实验**＝把 `<=` 改回 `<` 后单测 2 条失败＋e2e 失败 ⇒ 两层都真锁住 | `7a3aa31` |
+| 已清 | G05 · 未发布的分享链接在 action 层仍返回全文（★ 与「页面层已挡」并不矛盾——`'use server'` 模块可被客户端直接调用） | 纯判据 `src/lib/share/resolve.ts` `isOpenableShare` ＋ 闸门 `src/actions/document/share.ts:101-106`；测试＝`src/lib/share/resolve.test.ts` 三条（红→绿，红色差集＝未发布那档仍返回 `true`） | `52ee7af` |
 
 ### 三、第 104 批新登记的待办（本轮未动代码）
 
@@ -199,6 +202,7 @@
 | 已清 | **G1215＝表格单元格转义补"先翻倍反斜杠"**（承第 115 批那条唯一本地缺陷） | `src/lib/document-codec/index.ts:128-131`（＋两条新测试 `index.test.ts` 末段） | 已完成＝red→green 全程跑过；判据＝官方 `g()` 三步顺序逐字节同形；☆ 全量 204 passed／3 skipped（基线 199／3），`tsc` 退出 0 | 3/3 |
 | 已清 | **G1200 的"两枚可逆性字段"＝大写 `- [X] ` ＋ 嵌套列表三个空格**（承第 114 批 flavour 29 字段） | `src/lib/document-codec/index.ts:61-78`（新增 `renderList(node, depth)`，三个列表分支合并） | 已完成；⇒ ☆ **同一条里剩下的两枚没做**＝`highlight` 的 `::` 与 `strong`／`pageCard` 的 `#### ` 前缀（属"表达力"问题、不是往返问题 ⇒ 继续挂账）；⇒ ★ 新做的一条**结构性收益**＝嵌套子表以前被 `textContent` 摊平成一行，现在按层递归 | 2/2 |
 | 已清 | **G1223 之"改判一半"＝本地 `color-scheme` 从来就不缺** | 不动代码；实测＝`documentElement.style.colorScheme` 亮／暗＝`light`／`dark`（next-themes 初始化脚本代写，逐字 `d.style.colorScheme=n`） | 已完成＝上批那条"本地两条 DOM 副作用全缺"已 ✎ 收窄；⇒ ★ 规则＝**"源码里 grep 不到"不等于"行为上没有"（库会代写）**，这类结论一律要浏览器实测 | 1/1 |
+| 已清 | **P0 G05＝未发布的分享链接必须在 action 层挡掉**（承 §〇 台账第一条 P0 实扫） | `src/lib/share/resolve.ts`（新增 `isOpenableShare`）＋ `src/actions/document/share.ts:101-106`（`if (!isOpenableShare(share)) return null`） | 已完成＝三条单测 red→green；⇒ ☆ **诚实标注证据等级**＝判据本体有单测、**接线那一笔没有行为级证据**（本仓零 action 测试、零 `vi.mock` 先例 ⇒ 需库或 fake prisma）；⇒ ☆ 页面层原有两道 `!doc.isPublished` 判据**保留不动**（无害的重复防线，不属本批清理范围） | 2/2 |
 | 阻塞 | **G1223 之"真缺一半"＝本地没有 `meta[name='theme-color']`**（实现通路已探明、代码已写又已还原） | 曾改 `src/components/theme/ThemeProvider.tsx`（客户端 effect：`body` 计算底色 → canvas 像素 → 写／建 meta），**本批 `git checkout` 还原**＝不带未验证代码入库 | ☆ 阻塞真因＝**这个 worktree 的 `/login` 不 hydrate**（DOM 零 `__reactFiber$` 键、effect 一次没跑、`head.appendChild` 零调用）⇒ 根因链＝无 `.env` ⇒ `src/collab/secrets.mjs:11` 抛"缺少签名密钥"；⇒ 解法二选一＝**给一份本地凭据＋库（属用户决定）**，或改日在能 hydrate 的树上做；☆ 另一条独立缺口＝官方 `theme-color` 的**实际值**仍未采到（需连接器读一次 meta） | P2 |
 
 ## 一、P0（先做：功能真实不存在但界面上有入口，或权限/正确性错）
@@ -2988,7 +2992,7 @@
 **仍未采到（本节）**：① `vn` 类（DOM 侧明暗管理器）的完整生命周期——它和 store 侧 `Xs` 谁驱动谁（本批只读到 `finalCalcDarkMode`／`preferDarkMode`／`preferDarkModeForEditor` 三个方法体）；② `ace`（URL 可控白名单）在**运行期**还会被别的模块追加吗（本批只找到一处 `makeUrlControllable` 调用）；③ worker 那份 `Features` 有没有真的调 `initFromQueryString`（找到定义与白名单预置，未找到调用点）；④ `blockLinkStyle` 的 `pageLink`／`headerLink` 两档**由谁设置**（flavour 默认是 `blockLink`，说明有第二份配置源，但全 chunk 只有那一份 flavour）；⑤ `MarkdownExportApi` 那条通路**由哪个动作触发**（chunk 只有 8,670 字符，消费方未查）；⑥ ☆ 屏上验证三条（单元格含竖线会不会串行／`?dark` 在主 app 是否真的无效／读一次 `luki:enable-fs` meta）＝全部依赖连接器恢复。
 
 
-### 三点一〇六六、第 116 批〔**本地实施批＝零新增官方事实**（✓本机 2026-10-01 12:2x–12:4x 本地，☆**不是采集批**：没有动官方屏幕、没有读 bundle、没有建／删实体 ⇒ `manifest.jsonl` 155 行不变、`gap.md` 条数不变）；本批做三件事＝① **G1215 已清**（表格转义补"先翻倍反斜杠"）② **G1200 的两枚已清**（`- [X] ` 大写＋嵌套列表三个空格缩进，逐字来自第 114 批那 29 字段 flavour）③ ★★ **G1223 一半被实测否证＝本地 `color-scheme` 从来就不缺**（next-themes 自己往 `documentElement.style.colorScheme` 写 `light`／`dark`，实测 inline 值就是这两枚）⇒ ☆ 上批那条"本地两条 DOM 副作用全缺"的表述要收窄为"只缺 `theme-color`"；外加 ★★★ **一条新的仪器事实＝这个 worktree 的 `/login` 根本不 hydrate**（DOM 上零 `__react*` 键 ⇒ 任何依赖客户端 effect 的自证都做不了，与第 114 批"缺签名密钥"是同一道闸的两层后果）〕
+### 三点一〇六六、第 116 批〔**本地实施批＝零新增官方事实**（✓本机 2026-10-01 12:2x–12:4x 本地，☆**不是采集批**：没有动官方屏幕、没有读 bundle、没有建／删实体 ⇒ `manifest.jsonl` 155 行不变、`gap.md` 条数不变）；本批做三件事＝① **G1215 已清**（表格转义补"先翻倍反斜杠"）② **G1200 的两枚已清**（`- [X] ` 大写＋嵌套列表三个空格缩进，逐字来自第 114 批那 29 字段 flavour）③ ★★ **G1223 一半被实测否证＝本地 `color-scheme` 从来就不缺**（next-themes 自己往 `documentElement.style.colorScheme` 写 `light`／`dark`，实测 inline 值就是这两枚）⇒ ☆ 上批那条"本地两条 DOM 副作用全缺"的表述要收窄为"只缺 `theme-color`"；外加 ★★★ **一条新的仪器事实＝这个 worktree 的 `/login` 根本不 hydrate**（DOM 上零 `__react*` 键 ⇒ 任何依赖客户端 effect 的自证都做不了，与第 114 批"缺签名密钥"是同一道闸的两层后果）；④ ★ **P0 台账第一条 G05 在同一轮复扫里已清**＝分享「未发布不可访问」的闸门从页面层下沉到 action 层（commit `52ee7af`，判据三条单测）〕
 
 > ☆ 本节竖线口径同 §三点一〇六五：全角`｜`＝官方源码里的半角 `|`。
 
@@ -2998,7 +3002,8 @@
 | G1200 两枚 ★已清 | 官方 flavour 逐字（第 114 批 `longtail.md` §四十.五）＝`todoListStyleChecked:"- [X] "`（**大写 X**）＋`indentationCharacters:"   "`（**三个空格**）＋`bulletListStyle:"- "`／`numberedListStyle:"{number}. "`／`todoListStyleUnchecked:"- [ ] "` | `src/lib/document-codec/index.ts:61-78`＝新增 `renderList(node, depth)`，三个列表分支合并走它；嵌套子表现在按层递归而不是被 `textContent` 摊平 | ★ 一条红色（改既有断言 `- [x]`→`- [X]` ⇒ 当场失败）＋一条红色（嵌套缩进）⇒ 转绿；☆ 另加**两条"钉住既有行为"的回归闸**（三空格缩进能被本地导入器还原成嵌套、`[X]` 被导入器认成 checked）**这两条第一次跑就是绿的**⇒ 记为特征化测试、不是 red→green（导入器逐字 `indent = line.length - line.trimStart().length` 与 `/^\[([ xX])\]/` 本来就跟缩进量／大小写无关） | 3/3 |
 | G1223 ✎改判（一半） | 官方两条 DOM 副作用逐字＝`document.querySelector("meta[name='theme-color']")?.setAttribute("content",_t.background(e))` 与 `documentElement.style.setProperty("color-scheme",e?"dark":"light")`（第 115 批） | ☆ **`color-scheme` 这条本地从来不缺**＝实测 `documentElement.style.colorScheme` 在亮／暗两档分别是 `light`／`dark`（computed 同值）；来源＝next-themes 自己的初始化脚本（逐字 `function R(n){h&&w.includes(n)&&(d.style.colorScheme=n)}`，`node_modules/next-themes/dist/index.mjs` @338 与 @1515）⇒ 上批"全缺"的判据是 `grep color-scheme src` 零命中 ⇒ ★ **由"源码里没有"推"行为上没有"在库代写这件事上必错** | 只验了已存在那一半；☆ `theme-color` 那一半**没写成**＝见下行 | 2/2 |
 | G1223 剩余 ★阻塞 | 本地 `theme-color` meta 确实不存在（实测 `document.querySelector("meta[name='theme-color']")` ＝ null，亮／暗两档都是） | 实现通路已探明但**未落盘**＝曾写进 `src/components/theme/ThemeProvider.tsx`（客户端 effect：读 `body` 计算底色 → canvas 像素换算 sRGB → 写／建 meta），**本批已 `git checkout` 还原**（提交里不带没验过的代码） | ★★★ 阻塞真因＝**这个 worktree 的 `/login` 不 hydrate**：effect 永不执行（marker 属性没出现、`document.head.appendChild` 一次没被调用、零 pageerror），且 DOM 上**零 `__reactFiber$`／`__reactProps$` 键**（＝没水合的硬判据）⇒ 根因链＝无 `.env` ⇒ `src/collab/secrets.mjs:11` 抛"缺少签名密钥"，NextAuth 每个请求报 `[auth][error] MissingSecret` ⇒ 客户端树停在 SSR 产物；⇒ ☆ 换档验证需要一份本地凭据＋库（**属用户决定**） | P2 |
+| G05 ★已清（P0） | ☆ 本行不是新的官方事实＝**P0 台账第一条**（官方＝未发布的分享链接不可访问） | 判据＝`src/lib/share/resolve.ts` 新增 `isOpenableShare(share)`＝`!!share?.isPublished`；接线＝`src/actions/document/share.ts:101-106`；⇒ ★ 一条**原判据的层级纠正**＝原行写「本地不判 `isPublished`」，实扫＝页面层两处判了（`src/app/p/[slug]/page.tsx:17`／`:39`），但那**不构成防线**（`'use server'` 的 action 可被客户端直接调用）⇒ 结论＝**「屏上看不到入口」与「数据面拿不到」是两件事**，登记权限类 gap 时要分层 | 单测三条（红→绿：未发布那档收到的正是 `true`）；⇒ ☆ 全量 **207 passed／3 skipped**（基线 199／3 ⇒ 本批累计＋8 条）、tsc 退出 0、eslint 0 error；☆ 接线本身待行为级验证（无 action 测试基建） | 2/2 |
 
-**⇒ 规模**：`gap.md` 条数**不变＝1216 条、最大 G1224**（本批零新增官方事实 ⇒ 不登记新行，只在原行上标 ★已清／✎改判）；台账「十五」4 行（3 行已清＋1 行阻塞）；`interactions.md` **V110**（本地实施批的验证序列＋"不 hydrate"这条新仪器事实）；`styles.md` **§二十（第 116 批）**（本地两档纸色的 sRGB 实测值 ＋ `color-scheme` 的 computed／inline 双读数 ＋ `--background` 计算后是 `lab()` 因此换算必须走像素回读）；`model.md` 本批无新节（原因＝零新增模型读数）；`longtail.md` 本批无新节（原因＝没有新的逐字清单，全部引用第 114／115 批）；`features.md` 计数行→**1216／G1224／第 1–116 批**；`_harvest/todo-actions.md` 第 116 批日志 ＋ 第 117 批队列；★ **`manifest.jsonl` 仍 155 行、零网络、零官方写入**；☆ 代码提交＝`f420815`（三条转义／缩进改动＋5 条测试），产物提交在其后一笔。
+**⇒ 规模**：`gap.md` 条数**不变＝1216 条、最大 G1224**（本批零新增官方事实 ⇒ 不登记新行，只在原行上标 ★已清／✎改判）；台账「十五」5 行（4 行已清＋1 行阻塞）；`interactions.md` **V110**（本地实施批的验证序列＋"不 hydrate"这条新仪器事实）；`styles.md` **§二十（第 116 批）**（本地两档纸色的 sRGB 实测值 ＋ `color-scheme` 的 computed／inline 双读数 ＋ `--background` 计算后是 `lab()` 因此换算必须走像素回读）；`model.md` 本批无新节（原因＝零新增模型读数）；`longtail.md` 本批无新节（原因＝没有新的逐字清单，全部引用第 114／115 批）；`features.md` 计数行→**1216／G1224／第 1–116 批**；`_harvest/todo-actions.md` 第 116 批日志 ＋ 第 117 批队列；★ **`manifest.jsonl` 仍 155 行、零网络、零官方写入**；☆ 代码提交＝`f420815`（转义／缩进三条＋5 条测试）与 `52ee7af`（★ **P0 G05 分享闸门**＋3 条测试），产物提交在其后一笔；☆ 另 §〇 P0 台账首行改判＝**1／8 → 2／8**。
 
 **仍未采到／未验证（本节）**：① `theme-color` 的**本地实现无法在本 worktree 自证**（不 hydrate）；② 官方 `meta[name=theme-color]` 的**实际值**仍未知（第 115 批未采到①延续，需连接器读一次 meta）；③ ☆ 官方"嵌套列表导出到底带不带换行＋三个空格"没有屏上往返证据（本批按两枚 flavour 字段组合推断形状，测试锁的是组合结果）；④ 大写 `[X]` 是否影响**导入侧往返**只在本地导入器上验过，官方导入器行为未测；⑤ 第 109 批队列⑧那份"20 项等点头的本地改法"**本批只清了两项相关的三枚字段**（G1200 的 `[X]`／三空格缩进），其余仍挂账。
