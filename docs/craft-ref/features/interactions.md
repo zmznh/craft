@@ -2623,7 +2623,7 @@ if (type === "fixed") {
 
 **仍未采到／未验证（本节）**：① 本地 `theme-color` 实现（阻塞＝hydration，需凭据或换树）；② 官方 `theme-color` 实际值（阻塞＝连接器）；③ 官方"嵌套列表导出形状"没有屏上往返证据（本批按 flavour 两枚字段组合）；④ `?dark`／`?light`／`?system` 三个 URL 开关在官方屏上是否生效（承第 114／115 批，仍未做）；⑤ 本地导出大写 `[X]` 喂回**官方**导入器会不会被认（需官方写入面）；⑥ ☆ **`getSharedDocument` 里那行闸门调用没有行为级证据**＝本仓零 action 层测试基建（`src/actions/**` 无测试文件、无 fake prisma、无 `vi.mock` 先例）⇒ 需先建测试通路或接库。
 
-## V111〔第 117 批 2026-10-01 13:1x–13:2x 本地〕**盘上＋本地实施混合批＝导入器一层读开（十条新事实 G1225–G1235）＋两枚本地欠账真改掉；★ 官方屏幕一次都没碰（连接器自第 113 批挂死，跨五批未恢复，本批未尝试）、没有新增下载 ⇒ `manifest.jsonl` 停在 155 行**（☆ 结论在 `gap.md` §三点一〇六七 与台账「十六」，逐字表在 `longtail.md` §四十二，代码级解剖在 `internals.md` §五十五，映射表在 `model.md` §一之七十四）
+## V111〔第 117 批 2026-10-01 13:1x–13:2x 本地〕**盘上＋本地实施混合批＝导入器一层读开（十一条新事实 G1225–G1235（✎ **第 118 批校正**＝原写"十条"，G1235 是同批后追加的一行 ⇒ 区间与数不符；`gap.md` 该节规模行已记 ＋11））＋两枚本地欠账真改掉；★ 官方屏幕一次都没碰（连接器自第 113 批挂死，跨五批未恢复，本批未尝试）、没有新增下载 ⇒ `manifest.jsonl` 停在 155 行**（☆ 结论在 `gap.md` §三点一〇六七 与台账「十六」，逐字表在 `longtail.md` §四十二，代码级解剖在 `internals.md` §五十五，映射表在 `model.md` §一之七十四）
 
 ### 一、本批验证序列（★ 三条是新的，其余承 V110 §二）
 
@@ -2644,3 +2644,23 @@ if (type === "fixed") {
 ⇒ 零官方屏幕动作／零写入／零网络／零偏好读写／未读 cookie-storage-token／`craft` MCP 零调用；`manifest.jsonl` **155 行不变**。⇒ 本地侧＝1 个实现文件（`src/lib/import/markdown.ts`，含 79 条逐字表）＋1 个测试文件（＋9 条）＋ `_harvest/` 探针与读数（gitignore）；☆ 代码提交＝`f36705e`，产物提交在其后一笔。⇒ ☆ 三条沙盒残留（`B109-CODEFIELD`／`B111-THEME`／`B113-CODEBLOCK`）本批**未清**（连接器挂死跨五批＋不可逆需当轮具名授权）；用户 Edge 标签页现场未复核。
 
 **仍未采到／未验证（本节）**：① 官方 web 导入后块的 `language` 是 `other` 还是省略键（G1226）；② `+ 项` 是否真解析成 toggle 列表（G1228）；③ `===`／`=--` 在官方界面的显示（G1229）；④ `" -- "` 替换值的原始字节（G1234，需重取 chunk）；⑤ 本地导出遇到 `language:'other'` 会写 ` ```other `，官方同情况写什么仍未测；⑥ 官方 `Jy` 完整 token 分派表（`internals.md` §五十五.三 只读到五支）。
+## V112〔第 118 批 2026-10-01 14:1x–14:2x 本地〕**本地实施批＝P0 清单第 8 行（G08）已清、累计 3／8；★ 官方屏幕一次都没碰（连接器自第 113 批挂死，跨六批未恢复，本批未尝试）、没有读 bundle、没有建／删实体 ⇒ `manifest.jsonl` 停在 155 行**（☆ 结论在 `gap.md` §三点一〇六八 与台账「十七」；☆ 代码提交＝`ed69a01`）
+
+### 一、本批验证序列（★ 三条是新的，其余承 V110／V111）
+
+1. ★★★ **新＝"0 行命中"这类静默缺陷要靠忠实假表才测得出**＝本仓的删除动作原形态＝`.where({id,userId}).update(...)`，而假成"`where().update()` 无条件把 `isDeleted` 写成 `true`"的 mock **永远不会红**（它照写不误，判据看不出生效与否）。⇒ 做法＝`delete.test.ts:12-42` 写一张**会真按过滤条件筛行**的假表（`matches(row, filter)` ＋ 命中才写、`.delete()` 真删），于是"越权时 0 行命中"在假库里同样成立 ⇒ 断言得以落在**数据没被改**（`store.rows[1].isDeleted === false`、`expect(store.rows).toHaveLength(2)`）而不是"mock 被调用了几次"。☆ 与第 117 批"mock 依赖而不是 mock 判据"是同一条纪律的两种形态（那次用抛错暴露、这次用忠实假表暴露）。
+2. ★★★ **新＝红色原因要与登记的缺陷同一句话**＝四条红的逐字原因＝`AssertionError: promise resolved "undefined" instead of rejecting`＝正是 `gap.md` 里登记的那句"非本人时 0 行更新**静默返回**"。⇒ ☆ 规则＝登记缺陷时要顺手写下"预期红色的样子"，红因对不上就是测错了对象（承第 114 批"归因错"那条）。
+3. ★★★ **新＝原判据给的实现通路要先问"这一层给什么"，不能照抄**＝G08 原判据建议"检查命中数"，实做走**先读后判**（`assertOwned`，`src/lib/authz/guard.ts:44-53`）。⇒ 两条理由＝① 技能 `prisma-8` 参考文件 `references/queries-postgres.md:209` 逐字「The ORM returns inserted / updated rows by default」⇒ 更新返回**行**而不是计数，`.returning(...)` 在另一条 SQL-builder 通路上；② 本仓 `src/prisma/db.ts` 的 `getDb()` 返回 `Promise<any>` ⇒ 类型层面也帮不上。⇒ ☆ 判据本体不变（越权必须报错），改的是**用哪条通路实现**；同时发现**仓内已有约定**（folder／whiteboard 六个动作全用 `assertOwned`）⇒ G08 由此从"缺机制"改判为"**漏了三处**"。
+4. ☆ 承 V111 §一 第 1 条（先记数）＝全量由 199 → 207 → 216 → 220 → **227 passed／3 skipped（230）**，四个数字全部来自 vitest stdout，不手数。
+5. ☆ 承 V110 那条"特征化／回归闸要单独标"＝七条里**三条是反向闸**（自己的文档照常可删／可恢复／可永久删除），它们改动前就绿 ⇒ 不许算进 red→green；本批**没有**用"当场绿"冒充证据。
+
+### 二、☆ 本批两半的证据等级不同（诚实分格）
+
+⇒ **动作层＝★★★ 行为级**＝四条真 red→green ＋ 三条反向闸，`delete.test.ts` 全绿；☆ 它 mock 的是 `@/prisma/db` 与 `@/lib/auth/auth` 两条依赖，判据（归属判定）留在被测代码里。
+⇒ **UI 层＝☆ 只有代码审读**＝三处调用点新增的 `toast.add({title, type:'error'})`（`TrashList.tsx:60-64`／`:183-187`、`DocumentTreeItem.tsx:117-125`）**没有屏上证据**＝本 worktree `/login` 不 hydrate（第 116 批硬判据）。☆ 但"通路存在"这一格是确证的＝`src/components/ui/toast.tsx:10` 是模块级 manager、`Providers.tsx:12` 已挂 `<Toaster />` ⇒ 调用点与渲染端是同一个实例；缺的只是"真点一次"。
+
+### 三、☆ 现场与合规（本批）
+
+⇒ 零官方屏幕动作／零写入／零网络／零偏好读写／未读 cookie-storage-token-auth 字段／`craft` MCP 零调用；`manifest.jsonl` **155 行不变**。⇒ 本地侧＝1 个 action 文件（`src/actions/document/delete.ts`，三个函数各加两行）＋1 个新测试文件（＋7 条）＋2 个组件文件补提示；☆ `src/lib/authz/guard.ts` **未改**（复用既有 `assertOwned`，没有另造机制）。⇒ 代码提交＝`ed69a01`，产物提交在其后一笔。⇒ ☆ 三条沙盒残留（`B109-CODEFIELD`／`B111-THEME`／`B113-CODEBLOCK`）本批仍未清＝需要连接器恢复＋当轮具名授权，历次授权不沿用。
+
+**仍未采到／未验证（本节）**：① 三处 UI 提示的屏上证据（需本地凭据＋库，或换一棵能 hydrate 的树）；② 官方对"越权删除"的**实际反馈文案**（本批没上屏；G08 的判据是正确性不是文案）；③ `assertOwned` 是"先读后判"⇒ 读写之间存在窗口（本仓所有归属类动作都是这个形态，非本批新引入；要不要换成单条条件更新＋返回值判定属**待裁**）；④ 真库上 `.where({id,userId})` 与 `assertOwned` 的双重过滤生成什么 SQL 没采（本批没起库）；⑤ task／comment／collection 的动作面已 grep 扫全（只有 `document/delete.ts` 三处漏判）但**没有各自的归属测试**⇒ "已扫全"是静态结论，不是行为级结论。
