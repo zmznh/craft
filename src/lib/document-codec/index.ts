@@ -58,6 +58,24 @@ function renderInlineMarkdown(node: any): string {
   return Array.isArray(node.content) ? node.content.map(renderInlineMarkdown).join('') : '';
 }
 
+const LIST_NODE_TYPES = ['bulletList', 'orderedList', 'taskList'];
+
+/** Craft's flavour indents one level with three spaces (`indentationCharacters`). */
+function renderList(node: any, depth: number): string {
+  const pad = '   '.repeat(depth);
+  return (node.content ?? []).map((item: any, index: number) => {
+    const marker = node.type === 'taskList'
+      ? `- [${item.attrs?.checked ? 'X' : ' '}] `
+      : node.type === 'orderedList'
+        ? `${index + 1}. `
+        : '- ';
+    const children = item.content ?? [];
+    const own = children.filter((child: any) => !LIST_NODE_TYPES.includes(child.type)).map(textContent).join(' ');
+    const nested = children.filter((child: any) => LIST_NODE_TYPES.includes(child.type));
+    return [`${pad}${marker}${own}`, ...nested.map((child: any) => renderList(child, depth + 1))].join('\n');
+  }).join('\n');
+}
+
 function renderMarkdown(node: any): string {
   if (!node) return '';
   switch (node.type) {
@@ -68,11 +86,9 @@ function renderMarkdown(node: any): string {
     case 'heading':
       return `${'#'.repeat(node.attrs?.level ?? 1)} ${(node.content ?? []).map(renderInlineMarkdown).join('')}`;
     case 'bulletList':
-      return (node.content ?? []).map((item: any) => `- ${textContent(item)}`).join('\n');
     case 'orderedList':
-      return (node.content ?? []).map((item: any, index: number) => `${index + 1}. ${textContent(item)}`).join('\n');
     case 'taskList':
-      return (node.content ?? []).map((item: any) => `- [${item.attrs?.checked ? 'x' : ' '}] ${textContent(item)}`).join('\n');
+      return renderList(node, 0);
     case 'blockquote':
       return (node.content ?? []).map(renderMarkdown).join('\n').split('\n').map((line: string) => `> ${line}`).join('\n');
     case 'codeBlock':
@@ -126,9 +142,11 @@ function renderMarkdown(node: any): string {
 }
 
 function renderMarkdownTable(node: any): string {
+  // Backslashes must be doubled before pipes are escaped, otherwise a trailing
+  // backslash swallows the delimiter that follows it.
   const rows = (node.content ?? []).map((row: any) =>
     (row.content ?? []).map((cell: any) =>
-      textContent(cell).replace(/\|/g, '\\|').replace(/\n+/g, ' ').trim()));
+      textContent(cell).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n+/g, ' ').trim()));
   if (rows.length === 0) return '';
 
   const [head, ...body] = rows;

@@ -123,3 +123,19 @@ describe('document title and text bundles', () => {
     expect(pickTextBundleEntry(['a.md', 'b.txt'])).toBeNull();
   });
 });
+
+  it('re-imports Craft three-space indentation as a nested list', () => {
+    // Guard for the exporter, which emits `indentationCharacters` = three spaces.
+    const [list] = blocks('- 父项\n   - 子项');
+    expect(list.type).toBe('bulletList');
+    const parent = list.content[0];
+    expect(parent.content[0].content[0].text).toBe('父项');
+    expect(parent.content[1]?.type).toBe('bulletList');
+    expect(parent.content[1]?.content[0].content[0].content[0].text).toBe('子项');
+  });
+
+  it('accepts the uppercase checked marker Craft exports', () => {
+    const [list] = blocks('- [X] 已完成');
+    expect(list.type).toBe('taskList');
+    expect(list.content[0].attrs?.checked).toBe(true);
+  });

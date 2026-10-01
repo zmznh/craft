@@ -12,7 +12,7 @@ const document = {
 
 describe('serializeDocument', () => {
   it('serializes core nodes to markdown', () => {
-    expect(serializeDocument(document, 'markdown')).toBe('# 标题\n\n正文\n\n- [x] 完成任务');
+    expect(serializeDocument(document, 'markdown')).toBe('# 标题\n\n正文\n\n- [X] 完成任务');
   });
 
   it('serializes core nodes to plain text', () => {
@@ -219,5 +219,79 @@ describe('embedded whiteboards', () => {
     const html = serializeDocument(embedDoc, 'html');
     expect(html).toContain('data-type="whiteboard-embed"');
     expect(html).toContain('data-whiteboard-id="wb-2"');
+  });
+});
+
+/**
+ * Official escapes a table cell in three ordered steps (MarkdownExportApi `g()`):
+ * double every backslash, then escape every pipe, then flatten newlines.
+ * Skipping the first step lets a backslash eat the following delimiter.
+ */
+function tableWithBodyCells(cells: string[]) {
+  const paragraph = (text: string) => ({ type: 'paragraph', content: [{ type: 'text', text }] });
+  return {
+    type: 'doc',
+    content: [
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              { type: 'tableHeader', content: [paragraph('名称')] },
+              { type: 'tableHeader', content: [paragraph('数量')] },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              { type: 'tableCell', content: [paragraph(cells[0])] },
+              { type: 'tableCell', content: [paragraph(cells[1])] },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
+
+describe('markdown table cell escaping', () => {
+  it('doubles a backslash that precedes a pipe instead of creating an extra column', () => {
+    const md = serializeDocument(tableWithBodyCells(['a\\|b', 'c']), 'markdown');
+    expect(md).toContain(String.raw`| a\\\|b | c |`);
+  });
+
+  it('doubles a trailing backslash so the cell ends literally', () => {
+    const md = serializeDocument(tableWithBodyCells(['end\\', 'c']), 'markdown');
+    expect(md).toContain(String.raw`| end\\ | c |`);
+  });
+});
+
+/** Craft's flavour indents one level with three spaces (`indentationCharacters`). */
+describe('nested lists', () => {
+  it('indents a nested list by three spaces', () => {
+    const nested = {
+      type: 'doc',
+      content: [
+        {
+          type: 'bulletList',
+          content: [
+            {
+              type: 'listItem',
+              content: [
+                { type: 'paragraph', content: [{ type: 'text', text: '父项' }] },
+                {
+                  type: 'bulletList',
+                  content: [
+                    { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: '子项' }] }] },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(serializeDocument(nested, 'markdown')).toBe('- 父项\n   - 子项');
   });
 });
