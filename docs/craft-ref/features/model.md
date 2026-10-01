@@ -3184,3 +3184,28 @@ HJe = (t, e) => { let n = {};
 ⇒ **本地对照**（本轮实扫）＝`src/lib/import/markdown.ts:203` 只产 `{type:'imageBlock', attrs:{src, alt}}` ⇒ ☆ 块类型名不同（`imageBlock` vs `image`）、字段 2 vs 7；⇒ 若要对齐字段名，**改的是数据迁移不是代码**（库里已有 `imageBlock`）。
 
 **仍未采到（本节）**：① 装饰区间与 `tex://` 链接装饰同时命中同一段文本时谁生效（未读渲染侧）；② `parseCell` 递归子解析对**嵌套表格**的终止条件；③ `pluginData` 里三组 id 与单元格块的配对方向（cells 存的是"行 id→列 id→块 id"的哪一层）；④ `aspectRatio` 常量 1.5 在真实导入后是否被后续测量改写（需上屏）。
+
+## 一之七十六、**第 124 批＝「和纸」在两处是同名不同物：官方案板是分隔线的一种样式（挂在块上、图案×颜色二维），本地同名族是文档卡片顶部的装饰胶带（不是块、不进内容模型、不进导出）⇒ 对齐的正确落点是 `divider` 节点而不是 `page-style`**（✓数据面只读 2026-10-01 19:5x–20:4x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七五 G1247–G1250，仪器与通路在 `internals.md` §五十七，逐字在 `longtail.md` §四十四，判据在 `interactions.md` V118）
+
+### 一、官方对"分隔线"同时存在两套声明（关系未裁定）
+
+⇒ **A 套**（在册，本轮整段复现）＝`line` 块 ＋ `lineStyle` 五值枚举 `strong／regular／light／extraLight／pageBreak`，默认 `regular`（G681／G101／G1229）；
+⇒ **B 套**（本轮首读，G1247）＝`--separator washi` ＋ `--washi-pattern <六档之一>` ＋ `--washi-color <十六进制>` ⇒ 二维＝"几何图案 × 任意色"；
+⇒ ★☆ **两式的关系未裁定**＝`line` 指南的五值枚举里**没有** `washi`，而 B 套用的旗标名既不是 `--line-style` 也不是 `lineStyle` ⇒ 两种候选各自含义不同＝① `washi` 是 `lineStyle` 的第 6 档（那么图案与颜色是这一档的子参数）② `separator` 是与 `lineStyle` 正交的第二字段（那么一条线可以同时有粗细与图案）。⇒ 裁定要写侧（G1250 挂第 125 批队列，且要先拿当轮具名授权）。
+⇒ ☆ 顺带一条不闭合＝A 套指南逐字写着共享字段 `color (#RRGGBB)`（**6 位**），而屏上实测数据里存在 8 位带 alpha 的值（G1146 的 `#f4f4f41f`）⇒ 契约声明与实测数据在 alpha 通道上不一致 ⇒ **记为契约缺陷候选**，不改判在册读数、也不据此说官方错。
+
+### 二、本地这两套各自的对应面（本轮实扫）
+
+| 官方形状 | 本地最近的对应物 | 差在哪 |
+| --- | --- | --- |
+| `line` 块 ＋ `lineStyle` 五档（含 `pageBreak`） | `src/components/editor/extensions/divider.tsx:4` 的 `DividerStyle` ＝ `thin／medium／thick／dashed` 四档；`:33-41` 单属性 `style`（默认 `thin`）；`:50` 渲染成 `hr[data-type="divider"][data-style]` | 档名不同族、**无分页档**、默认档不同（官方 `regular` vs 本地 `thin`）⇒ 已在册 G31／G101／G1229，本批不重复登记 |
+| `--separator washi` 的"图案 6 档 × 任意色" | **无对应面**＝本地 `washi` 是另一件东西：`src/components/editor/themes/page-style.ts:11`（`WashiId` 六枚＝`none／sunset／ocean／forest／candy／aurora`）、`:29`（`washiTapes` 每档挂**一条 CSS 渐变变量**、**没有颜色参数**）、`panels/PageStylePanel.tsx:240` 的 `washiTapes.map` ＋ `:252` `setPageStyle({ washi: tape.id })`、渲染侧 `DocumentEditor.tsx:115` 取渐变 ＋ `:227-232` 画成 `aria-hidden` 的 `h-5 w-32 -rotate-2 opacity-80` 小条 | ★★★ **同名不同物**＝本地 `washi` 是**页面级装饰**（不是块、不在内容模型里、不进 markdown／html 导出），官方 `washi` 是**块级分隔线样式** ⇒ ☆ 任何"对齐和纸"的改动都必须落在 `divider` 节点上，**改 `page-style.ts` 是改错对象**（这条就是本节存在的理由） |
+
+### 三、建模含义（三条）
+
+⇒ ① **名称撞车是跨系统对齐的主要风险面**＝两边都有 `washi`、都是六枚 id，但一个是块属性、一个是页面装饰 ⇒ ☆ 今后每登记一条"本地对应物"都要先问一句"它在不在同一个层（块／页面／空间）"，只比对 id 名单必然得出假差分（本批草稿就犯了一次，见 `gap.md` §三点一〇七五 §二 G1247 的 ✎ 改判）；
+⇒ ② 若 B 套日后要在本地落地，需要的不是"再多几档枚举"，而是**给 `divider` 节点在 `style` 之外加两字段**（图案名 ＋ 颜色），且颜色要能表达"任意值" ⇒ 与 G672 那条"页面样式＝18 个正交旗标、官方明文否认自定义样式 id"同族＝**官方一贯用正交属性，不用可命名样式对象**；
+⇒ ③ 官方自己给出的 `--washi-color #3B82F6` 是**用法示例里的例子值**，不是任何一档的官方色值 ⇒ ☆ 不许进 `styles.md`（本批 `styles.md` 因此**无新节**，原因同时写进 `gap.md` §五）。
+
+**仍未采到（本节）**：① A／B 两套的关系（两条候选未裁，要写侧）；② 官方**屏幕**里"分隔线样式"面板是否给图案与颜色入口（零写就能采，卡在标签页）；③ washi 六档的**实际观感**（本轮只有英文描述，无截图、无导出物）；④ `Type` 是否真只有 `built-in` 一种（只观察到一种 ≠ 穷尽证明）；⑤ 图案与颜色的**存储形状**（官方 `styling` 里 `separatorStyle` 是一段 DSL 串＝G686 在册，本批没有新写入所以没读到图案档怎么落库）；⑥ 官方移动端整族。
+

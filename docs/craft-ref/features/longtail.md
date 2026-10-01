@@ -1616,3 +1616,126 @@ svg→xml | xml→xml | xsd→xml | xsl→xml | yaml→yaml | yml→yaml
 ⇒ 逐字＝`h1`→`title`、`h2`→`subtitle`、`h3`→`heading`、`h4`→`strong`、`h5`→`strong`、`h6`→`strong`、`p`→`body`、`pageRegular`→`pageRegular`、`pageCard`→`pageCard`；⇒ ★ **读不到键时兜底＝`body`**；⇒ ☆ 两条含义：⑴ 官方层级词表（title/subtitle/heading/strong/body）在**导入侧也是同一套**，与第 109 批"层级词表不是 H1–H4"的结论互证；⑵ **h4/h5/h6 三档合并成 `strong`** ⇒ 从 HTML 导入时**四级以下标题的层级信息丢失**（只剩三级可区分）。
 
 **仍未采到（本节）**：① 导出样式常量表的**完整键集**（本轮只读到列表／分隔线一族，缩进与代码块族在第 116 批读到）；② `Avt` 的标记候选集（`-`/`*`/`+` 还是别的）；③ 大写 X 是否被上游某个规整步骤降级（只有上屏能判）；④ `pageRegular`/`pageCard` 两个"标签"从哪来（官方文档导出里有这两档吗）。
+
+## 四十四、**第 124 批逐字清单＝washi 六档 detail 全文 ＋ 契约索引层整段 ＋ `line`／`json` 两份指南全文 ＋ 只读面自报名单 ＋ `search` 作用域四组回包**（✓数据面只读 2026-10-01 19:5x–20:4x 本地；★ 全部来自 `craft` MCP 只读动词、零写入、零屏幕；☆ 三份原始回包同时落盘＝`_harvest/b124-washi.txt`／`b124-search-scope.txt`／`b124-learn.txt`；机制在 `internals.md` §五十七，模型含义在 `model.md` §一之七十六，gap 在 `gap.md` §三点一〇七五 G1247–G1250）
+
+### 一、`blocks explore-washi --pattern <名>` 六档逐字（每档三行＋两行用法）
+
+⇒ 六档 `Description` 逐字＝
+
+```
+hex        Hexagon geometric pattern
+dot        Dot pattern
+stripe     Horizontal stripe pattern
+diagonal   Diagonal stripe pattern
+grid       Grid pattern
+wave       Wave pattern
+```
+
+⇒ 每档 `Type` 一行**全部逐字相同**＝`Type: built-in` ⇒ ☆ 本轮观察不到第二种类型 ⇒ "还有非内置档"这一说**没有证据**（也不排除）；
+⇒ 每档的用法段结构相同（以 `hex` 为例，余五档只是把 `--washi-pattern` 的值换成该档名）＝
+
+```
+Usage with blocks update:
+  blocks update --id <blockId> --separator washi --washi-pattern hex
+  blocks update --id <blockId> --separator washi --washi-pattern hex --washi-color #3B82F6
+```
+
+⇒ ★☆ 这两行是历批第一次从官方自己嘴里拿到"和纸分隔线"的**写侧形状**（三枚旗标＝`--separator washi`／`--washi-pattern`／`--washi-color`）；⇒ ☆ 但 `blocks update` **不在只读面上**（见 §五）⇒ 本批无法执行它 ⇒ 全部按「官方声明了 X」登记，不写"官方有此行为"。
+
+### 二、`blocks learn`（契约索引层）整段逐字——★ 四遍复跑逐字相同（其中一遍是同一次调用内连请求两遍）
+
+```
+blocks learn — topics: blocks learn <topic> [<topic> ...]
+
+Request several topics in one command (tokens separated by spaces or commas) to fetch
+multiple guides at once — recommended over separate craft_read calls when you need
+more than one topic.
+
+Guides:
+  concepts — How blocks read/write commands fit together (markdown vs JSON, targets, positions).
+  limitations — Operations that blocks add/update cannot replace (collection items, some tables, trash).
+  json — Quick reference for --json on blocks add and blocks update.
+
+Block types (insert JSON — blocks add --json):
+  text, page, code, richUrl, line, table, image, video, file
+
+Block types (update JSON — blocks update --json):
+  text, page, image, video, file, drawing, whiteboard, table, collection, code, richUrl, line
+
+Tip: richUrl is the JSON "type" for link cards (topics: richUrl, url, link).
+Tip: Search works on aliases and keywords — e.g. blocks learn task line or blocks learn concepts, limitations.
+```
+
+⇒ 计数（脚本数）＝insert **9** 项、update **12** 项 ⇒ ★ 与在册 G681（第 76 批）**零差集**；☆ 我首读把它读成 8 项，据此几乎登记"官方改契约"的假差分，复跑三遍才否证 ⇒ 过程在 `gap.md` §三点一〇七五 §四第③条；
+⇒ ☆ 三份指南里 `concepts` 与 `limitations` 正文本批**没读**（挂"仍未采到"）。
+
+### 三、`blocks learn line` 整段逐字（★ 历批只拿到片段，本批第一次整段）
+
+```
+line — Visual line / separator between sections.
+
+Insert JSON: { "type": "line", "lineStyle": "strong|regular|light|extraLight|pageBreak" }
+lineStyle defaults to regular if omitted.
+
+Update JSON: id plus optional lineStyle and other partial fields.
+Shared optional fields on many blocks: indentationLevel (0–5), listStyle, decorations, color (#RRGGBB), taskInfo.
+```
+
+⇒ ★☆ 注意 §一 与 §三 **不是同一面旗标**：这里枚举 `lineStyle` 五值、**没有** `washi`；§一 的用法行用的是 `--separator` ⇒ 两套并存的官方声明，关系未裁定（G1250）；
+⇒ ☆ `color (#RRGGBB)`＝契约声明 6 位，而屏上实测存在 8 位带 alpha 的值（G1146 的 `#f4f4f41f`）⇒ 记为**契约缺陷候选**，不改判在册；
+⇒ ★ 默认档 `regular` 与 G1229 那条"官方 `---` ＝ `regular`（默认档）"**两条独立通路咬合**（一条来自 markdown 导入器逐字、一条来自契约指南）⇒ 该默认档从"单源"升为"双源"。
+
+### 四、`blocks learn json` 整段逐字（两遍相同；★ 它自己把类型名单推给索引层 ⇒ 索引层是唯一出处）
+
+```
+json — Quick reference for --json on blocks add and blocks update.
+
+blocks add --json: pass one NewBlock object or an array of NewBlock. Types below under “Insert JSON”.
+blocks update --json: pass one BlockUpdate object or an array. Every object in an array must include id.
+
+Invalid JSON or schema mismatch returns a readable error with the first field path that failed validation.
+```
+
+### 五、`blocks update --help` 的报错串逐字（★ 只读面的命令全集由这条报错自己枚举）
+
+```
+Unknown command: blocks update
+
+Available commands:
+
+  blocks get - Read document content as markdown (by ID or --date)
+  blocks learn - Explain block JSON types, concepts, and limitations for craft_write; pass multiple topic names in one call when useful
+  blocks explore-washi - Browse available washi tape patterns
+  blocks search-unsplash - Search Unsplash for hero cover or background images
+  blocks explore-themes - Browse available page styling and code themes
+```
+
+⇒ ★ 两义＝① 判"某动词在这一面存不存在"零成本（故意打一条不存在的命令）；② §一 那两行用法里的 `blocks update` **不在只读面上** ⇒ "官方声明了写侧形状"与"本面能不能执行"是两件事。
+
+### 六、`search` 作用域四组回包逐字（★ 这一组把 G1248 从"看不见"改成"默认档不含"）
+
+⇒ ① 三条沙盒完整标题、**不带**旗标 ⇒ 三次全 `No matches found for the provided search criteria.`；同时 `documents list --location trash` 回 `6 document(s)`，三条沙盒**逐条在册**（另三条是无标题历史项）；
+⇒ ② 加旗标再问一次 ⇒ `search QODER-HARVEST-B109-CODEFIELD --location trash` 回
+
+```
+Search results: 1 match(es)
+
+1) Document <id-4>
+   Match:
+     **QODER-HARVEST-B109-CODEFIELD**
+   Created: 2026-09-30T17:13:14.000+08:00
+   Modified: 2026-09-30T17:14:29.000+08:00
+```
+
+⇒ ③ 只给前缀 ⇒ `search QODER-HARVEST --location trash` 回 `3 match(es)`，三条含连字符的标题**全部命中**（匹配串被打分成 `**QODER-HARVEST**-B113-CODEBLOCK` 这种"命中段加粗"的形状）⇒ ★ 否证"连字符被分词打散"；
+⇒ ④ 反向对照 ⇒ `search welcome` 回 `3 match(es)`（三条**活动**文档），`search welcome --location trash` 回 `No matches found` ⇒ ★ **两档互斥**；
+⇒ ☆ id 已按历批脱敏纪律折成占位（`<id-4>` 等），本目录产物不出现官方实体 uuid；☆ 逐字原件（含时间戳与顺序）在 `_harvest/b124-search-scope.txt`。
+
+### 七、☆ 本批刻意**没有**重抄的两份名册（并写明为什么）
+
+⇒ **代码主题 19 档**＝本轮复跑与在册 G1148 逐字零差集 ⇒ 只记"复证成功"，**不重抄名单**（重抄＝另造一份可能抄错的副本，历批已经因为手抄虚报过一次）；
+⇒ **页面主题名册（约 150 行、唯一分组 `Modern:`、头行写着主题来自远端对象存储）**＝整表回读到了但**没做逐字差集** ⇒ 原因＝要抄进脚本才能比 ⇒ 与上一条同族风险 ⇒ 挂台账「二十三」第②行，等"名册原文落盘"的通路。
+
+**仍未采到（本节）**：① `blocks learn concepts`／`blocks learn limitations` 两份指南正文；② `explore-icons` 是否也有 detail 层；③ `--location templates` 与 `--location daily_notes` 在 `search` 上是否可用；④ washi 六档的**观感**与**导出形状**（要写入或导出才能读）；⑤ 只读面自报的 5 条动词与契约头行里 `whiteboards …`／`collections …` 是否同面；⑥ 官方移动端整族。
+
