@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { serializeDocument } from '../document-codec';
 import { parseMarkdown, pickTextBundleEntry, titleFromMarkdown } from './markdown';
 
 const blocks = (source: string): any[] => parseMarkdown(source).content ?? [];
@@ -48,13 +49,38 @@ describe('parseMarkdown blocks', () => {
     expect(quote.content[0].content[0].text).toBe('引用一 引用二');
   });
 
-  it('keeps the fence language', () => {
+  it('normalizes the fence language to the code Craft stores', () => {
     const [code] = blocks('```ts\nconst a = 1;\n```');
     expect(code).toEqual({
       type: 'codeBlock',
-      attrs: { language: 'ts' },
+      attrs: { language: 'typescript' },
       content: [{ type: 'text', text: 'const a = 1;' }],
     });
+  });
+
+  it('folds extension aliases the way Craft names a language', () => {
+    const langs = (source: string) => blocks(source).map((node) => node.attrs?.language);
+    expect(langs('```py\nx\n```')).toEqual(['python']);
+    expect(langs('```tsx\nx\n```')).toEqual(['typescript']);
+    expect(langs('```tex\nx\n```')).toEqual(['math_formula']);
+    expect(langs('```hbs\nx\n```')).toEqual(['html']);
+  });
+
+  it('takes only the first word of the fence info string', () => {
+    expect(blocks('```ts title="a.ts"\nx\n```')[0].attrs?.language).toBe('typescript');
+  });
+
+  it('keeps mermaid even though it is not an alias', () => {
+    expect(blocks('```mermaid\ngraph TD\n```')[0].attrs?.language).toBe('mermaid');
+  });
+
+  it('falls back to other for a language Craft does not name', () => {
+    expect(blocks('```qqqlang\nx\n```')[0].attrs?.language).toBe('other');
+  });
+
+  it('leaves an info-less fence without a language', () => {
+    // Characterization: the official importer is not measured for this shape yet.
+    expect(blocks('```\nx\n```')[0].attrs?.language).toBeNull();
   });
 
   it('emits a divider for a rule line', () => {
@@ -124,6 +150,7 @@ describe('document title and text bundles', () => {
   });
 });
 
+describe('re-importing what the Craft-shaped exporter writes', () => {
   it('re-imports Craft three-space indentation as a nested list', () => {
     // Guard for the exporter, which emits `indentationCharacters` = three spaces.
     const [list] = blocks('- 父项\n   - 子项');
@@ -139,3 +166,27 @@ describe('document title and text bundles', () => {
     expect(list.type).toBe('taskList');
     expect(list.content[0].attrs?.checked).toBe(true);
   });
+
+  it('reads a display-math fence as a math block', () => {
+    const [math] = blocks('$$\n\\frac{a}{b}\n$$');
+    expect(math).toEqual({ type: 'mathBlock', attrs: { latex: '\\frac{a}{b}' } });
+  });
+
+  it('reads a single-line display-math fence', () => {
+    const [math] = blocks('$$x^2$$');
+    expect(math.type).toBe('mathBlock');
+    expect(math.attrs?.latex).toBe('x^2');
+  });
+
+  it('ends a paragraph where a display-math fence opens', () => {
+    expect(blocks('正文\n$$\nx\n$$').map((node) => node.type)).toEqual(['paragraph', 'mathBlock']);
+  });
+
+  it('round-trips a math block through the markdown exporter', () => {
+    const markdown = serializeDocument(
+      { type: 'doc', content: [{ type: 'mathBlock', attrs: { latex: 'a^2 + b^2' } }] },
+      'markdown'
+    );
+    expect(blocks(markdown)[0]).toEqual({ type: 'mathBlock', attrs: { latex: 'a^2 + b^2' } });
+  });
+});

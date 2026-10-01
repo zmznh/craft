@@ -9,6 +9,108 @@ export interface PmNode {
 const EMPTY_DOC: PmNode = { type: 'doc', content: [{ type: 'paragraph' }] };
 
 /**
+ * Craft folds fence-info into the language code it stores. Table and roster are verbatim
+ * from its importer (`Xvt` / `Qvt`); `mermaid` is accepted although it has no alias entry.
+ */
+const LANGUAGE_ALIASES: Record<string, string> = {
+  'c': 'cpp',
+  'c++': 'cpp',
+  'cc': 'cpp',
+  'cpp': 'cpp',
+  'cxx': 'cpp',
+  'h': 'cpp',
+  'h++': 'cpp',
+  'hh': 'cpp',
+  'hpp': 'cpp',
+  'hxx': 'cpp',
+  'ino': 'cpp',
+  'cs': 'cs',
+  'css': 'css',
+  'dart': 'dart',
+  'go': 'go',
+  'gradle': 'groovy',
+  'groovy': 'groovy',
+  'hs': 'haskell',
+  'haskell': 'haskell',
+  'handlebars': 'html',
+  'hbs': 'html',
+  'htm': 'html',
+  'html': 'html',
+  'java': 'java',
+  'cjs': 'javascript',
+  'js': 'javascript',
+  'jsx': 'javascript',
+  'mjs': 'javascript',
+  'javascript': 'javascript',
+  'json': 'json',
+  'map': 'json',
+  'jl': 'julia',
+  'julia': 'julia',
+  'kt': 'kotlin',
+  'kts': 'kotlin',
+  'kotlin': 'kotlin',
+  'lua': 'lua',
+  'markdown': 'markdown',
+  'md': 'markdown',
+  'mkd': 'markdown',
+  'perl': 'perl',
+  'pl': 'perl',
+  'pm': 'perl',
+  'php': 'php',
+  'php3': 'php',
+  'php4': 'php',
+  'php5': 'php',
+  'php7': 'php',
+  'phtml': 'php',
+  'py': 'python',
+  'python': 'python',
+  'pyw': 'python',
+  'r': 'r',
+  'rb': 'ruby',
+  'ruby': 'ruby',
+  'rs': 'rust',
+  'rust': 'rust',
+  'scala': 'scala',
+  'bash': 'shell',
+  'ksh': 'shell',
+  'sh': 'shell',
+  'shell': 'shell',
+  'cql': 'sql',
+  'pls': 'sql',
+  'sql': 'sql',
+  'swift': 'swift',
+  'ltx': 'math_formula',
+  'tex': 'math_formula',
+  'cts': 'typescript',
+  'mts': 'typescript',
+  'ts': 'typescript',
+  'tsx': 'typescript',
+  'typescript': 'typescript',
+  'svg': 'xml',
+  'xml': 'xml',
+  'xsd': 'xml',
+  'xsl': 'xml',
+  'yaml': 'yaml',
+  'yml': 'yaml'
+};
+
+const LANGUAGE_NAMES = new Set(['ada', 'bash', 'cpp', 'cs', 'css', 'dart', 'dockerfile', 'go', 'groovy', 'haskell', 'html', 'java', 'javascript', 'json', 'julia', 'kotlin', 'lua', 'markdown', 'matlab', 'objectivec', 'perl', 'php', 'prolog', 'plaintext', 'python', 'r', 'ruby', 'rust', 'scala', 'shell', 'sql', 'swift', 'typescript', 'vbnet', 'yaml', 'xml', 'math_formula', 'other', 'docs', 'blocks', 'suggestions']);
+
+const PSEUDO_LANGUAGES = new Set(['mermaid']);
+
+export function normalizeLanguage(info: string): string | null {
+  const token = info.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+  // An info-less fence stays language-less: Craft's own shape for that case is unmeasured.
+  if (!token) return null;
+  const alias = LANGUAGE_ALIASES[token];
+  if (alias) return alias;
+  return PSEUDO_LANGUAGES.has(token) || LANGUAGE_NAMES.has(token) ? token : 'other';
+}
+
+/** Craft exports display math fenced on its own lines, and the shape is also accepted inline. */
+const DISPLAY_MATH = /^\$\$/;
+
+/**
  * Converts Markdown (or the `text.md` of a Text Bundle) into the same node JSON
  * the editor stores. Deliberately dependency-free and scoped to what Craft has a
  * block for: headings, lists, tasks, quotes, code, rules, images and inline marks.
@@ -42,9 +144,27 @@ function parseBlocks(lines: string[]): PmNode[] {
       index += 1;
       blocks.push({
         type: 'codeBlock',
-        attrs: { language: fence[1].trim() || null },
+        attrs: { language: normalizeLanguage(fence[1]) },
         content: body.length ? [{ type: 'text', text: body.join('\n') }] : undefined,
       });
+      continue;
+    }
+
+    if (DISPLAY_MATH.test(line.trim())) {
+      const single = /^\$\$(.+)\$\$$/.exec(line.trim());
+      if (single) {
+        blocks.push({ type: 'mathBlock', attrs: { latex: single[1].trim() } });
+        index += 1;
+        continue;
+      }
+      const body: string[] = [];
+      index += 1;
+      while (index < lines.length && !DISPLAY_MATH.test(lines[index].trim())) {
+        body.push(lines[index]);
+        index += 1;
+      }
+      index += 1;
+      blocks.push({ type: 'mathBlock', attrs: { latex: body.join('\n').trim() } });
       continue;
     }
 
@@ -99,7 +219,13 @@ function parseBlocks(lines: string[]): PmNode[] {
     }
 
     const paragraph: string[] = [];
-    while (index < lines.length && lines[index].trim() && !/^\s*([-*+]|\d+[.)])\s+/.test(lines[index]) && !/^>|^```|^#{1,6}\s/.test(lines[index])) {
+    while (
+      index < lines.length &&
+      lines[index].trim() &&
+      !DISPLAY_MATH.test(lines[index].trim()) &&
+      !/^\s*([-*+]|\d+[.)])\s+/.test(lines[index]) &&
+      !/^>|^```|^#{1,6}\s/.test(lines[index])
+    ) {
       paragraph.push(lines[index].trim());
       index += 1;
     }
