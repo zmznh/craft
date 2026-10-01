@@ -1,15 +1,15 @@
 'use server';
 
-import { auth } from '@/lib/auth/auth';
+import { assertOwned, requireUserId } from '@/lib/authz/guard';
 import { getDb } from '@/prisma/db';
 
 export async function deleteDocument(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await assertOwned('Document', id, userId, '文档不存在或不属于你');
 
   const db = await getDb();
   await db.orm.public.Document
-    .where({ id, userId: session.user.id })
+    .where({ id, userId })
     .update({
       isDeleted: true,
       deletedAt: new Date().toISOString(),
@@ -17,12 +17,12 @@ export async function deleteDocument(id: string) {
 }
 
 export async function restoreDocument(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await assertOwned('Document', id, userId, '文档不存在或不属于你');
 
   const db = await getDb();
   await db.orm.public.Document
-    .where({ id, userId: session.user.id })
+    .where({ id, userId })
     .update({
       isDeleted: false,
       deletedAt: null,
@@ -30,11 +30,11 @@ export async function restoreDocument(id: string) {
 }
 
 export async function permanentDeleteDocument(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('未授权');
+  const userId = await requireUserId();
+  await assertOwned('Document', id, userId, '文档不存在或不属于你');
 
   const db = await getDb();
   await db.orm.public.Document
-    .where({ id, userId: session.user.id })
+    .where({ id, userId })
     .delete();
 }

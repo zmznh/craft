@@ -10,6 +10,7 @@ import { deleteDocument } from '@/actions/document/delete';
 import { isDocumentFavorite, toggleFavorite } from '@/actions/document/favorite';
 import { updateDocument } from '@/actions/document/update';
 import { useSidebarStore } from '@/lib/store/use-sidebar-store';
+import { toast } from '@/components/ui/toast';
 import {
   SIDEBAR_DOC_MIME,
   sidebarDragState,
@@ -113,7 +114,15 @@ export function DocumentTreeItem({ document: doc, allDocuments, level }: Documen
   }
 
   async function moveToTrash() {
-    await deleteDocument(doc.id);
+    try {
+      await deleteDocument(doc.id);
+    } catch (error) {
+      toast.add({
+        title: error instanceof Error ? error.message : '删除失败',
+        type: 'error',
+      });
+      return;
+    }
     bumpTree();
     if (window.location.pathname.startsWith(`/documents/${doc.id}`)) router.push('/documents');
   }

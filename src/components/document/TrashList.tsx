@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Check, File, Minus, RotateCcw, Trash2, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/toast';
 import {
   Dialog,
   DialogContent,
@@ -56,6 +57,11 @@ export function TrashList({ documents }: TrashListProps) {
       // Sequential on purpose: the server actions are per-document and a
       // rejected one must not leave the rest half-attempted without a signal.
       for (const id of selected) await action(id);
+    } catch (error) {
+      toast.add({
+        title: error instanceof Error ? error.message : '操作失败',
+        type: 'error',
+      });
     } finally {
       setBusy(false);
       setConfirmOpen(false);
@@ -174,7 +180,12 @@ export function TrashList({ documents }: TrashListProps) {
                 variant="ghost"
                 size="sm"
                 className="rounded-md text-ui hover:bg-foreground/4"
-                onClick={() => restoreDocument(doc.id).then(() => router.refresh())}
+                onClick={() => restoreDocument(doc.id)
+                  .then(() => router.refresh())
+                  .catch((error: unknown) => toast.add({
+                    title: error instanceof Error ? error.message : '恢复失败',
+                    type: 'error',
+                  }))}
               >
                 恢复
               </Button>
