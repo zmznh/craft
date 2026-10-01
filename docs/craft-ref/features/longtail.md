@@ -1884,3 +1884,84 @@ Showing 1-2 of 2 folders with the following format: <folderId> Folder Name (docu
 
 **仍未采到（本节）**：① `--filter` 在 `tasks list`／`collections list`／`documents list --folder` 上的可达性；② `explore-icons` 的 `--offset` 越界行为（在册挂着，本轮仍未测）；③ `--location templates`／`daily_notes` 在 `search` 上是否可用；④ 只读面自报名单的其余漏项；⑤ `limitations` 里"某些表格布局只读"的具体档位；⑥ 官方移动端整族。
 
+## 四十六、**第 126 批逐字清单＝九段命令树自报全文 ＋ `--filter` 三种长相的对照回包 ＋ 两处越界报错措辞 ＋ 批处理失败包装串 ＋ `documents resolve-link` 的 Usage 全文 ＋ `blocks learn` 主题名册与 `line` 指南回包**（✓数据面只读 2026-10-01 21:4x–22:1x 本地；★ 零屏幕、零写入；☆ 所有账户内容（任务正文／集合名／文件夹名／文档标题）一律折成占位，id 全部掩掉；gap 在 `gap.md` §三点一〇七七，机制在 `internals.md` §五十九，判据在 `interactions.md` V120）
+
+### 一、九段命令树自报（每段＝打 `<entity> bogus` 逼出，☆ 逐字只保留命令名与描述行）
+
+⇒ `documents bogus` ⇒ `Unknown command: documents bogus` ⇒ Available＝`documents list - List documents with optional location, folder, date, and metadata filters` ／ `documents resolve-link - Resolve a Craft document link to a rootBlockId`；
+⇒ `blocks bogus` ⇒ Available（第二、三次读数）＝`blocks get - Read document content as markdown (by ID or --date)` ／ `blocks learn - Explain block JSON types, concepts, and limitations for craft_write; pass multiple topic names in one call when useful` ／ `blocks explore-washi - Browse available washi tape patterns` ／ `blocks search-unsplash - Search Unsplash for hero cover or background images` ／ `blocks explore-themes - Browse available page styling and code themes`；⇒ ★★★ **第一次读数只有前四条、没有 `blocks explore-themes`**（同参、同会话，中间只夹了一次 `blocks explore-themes --type code` 的真实调用）；
+⇒ `folders bogus` ⇒ Available＝`folders list - List folder tree (--filter <JS regex> --offset <n>)` ／ `folders explore-icons - Search available folder icons by name`；⇒ ★ **描述行逐字带两枚旗标的只有 `folders list` 这一条**（九段全文里唯一）；
+⇒ `tasks bogus` ⇒ Available＝`tasks list - List tasks by scope (--scope active|upcoming|inbox|logbook|document|all). Task dates notify in-app. For timed alerts on any block: reminders --help.`；
+⇒ `collections bogus` ⇒ Available＝`collections list - List all collections in the space or a specific document` ／ `collections schema - Show collection schema with item-title guidance, property keys, and types` ／ `collections views-list - List collection views` ／ `collections items-get - Get items from a collection`；
+⇒ `whiteboards bogus` ⇒ Available＝`whiteboards elements - Read whiteboard elements`（**分组行**）＋ `whiteboards elements get - Get elements, assets, and app state for a whiteboard block`（**叶行**）；⇒ ☆ 而**顶层**自报只有分组行那一条；☆ 分组行本身也可调＝`whiteboards elements` 回 `Available commands:` ＋它自己的子名单（不是报错）；
+⇒ `images bogus` ⇒ Available＝`images view - Return an image payload for a Craft image URL`；⇒ ★★★★ **这一条同时否证了第 125 批"顶层名单漏 `images view`"那句**（顶层 18 条叶行清单里本来就有它，见 `internals.md` §五十九之二）；
+⇒ `reminders bogus` ⇒ Available＝`reminders list - List reminders`；`connection bogus` ⇒ Available＝`connection info - Show connection metadata, space timezone, requester timezone, and current dates`；
+⇒ ☆ 顶层自报里 `search` **只有段行**＝`search - Search across the entire space with optional filter`，**没有对应的叶行** ⇒ 按缩进数叶会把这个动词整个漏掉。
+
+### 二、`--filter` 的三种长相（三组回包逐字并排）
+
+⇒ ① **生效**＝`folders list --filter zzz-never-matches` ⇒ `No folders matching "zzz-never-matches".`；
+⇒ ② **静默吞**＝`tasks list --scope all --filter zzz-never-matches` ⇒ `Tasks (all): 9 result(s)` ＋九行与不带旗标时**逐字相同**（同调用内再跑一遍也相同）；同形＝`collections list --filter zzz-never-matches` ⇒ `Found 3 collections:` 三行不动、`search welcome --filter zzz-never-matches` ⇒ `Search results: 3 match(es)` 三条不动；
+⇒ ③ ★★★ **值被当位置参数消费**＝`folders explore-icons rocket --filter calendar` ⇒ `Icons matching "calendar" (1-30 of 42):` ＋30 行 calendar 族图标 ⇒ **检索词被换成 `--filter` 的值、位置参数 `rocket` 被丢弃**；☆ 无位置参数时同形＝`folders explore-icons --filter zzz-never-matches` ⇒ `No icons matching "zzz-never-matches".`
+⇒ ☆ 顺带钉一条该动词的**回包句式三档**＝有命中⇒`Icons matching "<term>" (a-b of n):`；零命中⇒`No icons matching "<term>".`；无检索词⇒`Usage: folders explore-icons <search-term> [--offset <n>]` ＋两行说明＋例子。
+
+### 三、`--offset` 与 `--cursor`（措辞对照逐字）
+
+⇒ `folders explore-icons calendar --offset 30` ⇒ `Icons matching "calendar" (31-42 of 42):` ＋12 行 ⇒ ☆ 页宽恰好 **30**，且尾部提示逐字＝`Next page: folders explore-icons calendar --offset 30`；
+⇒ `folders explore-icons calendar --offset 99` ⇒ **`Offset 99 exceeds total of 42 results.`**；☆ 与在册 `folders list` 那句 **`Offset 99 exceeds total of 2 folders.`** 措辞不同（一处分说名词、一处统一 `results`）⇒ 同一族校验在各动词各写一份文案；
+⇒ `tasks list --scope all --offset 99`／`collections list --offset 99`／`search welcome --offset 99` ⇒ 三格**都回全量、零报错**＝静默吞；
+⇒ `folders list --cursor bogus` ⇒ 回正常全量、零报错 ⇒ ☆ 只证明"不校验"；配合"分页提示从不吐 cursor"才写成"本面无生产者"。
+
+### 四、★★★ 批处理失败的包装串（官方逐字）
+
+⇒ 一次三条批处理（`folders explore-icons rocket; documents get; folders explore-icons rocket`）的回包＝
+```
+Icons matching "rocket" (1-1 of 1):
+
+  rocket
+
+Command 2 failed: documents get
+Unknown command: documents get
+
+Available commands:
+
+  documents list - List documents with optional location, folder, date, and metadata filters
+  documents resolve-link - Resolve a Craft document link to a rootBlockId
+
+Stopped after failure; earlier commands were already applied.
+```
+⇒ ① 第三条**没有执行**（失败即停第四次复证）；② ★★★★ 末行是官方自己打印的**"前面的命令已经应用"**＝分号批处理不是事务、中途失败不回滚（历批这条只能从写侧实验推断）；③ ☆ 包装串带**失败项序号与命令原文** ⇒ 归因零成本；④ ☆ `documents get` 在本面不存在＝`Unknown command`。
+
+### 五、★ `documents resolve-link` 的校验串与 Usage 全文
+
+⇒ `documents resolve-link not-a-url` ⇒
+```
+Invalid URL. Pass a craftdocs:// or https://docs... Craft link.
+
+Usage:
+  documents resolve-link <craftdocs-or-web-url>
+  documents resolve-link --url <craftdocs-or-web-url>
+
+Converts Craft app/web document links to the rootBlockId used by blocks get/write commands.
+Craft URLs contain a raw documentId that is for opening the app; it is not necessarily the block ID MCP tools need.
+
+Examples:
+  documents resolve-link craftdocs://open?spaceId=<spaceId>&documentId=<rawUrlDocumentId>
+  documents resolve-link https://docs.craft.do/editor/d/<spaceId>/<rawUrlDocumentId>
+```
+⇒ ★ **位置参数与 `--url` 两种入参都收**；⇒ ★ web 链接形状逐字＝`https://docs.craft.do/editor/d/<spaceId>/<documentId>`（历批只记过"URL 尾段是 documentId"，本批第一次拿到**整条模板**）；⇒ ★★★ **同一座桥的 `connection info` 里 `urlTemplates.app` 逐字用 `blockId=`**（`craftdocs://open?spaceId=<id>&blockId={blockId}`）**而这里的例子用 `documentId=`** ⇒ 两个参数名在官方两处契约文本里各写一份，给第 113 批"`rootBlockId` 与 `documentId` 互不互通"再添一码路证据；☆ 且官方自己逐字承认"raw documentId … not necessarily the block ID"。
+
+### 六、☆ `search` 作用域四档与"空档"的三条交叉证据
+
+⇒ `search welcome --location templates`／`search welcome --location daily_notes` ⇒ 两条都回 `No matches found for the provided search criteria.`（☆ 旗标被接受、不报错）；
+⇒ 交叉三条＝`documents list --location templates` ⇒ `No documents found in "templates".`；`documents list --location daily_notes` ⇒ 同形（档名换成 `daily_notes`）；`blocks get --date today --format markdown` ⇒ `Daily note for date <今天> does not exist.`；
+⇒ ☆ 所以这两格＝**空作用域里的零命中**（空判据），本批不据此下任何覆盖范围结论（`interactions.md` V120 第④条判据）。
+
+### 七、☆ `blocks learn` 主题层回包两条
+
+⇒ `blocks learn`（无主题）⇒ 三段名册逐字＝Guides＝`concepts`／`limitations`／`json`；Block types (insert JSON — blocks add --json)＝`text, page, code, richUrl, line, table, image, video, file`（**9**）；Block types (update JSON — blocks update --json)＝`text, page, image, video, file, drawing, whiteboard, table, collection, code, richUrl, line`（**12**）⇒ ☆ 与在册 G681／G1250 **第四次零差集**（脚本数）；另逐字给了并提语法与"richUrl 是 link 卡的 JSON type"这条提示；
+⇒ `blocks learn bogus` ⇒ `No topic matched "bogus".` ＋一行提示（可以空格或逗号并提多主题）⇒ ☆ 主题名错**不报 `Unknown command`**，与动词层是两套校验。
+
+### 八、☆ 读侧失败形态一条
+
+⇒ `documents --help; blocks --help` ⇒ **`MCP error -32603: MCP tool invocation did not complete`**（☆ 带动作名的 `--help` 历批可用，**不带**动作名的不可用）；⇒ ☆ 同会话紧接着 `connection info` 正常返回 ⇒ 读侧 `-32603`＝本次调用未成立，**不等于桥挂**。

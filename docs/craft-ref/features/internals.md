@@ -1795,3 +1795,37 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 
 **仍未采到（本节）**：① `--filter` 在 `tasks list`／`collections list` 上是否生效（矩阵里四格未测）；② `explore-icons` 的 `--offset` 越界行为（在册挂着，本批仍未测）；③ `--location templates`／`daily_notes` 在 `search` 上是否可用；④ 自报名单的其余漏项（`images view` 是第一个被抓到的，不会假设是最后一个）；⑤ `limitations` 里"某些表格布局只读"具体是哪些（要造出该报错）；⑥ 屏幕面全部。
 
+## 五十九、**第 126 批＝旗标可达性表的第三版（三枚公共旗标摊到七条动词上＝21 格、本轮填 14 格，失败长相从两种增为三种）＋命令树的正确逼法＝逐段打 `<entity> bogus` 再取并集（顶层自报的那份按缩进数会错两格），并且名单本身会在同会话内漂移**（✓数据面只读 2026-10-01 21:4x–22:1x 本地；★ 零屏幕、零写入、零新建实体 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七七 G1256–G1261，逐字在 `longtail.md` §四十六，判据在 `interactions.md` V120，分隔线三面档名对照在 `model.md` §一之七十七）
+
+### 一、★★★ 旗标矩阵第三版（行＝动词，列＝旗标；☆ 每格都注明"怎么判出来的"）
+
+| 动词 | `--filter` | `--offset` | `--cursor` |
+| --- | --- | --- | --- |
+| `folders list` | **生效**（负控制回 `No folders matching "zzz-never-matches".`；锚点与交替各自验过＝真正则、大小写不敏感） | **生效**（越界回显式错 `…exceeds total of 2 folders.`） | ★ **被吞、且不校验**＝`--cursor bogus` 回正常两行全量、零报错 |
+| `folders explore-icons` | ★★★ **值被当位置参数消费**＝`rocket --filter calendar` ⇒ 检索词变 `calendar`、`rocket` 被丢（☆ 既非生效也非吞掉，是第三种长相） | **生效**（`--offset 30` ⇒ `(31-42 of 42)`；越界回显式错 `…exceeds total of 42 results.`；☆ 页宽恰好 30） | 未测 |
+| `documents list` | **静默吞**（四次并排回包逐字相同＝第 125 批） | **静默吞**（同上） | 未测 |
+| `tasks list` | **静默吞**（`--scope all` 下九行全量逐字相同，同调用内两遍也相同） | **静默吞**（`--offset 99` 照样九行） | 未测 |
+| `collections list` | **静默吞**（三条逐字相同） | **静默吞**（`--offset 99` 照样三条） | 未测 |
+| `search` | **静默吞**（三条相同＝`Search results: 3 match(es)`），★★ 而该段自己的描述逐字写着 `with optional filter` | **静默吞**（`--offset 99` 照样三条） | 未测 |
+| `blocks explore-themes` | **静默吞**（第 124／125 批两型） | 未测 | 未测 |
+
+⇒ ☆ **`--cursor` 那条读数还带一条旁证**＝历批所有分页提示**只用 `--offset`、从不吐出一个 cursor 值** ⇒ 所以口径写满到"游标在本只读面上**没有生产者**"，而**不写成"整面未实现"**（缺一条合法游标做正控制）；
+
+⇒ ☆ **矩阵合计＝7 条动词 × 3 枚旗标＝21 格，本轮填 14 格**（`--filter` 一列 7 格**全部测完**、`--offset` 一列测 6 格、`--cursor` 一列只测 1 格 ⇒ 已测＝7＋6＋1＝**14**、未测＝**7**）；⇒ ★ 分布＝`--filter`＝1 生效＋1 值被挪用＋5 吞；`--offset`＝2 生效＋4 吞；`--cursor`＝1 吞（不校验）＋6 未测；☆ 另有 **6 条动词整条未进矩阵**＝`blocks search-unsplash`／`blocks explore-washi`／`collections schema`／`collections items-get`／`collections views-list`／`documents resolve-link`（挂第 127 批队列）；⇒ ★ **一句话口径**＝`Common flags: --offset, --cursor, --filter` 这一行**不可当契约使用**，它描述的是一个只有 `folders` 一段实现的机制；☆ 而契约侧也同向＝九段自报里**只有 `folders list` 的动词描述把两枚旗标写进文本**（逐字 `List folder tree (--filter <JS regex> --offset <n>)`）⇒ **行为侧与契约侧第一次在同一条结论上咬合**（这是第 125 批那条"逐动词实现"的双源化）。
+
+### 二、★★★★ 命令树的正确逼法＝逐段逼，顶层那份不能直接数
+
+⇒ 方法＝对每个实体段打 `<entity> bogus`（九段各一次），回 `Unknown command` ＋ **该段**的 `Available commands`；☆ `search` 段逼不了＝它的参数是位置式检索词，`search bogus` 会真去搜。
+⇒ 本轮逐段读数＝`documents` 2／`blocks` 5／`folders` 2／`tasks` 1／`collections` 4／`whiteboards` 1 叶（另有一条**分组行**）／`images` 1／`reminders` 1／`connection` 1 ⇒ **真实可调用叶＝19**。
+⇒ ★★ **顶层自报那份按缩进数会错两格**＝① 顶层里那条 `whiteboards elements` 是**分组行**不是叶（真叶 `whiteboards elements get` 只在段级名单出现；☆ 而分组行本身也可调，回的是它的子名单＝"中间层有独立可达性"）；② `search` 这个动词在顶层**只有段行、没有叶行** ⇒ 按叶行数它会整个漏掉。
+⇒ ★★★ **名单会在同会话内漂移**＝`blocks bogus` 第一次回 **4 条**（缺 `blocks explore-themes`），中间只夹了一次真实调用 `blocks explore-themes --type code`，此后两次同参读数都是 **5 条** ⇒ 两种候选（**懒注册**＝动词被调用过才进名单 ／ **不稳定截断**）**在同一个桥会话内分不开** ⇒ 结案需要一次桥重连后第一件事就打 `blocks bogus`（挂第 127 批队列）。
+⇒ ★★★★ **本批推翻上批一条在册结论**＝第 125 批 G1252 写"顶层名单漏 `images view`、所以它是下界"；本批段级逼出 `images` 段就只有 `images view` 一条叶，而**盘上第 125 批的逐字 dump 里顶层 18 条叶行名单确实含它**（脚本对 `_harvest/b125-flags-and-tree.txt` 现算＝sections 10／leaf-lines 18）⇒ ☆ 那条"漏项"＝**我上批读错了**；判据本身（只有 `Unknown command` 能证明不存在）依然成立，但支撑它的例子换成上面①②两格。⇒ ☆ 方法论收获＝"大表读数当场落盘"这条纪律（第 124 批立）**第一次救回的不是虚报、而是一次误判**。
+
+### 三、☆ 两条桥侧形态（读面，非产品）
+
+⇒ **`<entity> --help`（不带动作名）不是可达通路**＝`documents --help; blocks --help` 一次调用回 `MCP error -32603: MCP tool invocation did not complete`；⇒ ☆ 但它**不拖挂后续**＝同会话紧接着 `connection info` 正常 ⇒ 与第 111 批"一次挂起的**写**会拖挂后续读"分清＝**读侧的 `-32603` 是这一次调用没成立，不等于桥死**；判活补齐＝撞到读侧 `-32603` 先跑一次 `connection info` 再决定停不停手。
+⇒ **分号批处理的失败包装串逐字**＝`Command 2 failed: <命令原文>` ＋ 该命令自己的报错 ＋ `Stopped after failure; earlier commands were already applied.` ⇒ ① "失败即停"第四次复证（第三条确实没跑）；② ★★ 最后一句是官方**打印出来的**"已应用"＝批处理不是事务、中途失败**不回滚**（历批只从写侧实验推断，本批在只读面拿到原文）；③ ☆ 包装串自带**失败序号与命令原文** ⇒ 归因零成本，比"回包变短了"这种猜法可靠。
+
+### 四、☆ 复证四条（不新登记）
+
+⇒ `blocks learn` 插入 9 项／更新 12 项**第四次零漂移**（与 G681 逐字同）；`blocks explore-themes --type code` 再回 **19 档**（含 `tokyonightstorm`，无 `craftlight`／`craftdark`＝承第 111 批"两面名册不等长"）；`search welcome` 默认档仍 3 条；`documents get` 在本面**不存在**（`Unknown command`＝与第 124 批 `blocks update` 同形）。

@@ -2865,3 +2865,29 @@ if (type === "fixed") {
 
 **仍未采到／未验证（本节）**：① `--filter` 在 `tasks list`／`collections list` 上的可达性（矩阵留四格）；② `explore-icons` 的 `--offset` 越界行为；③ `--location templates`／`daily_notes` 在 `search` 上是否可用；④ 只读面自报名单的其余漏项；⑤ `limitations` 的"某些表格布局只读"具体档位（要造报错＝写侧）；⑥ `blocks delete` 的"跳过并警告"逐字（写侧）；⑦ ★ 屏幕六条照旧＝`tabs.list()` 仍空，缺可驱动的登录标签页；⑧ 官方移动端整族。
 
+## V120〔第 126 批 2026-10-01 21:4x–22:1x 本地＝**旗标矩阵与命令树复审批**（队列①②③：旗标矩阵补全／命令树逐段逼 ＋ 漏项普查／`search` 作用域四档）；★ 零屏幕动作、零官方实体建删、零偏好读写、零写入 ⇒ `manifest.jsonl` **155 行不变**；机制在 `internals.md` §五十九，逐字在 `longtail.md` §四十六，模型含义在 `model.md` §一之七十七，gap 在 `gap.md` §三点一〇七七 G1256–G1261〕
+
+### 一、★★★★ 本批新五条判据（都来自"自己踩或自己复算"，不是推演）
+
+1. ★★★★ **测旗标必须"带着该动词的位置参数"再测一次**＝只看"加旗标前后回包变了没"会漏掉第三种失败长相＝**旗标的值被挪去填位置参数**（`folders explore-icons rocket --filter calendar` ⇒ 检索词变成 `calendar`、`rocket` 被丢，而回包看着完全正常）⇒ ☆ 这是三种里最危险的一种＝**它产出一份"格式正确、内容错位"的结果**，静默吞顶多让你读到全量，值被挪用则会让你把"A 的名单"当成"B 的名单"记进产物；
+2. ★★★ **按缩进分层的名册，先分辨"分组行"与"叶行"再计数**＝顶层自报里 `whiteboards elements` 是分组行（真叶 `whiteboards elements get` 只在段级名单里），而 `search` 这个动词**只有段行、没有叶行** ⇒ 同一份名单两处形状误差 ⇒ ☆ 判据＝**要全集必须逐段打 `<entity> bogus` 取并集**，顶层自报只能当索引；
+3. ★★★ **名册类读数要"逐段并集 ＋ 同参复跑 ＋ 只引用盘上原文"三件齐全**＝本批 `blocks` 段同参三次读数＝4→5→5（中间只夹了一次真实调用），而上批"顶层漏 `images view`"的结论是**靠盘上 dump 复算**才推翻的（`_harvest/b125-flags-and-tree.txt` 里那条本来就在册）⇒ ☆ 这条把第 124 批"大表读数当场落盘"的价值改写了一次＝它救回的不只是**虚报**，也可能是**误判**；
+4. ★★★ **先证明作用域非空，再拿零命中当证据**＝`search --location templates`／`daily_notes` 两格回的是 `No matches found`，但三条交叉证据（`documents list` 同两档＋`blocks get --date today`）显示**两档本来就是空的** ⇒ 这两条零命中是**空判据**（不可能红）⇒ ☆ 承第 125 批"一条零命中不足以支撑覆盖范围结论"，本批补上它的前置条件＝**作用域非空必须单独证一次**；
+5. ★★ **读侧的 `-32603` 不等于桥挂了**＝`documents --help`（不带动作名）回 `MCP error -32603: MCP tool invocation did not complete`，而同会话下一次 `connection info` 正常 ⇒ 与第 111 批"一次挂起的**写**会拖挂后续读"必须分清 ⇒ 判活补齐＝撞到读侧 `-32603` 先跑一次 `connection info` 再决定停不停手（☆ 顺带结案一条工具事实＝带动作名的 `--help` 可达、不带动作名的不可达）。
+
+### 二、★★★ 一条对"官方契约文本"的信任度改写
+
+⇒ `Common flags: --offset, --cursor, --filter` 这一行**不可当契约使用**：三枚旗标在七条动词上的实测分布＝`--filter`（1 生效／1 值被挪用／5 吞）、`--offset`（2 生效／4 吞／1 未测）、`--cursor`（1 吞且不校验／6 未测）；
+⇒ ★ 而**契约侧自己也是同向的**＝九段自报的动词描述行里，**只有 `folders list` 一条把 `--filter`／`--offset` 写进文本**（逐字 `List folder tree (--filter <JS regex> --offset <n>)`）⇒ ☆ 所以"Common flags"那句是一段**泛化声明**，逐动词描述才是真相；⇒ 判据＝**引用任何"通用旗标"之前，先去读该动词自己的描述行**（本轮第一次拿到这种双源咬合）；
+⇒ ★ 反例也已登记＝`search` 段描述逐字写着 `with optional filter`，而实测 `--filter` 在它上面被吞 ⇒ ☆ 按第 76 批纪律只记成"官方声明了 X 而实现不做"，**不写"官方支持 search 过滤"**。
+
+### 三、★★ 批量语义：官方第一次把"不回滚"打印出来
+
+⇒ 分号批处理失败时的包装串逐字＝`Command 2 failed: <原文>` ＋ 该命令自己的报错 ＋ `Stopped after failure; earlier commands were already applied.`；
+⇒ ⇒ 三条含义＝① **失败即停**第四次复证（第三条确实没跑）；② ★★★★ **"前面的命令已经应用"是官方自己写的**＝分号批处理不是事务、中途失败不回滚（历批这条只能从写侧实验推断，本批在只读面就拿到原文）；③ ☆ 包装串自带序号与命令原文 ⇒ 归因零成本；
+⇒ ☆ 纪律保持＝**故意会失败的探针放最后**；写侧批处理里任何一条都可能成为"已应用"的那一条 ⇒ 建沙盒时**一条写＝一个实体＝一行 manifest**，不要把多条写塞进一次批处理；
+⇒ ☆ 本地对照（登记为**不是对账项**）＝`src/actions/collection/collection.ts:19`→`:28`→`:36` 的 `createCollection` 连做三次 `create` 且**无事务**（`src/actions/` 全库零数据库事务，`grep -rn transaction src` 的 7 个命中全在编辑器／Yjs 侧）⇒ 与官方同形；要包事务的理由只能是本地一致性自己需要。
+
+### 四、☆ 本批未做／做不了的（写清楚，别留给下个会话猜）
+
+① ☆ **`blocks` 段名单为什么会 4 条变 5 条**＝懒注册 vs 不稳定读数两种候选在同一桥会话内分不开 ⇒ 需要一次桥重连，且**重连后第一件事就打 `blocks bogus`**；② ☆ **`--cursor` 有没有合法生产者**＝目前所有分页提示只吐 `--offset`，从没吐过 cursor；③ ☆ **矩阵剩余＝7 格未测＋6 条动词整条未测**（`blocks search-unsplash`／`blocks explore-washi`／`collections schema`／`items-get`／`views-list`／`documents resolve-link`）；④ ☆ **`search` 的 `templates`／`daily_notes` 两档命中侧**＝要写侧造一枚模板或当日日记 ⇒ 需要当轮具名授权；⑤ ☆ **`whiteboards elements get`**＝仍缺真实 id（取 id 要写侧），但它的**分组行可调用**本批已证；⑥ ☆ **`pageBreak` 送进主包解析层会不会静默回退成 `none`**（`model.md` §一之七十七 那条推论）＝要一次 `blocks update --json` 往返才能结案，同样等授权；⑦ ☆ 屏幕六条照旧（本批未复测屏幕侧）；⑧ 官方移动端整族。
