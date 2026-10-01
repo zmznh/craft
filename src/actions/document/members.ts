@@ -41,6 +41,45 @@ export async function listDocumentMembers(documentId: string): Promise<DocumentM
   return items;
 }
 
+export interface MentionCandidate {
+  userId: string;
+  name: string | null;
+  email: string;
+}
+
+/**
+ * Who an `@` in this document may name: the invited members plus the owner, who
+ * holds no `DocumentMember` row of their own. Craft states the range for a viewer
+ * as "only people invited via email" (`collab.doc.viewer.mention.desc`).
+ */
+export async function listMentionCandidates(documentId: string): Promise<MentionCandidate[]> {
+  const userId = await requireUserId();
+  const { document } = await requireDocumentAccess(documentId, userId, 'viewer');
+
+  const members = await getTable('DocumentMember');
+  const users = await getTable('User');
+  const rows = await members.where({ documentId }).all();
+
+  const candidates: MentionCandidate[] = [];
+  const owner = await users.first({ id: document.userId as string });
+  if (owner) {
+    candidates.push({
+      userId: owner.id as string,
+      name: (owner.name as string) ?? null,
+      email: (owner.email as string) ?? '',
+    });
+  }
+  for (const row of rows) {
+    const account = await users.first({ id: row.userId as string });
+    candidates.push({
+      userId: row.userId as string,
+      name: (account?.name as string) ?? null,
+      email: (account?.email as string) ?? '',
+    });
+  }
+  return candidates;
+}
+
 export async function addDocumentMember(input: {
   documentId: string;
   email: string;

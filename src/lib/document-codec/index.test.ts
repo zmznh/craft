@@ -295,3 +295,40 @@ describe('nested lists', () => {
     expect(serializeDocument(nested, 'markdown')).toBe('- 父项\n   - 子项');
   });
 });
+
+/**
+ * A person mention carries a userId and no documentId, so unlike the page
+ * mention at `richDoc` it has no document to point at.
+ */
+const personMentionDoc = {
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: '请 ' },
+        { type: 'mention', attrs: { documentId: null, userId: 'u-1', title: '张三' } },
+        { type: 'text', text: ' 复核' },
+      ],
+    },
+  ],
+};
+
+describe('a person mention exports without a page link', () => {
+  it('writes @name in markdown instead of a link to a document', () => {
+    const md = serializeDocument(personMentionDoc, 'markdown');
+    expect(md).toContain('@张三');
+    expect(md).not.toContain('/documents/');
+  });
+
+  it('renders a span rather than an anchor in html', () => {
+    const html = serializeDocument(personMentionDoc, 'html');
+    expect(html).toContain('data-type="mention"');
+    expect(html).toContain('张三');
+    expect(html).not.toContain('<a href');
+  });
+
+  it('keeps the name in the plain-text export', () => {
+    expect(serializeDocument(personMentionDoc, 'text')).toContain('张三');
+  });
+});

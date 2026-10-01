@@ -53,6 +53,7 @@ import { BlockLink } from './extensions/block-link';
 import { BlockId } from './extensions/block-id';
 import { MirrorBlock } from './extensions/mirror-block';
 import { BlockLinkSuggestion } from './extensions/block-link-suggestion';
+import { MentionUserSuggestion } from './extensions/mention-user-suggestion';
 import { EmojiSuggestion } from './extensions/emoji-suggestion';
 import { FontSize } from './extensions/font-size';
 import { Columns, Column } from './extensions/columns';
@@ -356,6 +357,7 @@ export function Editor({
       BlockId,
       MirrorBlock.configure({ hostDocumentId: documentId }),
       BlockLinkSuggestion,
+      MentionUserSuggestion.configure({ documentId }),
       EmojiSuggestion,
       FontSize,
       Columns,

@@ -36,6 +36,12 @@ function mirrorTargetHref(node: any): string {
   });
 }
 
+// A person mention carries a userId and no documentId, so there is no document to
+// link to — exporting it as a link would fabricate `/documents/` with an empty id.
+function isPersonMention(node: any): boolean {
+  return node.type === 'mention' && !node.attrs?.documentId;
+}
+
 function renderInlineMarkdown(node: any): string {
   if (!node) return '';
   if (node.type === 'text') {
@@ -50,6 +56,7 @@ function renderInlineMarkdown(node: any): string {
   }
   if (node.type === 'inlineMath') return `$${node.attrs?.latex ?? ''}$`;
   if (node.type === 'mention' || node.type === 'blockLink') {
+    if (isPersonMention(node)) return `@${node.attrs?.title ?? ''}`;
     return `[${node.attrs?.title ?? '链接'}](${blockTargetHref(node)})`;
   }
   if (node.type === 'whiteboardLink') {
@@ -207,7 +214,9 @@ function renderHtml(node: any): string {
     case 'whiteboardEmbed': return `<div data-type="whiteboard-embed" data-whiteboard-id="${escapeHtml(node.attrs?.whiteboardId ?? '')}" data-title="${escapeHtml(node.attrs?.title ?? '白板')}">🎨 ${escapeHtml(node.attrs?.title ?? '白板')}</div>`;
     case 'mirrorBlock': return `<div data-type="mirrorBlock"><a href="${escapeHtml(mirrorTargetHref(node))}">镜像：${escapeHtml(node.attrs?.title ?? '未命名')}</a></div>`;
     case 'mention':
-    case 'blockLink': return `<a href="${escapeHtml(blockTargetHref(node))}" data-type="${node.type}">${escapeHtml(node.attrs?.title ?? '链接')}</a>`;
+    case 'blockLink': return isPersonMention(node)
+      ? `<span data-type="mention">@${escapeHtml(node.attrs?.title ?? '')}</span>`
+      : `<a href="${escapeHtml(blockTargetHref(node))}" data-type="${node.type}">${escapeHtml(node.attrs?.title ?? '链接')}</a>`;
     case 'drawing': return `<div data-type="drawing">_(手绘板)_</div>`;
     default: return content || escapeHtml(textContent(node));
   }

@@ -5,7 +5,11 @@ import { MentionView } from './mention-view';
 declare module '@tiptap/react' {
   interface Commands<ReturnType> {
     mention: {
-      setMention: (attributes: { documentId: string; title: string }) => ReturnType;
+      setMention: (attributes: {
+        documentId?: string | null;
+        userId?: string | null;
+        title: string;
+      }) => ReturnType;
     };
   }
 }
@@ -22,6 +26,11 @@ export const Mention = Node.create({
         default: null,
         parseHTML: (element) => element.getAttribute('data-document-id'),
         renderHTML: (attributes) => ({ 'data-document-id': attributes.documentId }),
+      },
+      userId: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-user-id'),
+        renderHTML: (attributes) => ({ 'data-user-id': attributes.userId }),
       },
       title: {
         default: null,
