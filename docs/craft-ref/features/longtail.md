@@ -1533,3 +1533,50 @@ return k.join(`
 ⇒ `probe1`＝helper 消费面（`getHeading`／`setFlavour`）；`probe2`＝明暗键名（搜"右值是 `"dark"` 且同段有 `"light"`"的**赋值形态**，不是搜词）；`probe3`＝注册表方法面与 `flags[` 存储形态；`probe4`＝`Bi` 与三 helper；`probe5`＝`isBrightColor` 阈值＋名册全量枚举；`probe6`＝三档白名单调用点＋"有没有开关调试面板消费这 38 枚"（⇒ 未找到消费方）；`probe7`＝`Q2n`／`v2n`；`probe8`＝worker 交叉验证＋`luki:enable-fs`＋`kC`＋四枚别名字面量；`probe9`＝按别名搜调用点＝**零命中**（产出 §二末那条规则）；`probe10`＝别名→字面量对照；`probe11`＝`Bi` 全长重取。
 
 **仍未采到（本节）**：① 38 枚开关各自的**消费方 chunk**（需一次逐路由 `pageAssets` 采集）；② worker 里 `urlDisableableFeatures` 的完整成员（本批只取到初始化片段）；③ `initFromQueryString` 在 worker 那份里到底调不调；④ `ace`／`cce`／`oU` 三张 Set 有没有第二处追加；⑤ `blockLinkStyle` 非默认两档的设置方；⑥ `MarkdownExportApi` 的触发动作；⑦ ☆ 屏上三条（含竖线的单元格会不会串行／`?dark` 对主 app flag 层是否真无效／读一次 `luki:enable-fs` meta 的实际内容）＝全依赖连接器。
+
+## 四十二、**第 117 批＝markdown 导入器层的四张语言名册与三张映射表逐字（别名表 79 条全表／41 项导入名单／`lineStyle` 五档／turndown 四选项）**（2026-10-01 13:1x–13:2x 本地＝UTC 05:1x–05:2x，★ 零预算盘上批＝只读 `_harvest/js/index-DiTmKH3z.js` 缓存（@2,336,3xx–2,348,0xx 一段），零网络、零屏幕、零写入 ⇒ `manifest.jsonl` 155 行不变；本批同时**推翻自己一条计数**＝别名表"77 条"应为 **79 条**）
+
+> ☆ 本节口径：表内竖线一律写作全角`｜`（＝源码里的半角 `|`）；`｜｜`＝`||`。所有计数由脚本 `_harvest/b117-roster-diff.mjs` 给出，**不手数**。
+
+### 四十二.一 别名表 `Xvt` 全量 **79 条**逐字（`index-DiTmKH3z.js` @2,337,3xx，紧跟在 `Qvt` 之后）
+
+⇒ 逐字形态（保持源码里的键序，★ 该表**同时是"恒等表"＝已归一的语言仍自映射**，如 `cpp:"cpp"`，所以它既能判"是不是别名"也能判"是不是标准码"）：
+
+```
+c→cpp | "c++"→cpp | cc→cpp | cpp→cpp | cxx→cpp | h→cpp | "h++"→cpp | hh→cpp | hpp→cpp | hxx→cpp | ino→cpp
+cs→cs | css→css | dart→dart | go→go | gradle→groovy | groovy→groovy
+hs→haskell | haskell→haskell | handlebars→html | hbs→html | htm→html | html→html | java→java
+cjs→javascript | js→javascript | jsx→javascript | mjs→javascript | javascript→javascript
+json→json | map→json | jl→julia | julia→julia | kt→kotlin | kts→kotlin | kotlin→kotlin | lua→lua
+markdown→markdown | md→markdown | mkd→markdown | perl→perl | pl→perl | pm→perl
+php→php | php3→php | php4→php | php5→php | php7→php | phtml→php
+py→python | python→python | pyw→python | r→r | rb→ruby | ruby→ruby | rs→rust | rust→rust | scala→scala
+bash→shell | ksh→shell | sh→shell | shell→shell | cql→sql | pls→sql | sql→sql | swift→swift
+ltx→math_formula | tex→math_formula | cts→typescript | mts→typescript | ts→typescript | tsx→typescript | typescript→typescript
+svg→xml | xml→xml | xsd→xml | xsl→xml | yaml→yaml | yml→yaml
+```
+
+⇒ 结构事实五条＝① **最宽的一组是 11 枚键**（`c`／`c++`／`cc`／`cpp`／`cxx`／`h`／`h++`／`hh`／`hpp`／`hxx`／`ino` 全归 `cpp`）⇒ C 系与 C++ 系在官方**不可区分**；② ★ **两枚键是带引号的非裸词**＝`"c++"`／`"h++"` ⇒ 这正是"77 条"错数的成因（只匹配裸词键的正则必然漏这两枚）；③ ☆ **`mermaid` 在这张表里完全没有**（与第 112 批"`Qvt` 少 `mermaid`"相互印证，它是靠单元素集 `eIt` 放行的特例）；④ ☆ **`tex`／`ltx` 是唯二通向伪语言 `math_formula` 的别名**，而 `math_formula` 自己没有恒等键（所以表外查询要靠名单那一步）；⑤ **别名表 29 个目标值全部落在 41 项名单内**（机器比对＝差集为空）⇒ 归一化不会造出名单外的值。
+
+### 四十二.二 导入名单 `Qvt` 全量 **41 项**逐字（＋派生的 `Yvt=new Set(Qvt)`）
+
+⇒ 逐字＝`ada｜bash｜cpp｜cs｜css｜dart｜dockerfile｜go｜groovy｜haskell｜html｜java｜javascript｜json｜julia｜kotlin｜lua｜markdown｜matlab｜objectivec｜perl｜php｜prolog｜plaintext｜python｜r｜ruby｜rust｜scala｜shell｜sql｜swift｜typescript｜vbnet｜yaml｜xml｜math_formula｜other｜docs｜blocks｜suggestions`（竖线为全角分隔记号，不是语法字符）
+
+⇒ ★ **11 项在别名表里根本没有键**＝`ada`／`dockerfile`／`matlab`／`objectivec`／`prolog`／`plaintext`／`vbnet`／`other`／`docs`／`blocks`／`suggestions` ⇒ 这些值只能经"未命中别名 ⇒ 在名单内 ⇒ 原样返回"这一步通过；☆ 尾部三枚 `docs`／`blocks`／`suggestions` **不是编程语言**（第 112 批已记，仍未采到它们到底喂给谁）。
+⇒ ☆ **官方自相矛盾新例**＝`bash` 同时在名单（作为独立档）与别名表（`bash→shell`）里 ⇒ 走归一化路径时 `bash` 变成 `shell`，但挑档面板仍把 `bash` 当一档；☆ 本地挑选名册 `src/components/editor/extensions/code-block-view.tsx:9-32` 有**三档官方名单外**＝`jsx`／`tsx`／`diff`（前两人在官方是别名，`diff` 是本地独有）。
+
+### 四十二.三 分隔线样式映射（`hr` 分支的表，五档逐字）
+
+⇒ 逐字＝`{lineStyle:{"---":"regular","..-":"extraLight",".--":"light","=--":"strong","===":"pageSeparator"}[i.markup]??"regular"}` ⇒ 块＝`{id,type:"line",content:"",styleAttributes:{lineStyle}}`
+⇒ 三条要点＝① **`---` 是默认档 `regular`**（☆ 本地把 `---` 当最粗档 `thick` ⇒ 语义相反）；② **`=--`＝strong**（本地虚线用两字符 `=-`）；③ ★ **`===`＝`pageSeparator` 是分页符档**，界面没有入口、只能靠 markdown 打出来（本地四档词表 thin／medium／thick／dashed 里没有对应物）；④ 兜底＝未匹配一律 `regular`（☆ 与 G1105"未知即省略"不同，这里**未知即默认档**，说明兜底策略按面而异）。
+
+### 四十二.四 导出装配层的 turndown 选项（第三份 flavour，四键逐字）
+
+⇒ 逐字＝`new Kvt({headingStyle:"atx",hr:"---",bulletListMarker:"-",codeBlockStyle:"fenced"})` ＋ `.use([Gvt])` ＋ 三条 emoji 还原规则名 `convertFromUrlEmojiRule`／`convertFromAltEmojiRule`／`convertFromTeamsEmojiRule` ＋ 可选 callback ＋ `.turndown(t)`
+⇒ ☆ 与第 114 批的 29 字段 flavour、第 115 批 `Bi`(handlebars) 的 `markdownTable` 合起来＝**官方"markdown 序列化"至少三套实现**（turndown 装配层／flavour 表／handlebars 模板），本批把第一套的四枚选项钉死；⇒ 本地对照＝标题 `#`、无序 `- `、`---`、fenced 四枚**已一致**，☆ 差的是 emoji 三族还原规则（本地导出原样留字符）。
+
+### 四十二.五 本批顺带得到的两处沉默（产品侧风险面）
+
+⇒ ① **围栏内容以 `<!--` 开头 ⇒ 整块丢弃**（`i.content.trimStart().startsWith("<!--")===!1` 是 fence 与 html_block 共用的闸门）；② **`<aside>` 里第一张 `width<50` 的图 ⇒ 导出时返回空串**（`qvt`＋`widthThreshold:50`）⇒ ☆ 两条都**没有警告、没有 toast**＝官方导入／导出面有两处"静默吞内容"，与第 113 批"未知语言不报错"同族 ⇒ 登记为复刻时的**行为取舍点**（照抄＝也静默；不照抄＝要写清为什么）。
+
+**仍未采到（本节）**：① `docs`／`blocks`／`suggestions` 三枚非语言值的消费方；② `handleIconsInAsideTags` 由谁打开、阈值 50 是否可配；③ 官方 web 导入后块上 `language` 到底是 `other` 还是省略键（G1226，需一次导入实跑）；④ `===`／`=--` 在官方界面上渲染成什么（需屏上）；⑤ `" -- "` 替换的真实字节（本批缓存已 mojibake）；⑥ 别名表是否在**导出侧**也生效（本地只在导入侧做了归一）。

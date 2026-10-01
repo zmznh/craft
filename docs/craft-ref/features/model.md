@@ -3133,3 +3133,20 @@ HJe = (t, e) => { let n = {};
 ### 仍未采到（本节）
 
 ① `blockLinkStyle` 两档非默认值的设置方；② `linkType` 全集（本批只看到 `rootBlock`／`block` 两枚字面量）；③ `artificialNewLines` 与 `fixListOrders`／`fixIndentationLevel`／`printFullCss`／`base64Assets` 五枚字段**在 web 构建里由谁置真**（flavour 默认全是 falsy ⇒ 要么有第二份配置源，要么这些是桌面端专用形状）；④ `MarkdownExportApi` 那条通路的触发动作（决定它是"集合导出"还是"单表复制"）。
+
+## 一之七十四、**第 117 批＝导入侧「markdown token → 块模型」映射表逐字（五种 token 的落点／属性层／兜底）**（来源＝`index-DiTmKH3z.js` @2,347,0xx–2,348,0xx 的 `Jy.parseTokens` 分派链，★ 盘上代码级证据，☆ 没有一条来自界面往返；本批同时把**本地导入器**补齐两格＝`$$` 与语言归一，见 `gap.md` §三点一〇六七 G1225 与 §〇·二）
+
+> ☆ 本节口径：表内如出现源码里的半角 `|`，一律写作全角`｜`。
+
+| markdown 侧 | 官方落成的块 | 属性落点（逐字键名） | 兜底与沉默 | 本地对照（本轮实扫） |
+| --- | --- | --- | --- | --- |
+| 围栏 `fence` 与缩进 `code_block`（两支同路） | `type:"code"` | `properties.language`＝`tIt(info,"other")`；`styleAttributes.indentationLevel`＝`MJ(token)`＝`trunc(sCount/3)`，且**为 0 时不写键** | ☆ 正文以 `<!--` 开头 ⇒ **整块丢弃**；☆ 正文末尾恰好一个空格 ⇒ 削掉一格 | `src/lib/import/markdown.ts:136-151`（fence 一支，`normalizeLanguage` 本批新加）＋ `:153-168`（`$$` 一支）；☆ 本地**没有** `indentationLevel`（`grep -rn indentationLevel src` ⇒ 0 命中） |
+| `math_block`（`$$…$$`） | `type:"code"` ＋ `properties.language:"math_formula"` | 只写 `properties.language` 一键，**没有 `styleAttributes`**＝`{id,type:"code",content,properties:{language:"math_formula"}}` 逐字 | ☆ 未识别的 token 不产块，只打 `logger().warn("MarkdownImport", …)` ⇒ ⇒ **公式不是独立块类型**＝与导出侧 `$$` 分支互为逆运算（第 114／116 批第三次同证） | 本地导入落 **`mathBlock` 节点**（`src/components/editor/extensions/math-block.tsx`）＝**有意偏差**：本地渲染面以 `mathBlock` 为唯一入口，且导出侧已产 `$$`，往返闭合；☆ 若要接 MCP／官方块协议需另加"code＋math_formula"视图 |
+| `hr` | `type:"line"`，`content:""` | `styleAttributes.lineStyle`＝五档表 `---`→regular／`..-`→extraLight／`.--`→light／`=--`→strong／`===`→pageSeparator | ☆ 未匹配 ⇒ `regular`（**未知即默认档**，与 G1105"未知即省略键"策略相反） | 本地 `divider` 四档 thin／medium／thick／dashed（`src/components/editor/extensions/divider.tsx:4-15`）＋导入侧 `src/lib/import/markdown.ts:182-187` **无条件 `style:'thin'`**＝完全没读 markup ⇒ `gap.md` G1229 |
+| `bullet_list_*`／`ordered_list_*`／`todo_list_*` | 列表种类由 `OJ(token)` 判＝`bullet`／`numbered`／`todo`，★ 且 **`markup==="+"` 的无序列表判成 `toggle`** | `styleAttributes.listStyle`／`indentationLevel`；`properties.isTodoChecked`＝**字符串 `"1"`／`"0"`**；`numbered` 另写 `styleAttributes.userDefinedListNumber` | ☆ 列表项内**第一段归本层、后续段层级 +1**（`firstParagraph` 标志位） | 本地 `src/lib/import/markdown.ts:245-295`（`parseList`）＝按缩进建树、`taskList`／`taskItem`＋**布尔** `checked`；☆ 无 toggle 分支（`grep -n toggle` ⇒ 0 命中）⇒ `gap.md` G1228 |
+| `html_block` | 两路＝`shouldParseInnerHTML===!0` ⇒ **再起一个 `Jy` 解析**（`BJ(content)` 先把 HTML 转成 markdown 再吃）⇒ 否则原样落一个空属性代码块 | 收口逐字 `FJ({token,listInfo,blockModels,iconBlockIds,prevToken,importCtx})`；☆ 之后 `reportHtmlContent` 按标签计数上报 `html_<tag>_count` | ☆ 以 `<!--` 开头的 html_block **整块丢弃**（与 fence 共用同一道闸门） | ☆ 本地**完全没有 HTML 面**＝`grep -rn "html_block｜aside｜<!--" src/lib/import` ⇒ 0 命中 ⇒ `gap.md` G1231／G1232／G1233 |
+
+⇒ ★★★ **本节最大的一条模型结论＝"块类型名与 markdown 概念并不同名"**＝官方块侧叫 `line`／`code`／`toggle`，markdown 侧叫 `hr`／`fence`／`bullet_list_+`，中间靠 `OJ`／`MJ`／`tIt` 三个纯函数换算 ⇒ 复刻时**不要按 markdown token 名去建本地节点类型**（本地 `divider`／`codeBlock`／`toggleBlock` 三者的词表都与官方错位，见上表末列）。
+⇒ ☆ 协议噪声一条＝**布尔字段有时是字符串 `"1"`／`"0"`**（`isTodoChecked`），本地一律用真布尔 ⇒ 若将来接官方协议（MCP／导入 JSON），这一格会静默错，需在边界处显式换算。
+
+**仍未采到（本节）**：① `table`／`list_item`／`paragraph` 三支的逐字落点（本批只读到五支）；② `iconBlockIds` 是什么（图标块？）；③ 脚注 `footNoteIdUUID` 的块形状；④ 官方导入 `===`／`=--` 之后界面上到底显示什么（需屏上）；⑤ 本地导入的 `mathBlock` 与官方 `code`＋`math_formula` 之间要不要加一层映射（属建模裁决，等点头）。

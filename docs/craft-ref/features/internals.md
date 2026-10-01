@@ -1666,3 +1666,25 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ### 仍未采到（本节）
 
 ① `ace`／`cce`／`oU` 三张白名单在运行期**是否还有别处追加**（本批只找到一处 `makeUrlControllable` 调用点）；② worker 那份 `Features` 到底有没有调 `initFromQueryString`（定义与预置都找到了，调用点没找到——**没找到不等于没调用**，可能是 `initFromCsvOrArray` 之外的形态）；③ `blockLinkStyle` 的 `pageLink`／`headerLink` 两档**由谁设置**（全仓只有一份 flavour 且默认 `blockLink` ⇒ 必有第二份配置源或运行期改写）；④ `MarkdownExportApi` 那条通路**由哪个用户动作触发**（chunk 只 8,670 字符，消费方未查）；⑤ `vn`（DOM 侧明暗管理器）完整生命周期、与 store 侧 `Xs` 谁驱动谁；⑥ ☆ 屏上三条＝单元格含竖线会不会真的串行／`?dark` 在主 app 是否真的对 flag 层无效／读一次 `luki:enable-fs` meta 的实际内容。
+
+## 五十五、**第 117 批＝官方 markdown 导入器 `Jy` 类的解剖（构造默认值／两条标签正则／属性分层／一处沉默）**（2026-10-01 13:1x–13:2x 本地，★ 零预算盘上＝读 `_harvest/js/index-DiTmKH3z.js` @2,338,9xx–2,348,0xx；零网络、零屏幕、零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 本节全部为**代码级证据**，没有一条来自界面）
+
+### 五十五.一 构造即定死的东西（没有外部传入路径）
+
+⇒ 逐字 `class Jy{constructor(e,n,o){this.tokens=e,this.markdownParseConfiguration=n,this.importM=o,this.index=0,this.blocks=[],this.footNoteIdUUID={},this.shouldParseInnerHTML=!0,this.openHtmlTagRegexp=/^\s*<([A-Za-z]+)(\s|>)/,this.closeHtmlTagRegexp=/<\/([A-Za-z]+)>\s*$/}`
+⇒ 三点＝① **`shouldParseInnerHTML` 默认 `!0`＝HTML 内联默认会被再解析**，且本批**没找到把它设为 false 的通路**（☆ 那就是个死开关候选，第 112 批"装配处没有默认值"同族）；② 开标签正则只认 **`[A-Za-z]+`** ⇒ 带命名空间／数字／连字符的标签名（`my-tag`、`h1`…`h1` 可以，但 `fb:comment` 不行）进不了状态机；③ 闭标签正则要求**行尾**（`</tag>` 后只能有空白）⇒ 一行里两个闭标签只认最后一个；④ ☆ `footNoteIdUUID={}` 说明**脚注**是导入器的一等公民（本批未读其用法）。
+
+### 五十五.二 属性分两层＝`properties` 与 `styleAttributes`，且"0／1"用字符串
+
+⇒ 逐字 `updateBlockModelAttributes(e,n,o){o.currentListStyle()!=="none"&&(o.firstParagraph===!0?(e.indentationLevel=o.indentationLevel,e.listStyle=o.currentListStyle(),o.currentListStyle()==="numbered"&&(e.userDefinedListNumber=o.listOrder),o.currentListStyle()==="todo"&&(n.isTodoChecked=o.todoChecked===!0?"1":"0"),o.firstParagraph=!1):e.indentationLevel=o.indentationLevel+1),this.updateDecorationStyles(e,o)}`
+⇒ ★ 四条＝① **列表项内"第一段"归当前层级、之后的段层级 +1**（＝`firstParagraph` 一次性标志，跨段靠它换算）；② **勾选态落在 `properties`、样式类落 `styleAttributes`**＝同一个块的属性按"是不是渲染样式"分两个对象；③ ★★★ **`isTodoChecked` 的值是字符串 `"1"`／`"0"`**，不是布尔 ⇒ ☆ 官方协议里的布尔字段有时用字符串数字（与第 110 批 `pluginData` 那类"键名分层"一样是协议噪声，复刻时若按布尔解析会静默错）；④ `userDefinedListNumber`＝有序列表允许用户指定起始号（`o.listOrder`）。
+
+### 五十五.三 分派链的形状（同一个 `else if` 串里的五种 token）
+
+⇒ 顺序逐字（节选）＝`blockquote_`→层级回退；`blockblock_`→`isBlock=false`；`fence｜｜code_block`→代码块（语言走 `tIt`、层级走 `MJ`）；`html_block`→按 `shouldParseInnerHTML` 分两路（走 `Jy` 再解析 ⇒ `FJ(...)` ⇒ `reportHtmlContent`）；`hr`→`type:"line"`＋`lineStyle` 表；`math_block`→`type:"code"`＋`properties.language:"math_formula"`；☆ **链尾 `else` 是打日志**＝`pe.logger().warn("MarkdownImport","Unrecognized markdown-it token type: "+i.type)` ⇒ ★ 这是"导入器承认自己会漏 token"的**权威清单来源**：漏哪些只能看运行期日志（与第 100 批"logger 字符串是恢复真名的第三词典"同法，这次反过来用＝**用日志键名反推能力边界**）。
+
+### 五十五.四 两处"官方会吞内容"的位置（登记为取舍点）
+
+⇒ ① fence 与 html_block **共用**的 `startsWith("<!--")===!1` 闸门＝以注释开头的围栏内容**整块不产出块**（不降级、不报错）；② 代码块正文 `content:i.content.slice(-1)[0]===" "?i.content.slice(0,-1):i.content`＝**末尾恰好一个空格时削一格**（☆ 判据只看最后一个字符，所以两空格结尾会削成一格）⇒ 本地 `src/lib/import/markdown.ts:136-151` 两条都没有；③ 另有一条"导出侧静默丢图"见 `longtail.md` §四十二.五。
+
+**仍未采到（本节）**：① `Jy` 的完整 token 分派表（本批只读到上述五支＋default，`table`、`list` 内部支路未逐字）；② `footNoteIdUUID` 的状态机；③ `FJ(...)`（html_block 的收口函数）本体；④ `shouldParseInnerHTML=false` 到底有没有调用方；⑤ `updateDecorationStyles` 的引用块层级判据只读了前半段（`blockQuoteLevel>1` 才 `isBlock`），后半段未读。
