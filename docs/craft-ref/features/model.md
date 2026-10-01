@@ -3247,3 +3247,31 @@ HJe = (t, e) => { let n = {};
 ⇒ 本批的 JSON 扫描用的是 `--depth 1`，而**深度 1 也会对子树做摘要**＝子页给 `contentPreviewMd` ＋ 尾行 `…and N more blocks`、集合给 `itemsPreviewMd`（`<collectionItem>` 模板）⇒ **"扫过"只覆盖到第一层与摘要行**；⇒ 所以 G1266 的覆盖要写成"11 篇一级＋3 个子页下钻"，而不是"全空间扫过"。
 
 ⇒ ☆ **仍未采到（本节）**：① `documents list --metadata` 的**带值过滤**形态（描述行写作复数 `metadata filters`，本批只跑过裸跑）＝`gap.md` 台账「二十六」③；② `decorations` 的默认 `{}`（G530 在册）与实读数组两种形态里，哪一条是写侧产生的＝需写侧或盘上反编译，本批零 bundle 读取；③ `styling.backdrop` 本批只在**两篇**（Craft Handbook／Quick Start）实见、两处都是字符串形态，其余 12 篇是否同形态未验；④ `pageWidth` 除字符串 `"false"` 之外的取值集合未穷举（同一 `styling` 层里是否还有别的字符串化布尔也未扫）；⑤ 白板那一格的模型侧读数＝等屏幕授权（`gap.md` G1267 与台账「二十六」②）；⑥ `richUrl` 的四字段是否恒为四字段（本批只见一处形状，未穷举）。
+
+## 一之七十九、**第 128 批＝文档元数据模型拿到第二次独立印证，而且这一次是契约自己写的：`documents list` 的 Flags 段有六枚日期旗标，过滤的正是上一批那两枚时间字段 ⇒ "双 id ＋ 两枚时间戳"从实测读数升格为声明层**（✓数据面只读 2026-10-02 00:5x–01:2x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七九 G1268–G1275，机制在 `internals.md` §六十一，逐字在 `longtail.md` §四十八，判据在 `interactions.md` V122；☆ `styles.md` 本批无新节＝零色值读数）
+
+### 一、★★★ 两枚时间字段第一次有了"可查询"的声明
+
+⇒ 上一节（§一之七十八）记的是**实测**＝`documents list --metadata` 逐行打 `(createdAt, lastModifiedAt)`；本批打 `documents list --help` 得到**声明层**（逐字）＝`--metadata  Include timestamps (createdAt, lastModifiedAt) and clickable links` ⇒ ☆ **同一对字段名在两处独立出现**（一枚是回包格式行、一枚是旗标描述行）⇒ 这两个名字的**大小写与拼写**由此升格为双源事实；
+⇒ ★★★ **官方把这对字段做成了可过滤维度**＝`--created-after`／`--created-before`／`--modified-after`／`--modified-before` ＋ `--daily-note-after`／`--daily-note-before`，值形＝`Dates: YYYY-MM-DD or relative (today, yesterday, tomorrow)`；⇒ ☆ **两种日期形态并存**＝ISO 风格的 `YYYY-MM-DD` 与三个英文相对词 ⇒ 与第 56 批在册的 `day://2026.09.27`（点分隔）是**第三套**日期写法，本地若要复刻这三套要先建一张"日期输入形态"表；
+⇒ ★ **日记账有两枚专用旗标，说明"日记账"在模型里是一个可寻址子集而不是标题形态**（本空间 `--location daily_notes` 为 0 条 ⇒ 实测上仍不可判它的成员条件，见 `gap.md` G1268 未采到②）。
+
+### 二、★★★ 双 id 模型的第二次独立成文（这次是契约文案，不是我的实测）
+
+⇒ 上一节我写"`documents list --metadata` 是第二个批量对照器"，靠的是回包里 `craftdocs://open?…documentId=<rawId>` 与行首 `<rootBlockId>` 并排；本批 `--help` 里官方**逐字自报**（原文照抄）：
+```
+The IDs shown in this command are rootBlockIds — use them with blocks get.
+Craft app/web links contain a different raw documentId; use documents resolve-link to convert links.
+```
+⇒ ★★★ **两枚命名空间＋唯一反向翻译器＝契约文本自证**，⇒ ☆ 第 113 批那条"唯一翻译器＝`documents resolve-link`（且只吃 URL）"至此拿到**第三个支撑**（实测正负对照 → 批量对照器 → 契约自报），但也同时被 §一之七十八 那条原地 ✎ 限定＝**批量通路存在**，`resolve-link` 只是逐条语义解析器；
+⇒ ☆ 同一段还给出**缺省作用域的行为声明**＝`Without --location or --folder, returns ALL documents (may be large — use folders list first)` ⇒ ★ **裸跑包含回收站**（G1155 在册）现在有了契约侧的半句旁证（"ALL documents"），但官方没在这里明说"含已删除"⇒ 不升格，仍按实测口径用。
+
+### 三、★★ cursor 的模型含义：契约描述了一个"会失效的状态"
+
+⇒ 逐字＝`If a cursor becomes invalid (CURSOR_INVALID), the underlying data has changed — retry without --cursor.` ＋ `reminders list` 散文里的 `Continue with the returned cursor and the same status filter. If the cursor becomes invalid, restart without it.`；
+⇒ ★ 模型侧读法＝**游标不是 offset 的别名，而是与底层数据版本绑定的令牌**（"数据变了就失效"＝游标里编码了快照位置），而 `--offset` 历批实测是纯位置跳过 ⇒ **两种分页在模型上是两回事**（本地若只做 `skip/take`，复刻的是 `--offset` 那一支，不是 cursor 那一支）；
+⇒ ☆ `--cursor` 的**校验严格度逐动词不同**（第 127 批：`folders list` 不校验值、`reminders` 校验；本批：`documents list` 回 `Invalid cursor format. Retry without cursor.` ＋ Hint 行＝**校验格式**）⇒ 三条凑齐"同一族旗标三种严格度"。
+
+### 四、☆ 一条与本地模型直接相反的读数（不是差分，是提醒）
+
+⇒ 官方声明缺省作用域返回 **ALL**（含回收站），本地 `searchAll` 缺省写死 `isDeleted: false`（`src/actions/document/search.ts:70`）＝**排除**回收站 ⇒ ☆ 这条自第 122 批起在册；本批新增的只是"官方契约自己也说 ALL"这半句 ⇒ 判定不变、不改代码、不升 P0。

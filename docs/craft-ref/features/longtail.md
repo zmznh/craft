@@ -2056,3 +2056,119 @@ Hint: run documents list --metadata to see accessible documents and their rootBl
 Next page: blocks search-unsplash "mountains" --page 2
 Supported options: --status, --limit, --cursor.
 ```
+
+## 四十八、第 128 批逐字串（✓数据桥只读 2026-10-02 00:5x–01:2x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／时间戳折占位，原文只留 `_harvest/b128-dateflags.txt`／`_harvest/b128-flagforms.txt`，两份都在 gitignore 目录内）
+
+### 一、`documents list --help`（★ Flags 段有十枚、usage 行只有四枚）
+
+```
+Usage: documents list [--location <loc>] [--folder <folderId>] [--metadata] [--cursor <token>]
+       documents resolve-link <craftdocs-or-web-url>
+
+Flags:
+  --location <loc>            Filter by virtual location: unsorted, trash, templates, daily_notes
+  --folder <folderId>         Filter by folder ID (includes subfolders recursively; cannot be used with --location)
+  --metadata                  Include timestamps (createdAt, lastModifiedAt) and clickable links
+  --created-after <date>      Only documents created on or after this date
+  --created-before <date>     Only documents created on or before this date
+  --modified-after <date>     Only documents modified on or after this date
+  --modified-before <date>    Only documents modified on or before this date
+  --daily-note-after <date>   Only daily notes on or after this date
+  --daily-note-before <date>  Only daily notes on or before this date
+  --cursor <token>            Pagination cursor from a previous response
+
+Dates: YYYY-MM-DD or relative (today, yesterday, tomorrow).
+Without --location or --folder, returns ALL documents (may be large — use folders list first).
+The IDs shown in this command are rootBlockIds — use them with blocks get.
+Craft app/web links contain a different raw documentId; use documents resolve-link to convert links.
+If a cursor becomes invalid (CURSOR_INVALID), the underlying data has changed — retry without --cursor.
+
+Example: documents list --location unsorted
+         documents list --folder abc-123 --metadata
+         documents list --modified-after 2025-01-01 --modified-before today
+
+Tip: Use "documents list --help" for this usage reference.
+```
+
+⇒ ☆ **历批矩阵整族漏读的直接原因**＝只从 usage 行与 `Common flags` 头取旗标全集；⇒ ★ 三条自报值得单独抄＝`Dates: YYYY-MM-DD or relative (today, yesterday, tomorrow)`（**两种输入形态**）／`cannot be used with --location`（**唯一声明的互斥对**，只说 folder×location）／`--cursor <token>`＋`CURSOR_INVALID`（**契约描述过游标的生产与失效**）。
+
+### 二、`reminders list --help`（★ 版式②＝单行签名＋散文，无 `Usage:`／`Flags:` 段）
+
+```
+reminders list [--status incomplete|completed|upcoming|all] [--limit 50] [--cursor cursor]
+Defaults to incomplete, including overdue and Save for later items. Upcoming includes incomplete reminders with a future time or no time (Save for later). All includes incomplete and completed reminders within this connection's scope. Results are ordered by creation time, then ID; limit is 1–200, default 50. Continue with the returned cursor and the same status filter. If the cursor becomes invalid, restart without it.
+```
+
+⇒ ☆ 值域与缺省**写在散文里**（`limit is 1–200, default 50`）；⇒ ★ `--cursor cursor`＝占位符直接回填参数名；⇒ ★★★ 生产者的官方措辞逐字＝`Continue with the returned cursor`（本轮实测没能观测到任何一次吐出 cursor，但契约这样写）。
+
+### 三、`images view --help`（★ 版式③＝`Usage:` 换行多签名 ＋ `Options:`）
+
+```
+Usage:
+  images view --url <resource-or-short-url>
+  images view <resource-or-short-url>
+
+Options:
+  --url  Craft image URL from blocks_get. Supports r.craft.do/... short links and res.craft.do/user/... resource URLs.
+
+Returns raw MCP image content, matching the legacy image_view tool.
+```
+
+⇒ ☆ **同一动词两种签名并列**＝位置参数形与 `--url` 形等价（本轮**未实测**位置形，只按"官方声明了 X"记）；⇒ ☆ `legacy image_view tool` 这个措辞＝**该动词是从旧工具面迁移来的**（历批"两套命名体系并存"再添一例）。
+
+### 四、五条回包逐字（★ 本轮的关键错误形）
+
+```
+documents list --created-after bogus
+⇒ 14 document(s) — format: <rootBlockId> Title                         （★ 与裸跑逐字相同＝值被丢弃、不报错）
+
+documents list --cursor bogus
+⇒ Invalid cursor format. Retry without cursor.
+  Hint: Use documents list --help for full usage.                       （★ 两行形＝拒绝句＋Hint 行）
+
+reminders list --limit 0        ⇒ limit: Too small: expected number to be >=1
+reminders list --limit 500      ⇒ limit: Too big: expected number to be <=200
+reminders list --limit bogus    ⇒ limit: Invalid input: expected number, received NaN
+```
+
+⇒ ☆ 三条校验句的形状＝`<字段名>: <校验器语句>`，**本轮单独重跑逐条取字**（先前在批处理拼接文本里我把 `Too small` 与 `Invalid input` 记混过一轮）；⇒ ★ 批处理里的两种包装（同一句错误）＝`Command 2 failed: reminders list --limit 500` ＋ 原句 ＋ `Stopped after failure; earlier commands were already applied.`；☆ 单独跑只有裸行、没有 `Command N failed:` 前缀。
+
+### 五、分页头与零结果形的两种写法
+
+```
+folders list --no-id
+⇒ Showing 1-2 of 2 folders with the following format: Folder Name (document count)
+  * How to use Craft (3 docs)
+    * 日记 (2 docs)
+
+documents list --location trash
+⇒ 6 document(s) — format: <rootBlockId> Title
+
+documents list --location trash --created-after 2030-01-01
+⇒ No documents found in "trash".
+
+documents list --location daily_notes
+⇒ No documents found in "daily_notes".
+
+documents list --created-after 2030-01-01
+⇒ No documents found.
+```
+
+⇒ ★★★ 头行里那句 `with the following format: …` **会随 `--no-id` 改写**（在册基线同账户同两条＝`…format: <folderId> Folder Name (document count)`）⇒ 显示类旗标读 header 即可判落地；⇒ ★ **零结果两种形**＝默认作用域不带作用域名、`--location` 那一路带 `in "trash".`／`in "daily_notes".` ⇒ ☆ "空"要连回显一起记，否则两次空会互相冒充；⇒ ☆ 树里那行中文文件夹名（`日记`）与 `How to use Craft` 是**结构读数**、不含任何用户正文，按历批口径可以进产物。
+
+### 六、日期旗标 × 作用域的四格对照（本轮实测）
+
+```
+documents list                                        ⇒ 14 行（★ 本批补上历批欠的那次裸跑）
+documents list --created-after 2020-01-01             ⇒ 14 行，id 集与裸跑逐字相同
+documents list --created-after 2025-06-01             ⇒ 7 行（★ 真子集＝生效）
+documents list --created-after 2030-01-01             ⇒ No documents found.
+documents list --created-before 2020-01-01            ⇒ No documents found.
+documents list --created-before today                 ⇒ 14 行
+documents list --created-after today                  ⇒ No documents found.
+documents list --created-after yesterday              ⇒ No documents found.   （★ 相对词被解析：若回退应得 14 行）
+documents list --modified-after 2020-01-01 --modified-before today ⇒ 14 行
+documents list --location daily_notes --daily-note-after 2020-01-01 ⇒ No documents found in "daily_notes".（与不带旗标逐字相同＝空档不可判）
+```
+
+⇒ ☆ 逐 id 关系＝回收站那 6 行是裸跑 14 行的**子集**（G1155 第三次复证、第一次逐 id 对上）；⇒ ★ 时间戳形状（只写形状，具体时刻不进产物）＝`created: <ISO 本地时刻>`，本轮 14 行里毫秒段**全为 `.000`**、偏移**全为 `+08:00`**，且三篇官方样板文档的 `created` 与 `modified` **逐字相同**（＝从未修改过的旁证）。

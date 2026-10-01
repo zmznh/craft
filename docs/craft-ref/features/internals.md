@@ -1872,3 +1872,27 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ⇒ ① `Hint: run documents list --metadata to see accessible documents and their rootBlockIds.`（resolve-link 失败时）；
 ② `Next page: blocks search-unsplash "mountains" --page 2`（结果尾部）；③ `Supported options: --status, --limit, --cursor.`（选项拒绝时）；
 ⇒ 判据＝**读报错串别只读前半**，后半常带着"下一通路"。
+
+## 六十一、**第 128 批＝旗标普查批的方法与通路（一次 `--help` 打出六枚从未测过的旗标 ⇒ 历批"矩阵填格"打法的前提被推翻：旗标全集不能从 usage 行取）**（✓数据面只读 2026-10-02 00:5x–01:2x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇七九 G1268–G1275，逐字在 `longtail.md` §四十八，判据在 `interactions.md` V122，模型含义在 `model.md` §一之七十九）
+
+### 一、本轮三段探针
+
+| 段 | 手法 | 拿到什么 | 为什么这样排 |
+| --- | --- | --- | --- |
+| ① **契约层先打全**＝对 `documents list`／`reminders list`／`folders list`／`images view` 各取一次 `--help` | 纯文本、零命中集风险；把**声明的旗标全集**先抄下来再做矩阵 | ★★★ 六枚日期旗标（历批矩阵整族漏了）＋`--no-id`＋`1–200` 值域＋cursor 失效语义＋三种 `--help` 版式 | ☆ 修正历批打法＝我以前按"usage 行＋`Common flags` 头"取旗标全集，这次证明**同一动词的 Flags 段可以比 usage 行多 6 枚** ⇒ 矩阵开批前先 `--help` 逐动词穷尽 |
+| ② **正／负对照 × 值域**＝同参数三连（合法窄值／合法宽值／非法值）＋相对词 | `--created-after 2025-06-01`→7 行、`2030-01-01`→空、`2020-01-01`→14 行、`bogus`→14 行、`yesterday`→空 | ★ 生效性＋"非法值静默回退"这一档；☆ 相对词是否被解析用 bogus 当对照才判得出来 | ⇒ **bogus 对照法**（见 `interactions.md` V122 第一条）＝判"值进没进逻辑"的唯一廉价手段 |
+| ③ **空档上打越界值**＝`reminders list --limit 0／500／bogus`（该账户提醒为 0 条） | 三条校验句全数返回，且 `--limit 1`（合法）回 `No reminders found.` | ★★★★ **校验发生在取数之前**＝空档不再是"什么都判不了" | ☆ 直接升级第 127 批那条判据（原来只到"旗标是否被认识"，现在到"值是否被校验"） |
+
+### 二、★★ 通路与边界
+
+⇒ **零写入证明**＝本轮 20 次调用全走 `craft_read`，没有一次 `craft_write`；☆ 三条采集残留（`QODER-HARVEST-B109`／`B111`／`B113`）只在 `--location trash` 与裸跑里被**读到**，未做任何删除／还原／移动 ⇒ `manifest.jsonl` **155 行不变**；
+⇒ **批处理不是事务**（复证第 126 批 G1260）＝本轮两次让 `--limit` 越界值排在批处理中间，回包逐字打印 `Command 2 failed: …` ＋ `Stopped after failure; earlier commands were already applied.`；⇒ ★ 新纪律应用＝**故意失败的探针一律放最后一条**（第 79 批在册），本轮 `folders list --no-id; reminders list --limit 500` 那次因为把失败排在末尾，前半读数完整拿到；
+⇒ ☆ **零结果回包有两种形**＝`No documents found.`（默认作用域）与 `No documents found in "trash".`／`…in "daily_notes".`（作用域回显）⇒ 以后"空"要连回显一起记，否则两次空会互相冒充；
+⇒ ★ **隐私闸门**＝`documents list --metadata 5` 那次回包把 **spaceId 原样打在 14 行里**，而盘上埋点证明同一枚值＝账户 `uid`（G1275）⇒ 本轮两份 dump 落在 `_harvest/`（gitignore），产物里一律折成 `<spaceId>`／`<rootBlockId-*>`／`<rawId-*>`，且**官方样板文档的具体时间戳不进产物**（只写"同秒／毫秒全 `.000`／偏移 `+08:00`"这类形状）。
+
+### 三、☆ 本轮仪器错与自纠（写下来防复用）
+
+1. ★ **复数词误推**＝历批我在某条描述行里读到复数 `metadata filters`，据此排了队列①"`--metadata` 带值过滤语义"；⇒ 本批打全 `documents list --help` 才看见**Filters 段是六枚专用日期旗标、`--metadata` 自述是显示旗标** ⇒ ☆ 纪律＝**"某旗标可带值"要由该旗标自己的描述行证明，不能由附近一个复数名词证明**（☆ 那句复数的原始出处本轮没重查到 ⇒ 记为"我引用过一条未能复核的文本"）；
+2. ★ **在册口径强度未随新证据更新**＝第 126 批我写"游标在本只读面上没有生产者"，本批拿到契约侧对 cursor 生产与失效的明确描述 ⇒ 那句**降级**为"未观测到生产者"（见 `interactions.md` V122 原地 ✎）；☆ 形态＝我把"历批没见吐过"写成了接近"官方没有这回事"的强度；
+3. ☆ **基线没重跑**＝G1271 的形态差集用的是历批在册的 `folders list` 头行（本批没重跑裸跑）⇒ 已在 `gap.md` 该节"仍未采到⑧"里写明"本轮实测 × 历批在册"，不许冒充双读数；
+4. ☆ **三条校验句我一度记混**（`Too small` 与 `Invalid input` 哪句对应 `0`／`bogus`）⇒ 逐字串要进产物时**单独重跑一次取字**，不要从批处理回包的拼接文本里回忆。
