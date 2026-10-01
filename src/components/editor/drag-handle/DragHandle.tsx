@@ -3,8 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 import type { Editor } from '@tiptap/react';
-import { GripVertical } from 'lucide-react';
+import { GripVertical, MoreHorizontal, Plus } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { dropTargetFor } from './drop-band';
+import { applyBlockAction, blockMenuItems, type BlockActionId } from './block-actions';
 
 interface HandlePosition {
   top: number;
@@ -35,6 +42,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
     range: DragRange | null;
   } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   /**
    * `posAtDOM(el, 0)` resolves to depth 0 for the first top-level block, which used to
@@ -68,6 +76,24 @@ export function DragHandle({ editor }: { editor: Editor }) {
     });
   }, [editor]);
 
+  const indexOfBlock = useCallback(
+    (blockEl: HTMLElement): number =>
+      Array.prototype.indexOf.call(editor.view.dom.children, blockEl),
+    [editor],
+  );
+
+  const runBlockAction = useCallback(
+    (blockEl: HTMLElement, id: BlockActionId) => {
+      const index = indexOfBlock(blockEl);
+      if (index < 0) return;
+      const { state, view } = editor;
+      if (index >= state.doc.childCount) return;
+      applyBlockAction(state, view.dispatch, index, id);
+      view.focus();
+    },
+    [editor, indexOfBlock],
+  );
+
   useEffect(() => {
     const dom = editor.view.dom;
 
@@ -90,7 +116,9 @@ export function DragHandle({ editor }: { editor: Editor }) {
       // move onto it and the block can never be dragged.
       const to = e.relatedTarget as HTMLElement | null;
       if (to?.closest?.('[data-drag-handle]')) return;
-      if (!dragStateRef.current) setHandle(null);
+      // The menu lives in a portal, so moving onto it reads as "left the editor";
+      // hiding then would unmount the trigger the open menu is anchored to.
+      if (!dragStateRef.current && !menuOpen) setHandle(null);
     };
 
     dom.addEventListener('mousemove', handleMouseMove);
@@ -99,7 +127,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
       dom.removeEventListener('mousemove', handleMouseMove);
       dom.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [editor, updateHandlePosition]);
+  }, [editor, updateHandlePosition, menuOpen]);
 
   const selectBlock = useCallback(
     (blockEl: HTMLElement, extend: boolean) => {
@@ -293,6 +321,43 @@ export function DragHandle({ editor }: { editor: Editor }) {
           data-drag-handle=""
         >
           <GripVertical className="size-4" />
+          <button
+            type="button"
+            aria-label="在下方插入区块"
+            title="在下方插入区块"
+            className="rounded-md p-0.5 transition-colors hover:bg-muted hover:text-foreground"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => handle.blockEl && runBlockAction(handle.blockEl, 'insert-below')}
+          >
+            <Plus className="size-4" />
+          </button>
+          <DropdownMenu
+            open={menuOpen}
+            onOpenChange={(open) => {
+              setMenuOpen(open);
+              if (!open) setHandle(null);
+            }}
+          >
+            <DropdownMenuTrigger
+              type="button"
+              aria-label="区块操作"
+              title="区块操作"
+              className="rounded-md p-0.5 transition-colors hover:bg-muted hover:text-foreground"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <MoreHorizontal className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {blockMenuItems({ canDelete: editor.state.doc.childCount > 1 }).map((item) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={() => runBlockAction(handle.blockEl, item.id)}
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
       {indicator.visible && (
