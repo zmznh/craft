@@ -16,7 +16,7 @@
 
 | 状态 | 条目（`gap.md` 原编号） | 本轮实扫证据 |
 | --- | --- | --- |
-| 未动 | G01 · `@` 提及人员 | `src/components/editor/extensions/mention.tsx:13` 有 `Mention` 节点与 `setMention`，但 suggestion 触发器只有 `block-link-suggestion.tsx` 与 `emoji-suggestion.tsx`（全目录 grep `suggestion` 命中 5 个文件，无 mention 触发器） |
+| **已清** | G01 · `@` 提及人员 | ✎ **第 122 批已清（commit `96cc61b`）**＝原判据把**页面提及**与**人员提及**混写（"可点跳转"与"进 `collectLinkedDocIds`"是页面档属性），本批按人员档重述并补齐四段＝① 纯核 `src/components/editor/extensions/mention-users.ts`（`rankMentionCandidates:17`／`mentionLabel:4`／`mentionIsPerson:10`，16 条）② 数据面 `src/actions/document/members.ts:55` `listMentionCandidates`（所有者＋被邀请成员、越权不可读，8 条行为测试）③ 触发器与弹层 `mention-user-suggestion.tsx`＋`mention-user-menu.tsx`，注册在 `Editor.tsx:360` 带 `documentId` ④ 节点属性 `mention.tsx:30` 加 `userId`＋呈现 `mention-view.tsx:28`（人员档渲染成标签不是按钮）＋导出 `document-codec/index.ts` 的 `isPersonMention`（不给死链）；★ UI 层＝`e2e/mention-user.spec.ts` 四条＋**五条对照实验**（四条红、一条 `c` 判为不确定并降级＝见 §三点一〇七三 §四）；★★ ☆ 本批 e2e 抓到并当场修掉两条单测看不见的缺陷＝`Enter` 被基础 keymap 吃掉（只换行不选中）与**我自己那条用例在断言瞬态**（弹层首帧把"还没查过"渲染成「无匹配人员」⇒ 两条对照假绿两轮） |
 | 未动 | G02 · 提醒投递与状态 | `grep -rln "setInterval\|cron\|scheduler" src/actions src/lib src/app/api` **只命中 `src/lib/task/recurrence.ts`**（循环计算，非投递）⇒ 无定时器／无通知／无邮件 |
 | 未动 | G03 · 通知三开关可配 | `src/components/settings/SettingsPanels.tsx:101` 仍是 `const [notify, setNotify] = useState({...})` ⇒ 不落库 |
 | 未动 | G04 · 分享 view／edit 两档 | `src/prisma/contract.prisma:318-332` `DocumentShare` 字段集＝`id/documentId/token/slug/passcode/isPublished/createdAt/updatedAt`，**无 permission 列** |
@@ -37,6 +37,8 @@
 
 ⇒ ✎ **第 121 批复扫＝P0 仍 4／8，但 G07 从"☆ 动作层已验、UI 半验"升为"已清（全层）"**（新证据＝commit `2714972` 的 `e2e/drag-handle-menu.spec.ts` 五条＋四条对照实验；⇒ ☆ 剩余 P0 四条不变＝G01（缺接线）／G03（一半迁移）／G04（迁移＋接线各半）／G02（要裁决＋投递基建），排序承台账「十八」＝G01＞G03＞G04＞G02；★★ ☆ 本批最大的通路收益＝**"UI 类缺口只能代码审读"这条历批口径作废**＝仓里那条 Playwright 通路可用，代价是要在自己的端口壳上跑（3000 会被别的 worktree 的 dev server 占着 ⇒ `reuseExistingServer` 会去测别人的代码），四份可复用脚本已进 `_harvest`；☆ 另 ☆ 本批**撤销了自己上一批一行代码**（`menuOpen` 守卫＝投机代码，摘掉后五条仍绿）。
 
+⇒ ✎ **第 122 批复扫＝P0 已清 5／8**（新清 **G01**＝commit `96cc61b`，`@` 提及人员四段＋四条 e2e＋五条对照，☆ 是 P0 里**第二条全层闭合**的条目；⇒ ☆ 剩余 P0 三条＝G03（一半 schema 迁移＋一半接线）／G04（迁移与接线各半）／G02（要裁决＋投递基建）；★★ ☆ 性价比排序**改口**＝台账「十八」那条"G01＞G03＞G04＞G02"自本批起作废，剩三条＝**G03 ＞ G04 ＞ G02**（G03 先接线那半可独立验、G04 的迁移要动 `DocumentShare`、G02 仍卡投递通路裁决）；☆ 另本批把 P0 判据写法上的两件事钉死＝① 判据里"能跳转／进反向链接"这类**只属于页面提及**的属性不许再套到人员档头上（§一 G01 行已按人员档重述）② "条数不变"这句话也要重跑脚本，不能承上一批读数（本批因此查出一条跨两批的计数漂移，见 §三点一〇七三 §三）。
+
 ### 二、近三批已清的本地条目（带 commit）
 
 | 状态 | 条目 | 落地 | commit |
@@ -49,6 +51,7 @@
 | 已清 | G1173／G1174 · 导入器读不回官方导出的两处＝`$$` 显示数学与围栏语言别名 | `src/lib/import/markdown.ts:101-108`（`normalizeLanguage`＋79 条别名表逐字）＋ `:153-168`（`$$` 分支）；测试＝`src/lib/import/markdown.test.ts` 本批＋9 条 | `f36705e` |
 | 已清（☆ UI 半验） | G07 · 拖拽手柄无 `+`／无 `⋮`，上下插入区块与删块无命令入口 | 纯函数核 `src/components/editor/drag-handle/block-actions.ts`（`blockMenuItems:15-21`／`blockBounds:24-28`／`deleteBlock:61-64`／`applyBlockAction:68-84`）＋ `DragHandle.tsx:325-360` 两枚按钮与受控菜单壳（base-ui 原语，零新依赖）；测试＝`block-actions.test.ts` 18 条（★ 真 `EditorState`，17 条先红＋1 条后补的真实缺陷闸＝"删除"在不能删的文档上仍列出） | `2ddc589` |
 | 已验（升格） | G07 · 手柄菜单的 UI 半（两枚入口、插入与删除的落点、菜单不卸锚点）只有代码审读 | `e2e/drag-handle-menu.spec.ts` 五条真浏览器测试＋四条对照实验（逐条摘实现⇒逐条变红⇒逐字还原）；☆ 同批删除 `DragHandle.tsx` 里不可达的 `menuOpen` 守卫（`useState` 与 `onOpenChange` 一并撤，`DropdownMenu` 改回不受控） | `2714972` |
+| 已清（全层） | G01 · `@` 提不到人＝`Mention` 节点与 `setMention` 都在但**全仓零调用者**（☆ 本批之前连页面提及都无法从界面产生） | 四段＝纯核 `extensions/mention-users.ts`（16 条单测）＋数据面 `actions/document/members.ts:55`（8 条行为测试，忠实假表按 `documentId` 真过滤）＋触发器与弹层 `mention-user-suggestion.tsx`／`mention-user-menu.tsx`（注册在 `Editor.tsx:360` 带 `documentId`）＋人员档节点与呈现与导出（`mention.tsx:30`／`mention-view.tsx:28`／`document-codec/index.ts` 的 `isPersonMention`）；★ 浏览器层＝`e2e/mention-user.spec.ts` 四条＋五条对照实验（四条红＋一条 `c` 判为不确定）；★★ 同批修掉两条 e2e 才看得见的缺陷＝`Enter` 被基础 keymap 吃掉、弹层首帧假称「无匹配人员」（`loading` 初值改 `true`） | `96cc61b` |
 
 ### 三、第 104 批新登记的待办（本轮未动代码）
 
@@ -278,17 +281,29 @@
 | 未动 | ☆ 两条本地决定**已被 e2e 锁死**＝手柄 `+`＝"在下方插入区块"、单块文档上"删除"不列 | 锁在 `e2e/drag-handle-menu.spec.ts:60`（闸）与 `:90`（`+` 落点） | ☆ 若上屏采到官方是"上方插入"或"灰掉删除"，改实现会让这两条红 ⇒ **这是有意的**：改测试必须连台账「十九」第 3 行与 §三点一〇七二一起改 | 2/1 |
 | 未动 | ☆ e2e 通路会**写用户真实的本地 dev 库**（`DATABASE_URL` 指向 `localhost:5432`，值未进上下文） | 本批新建＝1 个规格自带账号（`craft-block-menu@example.com`，与视觉基线账号、drop-band 账号分开）＋每条用例一篇文档（☆ 精确篇数未取＝没跑计数脚本，不手数） | ☆ 历批惯例如此（`e2e/drag-drop-band.spec.ts:1-26` 同款自带账号），但**"e2e 写的是谁的库"从未写进产物**⇒ 本批补上；要不要清除测试文档＝等用户点头（删库记录属写侧动作，不在 e2e 授权范围内自动做） | 2/1 |
 
+### 二十一、第 122 批新登记的待办（本轮＝**本地实施批＝P0 清单第 1 行（G01 `@` 提及人员）已清（全层＝纯核＋数据面＋呈现＋四条 e2e＋四条对照）**；★ 没有动官方屏幕、没有读 bundle、没有建／删官方实体、没有网络 ⇒ `manifest.jsonl` 155 行不变、`gap.md` 条数不变；☆ 唯一的对外写入＝本地 dev 库里 e2e 自带的三个测试账号与每例一篇文档）
+
+| 状态 | 条目 | 本地落点（本轮实改／实跑 文件:行号） | 前置／判据 | 分 |
+| --- | --- | --- | --- | --- |
+| **已清** | P0 G01 · `@` 提及人员 | 四段＝① 纯核 `src/components/editor/extensions/mention-users.ts`（`rankMentionCandidates:17`／`mentionLabel:4`／`mentionIsPerson:10`，16 条单测）② 数据面 `src/actions/document/members.ts` `listMentionCandidates:55`（成员＋所有者、越权不可读，8 条行为测试，忠实假表按 `documentId` 真过滤）③ 触发器与弹层 `mention-user-suggestion.tsx`＋`mention-user-menu.tsx`，注册在 `Editor.tsx:360` 带 `documentId` ④ 节点与呈现 `mention.tsx:30` 新增 `userId` 属性、`mention-view.tsx:28` 人员档不渲染成可点控件；★ UI 层＝`e2e/mention-user.spec.ts` 四条 | ☆ 判据按**人员档**重述（原判据混写了页面提及，见 §一 该行 ✎）；⇒ 剩余"提及未邀请的人"另立一行，不算本条欠账 | 3/1 |
+| 已清（本批内发现并修） | ★ **候选弹层开着时按 `Enter` 不选中候选**＝基础 keymap 的 `splitBlock` 先应答，正文里查询串原样留着、多出一个空块 | 现场读数＝`_harvest/b122-enter-probe.txt`（`after-enter` 三块形状 `甲`／`乙@协`／空块）；修法＝键改走 suggestion 插件的 `handleKeyDown`（`mention-user-suggestion.tsx:92`），组件用 `useImperativeHandle`（`mention-user-menu.tsx:74`）交出 `selectRecommendation`／`moveSelection`，**window 键盘监听整条撤掉** | ☆ 机制解释＝组件在同一个 keydown 冒泡到 window **之前**已被 exit 事务卸载 ⇒ 挂在 window 上的监听已经不存在；而插件的 `handleKeyDown` 排在核心 keymap 之前（核心扩展在用户扩展之后入列）⇒ 这条从"推测插件顺序"变成"摘掉就红、装回就绿"（对照 a） | 2/1 |
+| 未动 | ☆ `[[` 块链接菜单是**同一份 window-keydown 形状** ⇒ 推断它的 `Enter` 选中同样失效 | `src/components/editor/extensions/block-link-suggestion.tsx:69-137`（渲染器 `onKeyDown` 只处理 Escape）＋ `block-link-menu.tsx:119-137`（键挂在 `window` 上） | ☆ **未实测**，只是同构代码 ⇒ 按"没测到≠没有"登记为待验；修法照抄本批两条改动即可，另需一条 e2e | 2/1 |
+| 未动 | 提及**没被邀请的人**（官方有这一档＝`collab.invite.but.not.invited`「你想提及 <0></0>，但他们未被邀请加入此文档。」与 `inline.mention.tooltip`「此人未收到提及通知，因为他们尚未被邀请。要让他们收到通知，请邀请他们加入此文档。」） | 本地候选面收在"本文档成员＋所有者"（`members.ts:55`），全站用户检索**没做** | ☆ 要做就得新增用户目录查询 action ⇒ **隐私裁决**（把姓名／邮箱暴露给非协作者）；官方查看者档还额外裁剪范围（`collab.doc.viewer.mention.desc`），本地未按角色裁剪＝**有意偏差候选**，原因＝候选面尚未接角色 | 2/2 |
+| 未动 | ☆ 人员 chip 的**官方呈现**（图标、是否可点、点击落点、hover 提示、导出成什么样）从未采过 | 本地呈现＝AtSign 图标＋姓名、不可点（`mention-view.tsx:13`＋`:28`）；导出＝markdown 与 html 两路都落 `@姓名` 且**不给链接**（`document-codec/index.ts` 的 `isPersonMention`） | ☆ 官方屏幕自第 113 批挂死未恢复；采到之前这三处全是本地决定 | 2/1 |
+| 未动 | ☆ 人员提及**不参与反向链接**＝`collectLinkedDocIds` 只收 `documentId` 为字符串的节点 | `src/components/editor/Editor.tsx:78-81`（判据 `typeof … === 'string'`）⇒ 人员档天然被跳过，本批**没改这行**、也不该改 | ☆ 官方"提及进反向链接与成员"那句说的是**页面**提及；人员提及在官方是否单列一张"被提及"面（`collab.mentioned.in.this document`）＝未采 | 2/1 |
+
+
 ## 一、P0（先做：功能真实不存在但界面上有入口，或权限/正确性错）
 
 | # | 官方事实（证据） | 本地现状 | 类型 | 影响/成本 | 补齐判据 | 回归 |
 |---|---|---|---|---|---|---|
-| G01 | 输入 `@` 提及某人（R2 `web.collab.comment.hint.mention`；提及进反向链接与成员） | slash「@提及」命令体是空操作，只 `deleteRange().setParagraph()`；`Mention` 节点已注册但**无任何 suggestion 触发器**（`slash-commands.ts:335-343`，对比 `block-link-suggestion.tsx:35`） | 只有壳 | 3/1 | 打 `@` 出人员候选、选中后插入可点跳转的 mention 块、进 `collectLinkedDocIds` | 用例 |
+| G01 | 输入 `@` 提及某人（R2 `web.collab.comment.hint.mention`；提及进反向链接与成员） | ☆ ✎ **本行原判据把两码事混写**＝"可点跳转"与"进 `collectLinkedDocIds`"说的是**页面**提及（`commands.commands.mention.placeholder` 逐字＝「搜索要提及的页面」），人员档没有可跳的页面 ⇒ 判据本批重述（见最后一列）；☆ 本地原状比"只有壳"还更空＝`Mention` 节点与 `setMention` 命令都在，但**全仓零调用者**（第 122 批实扫＝grep 只命中节点定义自己，slash「@提及」命令体是空操作 `slash-commands.ts:335-343`）⇒ 本批之前**连页面提及都无法从界面产生**；现已补四段（纯核／数据面／触发器／呈现），逐字落点见台账「二十一」第 1 行 | ☆ 已清（全层）＝第 122 批（commit 见 §二 末两行） | 3/1 | ☆ 人员档三条＝① 打 `@` 出**本文档所有者＋成员**候选（☆ 官方查看者档还额外裁剪成"通过电子邮件邀请的人"＝`collab.doc.viewer.mention.desc`，本地未按角色裁剪＝**有意偏差候选**，原因见台账「二十一」第 4 行）② 选中后插入**不可点**的人员 chip ③ 导出与重载都不把它变成死链；☆ 原判据的"进反向链接"一项**移出**（那是页面档，且 `Editor.tsx:78-81` 天然不收它） | ★ 用例＝`e2e/mention-user.spec.ts` 四条（第 122 批）＋单测 27 条 |
 | G02 | 提醒有投递与状态（R5：`reminders.next.reminder.time`、`mark.resolved`、`alert` 系列） | `remindAt` 存了、UI 能填能显，**无任何定时器/通知/邮件**（`actions/task/task.ts:212-227` 之外无投递代码） | 只有壳 | 3/2 | 到期产生可见提醒（站内通知或邮件至少一条通路）+「已解决」可点 | 用例 |
 | G03 | 通知设置三项真实可配（`preferences.*`、通知分区） | 设置 → 通知三开关是 `useState` 本地值，**从不持久化**，"每日邮件 08:00" 是硬编码文本（`settings/SettingsPanels.tsx:101`） | 只有壳 | 3/2 | 开关落库 + 投递按开关生效（依赖 G02） | 用例 |
 | G04 | 分享有链接查看/编辑两档 + 仅协作者 + 请求批准（R14 `collab.access.*`） | `DocumentShare` 只有 `isPublished` + `passcode` + `slug`，**无 permission 列**；`/s/[token]` 恒只读（`contract.prisma:318-332`） | 缺失 | 3/3 | 文档分享可设 view/edit，编辑档走同一 collab 鉴权链；撤销即时断会话（照白板 `shareVersion` 范式 `actions/whiteboard/share.ts:16-37`） | 用例 |
 | G05 | 发布与分享是两个概念：未发布不应可访问 | `/s/[token]` **不校验 `isPublished`**，拿到 token 即可只读访问；`/p/[slug]` 校验（`s/[token]/page.tsx:14-18` vs `p/[slug]/page.tsx:41`） | 行为不同 | 3/1 | 关掉发布后 `/s/` 与 `/p/` 同时不可访问，有用例覆盖 | 用例 |
 | G06 | 成员档「可以查看和评论」= 能评论但不能编辑（`collab.access.view.and.comment`） | `commenter` 在 collab 层算只读（`api/collab/token/route.ts:50`），但评论 action 只要求 `viewer` 级 → **viewer 也能评论**（`actions/comment/comment.ts`） | 只有壳 | 3/2 | viewer 评论被拒、commenter 评论可，双档各有用例 | 用例 |
-| G07 ✎已清（第 120 批 `2ddc589` 动作层，✎ 第 121 批 `2714972` 补上 UI 层） | 手柄菜单是块操作主入口（实测官方 6 项 + 「在上方/下方插入区块」，`commands.insert.block.above/below`） | ☆ ✎ 本行原判据的"官方 6 项"**是两码事**＝那 6 项来自**信息面板动作区**（G956／G204 那一族），块级 `⋮` 唯一在册读数＝**任务块 8 项**（V43）；本地实现＝`DragHandle.tsx:321-349` 两枚按钮＋3 项菜单（`+`＝`:323`、`⋮`＝`:334`、单块闸＝`:342`；☆ 第 121 批删掉 `menuOpen` 守卫后行号前移 4 行），核在 `drag-handle/block-actions.ts` | ☆ 已清（全层） | 2/1 | ☆ 判据收窄＝"至少覆盖 V43 里的在上方插入区块／在下方插入区块／删除三条且逐字同名"（已满足）；☆ 官方普通块项集转台账「十九」第 1 行（仍未采到，需上屏） | ★ 用例＝`e2e/drag-handle-menu.spec.ts` 五条（第 121 批） |
+| G07 | 手柄菜单是块操作主入口（实测官方 6 项 + 「在上方/下方插入区块」，`commands.insert.block.above/below`） | ☆ ✎ 本行原判据的"官方 6 项"**是两码事**＝那 6 项来自**信息面板动作区**（G956／G204 那一族），块级 `⋮` 唯一在册读数＝**任务块 8 项**（V43）；本地实现＝`DragHandle.tsx:321-349` 两枚按钮＋3 项菜单（`+`＝`:323`、`⋮`＝`:334`、单块闸＝`:342`；☆ 第 121 批删掉 `menuOpen` 守卫后行号前移 4 行），核在 `drag-handle/block-actions.ts`；☆ ✎ **第 122 批记一笔**＝本行第 120 批把状态注记写进了首格（"G07 ✎已清…"），让 G 行计数脚本（首格须逐字是 `G` 加数字）少计一条（1238⇒1237），已把注记搬回「类型」列 | ☆ 已清（全层）＝第 120 批 `2ddc589` 动作层＋第 121 批 `2714972` UI 层 | 2/1 | ☆ 判据收窄＝"至少覆盖 V43 里的在上方插入区块／在下方插入区块／删除三条且逐字同名"（已满足）；☆ 官方普通块项集转台账「十九」第 1 行（仍未采到，需上屏） | ★ 用例＝`e2e/drag-handle-menu.spec.ts` 五条（第 121 批） |
 | G08 | 删除他人文档应报错而非静默成功 | `deleteDocument/restore/permanentDelete` 用 `.where({id,userId})` 过滤，非本人时**0 行更新不抛错**（`actions/document/delete.ts:7-17`） | 行为不同 | 3/1 | 越权调用抛明确错误，UI 给可读提示 | 用例 |
 
 ## 二、P1（高频交互缺口，官方有明确入口且用户能逐项比对）
@@ -3168,3 +3183,41 @@
 **⇒ 规模**：`gap.md` 条数**不变＝1238 条、最大 G1246**（本批零新增官方事实）；§〇 P0 台账**仍 4／8**，但 G07 那一行从"☆ 动作层已验、UI 半验"改判为"**已清**"＝☆ P0 里**第一条全层闭合**的条目；台账「二十」5 行＝**1 结案（升格）＋1 未动（守卫删对了但机制未证实）＋1 承批未动（官方普通块项集）＋1 新未动（两条本地决定已被 e2e 锁死）＋1 新未动（e2e 写谁的库）**；`interactions.md` **V115**（本批验证序列＝变异实验证伪投机防御／e2e 端口壳与预热／测试副作用要登记）；`features.md` 计数行→**1238／G1246／第 1–121 批**＋结束态第 17 条＋真动态残留第 23 行原地结案（☆ 第 24 行仍在）；`model.md`／`internals.md`／`longtail.md`／`styles.md` 本批**无新节**（原因＝零官方读数；本批新增事实全部属于本地栈与验收通路）；`_harvest/todo-actions.md` 第 121 批日志＋第 122 批队列；★ **`manifest.jsonl` 仍 155 行、零官方网络、零官方写入**；☆ 代码提交＝`2714972`（e2e 五条＋删守卫）；★★ ☆ 同批把 **`harvest-b110` 以纯 fast-forward 合进 `main`**（`1883daa → ca4b0f3`，21 笔＝第 110–120 批；第 121 批这笔随后再 ff 一次），☆ 合并方式＝`git fetch . harvest-b110:main`（ff-only 语义），**没有动任何工作树**，`D:\code\cs` 那 22 项未提交改动一行未改。
 
 **仍未采到／未验证（本节）**：① 官方**普通块**的 `⋮` 项集（要上屏，只读）；② ☆ 菜单开着时隐藏路径不可达的**机制**（base-ui 是否 modal 未读源码；探针的 `elementFromPoint` 那次 evaluate 卡死未归因）；③ 手柄 `+` 的官方语义与单块文档删除入口的官方呈现＝**已被本地 e2e 锁死**，改判要连测试一起改；④ 三条块操作与官方撤销步数的对账（承台账「十九」第 5 行）；⑤ ☆ 本批 e2e 在本地库里留下的测试文档**未清除**（篇数未取精确值、也没跑计数脚本），清除属写侧动作、等用户点头；⑥ 官方移动端的块菜单（iOS／Android）从未采过＝整族空缺，历批只在桌面 web 面上读数。
+
+### 三点一〇七三、第 122 批〔**本地实施批＝P0 清单第 1 行（G01 `@` 提及人员）已清（★★ ☆ 全层＝纯核＋数据面＋导出＋浏览器，是 P0 里第二条全层闭合的条目）、P0 累计 5／8、零新增官方事实**（✓本机 2026-10-01 17:3x–18:4x 本地，☆**不是采集批**：没有动官方屏幕、没有读 bundle、没有建／删官方实体、没有网络 ⇒ `manifest.jsonl` 155 行不变）；本批做四件事＝① 人员候选纯核 ② 成员查询 action ③ `@` 触发器与候选弹层 ④ 人员档的节点属性与呈现与导出；★★★ 外加两条**只有真浏览器能抓到的缺陷**＝⑴ `Enter` 被基础 keymap 吃掉（弹层开着按回车＝只换行、查询串留在正文）⑵ ☆ 我自己的用例在断言**瞬态**（弹层首帧把"还没查过"渲染成「无匹配人员」⇒ 两条对照实验假绿了两轮才查出来）；★★ 另复扫一条**历批计数漂移**（第 120 批把 §一 G07 行首格写成带注记的形状 ⇒ 计数脚本跨两批读成 1237，本批复原＝1238）〕
+
+#### 一、四段落点（每段先红后绿，红色原因逐字）
+
+| 段 | 红色原因（逐字） | 绿之后的覆盖面 | 判据回指 |
+| --- | --- | --- | --- |
+| 纯核 `src/components/editor/extensions/mention-users.ts` | `Error: Cannot find module './mention-users' imported from …mention-users.test.ts` | 16 条＝前缀优先于包含／大小写两向／姓名与邮箱两路／按 `userId` 去重保首条／上限／空查询不过滤／纯空白查询不过滤／无匹配返回空／标签回退三档／人员判定三档 | ☆ 排序律＝本地决定（官方候选序未采）；`mentionIsPerson`＝§一 G01 判据第 2 条 |
+| 数据面 `src/actions/document/members.ts` 的 `listMentionCandidates:55` | `TypeError: listMentionCandidates is not a function`（8 条同因红） | 8 条＝成员＋**所有者**（他没有 `DocumentMember` 行）／**别的文档的成员不进来**／带 name 与 email／无名账号 `name` 仍为 `null`／越权拒／不存在的文档拒／未登录拒 | ☆ 假表按 `documentId` 真过滤（不是把答案写死）；☆ 官方查看者裁剪条 `collab.doc.viewer.mention.desc`＝**未做**，转台账「二十一」第 4 行 |
+| 导出 `src/lib/document-codec/index.ts` 的 `isPersonMention` | `AssertionError: expected '<p>请 <a href="/documents/" data-type="mention">张三</a> 复核</p>' not to contain '<a href'` | 三条＝markdown 落 `@姓名` 且不给链接／html 落 `span` 不是 anchor／text 保留姓名（☆ 第三条到绿即绿＝`textContent` 早就回退到 `attrs.title`，不算 red→green） | ★ ☆ 这条红色不是"测试写错"＝**导出会造一条指向不存在文档的死链**；反向闸＝页面档那条 `[另一篇](/documents/d-1)`（`:118`）保持绿 |
+| 界面 `e2e/mention-user.spec.ts` 四条 | 首跑 1 红 3 绿＝`Expected: "协作者乙" / Received: "@协"`（同一形状轮询 43 次） | 4 条＝`@` 出弹层并列出所有者与成员／`Enter` 选中且不换行／点行插入 chip 且重载后仍在／未邀请的人永不出现／chip 不是可点控件 | ★ 判据三条各有一格；☆ 规格与对照见下两节 |
+
+#### 二、★★★ 两条只有真浏览器能抓到的缺陷
+
+1. ★★★ **`Enter` 不选中候选**＝读数（`_harvest/b122-enter-probe.txt`）＝输入 `@协` 时正文是 `乙<span class="suggestion">@协</span>`，按 `Enter` 之后变成三块＝`甲`／`乙@协`／空块 ⇒ **ProseMirror 基础 keymap 的 `splitBlock` 先应答**；而组件挂在 `window` 上的键盘监听在同一个 keydown 冒泡到 `window` **之前**已被 exit 事务卸载 ⇒ 监听器已不存在 ⇒ 既不选中也不报错。⇒ 修法＝键改走 suggestion 插件的 `handleKeyDown`（排在核心 keymap 之前，因 TipTap 核心扩展在用户扩展之后入列），组件经 `useImperativeHandle` 交出 `selectRecommendation`／`moveSelection`（`mention-user-menu.tsx:74`），window 监听整条撤掉；⇒ ☆ 27 条单测**没有一条**能碰到这个形状。
+2. ★★★ **我自己的用例在断言瞬态**＝对照 `c`（撤候选的文档过滤）与 `c2`（弹层忽略查询词）连跑两轮都报 `1 passed`。☆ 没有据此写"这条用例不敏感"，也没有据此写"Turbopack 缓存不刷新"，分两步取证＝① **活性探针**＝把查询词换成一枚绝不可能匹配的字面量 ⇒ 用例 1 红、用例 4 绿 ⇒ 编译通路是新的；② **落定态读数**＝同一变异下打弹层 DOM ⇒ 输入 `@路` 之后菜单里躺着两行候选、空态根本不存在（`_harvest/b122-menu-probe.txt`）⇒ ☆ 唯一自洽解释＝`toBeVisible()` 抢在 150 ms 防抖＋一次服务端往返之前断到了"还没查过"那一帧。⇒ 修法＝`loading` 初值 `false → true`（未落地前不许声称"无匹配"）；⇒ ★ 改完 4 条基线仍全绿，`c2` 与 `d` 才第一次真的会红。☆ 同构缺陷仍在 `block-link-menu.tsx:26`（`loading` 同样起于 `false`）＝本批未改，转台账「二十一」第 3 行。
+
+#### 三、★★ ☆ 复扫一条历批计数漂移（本批零新增 G 条，但改回来一条）
+
+⇒ 现象＝`gap.md` 计数行写 **1238**，而"首格逐字是 `G` 加数字"那条正则本批实测给 **1237**。⇒ 逐 commit 追＝`2ddc589`（第 120 批代码笔）给 1238，`ca4b0f3`（第 120 批产物品）起变 1237，☆ 跨第 120／121 两批未被发现。⇒ 成因＝第 120 批把 §一 G07 行的首格写成"G07 ✎已清（第 120 批…）"这种带状态注记的形状 ⇒ 该行不再被计数命中。⇒ 处置＝注记搬回「类型」列，计数复原 **1238**（☆ 三条正则口径同时复核：严格首格 1237→1238、宽松首格 1248 不变、`## ` 小节数 27 不变、`check-tables` 表数 197 不变）。⇒ ☆ 方法论＝**"条数不变"这句话也要重跑脚本**，不能只承上一批的读数；注记只准写进状态列，首格是键。
+
+#### 四、☆ 五条对照实验（逐条摘实现 ⇒ 逐条变红 ⇒ 逐字还原；脚本＝`_harvest/b122-counter.mjs`，注入后等 8 s 让编译器跟上，还原用 `fs.readFileSync` 比对原文）
+
+| 号 | 注入 | 目标用例 | 结果 | 红色原因（逐字摘） |
+| --- | --- | --- | --- | --- |
+| a | `Enter` 不接管（`return true → false`，让基础 keymap 去 split） | 用例 2 | ★ 红 | `expect(locator).toHaveCount failed / Expected: 1 / Received: 2`（块数） |
+| b | 不把 `documentId` 接进 suggestion（`configure` 撤掉） | 用例 1／2／3 | ★ 3 红 | `Error: element(s) not found`（候选行不再出现）＋一条卡在 `locator.click` 超时 |
+| c | 候选不按文档过滤（`where({ documentId }) → where({})`） | 用例 4 | ☆ **未红＝判为不确定** | `1 passed` ⇒ ☆ 两因＝① 真 ORM 上空 `where` 极可能直接抛错 ⇒ 弹层落回空态＝用例照样绿；② 测试里的"路人丙"在本地库里**没有任何成员身份** ⇒ 就算真的全局化也不会出现 ⇒ ☆ 结论＝**"候选按文档收窄"这一格在 UI 层没有闸，只有数据面那条假表用例在守**（`members.test.ts` 的 withholds members of a different document，那条是真红过再转绿） |
+| c2 | 弹层忽略查询词（`query → ''`） | 用例 4 | ★ 红（在 `loading` 修好之后） | `expect(locator).toBeVisible failed / Error: element(s) not found`（空态不再出现＝候选全量列出） |
+| d | 人员档也走可点按钮分支（`if (person) → if (false)`） | 用例 2 | ★ 红 | `expect(locator).toHaveCount failed / Expected: 0 / Received: 1`（chip 变成按钮） |
+
+⇒ ☆ 纪律承 V115 第 2 条：**"绿"要能解释为什么会绿**＝`c` 这一条我没有把它写成"用例无效"，也没有写成"编译器没跟上"，而是给出两条可查的替代因并把该格降级到"只有数据面有闸"。
+
+#### 五、⇒ 规模与三件校验
+
+⇒ `gap.md` 条数**不变＝1238 条、最大 G1246**（本批零新增官方事实；☆ 三处口径同时复核＝严格首格计数复原 1238、宽松 1248、`## ` 小节 27）；⇒ §〇 P0 台账 **4／8 → 5／8**（已清＝G01／G05／G06／G07／G08；☆ 剩三条＝G03 一半迁移＋一半接线／G04 迁移＋接线各半／G02 要裁决＋投递基建；⇒ 性价比排序改口＝**G03 ＞ G04 ＞ G02**，☆ 台账「十八」那条"G01＞G03＞G04＞G02"自本批起作废）；⇒ 台账「二十一」6 行＝1 结案（G01 全层）＋1 本批内已清（`Enter`）＋4 未动（`[[` 同构缺陷／未邀请者那一档要裁决／chip 官方呈现／人员提及不进反向链接）；⇒ `interactions.md` **V116**（★ 三条新验证序列：瞬态断言要取证两步／`Enter` 归插件管／positional selector 要 `--list` 复验）；⇒ `features.md` 计数行→**1238／G1246／第 1–122 批**＋结束态第 18 条＋真动态残留第 25 行；⇒ `model.md`／`internals.md`／`longtail.md`／`styles.md` 本批**无新节**（原因＝零官方读数；本批新增事实全部属于本地栈，☆ 唯一沾官方的两条是"承批未采到"而非新证）；⇒ `_harvest/todo-actions.md` 第 122 批日志＋第 123 批队列；★ `manifest.jsonl` **仍 155 行、零官方网络、零官方写入**；⇒ 三件校验＝`check-tables` **ALL TABLES CONSISTENT**（☆ `gap.md` 单文件表数 197→199＝本批新增两张表，异常表 0）／`key-coverage` **1888/3639 = 51.9%**（承 1887 ⇒ ＋1，未倒退）／`sanitize-pii` **SANITIZE OK**（files scanned 38／rewritten 0／replacements 0）；⇒ 单测 **272 passed／3 skipped（275）**（承 245 ⇒ ＋27）、e2e **4 passed（36.6 s 热跑）**、tsc 退出 0、eslint 对新改文件 0 error 0 warning、**零新增依赖**；⇒ 代码提交＝`96cc61b`（12 文件 ＋754／−14）。
+
+**仍未采到／未验证（本节）**：① 官方**人员提及 chip** 的界面形态（图标／可点性／点击落点／hover 提示／导出成什么样）＝整档空缺，本地三处全是本地决定；② 官方**查看者**档候选裁剪（`collab.doc.viewer.mention.desc`）只有字符串表证据、无行为证据；③ 提及**未邀请者**的完整通路（`collab.invite.but.not.invited`＋`inline.mention.tooltip` 两条文案证明这条路存在：先提示、再邀请）＝本地未做，且要先裁"要不要给用户目录检索"；④ ☆ `[[` 块链接菜单的 `Enter` 与空态闪烁＝同构代码推断，未实测；⑤ 人员提及在官方是否单列一张"被提及"面（`collab.mentioned.in.this document` 键背后是什么界面）；⑥ ☆ 对照 `c` 未红 ⇒ "候选按文档收窄"在 UI 层无闸（只有数据面假表守着），要补得先给"路人丙"一个别的文档的成员身份；⑦ ☆ 本批落进本地库的 3 个测试账号与若干测试文档未清（清除属写侧，等点头）；⑧ 官方**移动端**（iOS／Android）的提及面＝整族从未采集。
