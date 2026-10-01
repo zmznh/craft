@@ -1055,7 +1055,7 @@
 
 **仍未采到（本节）**：① `Hi.markdownTable` 的转义规则（表格里出现竖线／换行时官方怎么逃）；② `isBrightColor` 阈值（`colorMode` 两值相等时怎么分 light／dark）；③ 屏上实测 §二 那 6 档"链接无颜色"（要选那几档主题并放一段链接，属官方写入面 ⇒ 需点头）；④ `#fb4934d` 那两处非法在屏上是否表现为"完全没有边框／颜色退回"（同上，且要 `gruvboxdark`）；⑤ 编辑器**实景**两档截图。
 
-### 十九之续（第 115 批）＝**把 20 档色板的"形状来源"追到 CM6 默认样式（`v2n` 19 条逐字到手）：★ 上批数的"6 档 `link` 不上色"本批改判为 **7 档**（漏了 `githubdark`），且真正口径是"12/20 档定义了 `link`"，其成因是复制默认样式时丢了 `color` 而不是 CM6 语义；外加同一产品里两条亮度阈值第一次并排（代码底色 128／8 位整数域 vs 页面纸色 0.65／归一化域），以及本地两条 DOM 副作用（`color-scheme`／`theme-color`）确认全缺**（✓盘上 2026-10-01 05:3x–06:1x 本地＝UTC 09-30 21:3x–22:1x；★ gap 在 `gap.md` §三点一〇六五 G1213／G1217／G1223，逐字在 `longtail.md` §四十一.七，判据在 `internals.md` §五十四.一–二；☆ 上一节＝§十九之续（第 114 批）的"有效色审计表"，本节补 §十九之续（第 114 批）的一条**计数改判**、加"来源"与"阈值"，不重复审计）
+### 十九之续（第 115 批）＝**把 20 档色板的"形状来源"追到 CM6 默认样式（`v2n` 19 条逐字到手）：★ 上批数的"6 档 `link` 不上色"本批改判为 **7 档**（漏了 `githubdark`），且真正口径是"12/20 档定义了 `link`"，其成因是复制默认样式时丢了 `color` 而不是 CM6 语义；外加同一产品里两条亮度阈值第一次并排（代码底色 128／8 位整数域 vs 页面纸色 0.65／归一化域），以及本地两条 DOM 副作用（`color-scheme`／`theme-color`）确认全缺 ⇒ ✎ **第 116 批实测改判＝`color-scheme` 本地一直有（next-themes 代写 inline 样式），只缺 `theme-color`**，见 §二十.二**（✓盘上 2026-10-01 05:3x–06:1x 本地＝UTC 09-30 21:3x–22:1x；★ gap 在 `gap.md` §三点一〇六五 G1213／G1217／G1223，逐字在 `longtail.md` §四十一.七，判据在 `internals.md` §五十四.一–二；☆ 上一节＝§十九之续（第 114 批）的"有效色审计表"，本节补 §十九之续（第 114 批）的一条**计数改判**、加"来源"与"阈值"，不重复审计）
 
 #### 一、★★★ ✎ **改判上批一条计数＝"6 档 `link` 不上色"应为"7 档"，且真正的口径是"12 档定义了 `link`、其中 7 档不带色、8 档根本没有这一条"**（本批用 `_harvest/b112-styles.txt` §聚合的全量直方图复核，非抽样）
 
@@ -1086,10 +1086,33 @@
 ⇒ ⇒ ★★★ **同族公式、不同阈值**（0.502 vs 0.65）⇒ 复刻时**不要合并成一个函数**：阈值差 0.15 意味着"中灰偏亮的纸色"在两条判据下结论相反（例：`#a0a0a0` 归一化 0.627 ⇒ `isBrightColor` 判**不亮**、128 判据判**亮**）。
 ⇒ ☆ 顺带一条＝本目录历批那条"阈值 128 判 `isDark`"是**判据、不是已落地代码**（上批建议"本地要用 `isDark`、不要吃工厂 `theme` 字面量"至今未实装）。
 
-#### 四、★ 本地缺的两条 DOM 副作用（样式面可验证、一行量级）
+#### 四、★ 本地缺的两条 DOM 副作用（样式面可验证、一行量级）⇒ ✎ **第 116 批：其中 `color-scheme` 已被实测否证（本地一直有），`theme-color` 仍在，但改判为"本 worktree 不可验"＝见 §二十.二／§二十.三**
 
 ⇒ 官方换档时做两件事（逐字见 `longtail.md` §四十一.九）＝① 写 `meta[name='theme-color']` 的 `content` ⇒ **浏览器标签页／地址栏随主题变色**；② 在 `<html>` 上 `style.setProperty("color-scheme","dark"/"light")` ⇒ **影响原生滚动条／表单控件配色**（与第 112 批"滚动条常量受 `isScrollbarPersistent` 门控"是同一条链下游）。
-⇒ 本轮实扫＝`grep -rn "color-scheme" src` 与 `grep -rn "theme-color" src` **均零命中**（`src/app/layout.tsx:12` 只有静态 `metadata`，不随主题更新）。
+⇒ 本轮实扫＝`grep -rn "color-scheme" src` 与 `grep -rn "theme-color" src` **均零命中**（☆ ✎ 第 116 批＝前半条判据作废：源码里没有 ≠ 行为上没有，库会代写）（`src/app/layout.tsx:12` 只有静态 `metadata`，不随主题更新）。
 ⇒ ☆ **验收判据（不依赖官方通路）**＝本地开暗档后：原生滚动条是否还是亮色（`color-scheme` 缺位的直接观感）；标签页颜色是否跟随（`theme-color` 缺位）。⇒ 两条都可本地自证，属"不需要连接器、不需要点头就能验"的那类。
 
 **仍未采到（本节）**：① 官方屏上 `theme-color` 的**实际值**（要读 meta，一条 `evaluate`，连接器阻塞）；② `color-scheme` 在官方屏上的生效证据（`getComputedStyle(documentElement).colorScheme`）；③ 20 档里 `heading` 的"删掉下划线"是否有档保留（本批只逐条比对了 `link`，其余三条靠名册抽样 ⇒ ☆ 要一次全量对照需重跑 `b114-style-precedence2.cjs` 加字段）；④ `v2n` 与 Craft 名册的 tag **分组粒度差**（默认样式把 `atom/bool/url/contentSeparator/labelName` 并成一条、名册是否同粒度未逐条比）。
+
+## 二十、**第 116 批＝第一次用"像素回读"读本地两档纸色（亮 `rgb(252, 253, 254)`／暗 `rgb(30, 30, 30)`），顺带纠正一条上批的样式结论（`color-scheme` 本地一直有，是 next-themes 代写的 inline 样式）与一条换算事实（`--background` 计算后是 `lab()`，`ctx.fillStyle` 取值器不会给 hex）**（✓本机浏览器实测 2026-10-01 12:2x–12:4x；★ 仪器＝`_harvest/b116-dom-side-effects.cjs`＋读数文件 `_harvest/b116-dom-side-effects.json`；☆ gap 在 `gap.md` §三点一〇六六，验证序列与水合判据在 `interactions.md` V110；⚠ 本批**没有官方屏上读数**，所有"官方值"仍是第 114／115 批的盘上逐字）
+
+### 一、★★ 本地两档"纸色"的实测三元组（sRGB，像素回读法）
+
+| 档 | `html` 的类 | `--background` 计算值（声明侧） | `body` 实际底色（像素回读） | `color-scheme` computed | `color-scheme` inline（style 属性） |
+| --- | --- | --- | --- | --- | --- |
+| 亮（`localStorage.theme="light"`） | `light` | `lab(99.2573% -.210583 -.600588)` | **252, 253, 254** | `light` | `light` |
+| 暗（`localStorage.theme="dark"`） | `dark` | `lab(11.26% 0 -.00000596046)` | **30, 30, 30** | `dark` | `dark` |
+| 回到亮（第三次装载，判"只跑一次"用） | `light` | 同第一行 | **252, 253, 254** | `light` | `light` |
+
+⇒ ★ 读法＝三行互相对账（`--background` 声明 → `body` 实绘 → computed 值），所以"某个类没生效""某个变量指错"这类问题一次就能分辨。
+⇒ ☆ **换算律（新增，会反复用到）**＝Chrome 里 `--background` 这类 `oklch()` 声明经 `getComputedStyle` 会变成 **`lab(...)`**，且 `ctx.fillStyle = <颜色>` 之后**读 `ctx.fillStyle` 拿到的还是 `lab(...)`、不是 `#rrggbb`** ⇒ 要十六进制只能 **`fillRect` + `getImageData` 取像素**（canvas 恒为 sRGB）。⇒ 这条同时解释了为什么"给 `meta[theme-color]` 写十六进制"必须走像素回读而不是字符串转换。
+
+### 二、★★★ ✎ 改判上批一条＝**本地 `color-scheme` 一直是对的，而且写法与官方同一层**
+
+⇒ 官方逐字（第 115 批）＝`document.documentElement.style.setProperty("color-scheme", e?"dark":"light")`。⇒ 本地实测＝同一个位置、同一个属性：`documentElement.style.colorScheme` 在亮／暗两档分别是 `light`／`dark`（computed 同值）。⇒ 来源不是本仓代码而是库＝`node_modules/next-themes/dist/index.mjs` 逐字 `function R(n){h&&w.includes(n)&&(d.style.colorScheme=n)}`（@338，另有一处 @1515 同形态）⇒ ⇒ ★★★ **所以"grep 源码里没有 `color-scheme`"推出"本地缺这条"是错的**；正确判据＝浏览器里读 computed／inline。⇒ ☆ 含义＝第 115 批那条"本地两条 DOM 副作用全缺"收窄为**只缺 `theme-color` 一条**，另一条已清（无需动代码）。
+
+### 三、☆ 本地缺的那条长什么样（供有凭据的树直接做）
+
+⇒ 缺＝`meta[name='theme-color']`（实测两档都查不到该节点，`document.querySelectorAll("meta")` 全集里只有 `viewport`／`description`／`mobile-web-app-capable`／`apple-mobile-web-app-status-bar-style`／`next-size-adjust`）。⇒ 已探明的做法＝客户端 effect：读 `body` 计算底色 → **像素回读**成 `#rrggbb` → 有 meta 就改 `content`、没有就建（☆ 官方只做"有则改"，因为它的 meta 由服务端 head 给出；本地 metadata 里没有 ⇒ 要么补 `layout.tsx` 的 `themeColor`、要么 effect 建节点，两案都要先用 §V110 的水合判据确认环境）。⇒ 验收判据＝两档各读一次 meta 内容，与 §一 表里的像素三元组一致（且**随档位变化而变化**，否则等于没接上）。
+
+**仍未采到（本节）**：① 官方 `theme-color` 的实际值（连接器恢复后一条 evaluate 即可）；② 官方两档纸色的**屏上实测**（第 105 批起只有 CSS 侧的 `--background` 变量，没有浏览器像素三元组）；③ 本地强调色／语义色两档的像素三元组（同法可采，本批只做了纸色）；④ `color-scheme` 在**原生滚动条**上的可见证据（需要截图，属"必须前台"那一档）。
