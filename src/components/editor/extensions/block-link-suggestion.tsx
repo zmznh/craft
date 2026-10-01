@@ -5,6 +5,7 @@ import { PluginKey } from '@tiptap/pm/state';
 import { ReactRenderer } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
 import { BlockLinkMenu } from './block-link-menu';
+import type { BlockLinkMenuHandle } from './block-link-menu';
 import type { SuggestionProps } from '@tiptap/suggestion';
 
 interface BlockLinkSuggestionOptions {
@@ -67,8 +68,22 @@ export const BlockLinkSuggestion = Extension.create<BlockLinkSuggestionOptions>(
               cleanup();
             },
             onKeyDown(props: { event: KeyboardEvent }) {
+              const menu = currentRenderer?.ref as BlockLinkMenuHandle | null;
               if (props.event.key === 'Escape') {
                 cleanup();
+                return true;
+              }
+              if (!menu) return false;
+              if (props.event.key === 'ArrowDown') {
+                menu.moveSelection(1);
+                return true;
+              }
+              if (props.event.key === 'ArrowUp') {
+                menu.moveSelection(-1);
+                return true;
+              }
+              if (props.event.key === 'Enter') {
+                menu.selectRecommendation();
                 return true;
               }
               return false;

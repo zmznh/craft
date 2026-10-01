@@ -118,6 +118,17 @@ test('clicking a row inserts the chip, and the chip is still there after a reloa
 test('a stranger who was not invited is never offered', async ({ page, browser }) => {
   await ensureAccount(browser, PEER);
   await ensureAccount(browser, OUTSIDER);
+
+  // The stranger has to hold *some* document, or the case below would still pass if
+  // the candidate query stopped filtering by document — an uninvited account that
+  // exists nowhere is not a test of the filter.
+  const peerContext = await browser.newContext();
+  const peerPage = await peerContext.newPage();
+  await signIn(peerPage, PEER);
+  await newDoc(peerPage);
+  await invite(peerPage, OUTSIDER);
+  await peerContext.close();
+
   await signIn(page, OWNER);
   const editor = await newDoc(page);
   await invite(page, PEER);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback, useLayoutEffect } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import { Copy, FileText, Link2, Pilcrow } from 'lucide-react';
 import type { Editor } from '@tiptap/react';
 import { searchDocumentsForLink } from '@/actions/document/search';
@@ -12,18 +12,31 @@ type Row =
   | { kind: 'doc'; candidate: LinkCandidate }
   | { kind: 'block'; hit: BlockAnchorHit };
 
+/**
+ * Keys arrive through the suggestion plugin, not a window listener: ProseMirror's
+ * base keymap answers Enter at the editor DOM, which splits the block and unmounts
+ * this menu before the event could bubble.
+ */
+export interface BlockLinkMenuHandle {
+  selectRecommendation: () => void;
+  moveSelection: (delta: number) => void;
+}
+
 interface BlockLinkMenuProps {
   editor: Editor;
   query: string;
   range: { from: number; to: number };
   onClose: () => void;
+  ref?: React.Ref<BlockLinkMenuHandle>;
 }
 
-export function BlockLinkMenu({ editor, query, range, onClose }: BlockLinkMenuProps) {
+export function BlockLinkMenu({ editor, query, range, onClose, ref }: BlockLinkMenuProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [candidates, setCandidates] = useState<LinkCandidate[]>([]);
   const [blocks, setBlocks] = useState<BlockAnchorHit[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Starts true: before the first query lands the menu has not earned the right to
+  // say 无匹配文档, and saying it for one frame is a claim the data has not supported.
+  const [loading, setLoading] = useState(true);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const latestQuery = useRef(query);
 
@@ -116,25 +129,21 @@ export function BlockLinkMenu({ editor, query, range, onClose }: BlockLinkMenuPr
     [rows, editor, range, onClose]
   );
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : Math.max(rows.length - 1, 0)));
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev < rows.length - 1 ? prev + 1 : 0));
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        selectItem(selectedIndex);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [rows.length, selectedIndex, selectItem, onClose]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      selectRecommendation: () => selectItem(selectedIndex),
+      moveSelection: (delta: number) =>
+        setSelectedIndex((prev) => {
+          if (rows.length === 0) return 0;
+          const next = prev + delta;
+          if (next < 0) return rows.length - 1;
+          if (next >= rows.length) return 0;
+          return next;
+        }),
+    }),
+    [selectItem, selectedIndex, rows.length]
+  );
 
   return (
     <div className="max-h-64 w-80 overflow-y-auto rounded-lg border border-border bg-popover p-1.5 shadow-md">
