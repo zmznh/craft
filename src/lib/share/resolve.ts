@@ -11,3 +11,8 @@ export async function findShare(identifier: string): Promise<Record<string, unkn
   if (bySlug) return bySlug;
   return (await db.orm.public.DocumentShare.first({ token: identifier })) ?? null;
 }
+
+/** A found share row is only readable while it is published. */
+export function isOpenableShare(share: Record<string, unknown> | null): boolean {
+  return !!share?.isPublished;
+}

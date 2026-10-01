@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth/auth';
 import { getDb } from '@/prisma/db';
 import { normalizeShareSlug } from '@/lib/share/slug';
-import { findShare } from '@/lib/share/resolve';
+import { findShare, isOpenableShare } from '@/lib/share/resolve';
 
 export interface ShareState {
   token: string;
@@ -101,7 +101,9 @@ export async function setShareSlug(documentId: string, rawSlug: string | null): 
 export async function getSharedDocument(identifier: string) {
   const db = await getDb();
   const share = await findShare(identifier);
-  if (!share) return null;
+  // The gate lives here rather than in the page because this module is
+  // `'use server'`: a client can call the action without going through any route.
+  if (!isOpenableShare(share)) return null;
   const s = share as any;
 
   const doc = await db.orm.public.Document.first({ id: s.documentId });
