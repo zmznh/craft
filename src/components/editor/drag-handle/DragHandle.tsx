@@ -42,7 +42,6 @@ export function DragHandle({ editor }: { editor: Editor }) {
     range: DragRange | null;
   } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   /**
    * `posAtDOM(el, 0)` resolves to depth 0 for the first top-level block, which used to
@@ -116,9 +115,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
       // move onto it and the block can never be dragged.
       const to = e.relatedTarget as HTMLElement | null;
       if (to?.closest?.('[data-drag-handle]')) return;
-      // The menu lives in a portal, so moving onto it reads as "left the editor";
-      // hiding then would unmount the trigger the open menu is anchored to.
-      if (!dragStateRef.current && !menuOpen) setHandle(null);
+      if (!dragStateRef.current) setHandle(null);
     };
 
     dom.addEventListener('mousemove', handleMouseMove);
@@ -127,7 +124,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
       dom.removeEventListener('mousemove', handleMouseMove);
       dom.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [editor, updateHandlePosition, menuOpen]);
+  }, [editor, updateHandlePosition]);
 
   const selectBlock = useCallback(
     (blockEl: HTMLElement, extend: boolean) => {
@@ -331,13 +328,7 @@ export function DragHandle({ editor }: { editor: Editor }) {
           >
             <Plus className="size-4" />
           </button>
-          <DropdownMenu
-            open={menuOpen}
-            onOpenChange={(open) => {
-              setMenuOpen(open);
-              if (!open) setHandle(null);
-            }}
-          >
+          <DropdownMenu>
             <DropdownMenuTrigger
               type="button"
               aria-label="区块操作"
