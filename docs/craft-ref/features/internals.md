@@ -1688,3 +1688,35 @@ p=Q=>{const{docStore:Y,uiStore:X}=Q;return{inCodeEditing:X.codeEditorState!=null
 ⇒ ① fence 与 html_block **共用**的 `startsWith("<!--")===!1` 闸门＝以注释开头的围栏内容**整块不产出块**（不降级、不报错）；② 代码块正文 `content:i.content.slice(-1)[0]===" "?i.content.slice(0,-1):i.content`＝**末尾恰好一个空格时削一格**（☆ 判据只看最后一个字符，所以两空格结尾会削成一格）⇒ 本地 `src/lib/import/markdown.ts:136-151` 两条都没有；③ 另有一条"导出侧静默丢图"见 `longtail.md` §四十二.五。
 
 **仍未采到（本节）**：① `Jy` 的完整 token 分派表（本批只读到上述五支＋default，`table`、`list` 内部支路未逐字）；② `footNoteIdUUID` 的状态机；③ `FJ(...)`（html_block 的收口函数）本体；④ `shouldParseInnerHTML=false` 到底有没有调用方；⑤ `updateDecorationStyles` 的引用块层级判据只读了前半段（`blockQuoteLevel>1` 才 `isBlock`），后半段未读。
+
+## 五十六、**第 119 批＝列表识别的三条规则分工（`Dvt`／`Evt`／`Avt` 各判一种标记，且 `Evt` 的候选集只有两枚）＋ `Jy` 行内循环的四累加器解剖 ＋ `FJ` 的 aside 状态机 ＋ 导入器四旗标默认值表**（☆ 盘上逐字，来源＝`index-DiTmKH3z.js` @2,319,2xx–2,350,0xx；gap 在 `gap.md` §三点一〇六九，映射表在 `model.md` §一之七十五，逐字清单在 `longtail.md` §四十三；★ 零屏上、零写入 ⇒ `manifest.jsonl` 155 行不变）
+
+### 一、列表到底靠什么被认出来：三条规则，一条一形态
+
+⇒ 分派点（`Rvt`，@2,320,3xx 起）逐字顺序＝**先 `Dvt`（有序）→ 再 `Evt`（被赋名 `"todo"`）→ 再 `Avt`（bullet）→ 都不中就 `return false`**；⇒ ★★★ 三条规则各自的形态判据：
+
+| 规则 | 判据（本轮读到） | 产出的 open token | markup |
+| --- | --- | --- | --- |
+| `Dvt` | 行首必须是 1–10 位数字（≥48 且 ≤57 逐字符），随后必须是`)`或`.`，且其后不能紧跟非空格 | `ordered_list_open`（tag `ol`） | 匹配到的末字符 |
+| `Evt` | ★ **候选集只有两枚**＝`"-- "` 与 `"-+ "`；比较方式＝逐字符 `charCodeAt` **严格相等**（⇒ 不做大小写／全半角折叠，也不做正则） | `todo_list_open`（tag `ul`） | 匹配到的末字符（`-` 或 `+`）；⇒ ☆ 函数还额外返回一个布尔＝"命中的那枚候选里含 `+`" |
+| `Avt` | 项目符号形态（本轮未展开其候选集） | `bullet_list_open`（tag `ul`） | 匹配到的末字符 |
+
+⇒ ★★ **一条"同一标记两种含义"的重要旁证**＝`Evt` 认的是**两连字符**（`-- `）而不是 GitHub 的方括号语法；方括号那一套（`[ ] `／`[x] `）**只在行内层**被处理（`model.md` §一之七十五 第 1 支），且**只认小写 x**。⇒ ☆ 结论＝官方 markdown 的"任务/折叠列表"有**两套并行语法**，块级一套、行内一套，两者不共用判据也不互相校验。
+
+### 二、`Jy` 的行内循环＝四个累加器配一张装饰表
+
+⇒ 变量分工（本轮从循环体反推，逐字名）＝`d`＝文本累加器；`u`＝装饰数组（每项 `{range:[起,长], …}`）；`f`＝"某标签开始时的文本长度"栈（键＝去掉 `_open` 后的标签名）；`p`＝对应的 open token（用来事后取 `attrGet`）；⇒ ★ 结构＝**开标签只记位置、闭标签才产装饰**（`_open` 分支写 `f`/`p`，`_close` 分支算 `range` 再走那张六路 `switch`）⇒ ⇒ 未闭合标签＝**静默没有装饰**（既不开区间也不报错，`f` 里的残留随实例丢弃）。
+
+### 三、`FJ`＝aside 的开／合驱动的三件事
+
+⇒ `FJ`（@2,348,511）签名解构＝`{token, listInfo, blockModels, iconBlockIds, prevToken, importCtx}`；⇒ 只有当该 token 的 meta 里"原始标签名"＝`aside` 才动，且分两向：**开标签** ⇒ ① `listInfo.isBlock`＝真 ② 遍历传入块，把每块 `styleAttributes.decorations.isBlock` 置真（没有装饰对象则新建一个含 `isFocus:false` 的）③ ★ 若首块是 text 且其内容 trim 后"只含 emoji" ⇒ 把它的 id 加入 `iconBlockIds`（⇒ ☆ 这就是"页面图标从 aside 首块提取"的机制，且**由 `jr.isEmojiOnly` 单点判定**）④ ★ 若**前一个 token 也是 html_block 且是合标签** ⇒ 在块数组**最前面插一个空 text 块**（☆ 目的未读到，推测是防"两个 aside 贴在一起被合并"，标为未验）；**合标签** ⇒ ☆ **只把 `isBlock` 置假，第 ②③④ 步都不回滚**。
+
+### 四、`oIt`＝图标合并的第二段，且默认不跑
+
+⇒ `parseTokens` 返回前逐字＝"仅当配置 `handleIconsInAsideTags` 为真，才把块数组交给 `oIt(块, iconBlockIds)`"；⇒ ☆ 同一条旗标还控制导出侧一条规则是否注册（`asideImgSkip`，第 117 批记过）⇒ ★ **一枚旗标同时改两侧行为（导入合并＋导出跳过）＝它不是"显示开关"而是"这条特性开不开"**；⇒ 另三枚旗标（远端链接转文件／附加属性解析／markdown 风格子页）在**主 chunk 内只有默认值声明处、没有读取处**（机器计数各 1）⇒ ☆ 判为"死旗标或消费者在别处"，不据此断言能力不存在（承 §五十五 那条"别名与跨 chunk"纪律）。
+
+### 五、埋点名册比上批记的多两枚
+
+⇒ ✎ **改判第 117 批**＝HTML 内容上报不是"一条计数"而是**三枚**，同一函数体内顺序调三次＝`html_<标签>_count`、`html_<标签>_lines`（值＝该块按换行切分的段数）、`html_<标签>_createdBlocks`（值＝这次产出的块数）；⇒ ☆ 且**三枚都只在"是开标签"时才报**⇒ ⇒ 结论＝官方用埋点量的是"导入 HTML 时吃进去多少行、吐出多少块"，这是**一条产品级关注点**（HTML 导入的膨胀率），不是统计使用量。
+
+**仍未采到（本节）**：① `Avt` 的候选标记全集（只确认可被 `Evt` 抢先）；② `oIt` 函数体的第二段（合并策略：图标块被并入哪里、原块是否删除）；③ `handleWrapper` 的两个调用点各自传的标签名 ⇒ aside 之外还有没有 wrapper；④ `f`/`p` 两个栈在嵌套同名标签（`<em><em>`）下的行为；⑤ "prevToken 也是合标签 ⇒ 插空块"这条的真实动机。

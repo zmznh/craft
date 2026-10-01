@@ -1580,3 +1580,39 @@ svg→xml | xml→xml | xsd→xml | xsl→xml | yaml→yaml | yml→yaml
 ⇒ ① **围栏内容以 `<!--` 开头 ⇒ 整块丢弃**（`i.content.trimStart().startsWith("<!--")===!1` 是 fence 与 html_block 共用的闸门）；② **`<aside>` 里第一张 `width<50` 的图 ⇒ 导出时返回空串**（`qvt`＋`widthThreshold:50`）⇒ ☆ 两条都**没有警告、没有 toast**＝官方导入／导出面有两处"静默吞内容"，与第 113 批"未知语言不报错"同族 ⇒ 登记为复刻时的**行为取舍点**（照抄＝也静默；不照抄＝要写清为什么）。
 
 **仍未采到（本节）**：① `docs`／`blocks`／`suggestions` 三枚非语言值的消费方；② `handleIconsInAsideTags` 由谁打开、阈值 50 是否可配；③ 官方 web 导入后块上 `language` 到底是 `other` 还是省略键（G1226，需一次导入实跑）；④ `===`／`=--` 在官方界面上渲染成什么（需屏上）；⑤ `" -- "` 替换的真实字节（本批缓存已 mojibake）；⑥ 别名表是否在**导出侧**也生效（本地只在导入侧做了归一）。
+
+## 四十三、**第 119 批逐字清单＝行内标签分派表六枚 case 与静默 default／列表标记候选集两枚／两枚 meta 键名的字面值／三枚埋点名／导出样式常量表八键／导入旗标默认值四键／标签→排版映射九键**（☆ 全部为盘上逐字，来源＝`index-DiTmKH3z.js` 与 `vendor-craft-export-DIm_3hRN.js`；★ 本批零屏上、零新增下载 ⇒ `manifest.jsonl` 155 行不变；☆ 每条都在 chunk 里逐字符读过，计数一律由脚本给出；gap 在 `gap.md` §三点一〇六九）
+
+### 一、行内标签 → 装饰的分派表（六枚 case ＋ 一枚空分支 ＋ 静默 default）
+
+⇒ 分支标签名逐字＝`strong`、`em`、`link`、`highlight`、`s`、`span`；⇒ 对应写入的装饰键名＝`isBold`、`isItalic`、`linkURL`、`highlightColor`、`isStrikethrough`、（`span` 无）；⇒ `default` 的语句逐字＝`continue`（⇒ **不抛错、不记日志**）；⇒ ☆ 同函数上方另有一条**会记日志**的分派链尾（第 117 批已记）⇒ ★ **同产品同文件内两处对"未识别"的严格度不同**：token 类型＝记 `warn`；HTML 标签＝静默。
+
+### 二、列表标记候选集（块级规则）＝逐字两枚
+
+⇒ 候选集逐字＝`"-- "`、`"-+ "`（各三字符，含尾随空格）；⇒ 匹配方式逐字＝`charCodeAt` 严格相等逐位比较；⇒ 返回值第二项逐字＝"命中的那枚候选 `toLowerCase()` 后是否含 `+`"；⇒ 三种 open token 名与 HTML tag 配对逐字＝`ordered_list_open`/`ol`、`bullet_list_open`/`ul`、`todo_list_open`/`ul`；⇒ `markup` 一律＝"匹配到的末字符的 `String.fromCharCode`"。
+
+### 三、行内侧的方括号语法（与上一节**不是**同一套判据）
+
+⇒ 逐字判据＝"当前列表样式为 bullet" 且 "文本以`[ ] `或`[x] `开头" ⇒ 三个动作＝往列表样式栈压 `todo`、`todoChecked`＝该串第 2 个字符是否等于小写 `x`、文本砍掉前 4 字符；⇒ ★ 机器计数＝**主 chunk 里带方括号的"未勾选"字面量出现 1 次、"勾选（小写）"字面量与它同一处，大写形式的任务标记字面量 0 次**。
+
+### 四、两枚 meta 键名的字面值（第 117 批只见别名，本轮拿到字符串）
+
+⇒ 逐字＝`craftOrigTagName`、`craftIsOpenTag`；⇒ 写入点＝只处理 `html_block` 的那个函数，用两条正则（开／合）判出标签名后写 `n.meta[键]`；⇒ ☆ 值是**布尔**（开＝真、合＝假），不是字符串。
+
+### 五、三枚埋点名（✎ 加固上批"一条"的说法）
+
+⇒ 模板逐字＝`html_<标签>_count`、`html_<标签>_lines`、`html_<标签>_createdBlocks`；⇒ ☆ 三个都只在"是开标签"时上报；⇒ `_lines` 的值＝该块内容按换行切分后的段数、`_createdBlocks` 的值＝该次产出的块数。
+
+### 六、导出侧的样式常量表（★ 新 chunk，`vendor-craft-export-DIm_3hRN.js` @828）
+
+⇒ 八键逐字＝`numberedListStyle`（值含占位的`{number}. `）、`bulletListStyle`＝`- `、`toggleListStyle`＝`+ `、`todoListStyleChecked`＝**勾选档用大写 X**、`todoListStyleUnchecked`＝`[ ] `、`lineStyle`＝`---`、`fixListOrders`＝真、`fixIndentationLevel…`（同名前缀的第二个修复开关）；⇒ ★★★ 与第 116 批那条"导出用三空格缩进"同族：这张表证明**导出侧的列表／分隔线写法全是一组可配常量**，而导入侧把它们当字面量认 ⇒ ⇒ **"导出写大写 X、导入只认小写 x"落在同一份代码的两侧**（照记，不判成 bug）。
+
+### 七、导入器配置默认值（四键）
+
+⇒ 逐字四键＝`autoConvertRemoteLinksToFiles`、`parseAdditionalAttributes`、`parseMarkdownStyleSubpages`、`handleIconsInAsideTags`，默认值全为假；⇒ ★ 机器计数＝前三枚在主 chunk 内**各只出现 1 次**（＝只有这一处声明），第四枚出现 4 次（声明＋导出侧注册＋返回前合并＋另一处调用）；⇒ ☆ 另：这张默认值表所在函数的参数顺序＝(文本, 导入上下文, 配置)，配置是**被展开覆盖**的（⇒ 调用方可逐键覆盖）。
+
+### 八、标签 → 排版层的映射表（九键，兜底 `body`）
+
+⇒ 逐字＝`h1`→`title`、`h2`→`subtitle`、`h3`→`heading`、`h4`→`strong`、`h5`→`strong`、`h6`→`strong`、`p`→`body`、`pageRegular`→`pageRegular`、`pageCard`→`pageCard`；⇒ ★ **读不到键时兜底＝`body`**；⇒ ☆ 两条含义：⑴ 官方层级词表（title/subtitle/heading/strong/body）在**导入侧也是同一套**，与第 109 批"层级词表不是 H1–H4"的结论互证；⑵ **h4/h5/h6 三档合并成 `strong`** ⇒ 从 HTML 导入时**四级以下标题的层级信息丢失**（只剩三级可区分）。
+
+**仍未采到（本节）**：① 导出样式常量表的**完整键集**（本轮只读到列表／分隔线一族，缩进与代码块族在第 116 批读到）；② `Avt` 的标记候选集（`-`/`*`/`+` 还是别的）；③ 大写 X 是否被上游某个规整步骤降级（只有上屏能判）；④ `pageRegular`/`pageCard` 两个"标签"从哪来（官方文档导出里有这两档吗）。
