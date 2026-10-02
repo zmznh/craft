@@ -2172,3 +2172,175 @@ documents list --location daily_notes --daily-note-after 2020-01-01 ⇒ No docum
 ```
 
 ⇒ ☆ 逐 id 关系＝回收站那 6 行是裸跑 14 行的**子集**（G1155 第三次复证、第一次逐 id 对上）；⇒ ★ 时间戳形状（只写形状，具体时刻不进产物）＝`created: <ISO 本地时刻>`，本轮 14 行里毫秒段**全为 `.000`**、偏移**全为 `+08:00`**，且三篇官方样板文档的 `created` 与 `modified` **逐字相同**（＝从未修改过的旁证）。
+
+## 四十九、第 129 批逐字串（✓数据桥只读 2026-10-02 01:5x–02:2x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／姓名／时间戳折占位，原文只留 `_harvest/b129-help.txt`（gitignore 目录内），卡片十六份的**完整原文**也在该 dump）
+
+### 一、★★★★ 游标的生产条件三行（`blocks get --help` 的 `Pagination notes:` 小节，逐字）
+
+```
+Pagination notes:
+  - Cursor pagination applies to direct children of the fetched block/page (top-level content array).
+  - If the target has 50 or fewer direct children, no cursor is returned, even for very deep/nested content.
+  - In markdown mode, the cursor is shown in a "Next page:" line. In json mode, it is returned as nextCursor.
+```
+同卡片另两行逐字＝
+```
+If a cursor becomes invalid (CURSOR_INVALID), the underlying data has changed — retry without --cursor.
+         blocks get ABC-123 --depth 5 --cursor 50:cache-key
+```
+⇒ ☆ 游标形状第一次到手＝`<数字>:<cache-key>` 样式（历批只知"不透明令牌"）；⇒ ★ 该卡片 Example 段第一行写 `blocks get ABC-123`（位置式），Flags 段第一行写 `--id <blockId>` 且注明 `same target semantics as positional ID`。
+
+### 二、★★★ 值域拒绝＋整卡重放（`collections items-get --page-size 500`，第六种回包形）
+
+```
+Command 1 failed: collections items-get --collection <collectionBlockId> --page-size 500
+Invalid --page-size: 500. Must be between 1 and 200.
+
+Usage: collections items-get --collection <collectionBlockId> [--cursor <token>] [--depth <n>] [--format <format>] [--page-size <n>]
+…（随后该动词整张 usage／Flags 卡片原样重放，逐字同 `--help`）…
+Stopped after failure; earlier commands were already applied.
+```
+对照那一发（界内、不生效）＝`--page-size 1` 打在 **3 条目**集合上：
+```
+Collection: <collectionName> <collectionBlockId>
+Items: 3
+Format: text
+```
+⇒ ★★ 三条头部逐字都在＝`Collection:`／`Items: 3`／`Format: text`；⇒ ★★★ **"值被拒"与"值不生效"落在同一枚旗标上**（G1276）；⇒ ☆ `Format: text`＝回包自己声明**生效的缺省格式**，是本批第四种"输出层自述"。
+
+### 三、★★★ 互斥拒绝四句（两动词、四组合，逐字；注意两份文案不同）
+
+```
+documents list --folder <fid> --location unsorted
+⇒ --location and --folder cannot be used together. Use --location for virtual locations (unsorted, trash, templates, daily_notes) or --folder for a specific folder ID — not both.
+
+search --include roadmap --location unsorted --folder <fid>
+⇒ --location and --folder cannot be used together. Choose one filtering mode.
+
+search --include roadmap --document <did> --location unsorted
+⇒ Command 1 failed: …
+   --document cannot be combined with --location or --folder filters.
+   Stopped after failure; earlier commands were already applied.
+
+search --include roadmap --document <did> --folder <fid>
+⇒ --document cannot be combined with --location or --folder filters.
+```
+⇒ ☆ 四发全部**先于取数**被拒（零检索、零列目录）；⇒ ★ 同一约束 `documents list` 那份**把 location 四档值重述一遍**、`search` 那份只有一句；⇒ ☆ `--document` 的两发**逐字同一句**。
+
+### 四、★★★ `--fetchMetadata` 有／无对照（簇五枚；姓名与 spaceId 折占位，具体时刻不进产物）
+
+不带（`--format json --depth 0`）＝块对象五键：
+```
+{"data":[{"id":"<rootBlockId>","type":"page","textStyle":"page","markdown":"<官方样例页标题>","contentPreviewMd":"<markdown 预览，尾部逐字 …and 28 more blocks>"}]}
+```
+带＝多出**一整个 `metadata` 对象**、其余逐字不变：
+```
+"metadata":{"lastModifiedAt":"<ISO，毫秒全 .000，偏移 +08:00>","createdAt":"<同形>","lastModifiedBy":"<personName>","createdBy":"<personName>","clickableLink":"craftdocs://open?spaceId=<spaceId>&blockId=<rootBlockId>"}
+```
+⇒ ★★★ 五枚＝when 两枚＋**who 两枚（真人姓名）**＋link 一枚；⇒ ★ `clickableLink` 用 `blockId=` 且值＝rootBlockId（第三种链接形态）；⇒ ☆ 另一发对照（同一动词、不同页面）里键集**多一枚 `"styling":{"fontFamily":"system"}`、且 `markdown` 为空串** ⇒ 块对象键集不闭合。
+
+### 五、★★ 总量越界的第三种自述写法（`folders explore-icons rocket --offset 999`）
+
+```
+Offset 999 exceeds total of 1 results.
+```
+⇒ ☆ 一句话同时给出**越界拒绝**与**命中总量**；⇒ ★ 顺带证明 `explore-icons <search-term>` 是**过滤**（`rocket` 命中 1 枚）不是浏览。
+
+### 六、★★★ 旗标别名行（`whiteboards elements get --help` 整卡，版式④＝`Options:`）
+
+```
+Usage:
+  whiteboards elements get --whiteboard <whiteboardBlockId>
+  whiteboards elements get <whiteboardBlockId>
+
+Options:
+  --whiteboard  Whiteboard block id. Aliases: --whiteboard-block, --whiteboardBlockId, --whiteboardId, --id.
+
+Returns elements, assets, and appState as JSON, matching the legacy whiteboardElements_get tool.
+```
+⇒ ★★★ 一枚语义**四枚别名**、且 **kebab 与 camel 混写**；⇒ ★★ 文案里存活两枚 snake_case 旧工具名（本枚 `whiteboardElements_get`、另枚见 §七 `connection_info`）；⇒ ☆ 该卡片**无 Example、无 Tip**。
+同段的分组节点回包（`whiteboards elements --help`）＝版式⑤：
+```
+Available commands:
+
+  whiteboards elements get - Get elements, assets, and app state for a whiteboard block
+```
+⇒ ★☆ 分组节点的 `--help` 回的是**子名单**（与 `Unknown command` 同形），且描述写 `app state`（两词）而叶子卡片写 `appState`（驼峰）＝**同一动词在分组行与叶子卡片上描述逐字不同**。
+
+### 七、☆ 另两枚"版式④／③"小卡逐字（`connection info`、`documents resolve-link`）
+
+```
+Usage:
+  connection info
+
+Returns the same connection metadata previously exposed by connection_info.
+```
+```
+Usage: documents resolve-link <craftdocs-or-web-url>
+       documents resolve-link --url <craftdocs-or-web-url>
+
+Converts Craft app/web document links to the rootBlockId used by blocks get/write commands.
+Craft URLs contain a raw documentId that is for opening the app; it is not necessarily the block ID MCP tools need.
+```
+⇒ ☆ `--url` 只在签名行（该卡片零旗标段）；⇒ ★ 官方自己把"app 链接里的 documentId 不是 MCP 要的 id"写成散文＝第 113 批双 id 口径的**第二次契约自报**。
+
+### 八、★★ `tasks list --help` 的两段自述（版式③：签名行有旗标、无 Flags 段）
+
+```
+Usage: tasks list [--scope <scope>] [--document <rootBlockId>] [--cursor <cursor>]
+
+Scopes: active (default), upcoming, inbox, logbook, document, all
+
+Scope descriptions:
+  active   - Open tasks whose task date (schedule, otherwise deadline) is <= today
+  upcoming - Open tasks whose task date (schedule, otherwise deadline) is >= tomorrow
+  inbox    - Task blocks in the inbox document
+  logbook  - Completed or canceled tasks
+  document - Tasks in a specific document (requires --document <rootBlockId>)
+  all      - Every task block in the full space, across all documents and states; not a union of the other scopes (full-space MCP only)
+```
+卡片末行逐字＝`Task dates notify in-app. For timed alerts on any block: reminders --help.`
+⇒ ★★ "task date" 的**取舍次序**（schedule 优先、缺则 deadline）第一次成文；⇒ ★ `logbook`＝完成**或取消**；⇒ ★★ `all` 自述**"不是其余各档的并集"**；⇒ ☆ 三枚旗标全在签名行＝历批"抓 Flags 段"会整族漏读的那个实例。
+
+### 九、☆ `search --help` 的两段新类自述（互斥小节＋RE2 声明）
+
+```
+  --include <term>            Match raw text term (AND semantics; repeatable)
+  --regexp <pattern>          Match RE2 regex pattern (AND semantics; repeatable)
+```
+```
+Mutual exclusivity:
+  - --location and --folder cannot be combined
+  - --document cannot be combined with --location/--folder
+```
+⇒ ★★ 契约里出现**正则引擎名**（RE2），而 `folders list` 的自报描述写的是 `--filter <JS regex>` ⇒ **两种方言并存**（本批只到"官方声明了 X"，未自证）；⇒ ☆ `--include`＝检索词的**旗标式**（与位置式并存），历批只用过位置式；⇒ ☆ 卡片日期旗标 6 枚（含 `--daily-note-after/before`）与 `documents list` 同族同序。
+
+### 十、☆ `--no-id` 双读数的第二发逐字（裸 `folders list`，与第 128 批在册值逐字相同）
+
+```
+Showing 1-2 of 2 folders with the following format: <folderId> Folder Name (document count)
+
+* <folderId> <folderName> (3 docs)
+  * <folderId> <folderName> (2 docs)
+```
+⇒ ★ 两次独立读数逐字相同＝G1271 由"本轮实测 × 历批在册"升为**本轮双读数**；⇒ ☆ 两枚 folder 名折占位（其一为中文短名，无法判定官方样例还是账户自建）。
+
+### 十一、☆☆ 三枚"卡片名册"逐字（例子≠全集的两例＋真生效的一例）
+
+```
+Washi patterns:
+  hex       Hexagon pattern
+  dot       Dot pattern  
+  stripe    Stripe pattern
+  Custom patterns via --washi-pattern in blocks update
+```
+```
+Theme types:
+  page      Page themes (loaded from S3)
+  fonts     Page font families (system, serif, rounded, mono)
+  code      Code editor color themes (dracula, githubdark, etc.)
+```
+```
+Lists table, gallery, and kanban view definitions.
+```
+⇒ ★★ 第一份只有 **3 档**而第 124 批真调用回的是更长的名册 ⇒ **卡片名册≠真名册**；⇒ ★ 第二份的 `fonts` 档**历批从未真调用**（登记为下批队列）；⇒ ☆ 第一份 `dot` 行尾**两个空格**（官方文案自带尾随空格）；⇒ ★ 第三份＝`collections views-list` 的视图类型自述**恰好三档**（table／gallery／kanban），与第 124 批真调用的回包口径一致。

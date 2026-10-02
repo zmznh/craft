@@ -3275,3 +3275,43 @@ Craft app/web links contain a different raw documentId; use documents resolve-li
 ### 四、☆ 一条与本地模型直接相反的读数（不是差分，是提醒）
 
 ⇒ 官方声明缺省作用域返回 **ALL**（含回收站），本地 `searchAll` 缺省写死 `isDeleted: false`（`src/actions/document/search.ts:70`）＝**排除**回收站 ⇒ ☆ 这条自第 122 批起在册；本批新增的只是"官方契约自己也说 ALL"这半句 ⇒ 判定不变、不改代码、不升 P0。
+
+## 一之八十、**第 129 批＝块级元数据第一次拿到"谁"这一层：`--fetchMetadata` 加出一整簇五枚字段（两枚真人姓名＋一枚内嵌空间标识的深链），而同一份 json 回包的键集不闭合（`styling` 可整枚缺席）⇒ 本地模型的缺口不在时间列，在"谁"列**（✓数据面只读 2026-10-02 01:5x–02:2x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇八〇 G1276–G1283，机制在 `internals.md` §六十二，逐字在 `longtail.md` §四十九，判据在 `interactions.md` V123；☆ `styles.md` 本批无新节＝零色值读数）
+
+### 一、★★★ 块级元数据＝一整簇"加法"，五枚字段分三层（when／who／link）
+
+⇒ 基线（不带旗标）＝`blocks get <rootBlockId> --format json --depth 0` 的块对象只有五键＝`id`／`type`／`textStyle`／`markdown`／`contentPreviewMd`；
+⇒ 加 `--fetchMetadata` 后**多出一整个 `metadata` 对象、其余键逐字不变**＝所以它是**加法不是改写**（☆ 与 G1274 那枚"值被丢弃"的静默旗标不同，这枚真落地）；
+⇒ ★★ `metadata` 簇内**恰好五枚**，按层分＝
+  - **when 层**＝`createdAt`／`lastModifiedAt`（☆ 形状与第 128 批那组一致＝ISO 串、毫秒全 `.000`、偏移全 `+08:00`；**本批仍只登记形状、不把具体时刻写进产物**）；
+  - **who 层**＝`createdBy`／`lastModifiedBy`＝**账户持有人显示名（真人姓名）** ⇒ ★★★ 这是历批第一次有**官方只读回包把人的姓名带进块级 JSON**（第 128 批只证到 `uid`＝空间标识＝账户标识，这条是它的姓名版）；
+  - **link 层**＝`clickableLink`＝`craftdocs://open?spaceId=<spaceId>&blockId=<rootBlockId>`；
+⇒ ☆ 判据入册＝**凡带 `--fetchMetadata` 的回包只能进 gitignore 的 `_harvest/`**（一枚旗标同时外泄三类标识符＝姓名＋空间标识＋深链，比第 128 批那枚 `--metadata` 更宽）。
+
+### 二、★ 第三种链接形态：`craftdocs://` 的 `blockId=` 参数装的正是 rootBlockId
+
+⇒ 在册的两套（第 113 批）＝web URL `/editor/d/<spaceId>/<documentId>` 用 **documentId**、`documents resolve-link` 是**唯一反向翻译器**；
+⇒ ★☆ 本批从官方自己生成的 `clickableLink` 里读到第三套＝**深链 `craftdocs://open` 用 `blockId=` 参数、值＝rootBlockId**（☆ 与第 126 批 `connection info` 那枚 `blockId=` 同形，两处独立复证）；
+⇒ ☆ 所以"两个 id 命名空间"的准确说法是**一个值有三种载体**：rootBlockId 可以出现在深链参数、块 JSON 的 `id` 键、和 `documents list` 的行首尖括号里；documentId 只出现在 web URL；
+⇒ ★ 模型含义＝本地若要生成"可点击回到某块"的链接，**该用 `blockId=`＋rootBlockId**，不是文档 id。
+
+### 三、★★ 同一份 json 的键集不闭合：`styling` 可整枚缺席、`markdown` 可为空串
+
+⇒ 两发对照（同一动词、同一参数、不同页面）＝页面 A 回 `{id,type,textStyle,markdown,contentPreviewMd}`，页面 B 回 `{id,type,textStyle,**styling**,markdown,contentPreviewMd}`；
+⇒ ☆ 且页面 B 的 `markdown` 是**空串**而 `contentPreviewMd` 有内容 ⇒ **`markdown` 与 `contentPreviewMd` 不是同一份数据的两种写法**（前者在 `--depth 0` 下可以是空）；
+⇒ ★★ `styling` 缺席那一发里 `textStyle` 仍然是 `"page"` ⇒ **`textStyle` 与 `styling` 是两个独立可选维度**（第 127 批实测 `styling.backdrop` 是 JSON 字符串，本批复证 `styling.fontFamily` 可以是 `"system"`）；
+⇒ ☆ 复刻含义＝本地若按"块对象有固定 schema"来消费官方 json 会炸；**判据＝键集按"可选簇"建模，不要按等集建模**（与第 111 批"`settings` 是变长对象（键数 7～11）"同族，本条是块对象这一层的对应证据）。
+
+### 四、★ `contentPreviewMd` 尾行自述剩余块数＝一条免费的规模探针
+
+⇒ 实读＝预览串被截断后**尾巴写着 `...and 28 more blocks`**（☆ 逐字含省略号与 "more blocks"）；
+⇒ ★ 模型含义＝官方在**不给全树**的情况下给出"还差 N 块"的计数 ⇒ 这既是"预览"与"正文"分家的证据（`contentPreviewMd` 是**展示用摘要**、不是完整序列化），也是一条**判断某页是否够到游标生产条件（>50 直接子块）的廉价旁证**（G1279 用的就是它）；
+⇒ ☆ 本地对应物＝`Document.plainText`（`prisma/schema.prisma` 注释自述"提取纯文本，用于搜索"）＝**用途不同**（本地给搜索、官方给展示）且**无剩余计数** ⇒ 属有意偏差候选，不是缺陷。
+
+### 五、☆ 集合层的两套词汇（声明层第二次到手）
+
+⇒ `collections schema --help` 逐字写 `Flag mode uses display names; --items JSON uses keys.`；
+⇒ ★ 第一次到手是第 124 批的真调用读数（属性有 key 与显示名两列），本批是**契约自己第二次成文**；☆ 而且本批实读里回包显示的属性名是**中文短名**（`项目:`）⇒ 与"display name 给用户看"这条对上，⇒ 判据＝**读集合属性时先看是不是 flag 模式**，两模式的词表不可互换；
+⇒ 三处 `--format` 值域互不相同（`markdown|json`／`text|markdown`／`text|json`）＝**"输出格式"在官方只读面不是一个统一枚举**，本地若要做导出层不能假设一套 format 值集通用（详见 G1283）。
+
+⇒ ⇒ **仍未采到（本节）**：① `metadata` 簇在**非 page 块**上是否有同样五枚（本批只测了页面级两发）；② `createdBy` 与 `lastModifiedBy` 在**多人协作文档**上是否会不同（本账户只有一人 ⇒ 两枚值相同不构成"官方只有一枚作者"的证据，别反向推）；③ `styling` 簇的**完整键集**（本轮只见到 `fontFamily` 与历批的 `backdrop` 两枚，缺席条件未测）；④ `contentPreviewMd` 的**截断长度**是字符数还是块数决定（同一回包里 `markdown` 短、预览长，未量化）；⑤ 集合 `--items` JSON 模式的 key 词汇表（本轮只跑只读、没碰写侧）。
