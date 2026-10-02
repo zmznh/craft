@@ -2678,3 +2678,103 @@ Tip: Use "blocks get --help" for this usage reference.
 ⇒ RE2 侧 `search --include Craft --regexp "\p{L}{40}"` → `No matches found for the provided search criteria.`（**接受、无报错**）；
 ⇒ JS 侧 `folders list --filter "\p{L}{40}"` → `No folders matching "\p{L}{40}".`（**也接受**，回显原串）；
 ⇒ ☆ 合起来＝**双向静默**＝这发判不出任何方言差异（对照第 132 批 `(?i)how`＝`Invalid JavaScript regex: (?i)how` 那一发的"一侧明确报错"）＝登记成 G1313 的"探针形状"事实而不是方言事实。
+
+## 五十四、第 134 批逐字清单（✓数据桥只读 2026-10-02 07:1x–07:5x 本地；★ 零屏幕、零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 本批回包里有**用户自己写的正文**（含本次采集任务书那一枚块）⇒ 本节一律只留官方欢迎页／示例页的短句与报错串，用户正文一个字不抄，块级内容写成"某条目（正文不抄）"＋枚数）
+
+### 一、★★★ 引擎方向补全＝后顾（本批第一次"RE2 拒／JS 执行"）
+
+```
+search --include Craft --regexp "(?<!a)b"
+  → Invalid regular expression pattern: (?<!a)b
+
+folders list --filter "(?<!a)b"
+  → No folders matching "(?<!a)b".
+
+folders list --filter "(?<!x)H"
+  → 命中 1 枚文件夹（☆ 这一发才把上一行的"不报错"升成"按后顾语义执行"）
+
+search --include Craft --regexp "\p{L}+"      → 9 条／5 篇（拉丁段＋CJK 段成段命中）
+folders list --filter "\p{L}+"               → No folders matching "\p{L}+".（编译通过、按字面、不命中）
+```
+
+⇒ ☆ 历批五枚方言探针的方向＝`(?i)`／`(?=`／`(a)\1`＝**JS 拒、RE2 收**；本批 `(?<!a)b`＝**RE2 拒、JS 收**＝两张能力表第一次双向钉死（`internals.md` §六十七 二）。
+
+### 二、★★★★ 加粗"两张脸"与"第 6 枚被切"＝显示层改判的两组逐字（G1319）
+
+```
+（同一枚条目）--include Craft
+  Match: here's a 'how to' of **craft**'s features....
+
+（同一枚条目）--include Craft --regexp "\p{L}+"
+  Match: **here**'**s** **a** '**how** **to**' of craft's features....
+         ↑ 前五枚字母段被粗，craft 反倒白字（排在截断线之后，同段的 of 也在其后）
+
+--include Craft --regexp "channel"（历批在册那条的补读）
+  Match: 同一条目里 craft 出现两次、只有第一处 **craft**＝第二次白字
+
+--include e
+  Match: W**e**lcom**e** to Craft   ← Craft 白字（本轮没有 Craft 这个条件）
+  Match: ...writing should b**e** fun, simpl**e** and writing...  ← 第二个 writing 白字
+
+（三枚合集块聚成一条，Hydrated blocks: 3）
+  Match: **合集** **项目** **合集** **项目** **合集** 项目
+         ↑ 六段标题文本：前五枚逐字加粗、第六枚「项目」白字
+```
+
+⇒ ☆ 一条配套读数（**不是新增调用**＝收尾复核本批已有回包时看到的结构）＝同一块 `f8cd15bb…` 在三种下发里分别作为**含 2／4／5 枚的 `Blocks:` 名单首位**出现，而它的 `Match:` 窗口可见加粗枚数是 4 或 5：
+
+```
+Match: **learn** **craft** **fast** **with** our short 'how to videos'....        ← 窗口内 4 枚
+Match: **learn** **craft** **fast** **with** **our** short 'how to videos'....    ← 窗口内 5 枚
+```
+
+⇒ ⇒ 结论＝`Blocks:` 名单枚数与 `Match:` 窗口加粗枚数**是两栏**＝加粗序列按"整块全部命中"计算、`Match:` 只是切片＝这条同时解释"为什么有的条目少于 5 枚粗"（序列前段落在了窗口之外）。
+
+### 三、★★★ `--date` 那条签名第一次跑通＝五发逐字（G1322）
+
+```
+blocks get --date today --format json --depth 0
+  → Daily note for date 2026.10.02 does not exist.
+
+blocks get --date tomorrow --format json --depth 0
+  → Daily note for date 2026.10.03 does not exist.（相对量词按本机日历）
+
+blocks get --date 2026-10-01 --format json --depth 0
+  → 同句型、日期 2026.10.01（卡片声明的短横形被接受且解析正确）
+
+blocks get --date 2026.10.02 --format json --depth 0
+  → 与 today 同句（☆ 点分形实测也被接受＝卡片只声明了一形）
+
+blocks get --date bogus --format json
+  → MCP error -32603: … Unified api error (400): Invalid date format, should use: ####.##.##
+```
+
+⇒ ★★ 本批唯一一条**契约文案缺陷候选**＝卡片写 `YYYY-MM-DD`、而**实现自己报的规范格式是点分 `####.##.##`**＝两形都收、文档只声明一形；⇒ ☆ 这条属官方 MCP 文案面 ⇒ 按口径**不进 §〇 P0**（判据见 `gap.md` §三点一〇八五 G1322）。
+
+### 四、★★ `--id` 与位置参数＝逐字相同（G1316）
+
+```
+blocks get --id <blockId> --format json --depth 1   → 合集块 + items[]（3 枚 item、每枚 5 键、无 content）＝响应长度 458
+blocks get <blockId> --format json --depth 1        → 与上一行逐字相同
+```
+
+⇒ ☆ 目标是一枚官方示例合集块（正文不抄）；⇒ 三条签名（位置／`--id`／`--date`）至此**全部有实测覆盖**＝`model.md` §一之八十五 三。
+
+### 五、☆ `documents list --metadata` 的形状读数（G1323，不复述任何标题与正文）
+
+```
+documents list --metadata → 14 篇
+  · Title 为空 5 篇，其中 2 篇正文很长（＝"空标题"≠"空内容"）
+  · 键集里不含 createdBy／lastModifiedBy（身份面只在 --fetchMetadata 那一档＝复证 G1280 分档）
+  · 默认档列表含回收站 ⇒ 三条历批沙盒名出现在这里（本批未读未动，不构成"还活着"的证据）
+```
+
+⇒ ☆ 本批**零作者名字段接触面**＝姓名针无事后可核（与历批"针无源"那条一致）。
+
+### 六、☆ 同输入确定性第四次复证（不新编号）
+
+⇒ `search --include Craft` 的 12 条／5 篇与第 130／131／132 三批**逐字同序同集合**；☆ 而加入万能 regexp 后文档序换首位＝序是"每次查询各自排"的 ⇒ 历批"跨批一致"只因为输入相同（G1320 否证"全局秩"）。
+
+## 仍未采到（第 134 批末，逐字面口径）
+
+① 万能 regexp 的**完整加粗序列**只在 `Match:` 窗口内可见＝窗口外那几枚的逐字形态没采到（要一枚"块首在窗口内、命中极密"的目标）；② `Blocks:` 名单与 `Match:` 窗口的**对应规则**（同块为何有时列 2 枚有时 5 枚）只观测到差异、未采到成因；③ `--date` **命中时**的回包（本账户零日记页，只采到"不存在"与"非法"两档）；④ 后顾在 RE2 上的**替代写法**（官方有没有别的转义口径）未试；⑤ `No folders matching "<expr>".` 里 `<expr>` 的回显是否原样保留反斜杠（本批 `\p{L}+` 那发的回显看起来原样，但没有专门核）＝☆ 一发可结，下批顺带。
