@@ -170,6 +170,22 @@ export function Editor({
     savingRef.current = true;
     setSaveState('saving');
     try {
+      if (collaborative) {
+        // The Yjs room is the source of truth, and the collab server mirrors it
+        // into Document.content. Writing that row from every open tab is what
+        // used to clobber newer edits with a stale full-document overwrite, so
+        // only the side tables that nothing else derives are synced here.
+        lastSavedRef.current = pending.contentStr;
+        pendingRef.current = null;
+        setSaveState('saved');
+        onUpdate?.(pending.content, pending.plainText, pending.wordCount);
+        await Promise.allSettled([
+          syncBacklinks(documentId, collectLinkedDocIds(pending.content)),
+          syncDocumentTasks(documentId, collectTaskItems(pending.content)),
+        ]);
+        return;
+      }
+
       await updateDocument(documentId, {
         content: pending.content,
         plainText: pending.plainText,
@@ -479,7 +495,27 @@ export function Editor({
     if (collaborative && collabState === 'synced' && collabDoc && initialContent) {
       const fragment = collabDoc.getXmlFragment('default');
       if (fragment.length === 0 && editor.isEmpty) {
-        editor.commands.setContent(initialContent as never);
+        // Migrating a legacy document into its room. Only the client that wins
+        // the server-side claim may do it: two seeders mean two independent
+        // inserts of the same body, and the CRDT merge keeps both.
+        void (async () => {
+          let granted = false;
+          try {
+            const res = await fetch('/api/collab/claim-seed', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ documentId }),
+            });
+            granted = res.ok && (await res.json())?.granted === true;
+          } catch {
+            granted = false;
+          }
+          if (!granted) return;
+          // Re-check under the claim: another client may have seeded while the
+          // request was in flight.
+          if (collabDoc.getXmlFragment('default').length > 0) return;
+          editor.commands.setContent(initialContent as never);
+        })();
       }
       return;
     }
