@@ -2778,3 +2778,88 @@ documents list --metadata → 14 篇
 ## 仍未采到（第 134 批末，逐字面口径）
 
 ① 万能 regexp 的**完整加粗序列**只在 `Match:` 窗口内可见＝窗口外那几枚的逐字形态没采到（要一枚"块首在窗口内、命中极密"的目标）；② `Blocks:` 名单与 `Match:` 窗口的**对应规则**（同块为何有时列 2 枚有时 5 枚）只观测到差异、未采到成因；③ `--date` **命中时**的回包（本账户零日记页，只采到"不存在"与"非法"两档）；④ 后顾在 RE2 上的**替代写法**（官方有没有别的转义口径）未试；⑤ `No folders matching "<expr>".` 里 `<expr>` 的回显是否原样保留反斜杠（本批 `\p{L}+` 那发的回显看起来原样，但没有专门核）＝☆ 一发可结，下批顺带。
+
+## 五十五、第 135 批逐字清单（✓数据桥只读 2026-10-02 11:2x–11:5x 本地；★ 零屏幕、零写入 ⇒ `manifest.jsonl` 155 行不变；☆ **纪律升级**＝本批凡引用"粗枚数／名单枚数／行数"都同批留下可复算逐字片段（历批只报计数、本批发现无法复核）；☆ 三发检索回包含**用户自己写的正文**（任务书文档那一枚块，且正文里内嵌 spaceId 明文）⇒ 本节一律不抄正文、id 一律折占位）
+
+### 一、★★★★ 加粗上限 K＝5 的正控制（`--include Craft --regexp "\p{Han}+"`，只回 1 条）
+
+⇒ ⚠ **一条纪律冲突与裁决（本批新遭遇，必须写下来）**＝本批刚立的"凡引用结构计数都要留可复算逐字片段"（`internals.md` §六十八 四）与"**产物里不复述用户自己的长文本**"撞上了＝这一枚块**正是本次采集任务书的正文** ⇒ **隐私规则优先**＝这里只记形状、不记逐字＝☆ 代价＝这一枚计数**不可由第三方复核**＝登记时明确标"属用户内容面＝形状读数"；
+
+```
+形状（正文一律不抄；spaceId 折占位）：
+  [CJK 段1] @ **craft**'s-space--<spaceId>/all [CJK 段2]，[CJK 段3] 1:1 [CJK 段4]： …其后同段还有多段 CJK 命中，全部白字
+  ⇒ 序列里被上色的恰好 5 处 ＝ [CJK 段1] → **craft** → [CJK 段2] → [CJK 段3] → [CJK 段4]
+  ⇒ 第 6 处起（同一枚块内、同样满足 \p{Han}+ 的多段）一律白字
+```
+
+⇒ ⇒ 为什么这是"正控制"＝该枚块的**可见命中数明显大于 5**（同一句里后面还有多段满足条件却全白）＝历批三批都只在"命中数不明"的回包上数粗枚数，所以只能得到"≤5"的上界；
+⇒ ★ 一条构成证据＝第 2 处上色来自**另一枚条件**（`--include Craft`）＝两枚条件的命中**排进同一条序列**＝G1319 的"序列前 K 枚"模型第二次独立成立（上批从"两张脸"反推，本批从"密集块"正证）；
+⇒ ⇒ 本地实现＝取该条目命中序列的**前 5 处**上色＝数值已可写死。
+
+
+### 二、★★★★ 同参数两发之间的唯一差异逐字（队列①之外的本批第二硬）
+
+```
+第 4 发  Match 第 9 条第二行： **writing** **should** **be** fun, simple and writing tools should get out of the way. craft is there to make this happen and...
+第 6 发  Match 第 9 条第二行： **writing** **should** be fun, simple and writing tools should get out of the way. craft is there to make this happen and...
+         （同一条命令：search --include Craft --regexp "\p{Ll}+"）
+```
+
+⇒ 两发之间**其余 8 条、文档序、每条 `Created`／`Modified` 全部相同**＝☆ 只有这一处 `be` 粗与不粗不同＝**显示层高亮不是输入的确定函数**（G1326）；
+⇒ ☆ 顺带一条同族差异＝`\p{Ll}+` 与 `\p{L}+` 两发的**第 4 条**都是 4 枚粗（`welcome`／`to`／`craft`／`this`），而第 134 批在册记的是 5 枚＝☆ 无法复核（历批未留片段）＝见 `internals.md` §六十八 四。
+
+### 三、★★★★ "条目＝命中窗口"的三组结构逐字（都出自第 10 发 `search --include craft`＝12 条）
+
+```
+（A）第 9 条  Blocks: dc86e…（前缀折写）                 Match: 窗口一（正文不抄）
+    第 10 条  Blocks: dc86e…（前缀折写）                 Match: 窗口二（正文不抄，与窗口一不重叠）
+        ⇒ 同一枚块占两条目 ＝ 条目 ≠ 块
+
+（B）第 12 条 Blocks: 8faf7…, 86e47…, 7f030…, bd035…   （4 枚）
+    Match 行数 ＝ 5 行，且首行 "hello and welcome!" 一个粗都没有
+        ⇒ 名单枚数 ≠ 窗口行数；窗口可以带**未命中的相邻行**
+
+（C）第 11 条 Blocks: f8cd1…, daaa0…, e65e8…, 101cc…, aee86…   （5 枚）
+    Match 5 行，每行 1 枚粗 ＝ 合计 5 枚；同一发限定单篇时逐字相同且 `Hydrated blocks: 5`
+        ⇒ 一条目可以含多枚块；hydrated 计数与条目名单一致；--fetch-blocks 不改变名单长度
+```
+
+### 四、★★★ 引擎边界补全＝"注定为空的探针"（G1324）
+
+```
+search --include Craft --regexp "\p{Lu}+"   → No matches found for the provided search criteria.
+search --include Craft --regexp "\p{Ll}+"   → 9 条／5 篇（集合与文档序与 \p{L}+ 逐字相同）
+search --include Craft --regexp "\p{Han}+"  → 1 条（Script 类也支持）
+folders list --filter "\p{Lu}+"             → No folders matching "\p{Lu}+".
+folders list --filter "\d\d"                → No folders matching "\d\d".        ← 回显原样保留反斜杠
+```
+
+⇒ ☆ 三条口径＝① `\p{Lu}` 零命中是**被小写折叠注定为空**，不是"不支持"；② `\p{Ll}` 与 `\p{L}` 集合相同＝折叠面的第二次证明（用类别而非字面大小写）；③ JS 侧回显保留反斜杠＝**回显类读数**（两例即结），但"`\d` 是真类还是字面"**仍未证**（缺正控制）。
+
+### 五、★★★ 三条沙盒残留的位置结案逐字
+
+```
+documents list --location trash      → 6 document(s)：
+     <id>（标题空）× 3
+     QODER-HARVEST-B109-CODEFIELD
+     QODER-HARVEST-B111-THEME
+     QODER-HARVEST-B113-CODEBLOCK
+
+documents list --location unsorted   → 3 document(s)：Welcome to Craft ＋ 2 项标题为空（☆ 不含上面三条）
+```
+
+⇒ ⇒ 结论＝**三条都在回收站＝不是活跃实体**＝历批"默认档混含回收站所以不能判活着"的疑虑用两个专用档各读一次读掉（G1331）；☆ 本批**只读未动**＝永久清除仍等当轮具名授权；☆ 顺带＝回收站里也有 3 项空标题页。
+
+### 六、☆ 限定单篇不改变结构（G1328）逐字要点
+
+```
+search --include craft --document d06ab…        → 6 条（与全局 12 条里那 6 条逐字相同：每枚块各一条、粗各 1 枚）
+search --include craft --document 7560…        → 1 条（5 枚块聚成一条窗口、粗 5 枚）
+search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hydrated blocks: 5
+```
+
+⇒ ☆ 两篇文档给出**两种聚合形态**（各成一条 vs 聚成一条）＝限定作用域**不改变**该篇形态＝成因候选＝命中块是否相邻（未证）。
+
+## 仍未采到（第 135 批末，逐字面口径）
+
+① 回包级预算（第五次转登＝问法已拆；本轮见过 12／11／9／8／6 条都没撞顶）；② **窗口聚合成因**＝一枚"命中块被非命中块隔开"的文档与一枚"命中块连续"的文档各读一发比对（零依赖可做）；③ **高亮非确定的频率**＝同命令连发三四发数差异次数（零依赖可做；☆ 本批只观测到 1 处）；④ `\p{L}`／`\d` 在 JS 侧是字面还是真类＝需一枚名字里真含 `p{L}` 或数字的文件夹（写侧）；⑤ 日记页命中时的回包形状（本账户零日记页＝写侧）；⑥ 三条残留的永久清除（位置已结、动手要具名）。
