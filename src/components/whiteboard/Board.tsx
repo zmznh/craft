@@ -54,6 +54,14 @@ function SyncedBoard({ uri, editable }: { uri: string; editable: boolean }) {
 
   return (
     <div className="h-full w-full">
+      {/*
+        Licensing: the SDK reads NEXT_PUBLIC_TLDRAW_LICENSE_KEY automatically, so
+        no prop is needed. Without a valid key in a production environment the
+        canvas renders for ~5s and then blanks out — configure the key before any
+        public HTTPS deploy. See docs/superpowers/notes/tldraw-license-gate.md.
+        Never pass a prop or CSS that hides the "Made with tldraw" watermark: it
+        is a condition of the (free, non-commercial) hobby licence.
+      */}
       <Tldraw
         store={store.store}
         assetUrls={{ fonts: BOARD_FONT_URLS }}
