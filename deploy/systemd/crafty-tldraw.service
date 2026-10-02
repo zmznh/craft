@@ -1,0 +1,35 @@
+[Unit]
+Description=Crafty whiteboard sync server (tldraw)
+Documentation=file:/opt/crafty/README.md
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=crafty
+Group=crafty
+
+# tldraw-server.mjs reads NEXTAUTH_URL to reach the Next.js internal snapshot
+# API. It shares the same cwd requirement as the other two units.
+WorkingDirectory=/opt/crafty
+
+EnvironmentFile=/etc/crafty/crafty.env
+Environment=NODE_ENV=production
+Environment=TLDRAW_SYNC_PORT=3002
+Environment=NODE_OPTIONS=--max-old-space-size=160
+
+ExecStart=/usr/bin/node collab/tldraw-server.mjs
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+MemoryHigh=180M
+MemoryMax=220M
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crafty-tldraw
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,55 @@
+# Crafty reverse proxy — public HTTPS edge.
+#
+# Three names, one certificate. Replace crafty.example.com with your domain
+# and point all three at this box:
+#   crafty.example.com         -> Next.js     127.0.0.1:3000
+#   collab.crafty.example.com  -> Hocuspocus  127.0.0.1:3001
+#   sync.crafty.example.com    -> tldraw sync 127.0.0.1:3002
+#
+# Why subdomains instead of path prefixes: the Hocuspocus provider connects to
+# the WebSocket root path, so routing /collab -> :3001 would require the server
+# to accept an upgrade on a sub-path it does not advertise. Subdomains avoid
+# touching client or server code. Caddy proxies WebSocket upgrades with no
+# extra directives.
+#
+# Nothing else should be reachable from the public interface — 3000/3001/3002
+# bind to 127.0.0.1 only (see the systemd units).
+
+(crafty_common) {
+	encode gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "SAMEORIGIN"
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/crafty.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}
+
+crafty.example.com {
+	import crafty_common
+	reverse_proxy 127.0.0.1:3000
+}
+
+collab.crafty.example.com {
+	import crafty_common
+	# flush_interval -1 stops Caddy from buffering long-lived frames.
+	reverse_proxy 127.0.0.1:3001 {
+		flush_interval -1
+	}
+}
+
+sync.crafty.example.com {
+	import crafty_common
+	reverse_proxy 127.0.0.1:3002 {
+		flush_interval -1
+	}
+}

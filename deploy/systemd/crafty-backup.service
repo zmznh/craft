@@ -1,0 +1,31 @@
+[Unit]
+Description=Crafty off-site database backup (pg_dump -> CloudBase storage)
+Documentation=file:/opt/crafty/README.md
+After=postgresql.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+
+# Deliberately NO EnvironmentFile= here. systemd exposes EnvironmentFile values
+# through `systemctl show` to any user who can query units, which would leak
+# BACKUP_PASSPHRASE and PGPASSWORD. The script sources the file itself.
+Environment=CRAFTY_BACKUP_CONFIG=/etc/crafty/backup.env
+
+ExecStart=/opt/crafty/deploy/backup/crafty-backup.sh
+
+# The tcb CLI is a Node process; cap it so a runaway upload cannot take the box
+# down alongside PostgreSQL.
+MemoryMax=400M
+
+# A missed window should still back up, and the timer retries — but a hard
+# failure must surface rather than silently disappear into a green timer.
+TimeoutStartSec=30min
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crafty-backup
+
+[Install]
+WantedBy=multi-user.target

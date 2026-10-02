@@ -1,0 +1,40 @@
+[Unit]
+Description=Crafty web (Next.js standalone)
+Documentation=file:/opt/crafty/README.md
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=crafty
+Group=crafty
+
+# cwd MUST contain src/prisma/contract.json — src/prisma/db.ts resolves it
+# with path.join(process.cwd(), 'src/prisma/contract.json').
+WorkingDirectory=/opt/crafty
+
+EnvironmentFile=/etc/crafty/crafty.env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+# Hard heap cap. The box has 964 MiB physical; letting V8 grow freely is what
+# turns a slow request into an OOM kill of PostgreSQL.
+Environment=NODE_OPTIONS=--max-old-space-size=320
+
+ExecStart=/usr/bin/node web/server.js
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+KillSignal=SIGTERM
+
+# cgroup v2 limits. MemoryHigh throttles first; MemoryMax is the hard wall.
+# Raise these only after measuring with `systemd-cgtop -m`.
+MemoryHigh=380M
+MemoryMax=450M
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crafty-web
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+{
+  "name": "crafty-collab-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Runtime deps for src/collab/*.mjs — installed separately from the Next.js build so the 1 GB target box does not carry tldraw, React or the Next.js toolchain.",
+  "dependencies": {
+    "@hocuspocus/extension-database": "4.7.0",
+    "@hocuspocus/server": "4.7.0",
+    "@prisma/orm-postgres": "8.0.0-rc.11",
+    "@tiptap/y-tiptap": "3.0.9",
+    "@tldraw/sync-core": "5.4.2",
+    "dotenv": "18.0.3",
+    "ws": "8.21.3",
+    "yjs": "13.6.32"
+  }
+}

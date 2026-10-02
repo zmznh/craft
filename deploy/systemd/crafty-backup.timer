@@ -1,0 +1,15 @@
+[Unit]
+Description=Daily Crafty off-site backup
+
+[Timer]
+# 04:00 server local time — pick a window when you are not editing.
+OnCalendar=*-*-* 04:00:00
+# Spread the wake-up so the disk is not hammered at exactly the same second
+# every day, and so retries from a failed run do not pile up.
+RandomizedDelaySec=1800
+# If the box was off at 04:00, run as soon as it comes back.
+Persistent=true
+Unit=crafty-backup.service
+
+[Install]
+WantedBy=timers.target

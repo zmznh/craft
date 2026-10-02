@@ -1,0 +1,38 @@
+[Unit]
+Description=Crafty collaboration server (Hocuspocus / Yjs)
+Documentation=file:/opt/crafty/README.md
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=crafty
+Group=crafty
+
+# Same cwd rule as crafty-web: src/collab/persist.mjs resolves
+# path.resolve(process.cwd(), 'src/prisma/contract.json').
+WorkingDirectory=/opt/crafty
+
+EnvironmentFile=/etc/crafty/crafty.env
+Environment=NODE_ENV=production
+Environment=COLLAB_PORT=3001
+Environment=NODE_OPTIONS=--max-old-space-size=160
+
+ExecStart=/usr/bin/node collab/server.mjs
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# SIGTERM triggers server.destroy(), which flushes pending room stores. The
+# 30s TimeoutStopSec above exists so that flush can finish — shortening it
+# risks losing the last edits of an open document.
+MemoryHigh=200M
+MemoryMax=240M
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crafty-collab
+
+[Install]
+WantedBy=multi-user.target
