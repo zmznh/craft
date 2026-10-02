@@ -2457,7 +2457,7 @@ search --include Craft --regexp "craft"    ⇒ Search results: 10 match(es)
 search --include Craft --regexp "(?i)Craft"⇒ Search results: 10 match(es)     ← 与上一发逐字同集
 search --include Craft --regexp "."        ⇒ Search results: 9 match(es)      ← 历批读数复跑＝同枚数
 ```
-⇒ ★☆ 关键咬合＝`(?i)Craft` 的加粗打在**原文的大写处**（`**Craft** Handbook`、`Welcome to **Craft**`），而裸 `Craft` 却是 0 条 ⇒ **匹配面＝折叠过大小写的文本；显示面＝原文**＝两侧不同源（G1292）；
+⇒ ★☆ 关键咬合＝`(?i)Craft` 的加粗打在**原文的大写处**（`**Craft** Handbook`、`Welcome to **Craft**`），而裸 `Craft` 却是 0 条 ⇒ **匹配面＝折叠过大小写的文本；显示面＝原文**＝两侧不同源（G1292）；＝⚠ **✎ 第 138 批作废后半句**＝本段举的两枚例子（`**Craft** Handbook`、`Welcome to **Craft**`）**都是标题面**＝正文摘录行走的是同一份小写副本（逐字对照见 §五十八之一）＝G1350；
 ⇒ ☆ 三条拒绝／空包逐字＝`No matches found for the provided search criteria.`（本批出现**三次**、逐字相同：裸 `Craft`、`zzzzqqq`＋`handbook`、`youtube`＋`handbook`）／`Invalid cursor format`／`--location and --folder cannot be used together. Choose one filtering mode.`；
 
 ### 二、★★★★ 分层 AND 的正反两发
@@ -3013,4 +3013,54 @@ search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hy
 ④ **三组"未达 5"是否自然耗尽**＝#3 的 d06ab 3 枚／#7 的 5376 3 枚／#15 的 756 4 枚＝未做全文核对＝☆ 判据已写好（本节六）＝下批顺手可结；
 ⑤ **回收站三条具名残留的永久清除**＝读回完成、删除未执行＝等窗口状态可确认（屏上 V93；两面都无 `purge`＝G678）；
 ⑥ ☆ 承历批未动＝写侧四条（四层以上页／>50 直接子块／当日日记页命中形状／名字含 `p{L}` 的目标）＝需当轮具名授权；六条屏幕项＝需用户开页；`api-contract.md` 的 `Common flags` 是否加 ✎；
-⑦ ☆ **本批新暴露**＝历批产物里"摘录＝渲染命中块／窗口上限＝约 400 字符／≤5 行"这类旧措辞在 `internals.md` 与 `api-contract.md` 仍有多处残留＝属盘上批（零调用）＝下批扫一遍统一为"每篇 5 枚命中位"。
+⑦ ☆ **本批新暴露**＝历批产物里"摘录＝渲染命中块／窗口上限＝约 400 字符／≤5 行"这类旧措辞在 `internals.md` 与 `api-contract.md` 仍有多处残留＝⚠ **✎ 第 138 批＝虚账＝作废**＝两份全量 grep（六个关键词）**零命中**＝`api-contract.md` 没有摘录窗口一节＝☆ 真正要 ✎ 的是"显示面＝原文"（本份 §五十二 一处、历批多处）＝已逐处改写＝G1350。
+## 五十八、**第 138 批逐字片段（同一枚块的原文与小写摘录对照／标题面的原大小写／前文与命中前缀的字符账／行首 `...` 的反例／全文只三处却给四位的副本证据／`--fetch-blocks` 的名单）**（✓数据桥只读 2026-10-02 16:0x–16:3x；★ 全部片段取自**官方样例文档**；☆ `--include craft` 与 `--include "."` 两发里的用户自己任务书块**一条未录**＝只记形状＝id 一律五位前缀；☆ 复算器＝`_harvest/b138-count.mjs`＝gap 在 `gap.md` §三点一〇八九，模型在 `model.md` §一之八十九）
+
+### 一、★★★★★ 双面逐字对照（G1350 的正反两半）
+
+⇒ 原文面＝`blocks get 8faf787e… --format json` ⇒ 逐字 `"markdown":"<callout>Writing should be fun, simple and writing tools should get out of the way. Craft is there to make this happen and help you ‘Craft’ your document.</callout>"`；
+⇒ 摘录面＝`search --include writing --document 89d53b16…` ⇒ 逐字 `**writing** should be fun, simple and **writing** tools should get out of the way. craft is there to make this happen and help you ‘craft’ your...`＝⇒ **W／C／Craft 三枚大写全没了**；
+⇒ 第三证＝`search --regexp "o" --document 89d53b16…` 的第二窗同一枚块再次给出小写行＝⇒ **两面两旗标同形＝不是 `--regexp` 的特例**；
+⇒ 标题面相反＝`search --include quick --document 89d53b16…` ⇒ `**Quick** Start: get going`（大写 Q 保住）＝☆ 同批发另两枚＝`--include craft` 首条 ⇒ `**Craft** Handbook`、`--regexp "o" --document DFF43C2D…` 首条 ⇒ `Welc**o**me t**o** Craft`（W／C 保住）＝⇒ **标题面＝原文、正文面＝小写副本**＝⇒ ⚠ 历批 G1292"显示面＝原文"那两枚例子现在看都是标题面＝误导源定位＝G1350；
+
+### 二、★★★★ 前文字符账（`b138-count.mjs` 的输出，13 枚窗口全谱）
+
+⇒ 逐枚（前文字符＋首个命中的行内偏移＝和）＝`4, 4, 6, 19, 24, 35, 52, 53, 81, 90, 90, 97, 98`＝**无一越过 100**；
+⇒ 贴边两枚逐字现场＝① `--include focus` 首窗：前文 `...at a specific location.`（23）＋命中行 `if you are using a keyboard, you can also just press space when a block is **focus**ed to insert a new block below....`（前缀 75）＝**98**；② 同发次条：前文 `...of these work great both in dark or in light mode.`（50）＋前缀 47＝**97**；
+⇒ 反例（远小于预算也停）＝同一发第 2 条的前文 `...mode.` 只有 5＝☆ 与上面 50 是**同一段文本的同一段尾**＝⇒ 保留量随"命中前缀"变＝⇒ 判"上界"而不是判"常数"＝G1351；
+⇒ 命中行整行不受限＝`--regexp "o" --document DFF43C2D…` 正文窗最后一枚命中之后仍给 116 字符（`…explore the app. follow along with the videos or click around and...`）＝☆ `--include you` 首窗的 `7e3b6872…` 整块 236 字符全给、命中后 153 字符照给＝⇒ **100 只管"命中点之前"**＝G1352；
+⇒ 后文跨块才再截＝现场四枚＝`adding code,...`（12）／`and of course, you can also...`（27）／`adding emojis is really easy - just type : and...`（45）／`if blocks have the same styles, they also merge...`（47）＝G1352；
+
+### 三、★★★ 行首 `...` 是流标记、不是截断（历批只写了行尾那半）
+
+⇒ 摘录里看着像"上一行被掐头"的一条＝`...we’ve added a number of shortcuts for common types of text - just start your text blocks with these, and it will auto apply formatting. these include:`＝而 `blocks get 669fd545…` 全文＝`We’ve added a number of shortcuts for common types of text - just start your text blocks with these, and it will auto apply formatting. These include:`＝**一字未少**＝⇒ 行首 `...` ＝"流还有后续"标记（与历批行尾那半同一条规则）＝G1353；
+⇒ 另一枚机制证＝`--include quote` 首条里**一枚块占三行**＝`...## ### #### for title, subtitle, heading, or strong`／`> or | for block **quote**`／`...`＝⇒ `Match:` 的行＝**块内行**＝☆ 末行单独一枚 `...` ＝块内还有后续行＝G1353；
+
+### 四、★★★ 全文核对的两枚（队列②）＋一条副本证据
+
+⇒ 756 全文（`blocks get 756063a0… --depth 1`）里含 `calendar` 的只有三处文本＝`### …How to Use Calendar and Daily Notes`／`- Connect your calendar`／richUrl `title`＝`How to Use Calendar Daily Notes in Craft`（该枚 `description` 段零处）＝而历批 #15 复算给出 **4 枚命中位**＝⇒ ★ 差的那 1 枚＝**同一枚 `title` 在流里出现两次**（链接 markdown 行＋`title` 字段行＝历批"中间两行逐字相同"那枚）＝⇒ "位"数的是**索引副本**＝G1354；
+⇒ 5376 全文（`blocks get 5376f8f3… --depth 1`）＝该篇**只有 1 枚正文块**＝☆ 该块是用户自己写的任务书（含 `<spaceId>` 明文）＝**一条未摘录**＝只做对照计数：可数出 3 处 `craft`（一处 `@` 提及＋两处行文）＝与历批 #7 的 3 枚对上＝⇒ **自然耗尽已证**＝☆ 同篇 `--include "."`＝五个编号点＝**恰好 5 枚＝与预算重合＝这一发不能当预算证据**＝G1354 附带；
+⇒ ☆ 判据落地＝**"恰好等于预算"的样本零信息**＝本批主动排除一发＝与第 130 批"探针必须产生不对称读数"同族；
+
+### 五、★★★ `--fetch-blocks` 的名单形状（队列④）
+
+⇒ `search --include craft --document 756063a0… --fetch-blocks` ⇒ `Blocks:` 五枚（`f8cd15bb…`／`daaa0ecb…`／`e65e808b…`／`101ccb90…`／`aee86897…`）＋`Hydrated blocks: 5`＝☆ 而该篇全文有 10 枚含 `Craft` 的块（历批 #9 逐序数过）＝⇒ **被掐掉的块既不进名单也不进计数**＝G1356；
+⇒ ☆ 顺带＝摘录五行的形状复证＝第 5 行 `introducing **craft** for iphone, ipad, and mac...`＝一枚 richUrl 贡献两行（`title` 与链接 markdown）＝与第四节那条副本证据同源＝；
+
+### 六、★★ 序的两次复打（队列⑤）
+
+⇒ `--include craft`＝12 条／5 篇＝序 d06ab(6)→DFF(2)→5376(2)→756(1)→89d(1)＝与在册基线**第九次逐字复证**；
+⇒ `--include "."`＝9 条／5 篇＝序 5376(1)→d06ab(2)→756(3)→89d(2)→DFF(1)＝**第一次跨批复打这一发＝逐字相同**＝☆ 窗口数 1/2/3/2/1 依然不是降序＝"条目数降序"的反例稳定重现＝⇒ 键仍不可观测（G1347 维持）；
+
+### 七、★★ 一处未解异常＝卡片标题做前文位时只留末词
+
+⇒ `--include you` 首窗前文＝`...text `（5 字符）＝而 `blocks get d06ab4e4… --depth 1` 给出该卡片标题原文逐字＝`"markdown":"Adding Text "`（12 含尾空格）＝⇒ 命中前缀 76、预算余 24，**却只给了 5**；
+⇒ `--include craft` 第 3 条前文＝`...images, videos and files`（24）＝原文＝`Adding Images, Videos and Files`（31）＝⇒ 命中前缀 0、预算余 100，**却只给了 24**＝☆ 两枚都恰好"去掉首词"＝候选＝标题面在索引里另有一条去首词的通路＝**未证＝G1357＝下批首选（零写入可判）**；
+
+### 八、☆ 回收站读回与屏幕面（删除类授权"动手前先读回"的现场，六位前缀缩写）
+
+⇒ `documents list`（默认档）14 行里仍含三篇具名残留＝`d48fd45a… QODER-HARVEST-B109-CODEFIELD`／`e5696832… QODER-HARVEST-B111-THEME`／`8d3acfb3… QODER-HARVEST-B113-CODEBLOCK`＝☆ 本批**未删除**＝连接器只有 `about:blank` 一枚标签页、截图回 blank＝窗口状态不可确认即停手＝另 3 项空标题非本轮所建＝不动；
+
+## 仍未采到（第 138 批末，逐字面口径）
+
+① 前文保留量的等式（界 ≤100 已证、常数未证＝G1351）；② **卡片标题前文只留末词的机制**（G1357＝下批首选）；③ 第三组"未达 5"＝d06ab×`videos` 需整篇深遍历＝零成本不可判；④ 篇间序的键（两发复打序相同＝仍未证）；⑤ 回收站三条具名残留的永久清除（等窗口状态）；⑥ 写侧四条与六条屏幕项（需当轮具名授权／需用户开页）；⑦ ☆ 新问句＝`--cursor`／`--page` 在已截断结果上会不会承认"还有更多"（G1298 延伸＝零依赖可判）。
