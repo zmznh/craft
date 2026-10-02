@@ -3315,3 +3315,62 @@ Craft app/web links contain a different raw documentId; use documents resolve-li
 ⇒ 三处 `--format` 值域互不相同（`markdown|json`／`text|markdown`／`text|json`）＝**"输出格式"在官方只读面不是一个统一枚举**，本地若要做导出层不能假设一套 format 值集通用（详见 G1283）。
 
 ⇒ ⇒ **仍未采到（本节）**：① `metadata` 簇在**非 page 块**上是否有同样五枚（本批只测了页面级两发）；② `createdBy` 与 `lastModifiedBy` 在**多人协作文档**上是否会不同（本账户只有一人 ⇒ 两枚值相同不构成"官方只有一枚作者"的证据，别反向推）；③ `styling` 簇的**完整键集**（本轮只见到 `fontFamily` 与历批的 `backdrop` 两枚，缺席条件未测）；④ `contentPreviewMd` 的**截断长度**是字符数还是块数决定（同一回包里 `markdown` 短、预览长，未量化）；⑤ 集合 `--items` JSON 模式的 key 词汇表（本轮只跑只读、没碰写侧）。
+
+## 一之八十一、**第 130 批＝读回层的三块新地：`search` 回包的完整骨架（块级命中＋文档两枚时间戳＋高亮区间）、集合的 `itemsPreviewMd` 与五种伪 markdown 标签、`--depth` 决定 `content` 键在不在＝块对象的第二个"可选簇"**（✓数据面只读 2026-10-02 03:0x–03:3x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇八一 G1284–G1291，机制在 `internals.md` §六十三，逐字在 `longtail.md` §五十，判据在 `interactions.md` V124；☆ `styles.md` 本批无新节＝零色值读数）
+
+### 一、★★★ `search` 回包骨架（历批只用过它的"有没有命中"，这是第一次读结构）
+
+⇒ 逐字形状＝
+```
+Search results: N match(es)
+
+1) Document <rootBlockId>
+   Blocks: <blockId>[, <blockId>…]
+   Match:
+     …前后截断的正文，命中词被 **…** 包裹…
+   Created: <ISO 毫秒 .000，偏移 +08:00>
+   Modified: <同形>
+```
+⇒ ★★ **计数单位＝块级命中，不是文档**＝`--include Craft` 那发 12 match 只跨 **6 篇文档**（同一文档可占多条）；⇒ ★★ `Blocks:` **可以并列多枚 id**（实测一枚发射 5 枚、一枚发射 4 枚）＝一条命中记录**聚合多个块**，⇒ 模型含义＝官方的检索结果是"(documentId, [blockId…])"的分组，不是"块列表"；
+⇒ ★★★ **文档级 `Created`／`Modified` 在检索结果里免费给**（不需要任何旗标）；而**作者名要靠 `--fetchMetadata`**（第 129 批）⇒ 身份面在两动词上分两档＝`search`＝时间＋id ／ `blocks get`＝时间＋id＋**人**＋深链；
+⇒ ☆ `Match:` 正文**两侧都用 `...` 截断**（不是只在尾部），且命中词两侧加 `**…**`＝官方在纯文本回包里做展示层高亮；⇒ ☆ `--include Craft` 命中小写 `craft`＝**检索词大小写不敏感**（而 `--regexp` 那一层是否敏感＝本批未证，见 §四）。
+
+### 二、★★★★ `--depth` 决定 `content` 键在不在＝块对象的第二个"可选簇"
+
+⇒ 同一目标两发（`--format json`）＝`--depth 0` 回 `{id,type,textStyle,styling,markdown,contentPreviewMd}`（**`content` 整个缺席**）；`--depth 1` 回同一对象但**多出 `content:[…]`**；
+⇒ ★☆ 于是历批两条并到一处＝第 128 批"块对象键集不闭合（`styling` 可缺席）"＋本批"`content` 可缺席"＝**官方块对象里至少两枚键是"按参数决定存不存在"，而不是"存在但为空"**；⇒ ☆ 复刻含义＝任何按固定 schema 消费 `blocks get --format json` 的实现（包括本目录自己的解析脚本）都得把这两键当**可选**；
+⇒ ☆ 而 `--depth 0` 在 `blocks get` 的卡片上**根本没写**（卡片只写 `default: 3, use -1 for unlimited`），实测它的行为与 `collections items-get` 卡片写的 `0=none` 一致＝**未声明值不报错、且跨动词行为一致**。
+
+### 三、★★★ `itemsPreviewMd`：集合块独有的预览键 ＋ 五种官方自造标签
+
+⇒ `--depth 1` 里三枚集合块各带 `{id, type:"collection", markdown:"<集合标题>", itemsPreviewMd:"…"}`；⇒ ☆ `markdown` 在 collection 块上装的是**标题**（与 page 块同构）；
+⇒ ★★★ 预览值不是真 markdown 而是**官方自造的标签流**，本批实测标签集恰好五种＝`collection`／`title`／`properties`／`content`／`collectionItem`，形状＝
+```
+<collection>
+  <title>…</title>
+  <properties></properties>
+  <content>
+…
+  </content>
+</collection>
+
+<collectionItem>
+
+  <title></title>
+</collectionItem>
+```
+⇒ ☆ 三条条目的 `<title></title>` 全为空＝与第 124 批"三个 untitled 项"对上；⇒ ☆ `properties` 空标签在场＝**属性容器与内容是两段**，与本地 `CollectionProperty`／`CollectionItem` 两张表的拆分**同构但表达不同**（本地是关系表、官方是内联标签流）；
+⇒ ★★ 与页面级 `contentPreviewMd` 并看＝**"预览"这一族按块类型换键名**（`content*` 给页面、`items*` 给集合），⇒ ☆ 历批产物对 `itemsPreviewMd` **零命中**＝全新键；
+⇒ ☆ 一条 id 一致性＝`collectionBlockId` 就是块 id 本身（与 `collections list` 给的那枚逐字相同）＝**同一枚 id 跨动词通用**。
+
+### 四、★★ `--fetch-blocks` 给的是计数不是正文（读回层的"半交付"）
+
+⇒ 契约 `Include full hydrated blocks in results`；实测每条只多一行 `Hydrated blocks: 1`，**块正文一个字都没进来**，其余各行与不带时逐字相同；
+⇒ ☆ 模型含义＝"hydrate"这件事在官方只读面上**有一个计数出口、没有数据出口**（至少文本模式如此），⇒ 所以本地若照 `search` 回包建"命中即带块"的模型会**多建一层**（登记为仍未采到④：`--format json` 下会不会真给）。
+
+### 五、★ `resolve-link` 的两形两回包（链接层的第二个入口）
+
+⇒ `documentId=` 形 → 四行（rootBlockId／Title／Raw URL documentId／`Next: blocks get …`）；`blockId=` 形 → 三行（`target block ID`／一句"这不是文档根"／`Next:`）**没有 Title、没有 Raw documentId**，且返回的就是传入的那枚 id（幂等）；
+⇒ ★ 于是"两个 id 命名空间"这条在册口径要补一句：**翻译器也认块形，但在块形上是幂等旁路**；⇒ ☆ 而官方 `--fetchMetadata` 自己产出的 `clickableLink` 正是 `blockId=` 形 ⇒ **两个动词的产物互不闭合**（拿官方给的链接去问 rootBlockId，问不出来）。
+
+⇒ ⇒ **仍未采到（本节）**：① `--regexp` 是否大小写敏感（要与 `--include` 做同词对照）；② `--include` × `--regexp` 的 AND 落在哪个字段、聚合枚数为何随旗标变（12→9 那发里 `Blocks:` 也从 5 枚变 1 枚）；③ `--fetch-blocks` 在 `--format json` 下是否真给正文；④ `itemsPreviewMd` 的**标签全集**（表格／看板视图下的条目预览未测，`properties` 有值时的形状未测）；⑤ `content` 键在 `--depth -1` 下的上限（无限＝多大未量化）；⑥ 检索结果的**排序规则**（本批 12 条的顺序看不出规律，未做同词两发对照）。

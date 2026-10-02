@@ -2344,3 +2344,104 @@ Theme types:
 Lists table, gallery, and kanban view definitions.
 ```
 ⇒ ★★ 第一份只有 **3 档**而第 124 批真调用回的是更长的名册 ⇒ **卡片名册≠真名册**；⇒ ★ 第二份的 `fonts` 档**历批从未真调用**（登记为下批队列）；⇒ ☆ 第一份 `dot` 行尾**两个空格**（官方文案自带尾随空格）；⇒ ★ 第三份＝`collections views-list` 的视图类型自述**恰好三档**（table／gallery／kanban），与第 124 批真调用的回包口径一致。
+
+## 五十、第 130 批逐字串（✓数据桥只读 2026-10-02 03:0x–03:3x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／时间戳／用户正文折占位，原文只留 `_harvest/b130-probes.txt`（gitignore 目录内））
+
+### 一、★★★ 字体族真名册与别名行（`blocks explore-themes --type fonts`，首次真调用）
+
+```
+Available font families:
+
+  system           - System sans-serif font (default) (aliases: sans-serif)
+  system-serif     - System serif font (aliases: serif)
+  system-rounded   - Rounded sans-serif font (aliases: rounded)
+  system-mono      - Monospace font for code (aliases: mono)
+
+Usage with blocks update:
+  blocks update --id <blockId> --font system-serif
+  blocks update --id <blockId> --font sans-serif    (alias for system)
+  blocks update --id <blockId> --font mono          (alias for system-mono)
+```
+⇒ ★★★ 卡片（第 129 批）写的 `system, serif, rounded, mono` 里后三档**是别名不是规范名**；⇒ ☆ 三行 Usage 里官方**只示范了规范名与两枚别名**，没示范 `system-rounded`。
+
+### 二、★★★★ 两动词的正则拒绝串逐字（同一枚探针、相反结果）
+
+```
+search --include QODER --regexp "(a)\1"            ⇒ Invalid regular expression pattern: (a)\1
+search --include QODER --regexp "(?=QODER)"        ⇒ Invalid regular expression pattern: (?=QODER)
+search --include QODER --regexp "(?P<n>QODER)"     ⇒ No matches found for the provided search criteria.
+folders list --filter "(a)\1"                      ⇒ No folders matching "(a)\1".
+folders list --filter "(?=How)"                    ⇒ Showing 1-1 of 1 folders with the following format: <folderId> Folder Name (document count)
+folders list --filter "zzzzqqq"                    ⇒ No folders matching "zzzzqqq".
+```
+⇒ ★★★ `search` 侧＝反向引用拒、lookahead 拒、`(?P<name>)` 收＝**RE2**；`folders` 侧＝lookahead **收且命中**、`\1`（JS 合法）不报错＝**JS**；⇒ ☆ 两枚拒绝串都**原样回显输入的 pattern**；⇒ ☆ `(?=How)` 那发返回**两行**（父档命中、子档随树出现）＝复证 G1253"树形过滤保留祖先"。
+
+### 三、★★★ `--fetch-blocks` 的半交付（逐字只多这一行）
+
+```
+Hydrated blocks: 1
+```
+⇒ ★★★★ 契约原文＝`Include full hydrated blocks in results`（`search --help` 的 Flags 段），实测只给计数行、**块正文一个字符都没进来**，其余各行与不带时逐字相同。
+
+### 四、★★★ `search` 回包骨架（首次全量，id 与正文折占位）
+
+```
+Search results: 12 match(es)
+
+1) Document <rootBlockId>
+   Blocks: <blockId>
+   Match:
+     **<命中词>** <后续正文…>
+   Created: 2023-04-18T22:45:56.000+08:00
+   Modified: 2023-04-18T22:45:56.000+08:00
+```
+⇒ ☆ 逐字行名四枚＝`Document`／`Blocks`／`Match`／`Created`／`Modified`；⇒ ★★ `Blocks:` 实测最多一发射 **5 枚 id 逗号并列**；12 match 跨 **6 篇文档**；⇒ ★ 文档级两枚时间戳**免费给**（不带任何旗标），但不给作者名。
+
+### 五、★★★★ header 自述与实际列不符（`documents list --location unsorted --metadata`）
+
+```
+3 document(s) — format: <rootBlockId> Title (createdAt, lastModifiedAt)
+
+  <rootBlockId> <Title> (created: <ISO>, modified: <ISO>) → craftdocs://open?spaceId=<spaceId>&documentId=<documentId>
+```
+⇒ ★★★★ 头行的 `format:` 只列了三列，**每行实际有四段**（多出的 `→ craftdocs://…` 没被写进自述）；⇒ ☆ 这是第 128 批那条"header 自述＝最干净的形态判据"的**反面限定**；⇒ ☆ 顺带第五次复证"一篇文档两个 id"（两枚 id 逐字不同，真值只留 dump）。
+
+### 六、★★★ `documents resolve-link` 两形两回包（逐字，id 折占位）
+
+```
+documents resolve-link "craftdocs://open?spaceId=<spaceId>&documentId=<documentId>"
+⇒ Resolved link to rootBlockId <rootBlockId>
+   Title: <文档标题>
+   Raw URL documentId: <documentId>
+   Next: blocks get <rootBlockId>
+
+documents resolve-link "craftdocs://open?spaceId=<spaceId>&blockId=<rootBlockId>"
+⇒ Resolved link to target block ID <rootBlockId>
+   This link targets a block, not a document root.
+   Next: blocks get <rootBlockId>
+```
+⇒ ★★★★ 第二形（`blockId=`）**卡片里根本没声明**（`Usage:` 与 Examples 只给 `documentId=` 与 web URL），实测被接受且回包**换成三行、少两行**（无 `Title:`、无 `Raw URL documentId:`），并幂等返回传入的那枚 id；⇒ ★ 官方 `--fetchMetadata` 生成的 `clickableLink` 正是这第二形 ⇒ **两个动词的产物互不闭合**；⇒ ☆ `Next: blocks get …` 是回包内"下一步命令"的第二种载体。
+
+### 七、★★★ `--depth` 两发对照（同一目标，键集差异逐字）
+
+```
+blocks get <rootBlockId> --format json --depth 0
+⇒ {"data":[{"id":"…","type":"page","textStyle":"page","styling":{"fontFamily":"system"},"markdown":"","contentPreviewMd":"<collection>\n  <title>…</title>\n  <properties></properties>\n  <content>\n\n  </content>\n</collection> …"}]}
+
+blocks get <rootBlockId> --format json --depth 1
+⇒ {"data":[{"id":"…","type":"page","textStyle":"page","styling":{"fontFamily":"system"},"markdown":"",
+     "content":[
+       {"id":"<collectionBlockId>","type":"collection","markdown":"<集合标题>","itemsPreviewMd":"<collectionItem>\n\n  <title></title>\n</collectionItem>\n …"},
+       …共三枚 ]}]}
+```
+⇒ ★★★ `--depth 0`＝**`content` 键整个缺席**；`--depth 1`＝多出 `content` 数组 ⇒ 该旗标真生效（本批唯一一枚"两轴都过"）；
+⇒ ★★ 新键 **`itemsPreviewMd`**（历批产物全文零命中）＝集合块独有；预览值是官方自造**伪 markdown 标签流**，实测标签五种＝`collection`／`title`／`properties`／`content`／`collectionItem`；
+⇒ ☆ `markdown` 在 collection 块上装标题（与 page 同构）；⇒ ☆ 三条条目 `<title></title>` 全空＝与第 124 批"三个 untitled 项"对上；⇒ ☆ `collectionBlockId` ＝块 id（与 `collections list` 同一枚）。
+
+### 八、☆ 位置式与旗标式逐字相同
+
+```
+search youtube                ⇒ Search results: 2 match(es) ＋两条完整记录
+search --include youtube      ⇒ 与上一发**逐字相同**
+```
+⇒ ★★ 第一次实测咬合＝检索词的位置式与 `--include` 式等价（历批只用位置式，卡片只用 `--include`）。
