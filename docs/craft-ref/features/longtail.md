@@ -2595,3 +2595,86 @@ blocks get <含三面合集的页 id> --format json --depth -1
 ⇒ ★★★ 与第 131 批 `1` 档对照＝那时直接取合集块，item 是**五键**（`id`／`type`／`title`／`properties`／`markdown`）；本批 `-1` 档 item **多出 `content:[]`** ⇒ `--depth` 改变的是**每层的簇键集合**（G1307／`model.md` §一之八十三 一表）；
 ⇒ ☆ `styling:{fontFamily:"system"}` 在这篇**存在**、在 Welcome 那篇**整键缺席**＝`styling` 是可选簇（复证 §一之八十）；`system` 是官方词表真值（复证 G1291）；
 ⇒ ☆ 页面自身 `markdown:""`＝空值键，与"键缺席"并列登记为两种形态。
+
+## 五十三、第 133 批逐字清单（✓数据桥只读 2026-10-02 06:0x–06:3x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／用户正文折占位，原文只留 `_harvest/b133-probes.txt`（gitignore 目录内））
+
+### 一、★★★ `blocks get --help` 卡片全文（本批最值钱的一份＝一次结掉三格欠账；历批只从别的动词转述过它）
+
+```
+Usage: blocks get <rootBlockId|blockId> [--depth <n>] [--cursor <token>]
+       blocks get --date <date> [--depth <n>] [--cursor <token>]
+       blocks get --id <blockId> [--depth <n>] [--cursor <token>]
+
+Reads markdown from a rootBlockId, any readable block ID, or a daily-note date. Raw Craft URL
+documentIds must be converted first with documents resolve-link.
+
+Flags:
+  --id <blockId>  Explicit block ID (same target semantics as positional ID)
+  --date <date>   Daily note date: YYYY-MM-DD, today, yesterday, tomorrow
+  --depth <n>     Maximum nesting depth (default: 3, use -1 for unlimited)
+  --cursor <token> Pagination cursor for direct children (50 per page) from a previous blocks get response
+  --format <mode> Output mode: markdown (default) or json
+  --fetchMetadata Include metadata fields (e.g. timestamps, clickable links)
+
+Pagination notes:
+  - Cursor pagination applies to direct children of the fetched block/page (top-level content array).
+  - If the target has 50 or fewer direct children, no cursor is returned, even for very deep/nested content.
+  - In markdown mode, the cursor is shown in a "Next page:" line. In json mode, it is returned as nextCursor.
+
+If a cursor becomes invalid (CURSOR_INVALID), the underlying data has changed — retry without --cursor.
+
+Example: blocks get ABC-123
+         blocks get --date today
+         blocks get ABC-123 --depth 5 --cursor 50:cache-key
+
+Tip: Use "blocks get --help" for this usage reference.
+```
+
+⇒ ☆ 三处要单拎出来＝① 签名行里 `--date` 一支持有三种取值写法（`YYYY-MM-DD`／`today`／`yesterday`／`tomorrow`＝四档字面量）；② `--cursor` 的 Example 给出游标**形状样例** `50:cache-key`（复证第 129 批在册的 `50:cache-key` 形状）；③ 结尾 `Tip: Use "blocks get --help" for this usage reference.`＝**卡片自指**（历批见过 `--help` 里嵌给调用方的祈使句，这条是同型：文案不是行为，只能记成"官方声明了"）。
+
+### 二、★★★ 同一目标的两种深度投影（缺省 vs `--depth 1`，逐字骨架）
+
+缺省（不写 `--depth`）＝**结构化条目**：
+
+```
+{"data":[{"id":…,"type":"page","textStyle":"page","styling":{"fontFamily":"system"},"markdown":"",
+  "content":[
+    {"id":…,"type":"collection","markdown":"<合集名>","items":[
+       {"id":…,"type":"collectionItem","title":"","properties":{},"markdown":"","content":[]}, ×3 ]},
+    ×3 ]}]}
+```
+
+`--depth 1`＝**预览文本**（同一个合集块，键从 `items` 换成 `itemsPreviewMd`）：
+
+```
+{"id":…,"type":"collection","markdown":"<合集名>",
+ "itemsPreviewMd":"<collectionItem>\n\n  <title></title>\n</collectionItem>\n\n<collectionItem>\n\n  <title></title>\n</collectionItem>\n\n<collectionItem>\n\n  <title></title>\n</collectionItem>\n"}
+```
+
+⇒ ★★★ 这对读数是 §一之八十三 那张"深度×簇键"矩阵里**"未写（缺省）"那一行的第一次填格**＝缺省给 `items[]`（item 六枚键含 `content:[]`）而不是 `itemsPreviewMd`；
+⇒ ☆ 缺省与第 132 批 `-1` 档**逐字相同**＝但本账户最深目标只有三层 ⇒ 两档在这里不可能区分（没有写成"缺省≡`-1`"）；
+⇒ ☆ 预览值里 `\n\n` 空行与两空格缩进是**官方自己拼的伪 markdown**（历批在册五种标签之一，这里逐字复现）。
+
+### 三、★★★★ 两层布尔算子的三发（组合＋两枚正控制，逐字）
+
+| 下发 | 回包首行／关键行 |
+| --- | --- |
+| `search --regexp "unsplash" --regexp "seo"`（**不带 include**） | `No matches found for the provided search criteria.` |
+| `search --include seo` | `Search results: 1 match(es)` → 文档 `DFF…`、块 `531B…`、`Match:` 片段含 `incorporate **seo** and web optimisation` |
+| `search --include Craft --regexp "unsplash"` | `Search results: 5 match(es)` → 全部落在同一篇 `d06ab`，第三条 `Match:` 里 `**craft**` 与 `**unsplash**` **同时加粗** |
+
+⇒ 前两行的合用＝**同旗标多值不是 OR**（若为 OR 至少该出 `seo` 那一条）；⇒ ☆ 第三行说明**驱动层是并集**（一枚 regexp 也能独立把行送进结果，且 include 命中与 regexp 命中同行时双加粗）；
+⇒ 卡片侧对照＝`search` 的 usage 行里 `--include` **是可选的**（本批用"完全不带 include"这一发证实它能走通）。
+
+### 四、★★★ 同一篇文档在两种作用域下的序（逐字块前缀序列）
+
+⇒ `--include craft --document <d06ab>` → `Search results: 6 match(es)`，块序＝**root → 5292 → b33e → 3e16 → ab73 → 7e71**；
+⇒ `--include Craft --regexp "unsplash"`（全局）→ `Search results: 5 match(es)`，块序＝**root → 5292 → b33e → 3e16 → ab73**＝**前五行逐字同序、第六行 `7e71` 缺席**；
+⇒ ☆ 两发的 `Created`／`Modified` 六行**逐字相同**（同一篇文档的两个时间戳，历批在册 G1286）＝文档级时间戳随条目重复回显，不是块级；
+⇒ ⇒ 读数边界＝"少一行"发生在**多叠一枚 regexp** 之后＝与未知预算纠缠（G1302），不能单独立为"官方按条件筛掉了块"。
+
+### 五、★★ 一枚无效方言探针的两发（逐字）
+
+⇒ RE2 侧 `search --include Craft --regexp "\p{L}{40}"` → `No matches found for the provided search criteria.`（**接受、无报错**）；
+⇒ JS 侧 `folders list --filter "\p{L}{40}"` → `No folders matching "\p{L}{40}".`（**也接受**，回显原串）；
+⇒ ☆ 合起来＝**双向静默**＝这发判不出任何方言差异（对照第 132 批 `(?i)how`＝`Invalid JavaScript regex: (?i)how` 那一发的"一侧明确报错"）＝登记成 G1313 的"探针形状"事实而不是方言事实。
