@@ -2532,3 +2532,66 @@ documents resolve-link "https://www.craft.do/editor/d/<spaceId>/<documentId-W>"
 ⇒ ★★ 与历批在册形状（`https://docs.craft.do/editor/d/…`，G1261）**换了 host 仍然成功、四行逐字同形**＝scheme＋host 整体不被校验、只有尾段 documentId 参与解析；
 ⇒ ☆ `documents list --location unsorted --metadata` 复跑＝3 行（每行四段：rootBlockId／Title／两枚时间／`→ craftdocs://…documentId=`）＝历批"header 自述三列而实际四列"的 G1271 反面限定**第二次复现**；
 ⇒ ☆ 一条对照＝同一批里 `blocks get <documentId>` 会回 `Block not found`（第 113 批在册）＝所以 id 分层完整表述＝**rootBlockId ⊂ blockId，documentId 是另一套**。
+
+## 五十二、第 132 批逐字清单（✓数据桥只读 2026-10-02 05:0x–05:3x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／用户正文折占位，原文只留 `_harvest/b132-probes.txt`（gitignore 目录内））
+
+### 一、★★★★ 第三条拒绝串＝`Invalid JavaScript regex: <原样回显>`（推翻在册一句）
+
+```
+folders list --filter "HOW"          ⇒ Showing 1-1 of 1 folders …（命中 How to use Craft＝大小写不敏感，复证第 125 批 §五十八）
+folders list --filter "(?i)how"      ⇒ Invalid JavaScript regex: (?i)how
+folders list --filter "(a)\1"        ⇒ No folders matching "(a)\1".          ← 历批读数，本批定性＝它是**合法 JS 式**
+folders list --filter "zzzzqqq"      ⇒ No folders matching "zzzzqqq".
+```
+⇒ ★★★ 上批在册的"`folders` **从不报语法错**"当场作废＝正确口径＝**合法 JS 式（哪怕永不命中）不报错、非法 JS 式报 `Invalid JavaScript regex: …`**（G1300）；
+⇒ ☆ `(?i)` 这一发同时是**第五枚双向方言探针**＝RE2 侧合法（第 131 批 `search --regexp "(?i)Craft"` 生效并给出与 `"craft"` 同集）、JS 侧**明确报错**＝比第 130 批三枚（`\1`／`(?=…)`／`(?P<n>…)`）更硬，因为这次不是"一侧静默"而是"一侧报错"；
+⇒ ☆ 于是 `--filter` 的实现形态被两条读数夹住＝**带 `i` flag 的真 JS 正则**（会报 JS 语法错＋不区分大小写）。
+
+### 二、★★★★ `Hydrated blocks:` 求和（＝块数计数探针第一次使用）
+
+```
+search --include Craft  --fetch-blocks ⇒ 12 match(es)，求和＝1×10 ＋ 5 ＋ 4 ＝ 19
+search --include a      --fetch-blocks ⇒  9 match(es)，求和＝1×6 ＋ 2×3 ＝ 12
+search --include the    --fetch-blocks ⇒ 11 match(es)，求和＝1×10 ＋ 2 ＝ 12
+```
+⇒ ★★★ 三发的**条目数与块数都没有共同上限**＝"预算＝固定枚数"这一最简单假说被证伪（G1302）；最强剩余假说＝"按分数取前 K 个原始命中，再按相邻块分组"（K 未定，仍未采到②）；
+⇒ ☆ 自校验＝每发求和与该发 `Blocks:` 列出的 id 枚数**逐条相符**（例：`Craft` 那发第 11 条 5 枚 id＋第 12 条 4 枚 id＝9，其余十条各 1）＝计数可信；
+⇒ ✎ **改判在册**＝G1285／G1297 的"半交付"仍然成立（没给正文），但要加一句＝**计数行是可用的观测出口**＝本批正是靠它结案。
+
+### 三、★★★ 多枚 `--regexp` 的三集对照（都不是交集）
+
+```
+search --include Craft                                        ⇒ 12 match，5 篇文档
+search --include Craft --regexp "channel"                     ⇒  7 match，2 篇文档（d06ab 那 6 行与上一发的六行**逐字同一批块**）
+search --include Craft --regexp "video" --regexp "channel"     ⇒  6 match，2 篇文档（第 3／4／5 条只有 video 命中、块内没有 channel）
+```
+⇒ 块级三集**互不为子集**＝既不是交集，本批也不能确证是并集（G1303／仍未采到③）；
+⇒ ☆ 文档级 AND 反例未出现＝三种下发的文档集都同时含相应词（第 131 批 G1293 的"作用域层"复证）；
+⇒ ★★ 显示层的反例＝`--regexp "channel"` 那一发里，`channel` 一词**出现在预览窗口内却没有加粗**（同发的 `craft` 有加粗）＝加粗不看"可见"，看"驱动"（G1306）。
+
+### 四、★★★ 第二条互斥的拒绝串（与第一条风格不同）
+
+```
+search --include craft --document <id> --location unsorted
+⇒ --document cannot be combined with --location or --folder filters.
+```
+⇒ ☆ 卡片原文＝`--document cannot be combined with --location/--folder`＝运行时**几乎照抄**；而第 131 批那条 `--location`×`--folder` 运行时是 `… cannot be used together. Choose one filtering mode.`＝**换动词＋自加一句**；
+⇒ ⇒ 判据＝**文案一致性按"规则"建档，不按"动词"建档**（G1304）。
+
+### 五、★★★★ `--depth -1` 让 item 多出第六枚键 `content`（两发：一发空对照＋一发正控制）
+
+```
+blocks get <无孙子块的页 id> --format json --depth -1
+⇒ 与该页 --depth 1 的 18 块逐字相同  ← ☆ 空对照：这篇没有可区分三层的结构
+
+blocks get <含三面合集的页 id> --format json --depth -1
+⇒ {"data":[{"id":…,"type":"page","textStyle":"page","styling":{"fontFamily":"system"},"markdown":"",
+     "content":[
+       {"id":…,"type":"collection","markdown":"<合集名>","items":[
+          {"id":…,"type":"collectionItem","title":"","properties":{},"markdown":"","content":[]},
+          ×3 ]},
+       ×3 ]}]}
+```
+⇒ ★★★ 与第 131 批 `1` 档对照＝那时直接取合集块，item 是**五键**（`id`／`type`／`title`／`properties`／`markdown`）；本批 `-1` 档 item **多出 `content:[]`** ⇒ `--depth` 改变的是**每层的簇键集合**（G1307／`model.md` §一之八十三 一表）；
+⇒ ☆ `styling:{fontFamily:"system"}` 在这篇**存在**、在 Welcome 那篇**整键缺席**＝`styling` 是可选簇（复证 §一之八十）；`system` 是官方词表真值（复证 G1291）；
+⇒ ☆ 页面自身 `markdown:""`＝空值键，与"键缺席"并列登记为两种形态。
