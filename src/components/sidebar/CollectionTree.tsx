@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getCollections } from '@/actions/collection/collection';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSidebarStore } from '@/lib/store/use-sidebar-store';
 import { cn } from 'cn';
 
 interface Collection {
@@ -17,6 +18,8 @@ export function CollectionTree() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  // Bumped by the metadata sync provider when the far side changes a collection.
+  const treeVersion = useSidebarStore((s) => s.treeVersion);
 
   useEffect(() => {
     async function load() {
@@ -25,7 +28,7 @@ export function CollectionTree() {
       setLoading(false);
     }
     load();
-  }, [pathname]);
+  }, [pathname, treeVersion]);
 
   if (loading) {
     return <div className="px-3 py-2 text-[13px] text-muted-foreground">加载中...</div>;

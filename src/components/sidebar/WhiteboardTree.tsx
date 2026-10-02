@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from 'cn';
 import { getWhiteboards } from '@/actions/whiteboard/whiteboard';
 import type { WhiteboardItem } from '@/actions/whiteboard/whiteboard';
+import { useSidebarStore } from '@/lib/store/use-sidebar-store';
 import {
   SIDEBAR_WHITEBOARD_MIME,
   sidebarDragState,
@@ -56,6 +57,8 @@ export function WhiteboardTree() {
   const [boards, setBoards] = useState<WhiteboardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  // Bumped by the metadata sync provider when the far side changes a whiteboard.
+  const treeVersion = useSidebarStore((s) => s.treeVersion);
 
   useEffect(() => {
     async function load() {
@@ -67,7 +70,7 @@ export function WhiteboardTree() {
       }
     }
     load();
-  }, [pathname]);
+  }, [pathname, treeVersion]);
 
   if (loading) {
     return <div className="px-3 py-2 text-[13px] text-muted-foreground">加载中...</div>;

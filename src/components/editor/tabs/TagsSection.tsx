@@ -10,6 +10,10 @@ import {
   getTags,
   type TagRecord,
 } from '@/actions/tag/tag';
+import { useMetadataRevision } from '@/lib/store/use-sync-store';
+
+/** Tables the tag panel renders; a far-side change here means "reload". */
+const TAG_TABLES = ['Tag', 'DocumentTag'];
 
 interface TagsSectionProps {
   documentId: string;
@@ -20,6 +24,8 @@ export function TagsSection({ documentId }: TagsSectionProps) {
   const [all, setAll] = useState<TagRecord[]>([]);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
+  // Bumped by the metadata sync provider when another device touched a tag.
+  const syncRevision = useMetadataRevision(TAG_TABLES);
 
   const load = useCallback(async () => {
     const [mine, every] = await Promise.all([getDocumentTags(documentId), getTags()]);
@@ -29,7 +35,7 @@ export function TagsSection({ documentId }: TagsSectionProps) {
 
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, syncRevision]);
 
   const add = async (name: string) => {
     if (!name.trim() || busy) return;
