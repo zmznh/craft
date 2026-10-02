@@ -2445,3 +2445,90 @@ search youtube                ⇒ Search results: 2 match(es) ＋两条完整记
 search --include youtube      ⇒ 与上一发**逐字相同**
 ```
 ⇒ ★★ 第一次实测咬合＝检索词的位置式与 `--include` 式等价（历批只用位置式，卡片只用 `--include`）。
+
+## 五十一、第 131 批逐字清单（✓数据桥只读 2026-10-02 04:0x–04:3x 本地；★ 零写入 ⇒ `manifest.jsonl` 155 行不变；☆ 所有 id／用户正文折占位，原文只留 `_harvest/b131-probes.txt`（gitignore 目录内））
+
+### 一、★★★ 大小写三发对照（同一作用域，唯一变量＝pattern 的大小写与 flag）
+
+```
+search --include Craft                     ⇒ Search results: 12 match(es)     ← 历批基线复跑＝同枚数，无漂移
+search --include Craft --regexp "Craft"    ⇒ No matches found for the provided search criteria.
+search --include Craft --regexp "craft"    ⇒ Search results: 10 match(es)
+search --include Craft --regexp "(?i)Craft"⇒ Search results: 10 match(es)     ← 与上一发逐字同集
+search --include Craft --regexp "."        ⇒ Search results: 9 match(es)      ← 历批读数复跑＝同枚数
+```
+⇒ ★☆ 关键咬合＝`(?i)Craft` 的加粗打在**原文的大写处**（`**Craft** Handbook`、`Welcome to **Craft**`），而裸 `Craft` 却是 0 条 ⇒ **匹配面＝折叠过大小写的文本；显示面＝原文**＝两侧不同源（G1292）；
+⇒ ☆ 三条拒绝／空包逐字＝`No matches found for the provided search criteria.`（本批出现**三次**、逐字相同：裸 `Craft`、`zzzzqqq`＋`handbook`、`youtube`＋`handbook`）／`Invalid cursor format`／`--location and --folder cannot be used together. Choose one filtering mode.`；
+
+### 二、★★★★ 分层 AND 的正反两发
+
+```
+search --include youtube --regexp "video"  ⇒ 5 match；第 1 条 Blocks:<标题块id>  Match: Watch: how to **video**s
+search --include zzzzqqq --regexp "handbook"⇒ No matches found …
+search --include youtube --regexp "handbook"⇒ No matches found …
+```
+⇒ ★★★ 第 1 条那个块**整块没有 `youtube`**＝include 与 regexp 不同层＝include 筛文档、regexp 挑块（G1293）；
+⇒ ★☆ 同一条回包里还见到**双加粗**＝第 2 条 `**video**s` 与 `**youtube**` 同时加粗，而第 5 条里的 `youtube` 是白字＝加粗规则未定（G1294／仍未采到①）；
+⇒ ☆ `--include` 两枚求交＝`search --include craft --include youtube` → **1 match**（卡片 `repeatable` 兑现，文档级求交）。
+
+### 三、★★★ 未声明旗标与半交付（同一发里两件事）
+
+```
+search --include youtube --fetch-blocks --format json
+⇒ Search results: 2 match(es)
+   …（纯文本条目，非 JSON）… 每条末尾：   Hydrated blocks: 1
+```
+⇒ ★★★ `search --help` 的 Flags 段**没有 `--format`**（13 枚全列，逐枚见下节）⇒ 打上去不报错、回包仍纯文本＝**未声明旗标被静默容忍的第二例**（G1296；第一例＝`documents list --limit`）；
+⇒ ☆ `--fetch-blocks` 在这种"伪装 json 请求"下仍只给计数 ⇒ 半交付升为该动词通性（G1297）；
+
+### 四、★★ `search` 卡片逐枚（本轮普查＝usage 行与 Flags 段**同数**）
+
+⇒ Flags 段 13 枚＝`--include`／`--regexp`／`--document`／`--location`／`--folder`／`--created-after`／`--created-before`／`--modified-after`／`--modified-before`／`--daily-note-after`／`--daily-note-before`／`--cursor`／`--fetch-blocks`；usage 行也是这 13 枚（分两行排）＝**与第 128 批 `documents list`（usage 4 枚 < Flags 10 枚）构成两种类别并存**（G1295）；
+⇒ ☆ 卡片逐字两处新口径＝`--include <term>  Match raw text term (AND semantics; repeatable)`／`--regexp <pattern>  Match RE2 regex pattern (AND semantics; repeatable)`＝**"AND semantics"没说是哪一层**（本批实测＝文档级 ⇒ G1293 是"契约不足、需实测"的又一例）；
+⇒ ☆ 卡片互斥段两条＝`--location and --folder cannot be combined`／`--document cannot be combined with --location/--folder`；⇒ ★ **运行时文案与卡片文案不同**＝实测回的是 `… cannot be used together. Choose one filtering mode.`（多一句"Choose one filtering mode."、动词换成 `used`）＝**同一动词内**卡片 vs 运行时两份文案（历批只记过"两动词两份文案"）；
+⇒ ☆ 卡片尾部还有一行 `Tip: Use search --help for this usage reference.`＝**自指型提示行**（第六种回包内提示载体候选）。
+
+### 五、★★★★ `blocks get` 吃非 root 块 id ＋ 第三个簇键 `items`（id 折占位）
+
+```
+collections list
+⇒ Found 3 collections:
+     合集 <合集块id-A> - 3 items (in document <文档rootBlockId-C>)
+     合集 <合集块id-B> - 3 items (in document <文档rootBlockId-C>)
+     合集 <合集块id-C> - 3 items (in document <文档rootBlockId-C>)
+
+blocks get <合集块id-A> --format json --depth 1
+⇒ {"data":[{"id":"<合集块id-A>","type":"collection","markdown":"<合集名>",
+     "items":[
+       {"id":"<条目id-1>","type":"collectionItem","title":"","properties":{},"markdown":""},
+       {"id":"<条目id-2>","type":"collectionItem","title":"","properties":{},"markdown":""},
+       {"id":"<条目id-3>","type":"collectionItem","title":"","properties":{},"markdown":""}]}]}
+```
+⇒ ★★★ `"items"` 这一枚键在**全部产物里逐字零命中**＝本批确证为新键（对照＝第 130 批 `itemsPreviewMd` 也是零命中才敢写"新键"）；
+⇒ ☆ 三面合集**全在同一篇文档**，而那篇文档不在本轮任何 `search` 读数里＝"合集存在"与"搜索可达"是两件事；
+⇒ ☆ 空合集的条目是**四键齐全、值为空**（`title:""／properties:{}`）＝与 `--depth 0` 时 `content` 整键缺席是两种形态。
+
+### 六、★★★ callout 的第二档样式（`blocks get <rootBlockId-W> --format json --depth 1`，18 块）
+
+```
+{"id":"…","type":"text","textStyle":"caption","textAlignment":"center",
+ "decorations":["callout"],"color":"#00ca85",
+ "markdown":"<callout><caption>…</caption></callout>"}
+{"id":"…","type":"text","taskInfo":{"state":"todo"},"listStyle":"task","markdown":"- [ ] …"}   ← 四枚同形
+{"id":"…","type":"text","markdown":""}                                                          ← 键在、值空
+```
+⇒ ☆ 历批在册的 callout 实读是 `textStyle:"h4"＋decorations:["quote","callout"]`（第 127 批）＝本批是**第二档样式**（`caption`＋居中＋单装饰 `callout`＋同一枚 `#00ca85`）⇒ 复证＋新增一档，不新编号；
+⇒ ☆ 四枚任务块三件套形状逐字相同；一枚 `markdown:""` 空块与"键缺席"分开登记。
+
+### 七、★★ resolve-link 的 host 段不校验（本轮 web 形补测）
+
+```
+documents resolve-link "https://www.craft.do/editor/d/<spaceId>/<documentId-W>"
+⇒ Resolved link to rootBlockId <rootBlockId-W>
+   Title: Welcome to Craft
+   Raw URL documentId: <documentId-W>
+   Next: blocks get <rootBlockId-W>
+```
+⇒ ★★ 与历批在册形状（`https://docs.craft.do/editor/d/…`，G1261）**换了 host 仍然成功、四行逐字同形**＝scheme＋host 整体不被校验、只有尾段 documentId 参与解析；
+⇒ ☆ `documents list --location unsorted --metadata` 复跑＝3 行（每行四段：rootBlockId／Title／两枚时间／`→ craftdocs://…documentId=`）＝历批"header 自述三列而实际四列"的 G1271 反面限定**第二次复现**；
+⇒ ☆ 一条对照＝同一批里 `blocks get <documentId>` 会回 `Block not found`（第 113 批在册）＝所以 id 分层完整表述＝**rootBlockId ⊂ blockId，documentId 是另一套**。

@@ -3374,3 +3374,36 @@ Search results: N match(es)
 ⇒ ★ 于是"两个 id 命名空间"这条在册口径要补一句：**翻译器也认块形，但在块形上是幂等旁路**；⇒ ☆ 而官方 `--fetchMetadata` 自己产出的 `clickableLink` 正是 `blockId=` 形 ⇒ **两个动词的产物互不闭合**（拿官方给的链接去问 rootBlockId，问不出来）。
 
 ⇒ ⇒ **仍未采到（本节）**：① `--regexp` 是否大小写敏感（要与 `--include` 做同词对照）；② `--include` × `--regexp` 的 AND 落在哪个字段、聚合枚数为何随旗标变（12→9 那发里 `Blocks:` 也从 5 枚变 1 枚）；③ `--fetch-blocks` 在 `--format json` 下是否真给正文；④ `itemsPreviewMd` 的**标签全集**（表格／看板视图下的条目预览未测，`properties` 有值时的形状未测）；⑤ `content` 键在 `--depth -1` 下的上限（无限＝多大未量化）；⑥ 检索结果的**排序规则**（本批 12 条的顺序看不出规律，未做同词两发对照）。
+⇒ ⇒ ✎ **第 131 批对上面六条的处置**＝①**已结**（`--regexp` 敏感、但匹配面是折叠过大小写的文本＝G1292）；②**已结**（AND 在**文档级**＝G1293）；③**已结**（`--format json` 在 `search` 上**根本未声明**＝静默容忍，半交付升为动词通性＝G1296／G1297）；④**半结**（`"items"` 结构化簇到手、四键齐全＝G1299；☆ 表格／看板视图预览与 `properties` 有值那一档＝本账户三面对象全空 ⇒ **只读通路不可达**，转写侧队列）；⑤**未动**（`--depth -1` 的量级仍未量化）；⑥**未动**（排序规则仍未做同词两发对照）；⇒ ☆ 本批新掉出一条＝**加粗区间≠匹配区间**（`.` 只吃一个字符、加粗却覆盖整行前缀）＝见 §一之八十二 五①与 `interactions.md` V125 七②。
+
+## 一之八十二、**第 131 批＝读回层再开三块：`search` 的两枚检索条件分属两层（作用域 vs 块匹配）、`blocks get` 可按**任意块 id** 寻址并交出第三个簇键 `items`、callout 与任务不是独立块类型而是"样式化 text 块＋标记簇"**（✓数据桥只读 2026-10-02 04:0x–04:3x 本地；★ 零屏幕、零写入、零 bundle 读取 ⇒ `manifest.jsonl` 155 行不变；gap 在 `gap.md` §三点一〇八二 G1292–G1299，机制在 `internals.md` §六十四，逐字在 `longtail.md` §五十一，判据在 `interactions.md` V125；☆ `styles.md` 本批无新节＝唯一一枚色值 `#00ca85` 是 callout 的既有强调色、不构成新档）
+
+### 一、★★★ `search` 的两枚检索条件**不在同一层**＝块模型侧的读法要改
+
+⇒ 历批（G1286）把 `search` 回包读成"块级命中列表"，本批证明**命中列表的分层是"文档作用域 → 文档内块匹配"两段**＝`--include`（及位置式）负责**筛掉整篇文档**，`--regexp` 负责**在留下的文档里挑块**；
+⇒ 证据＝`--include youtube --regexp "video"` 的**第一条是文档标题块**，而该块里没有 `youtube`（＝不是同层 AND）；`--include zzzzqqq --regexp "handbook"` 回 0 条（＝include 确实参与作用域，不是摆设）；
+⇒ ⇒ 本地含义＝**复刻"搜索"时不能把两枚条件编译成同一枚布尔表达式**：官方语义下"文档必须同时含 include 词，列出的块却只需匹配 regexp"；两边都写成 `AND` 的查询会**多滤掉**官方会返回的行；
+⇒ ☆ 一条附带口径＝**大小写规则也是分层的**＝`--include` 大小写不敏感（历批已证）、`--regexp` 敏感但匹配的是**折叠过大小写的文本**（`"Craft"`→0、`"craft"`→10、`"(?i)Craft"`→与 `"craft"` 同集，而高亮打在原文的 `Craft` 上＝**匹配面与显示面不同源**）⇒ 本地若把 pattern 直接对原文跑，会出现"官方 0 条、本地 12 条"的反向差分。
+
+### 二、★★★★ `blocks get` 的位置参数**不限 root 块**＝第三个簇键 `items`
+
+⇒ 把 `collections list` 给的**合集块 id**直接喂 `blocks get <id> --format json --depth 1` ⇒ 成功返回，且回包是 `{id, type:"collection", markdown:"<合集名>", items:[3]}`；每 item＝`{id, type:"collectionItem", title:"", properties:{}, markdown:""}`＝**四键齐全、值为空**；
+⇒ ★ 由此得一块新地＝**块对象的簇键现在有三种**：`content`（子块数组，`--depth` 决定在不在）、`contentPreviewMd`（`--depth 0` 时的伪 markdown 预览）、`items`（合集块专有的条目数组）；⇒ ☆ **同一实体两种投影**＝父页 `content[]` 里的合集块带的是 `itemsPreviewMd`（预览文本），子侧直接取时带的是真 `items[]`（结构化）＝**官方不会在一次调用里把两者都给**（承历批"官方输出不组合"口径）；
+⇒ ⇒ 本地含义＝block 表的寻址**必须支持任意块 id 的读回**（历批默认只按 root 取树），且合集的"预览"与"条目"落库只落结构化那份；
+⇒ ☆ 通路新识＝**零写入也能拿到子块正控制**＝先 `collections list` 拿一枚子块 id，再 `blocks get` 它＝不必新建沙盒（这条是第 130 批"探字段先确认有没有可观察对象"的一个便宜解法）。
+
+### 三、★★ callout／任务／空值＝**复证在册结论，本批只补一档与一条形态学**
+
+⇒ **callout 不是块类型**＝历批已登记（第 127 批＝G1267 ＋ `longtail.md` §四十七 逐字 ＋ `styles.md` §二十二 色值 ＋ `model.md` §一之六十九 的文本块可选字段行；实读形态见过 `textStyle:"h4"＋decorations:["quote","callout"]`）⇒ ☆ **本批新增的是"样式档"**＝同一条 callout 上 `textStyle:"caption"＋textAlignment:"center"＋color:"#00ca85"＋decorations:["callout"]` **四件同现**＝callout 的排版档不止一种，本地"callout＝固定样式"的做法要按可叠样式建模；
+⇒ **任务是三件套共存**（`taskInfo:{state:"todo"}`＋`listStyle:"task"`＋`markdown:"- [ ] …"`）＝G1267 已登记，本批在**同一条回包里第四次复证**（四枚任务块形状逐字相同）⇒ 状态在 `taskInfo`、列表型制在 `listStyle`、序列化在 `markdown`，三处必须同步；
+⇒ ★ 一条形态学补强＝**"键在值为空"与"键缺席"是两种形态**＝本轮同一条回包里既有 `markdown:""`（键在、空串），而第 130 批证过 `--depth 0` 时 `content` 是**整个键缺席**（G1289）⇒ 本地 schema 不能把两者都归一成 `null`，否则丢掉"官方到底给没给这一层"的信息；⇒ ☆ 合集 item 的 `properties:{}` 属前者（键在、空对象）＝所以"空合集"在数据上是**四键齐全**的条目，不是缺字段的条目。
+
+### 四、★★ `resolve-link` 的分形口径改判＝**按链接里装的是 documentId 还是 blockId 分，不按 scheme 分**
+
+⇒ 本批补打 web 形 `https://…/editor/d/<spaceId>/<documentId>` ⇒ 回包与 `craftdocs://…documentId=` 形**逐字同形**（四行＝rootBlockId／Title／Raw URL documentId／`Next: blocks get …`）；
+⇒ ⇒ ✎ **第 130 批那条"两形两回包"的"形"要改指"链接里那枚键"而不是"URL scheme"**＝三种输入里 `documentId=` 与 `https…documentId` 归同一档、`blockId=` 归另一档（＝G1288 的精确化，本轮零新增矛盾读数）；
+⇒ ☆ 附带三条＝① **host 段不参与解析**＝历批在册的 web 形状是 `https://docs.craft.do/editor/d/<spaceId>/<documentId>`（G1261／§六），本批改用 `https://www.craft.do/…` 同样解析成功、回包逐字同形 ⇒ **只有尾段 documentId 被用**（scheme＋host 整体是装饰）＝本地"链接解析"该按尾段取 id，不该按整串匹配；② 与第 113 批"拿 documentId 喂 `blocks get` 回 `Block not found`"**不矛盾**＝那条证"文档 id 不是块 id"，本批证"块 id 不必是根 id"，两条合起来才是完整的 id 分层＝**rootBlockId ⊂ blockId，而 documentId 是另一套**；③ **`Next: blocks get <id>` 这类命令级提示行第四次出现**（`resolve-link` 的两种输入各一次＋本批 web 形一次，历批另见分页 `Next page:`）＝"回包内自带下一步命令"是官方 MCP 的稳定载体（第 130 批登记的"第五种旗标载体"，本批升为**跨动词通性候选**）；
+
+### 五、☆ 本批未采到的（写清楚，别当成已齐）
+
+① 双加粗的确切规则（同文档两条条目一条把 include 词也加粗、一条不加）；② `search` 截断上限是否为常数（本轮 9／11／12 三发只能证"有预算"）；③ `properties` 有值时的 `items` 形状（本账户三面合集全空＝只读不可达，需写侧授权）；④ `--regexp` 的 `repeatable` 是否也求交；⑤ 卡片声明的第二条互斥 `--document`×`--location` 未打；⑥ 卡片文案与运行时文案的差异面是否普遍（本轮掉出第一条：卡片 `cannot be combined` vs 运行时 `cannot be used together. Choose one filtering mode.`）。
