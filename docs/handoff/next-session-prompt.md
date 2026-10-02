@@ -1,7 +1,7 @@
 # 接手提示词 — Crafty 多端同步（下一会话直接用这段开场）
 
 > 用法：新开一个会话，把下面「提示词正文」整段粘贴进去即可。
-> 生成时间：2026-10-01，同日更新（客户端元数据同步器已完成）。基于分支 `deploy/vps-fullstack-offsite-backup`。
+> 生成时间：2026-10-01，同日更新（客户端元数据同步器已完成，并已合并进 `main`）。当前在 `main` 分支。
 
 ---
 
@@ -9,7 +9,7 @@
 
 我在做一个类 Notion 的个人知识库 **Crafty**（`D:/code/cs`）。技术栈：Next.js 16 / React 19 / Prisma 8 + PostgreSQL / Tailwind v4 / next-auth v5 / Tiptap / tldraw / Yjs + Hocuspocus / Tauri v2。Web + 桌面双端，**单人自用**，目标是多端实时云同步，成本敏感。
 
-**当前分支：`deploy/vps-fullstack-offsite-backup`**（从 `main` 切出，已有未提交改动，别切回 main）。
+**当前分支：`main`**（工作树干净，没有未提交改动；旧的 `deploy/vps-fullstack-offsite-backup` 分支已并入 main，可以不管它）。
 
 请先读这三个文件建立上下文（顺序别变）：
 
@@ -92,7 +92,7 @@ GET /api/sync/changes?since=<ISO 或 epoch-ms>&limit=<n>
 
 ```bash
 cd "D:/code/cs"
-npx vitest run              # 当前基线：28 文件 / 226 测试全过（含你新增的）
+npx vitest run              # 当前基线：37 文件 / 326 测试全过（含你新增的）
 npx tsc --noEmit            # 当前基线：零报错
 ```
 
@@ -132,10 +132,12 @@ npx tsc --noEmit            # 当前基线：零报错
 
 | 项 | 值 |
 |---|---|
-| 分支 | `deploy/vps-fullstack-offsite-backup` |
-| 未提交改动 | 5 改：`tldraw-license-gate.md`、`next.config.ts`、`src/collab/persist.mjs`、`Editor.tsx`、`Board.tsx`；本轮新增 4 改：`src/app/(app)/layout.tsx`、`TagsSection.tsx`、`CollectionTree.tsx`、`WhiteboardTree.tsx` |
-| 未跟踪 | `deploy/`、`docs/adr/`、`docs/handoff/`、`src-tauri/`、`src/lib/sync/`、`src/app/api/sync/`、`src/app/api/collab/claim-seed/`、`src/components/providers/MetadataSyncProvider.tsx`、`src/lib/store/use-sync-store.ts`、`src/collab/derive-snapshot.test.mjs` |
-| 测试基线 | `npx vitest run` → 28 文件 / 226 测试全过 |
+| 分支 | `main`（工作树干净；旧的 `deploy/vps-fullstack-offsite-backup` 已并入 main，未推送） |
+| 本次落地的 5 个提交 | `Ignore local-only artifacts…`、`Make the Yjs room the only writer…`(ADR-0001)、`Gate the tldraw licence…`(ADR-0002)、`Add the metadata sync client…`(ADR-0003)、`Add the VPS deploy assets…`(ADR-0004 + deploy/) |
+| 未提交改动 | 无 |
+| 未跟踪 | 无（`.workbuddy/`、`.cursor/mcp.json`、`src-tauri/target`、`src-tauri/gen`、`.next.bak-*` 已进 `.gitignore`） |
+| 测试基线 | `npx vitest run` → 37 文件 / 326 测试全过 |
 | 类型基线 | `npx tsc --noEmit` → 零报错 |
 | 数据库 | 本地 Postgres 已连通（`.env` 有 `DATABASE_URL`），测试可连真实库 |
-| 清理项 | 根目录有 `.next.bak-1790797201/` 残留，可删 |
+| 注意 | `src-tauri/` 下没有源码（只有 `gen/schemas` 生成物与 1.3 GB `target/`），两处都已忽略；将来加 Tauri 源码时要调整 `.gitignore` |
+| 清理项 | 根目录 `.next.bak-1790797201/` 已被忽略，可以删 |
