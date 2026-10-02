@@ -2940,3 +2940,77 @@ search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hy
 ⑥ **两枚不同面旗标产出同一张结果表是否恒等**＝本批 `--include craft` 与 `--regexp "craft"` 逐字相同＝☆ 一枚样本不构成恒等＝可判条件＝一枚"只在标题出现／只在富链接描述出现"的词两侧各打一发；
 ⑦ ☆ 承历批未动四条＝`\p{L}`／`\d` 在 JS 侧是字面还是真类（需写侧具名目标）／日记页命中时的回包形状（本账户零日记页＝本批`.` 顺带命中一枚日记页但**正文一个字不抄**＝只记"整行粗 1 段"这一形状）／四层以上页面／>50 直接子块；
 ⑧ ☆ 三条历批沙盒残留＝位置已结案（全在回收站）＝**永久清除仍未获当轮具名授权**（本轮"同意"二字未指向编号清单）＝本批未读未动。
+
+## 五十七、**第 137 批逐字片段（每篇正文 5 枚命中位的七发分布／一枚卡片子页内的 3–4 窗／文档标题窗的 id 形状／`.` 与 `"o"` 的并段对照／`--include "."` 的字面句点／richUrl 的两行同形／"未知子命令＋`--help`"这一**在册形态**的两枚复证成员／回收站读回清单）**（✓数据桥只读 2026-10-02 14:0x–14:5x；★ 全部片段取自**官方样例文档**；☆ `--include "."` 首条＝用户自己写的任务书块＝**一条未录**＝只记形状＝"一枚约 500 字符单行块／粗段 5 枚／全文未截断"；★ 复算器＝`_harvest/b137-count.mjs`＝逐字数组内嵌 therein＝本节的枚数全部可由它重算）
+
+### 一、★★★★★ "每篇正文 5 枚命中位"的七发逐篇分布（脚本可重算）
+
+| 发／命令 | d06ab | 75606… | 89d53… | DFF | 5376… |
+| --- | --- | --- | --- | --- | --- |
+| `--include you`（#5＝#6 的 d06ab 逐字相同） | **5**（3 窗） | **5**（3 窗） | **5**（1 窗） | 2（1 窗） | — |
+| `--include craft`（#7＝#8 复打） | **5**＋标题 1（6 窗） | **5**（1 窗） | **5**（1 窗） | 1＋标题 1 | 3（2 窗） |
+| `--include block`（#11，限定单篇） | **5**（4 窗） | — | — | — | — |
+| `--include calendar`（#15） | **5**（2 窗） | 4（2 窗） | — | — | — |
+| `--include videos`（#3，限定单篇） | 3（2 窗） | — | — | — | — |
+| `--regexp "."`（#13，限定 89d） | — | — | **5**（1 窗）＋标题 22 | — | — |
+| `--regexp "o"`（#14，限定 89d） | — | — | **5 位／4 段**＋标题 1 | — | — |
+| `--include "."`（#16，空间级） | **5**（2 窗） | **5**（3 窗） | **5**（2 窗） | 2（1 窗） | **5**（1 窗，未内嵌） |
+
+⇒ 判读＝**加粗的 16 篇次全部"达到并停在 5"**＝未加粗的四组（DFF×3、756 在 #15、d06ab 在 #3）＋5376 在 #7＝未达 5＝☆ 其中**只有 DFF 做过全文核对**（见本节六）＝其余如实记"疑似自然耗尽、未证"；
+⇒ ☆ "段"与"位"分层的唯一现场＝`--regexp "o"` 限定 89d 的正文窗＝可见粗段 **4**（`hell**o**`／`welc**o**me`／`sh**o**uld`／`t**oo**ls`）而匹配字符 **5**＝停在 5＝⇒ **篇级名额数匹配位、不数粗段**（G1340／G1344）。
+
+### 二、★★★★★ 一枚卡片子页内的 3–4 窗＝"每页 ≤2"的否证现场
+
+⇒ 结构底图＝d06ab 的 91ebd…「Adding Text」`blocks get --depth 1` 逐序 14 枚子块＝[0]7e3b6… [1]01edf… [2]572bb…(h1 `# Shortcuts`) [3]669fd… [4]71ee6… [5]85c07… [6]01f69… [7]57757… [8]15d0d… [9]b74f8… [10]cdb4a… [11]ebb81… [12]0fdf6… [13]370c1…；
+⇒ `--include you` 在该页内出 **3 窗**＝W1 Blocks{7e3b6…, 01edf…}／W2 Blocks{669fd…}／W3 Blocks{cdb4a…}＝逐字窗口首行＝`...text `（＝卡片标题 "Adding Text " 的尾部）；
+⇒ `--include block` 在该页内出 **4 窗**＝W1 Blocks{01edf…}／W2{669fd…}／W3{b74f8…}／W4{370c1…}＝粗段依次 2/1/1/1＝**5**＝☆ 篇内序＝块序严格升序（[1]→[3]→[9]→[13]）＝⇒ G1347 里唯一还在的正读数；
+⇒ ☆ 同块两处命中都粗的逐字＝`if you are using a keyboard, you can also just press space when a **block** is focused to insert a new **block** below....`＝而同一枚块在 `--include you` 那发里的逐字＝`if **you** are using a keyboard, **you** can also just press space when a block is focused to insert a new block below....`＝**同一枚块、同一串文本、只有粗段位置随查询词移动**＝☆ 这条对照把"摘录＝渲染还是切片"这件事钉死＝G1333 复证加强；
+⇒ ☆ 末行那个 `below....` 是该块全文的结尾（`blocks get` 逐字＝"…to insert a new block below."）＝⇒ **结尾 `...` 不是截断**＝G1349 判据一。
+
+### 三、★★★★ DFS 文本流的三行窗现场（回包不按页分组）
+
+⇒ `--include videos --document d06ab…` 的 W1 三行逐字＝
+`...other document or block by typing @ and then filtering for the name of the page.`（＝**前一张卡片 91ebd… 的末块** 370c1… 的尾部）
+`adding images, **videos** and files`（＝**卡片 95333… 的标题**，与卡片首块并进同一窗）
+`craft lets you insert photos, **videos**, and any files from your camera, photo library, files, or from unsplash....`（＝卡片首块 b33e1… 被截的前半）；
+⇒ 同发 W2 首行＝`...you can also drag and drop images into the mac app from your folders, or any website.`＝W2 的命中块是 3e161…＝⇒ **两窗之间隔着 5 枚非命中块**（`blocks get` 逐序在册）＝并窗判据复证；
+⇒ ☆ 三条的 `Document` 字段逐字都是父篇 d06ab…＝**没有一条把卡片当篇报**＝G1342；
+⇒ ☆ 另一枚"一窗一块被切成两窗"的现场＝`--include craft` 里 5376… 那两窗的 `Blocks:` 逐字都是同一枚 `dc86e…`＝"一窗一块"作废。
+
+### 四、★★★ 文档标题窗的 id 形状＝三例逐字
+
+⇒ `--regexp "." --document 89d53…` 的 W1＝`Blocks: 89d53…`＝与 `Document <89d53…>` 逐字相同＝Match 一行＝`**Quick Start: get going**`（整枚全粗＝22 枚匹配字符）；
+⇒ `--include craft` 的两例＝d06ab 的 W1 `Blocks: d06ab…`＋Match `**Craft** Handbook`＝DFF 的 W7 `Blocks: DFF-…`＋Match `Welcome to **Craft**`＝⇒ 三例一致＝**标题命中＝页根本块 id、单独一窗、不与正文并窗、不占正文名额**＝G1343；
+⇒ ☆ 对照＝卡片标题不同档＝`adding images, **videos** and files` 是**正文流里的一行**且计名额（本节三）＝⇒ "标题"这个词在官方检索面里是两档，本地不能只建一档。
+
+### 五、★★★ 富链接元数据进检索面＝两行同形的逐字
+
+⇒ `--include calendar` 里 75606… 的 W2 四行逐字＝`...event notes`／`how to use **calendar** daily notes in craft`／`how to use **calendar** daily notes in craft`／`daily notes are a way to seamlessly jot down quick notes, plan your day,...`＝☆ 中间**两行逐字相同**＝一枚 `type:"richUrl"` 块的链接文本与 `title` 字段各渲染一次＝＋第三行是 `description`；
+⇒ 命中只在描述里的现场＝`--include you` 里 75606… 的 W6 第二行逐字＝`it's really easy to add attachments to **you**r beautiful craft docs to ensure **you** have all the information you need in one place.in this video, you'll learn:- t...`＝☆ 而该块可见链接文本是"How to Add Attachments in Craft"（不含 `you`）＝⇒ **`description` 参与检索**＝G1345；
+⇒ ☆ 那行里的 `place.in this video` 无空格＝`description` 字段自带的拼接（`blocks get` 逐字核对过）＝不是摘录引擎造成的。
+
+### 六、★★☆ 顶掉反例用的全文核对＝DFF 根页整页只有两枚句点
+
+⇒ `--include "."` 里 DFF 只回 1 窗 2 枚粗段＝看似反例＝☆ `blocks get DFF… --depth 1 --format json` 逐枚数＝首块 caption 文本"Welcome to Craft! This example document is full of content for you to play with and explore the app. Follow along with the videos or click around and explore on your own."＝**恰好 2 枚句点**；其余 19 枚子块＝1 枚空串＋1 枚以省略号结尾（不是句点）＋16 枚无句号的任务／要点＋1 枚标题＝⇒ 整页 2 枚＝**自然耗尽**＝G1349 判据二的实现样本；
+⇒ ☆ 同页第二块 `markdown` 是空串＝复证"空文本块不断窗"（G1332 半句）。
+
+### 七、★★ "未知子命令＋`--help`"＝**在册形态的复证**（两枚成员逐字；☆ 本轮一度登记成"第八种"＝已改判回在册＝G1348）
+
+⇒ `documents delete --help` 逐字＝第一行 `Unknown command: documents delete`＝空行＝`Available commands:`＝两行缩进＝`documents list - List documents with optional location, folder, date, and metadata filters`／`documents resolve-link - Resolve a Craft document link to a rootBlockId`；
+⇒ `blocks delete --help` 同形＝`Unknown command: blocks delete` ＋ `Available commands:` ＋ 五行（`blocks get`／`blocks learn`／`blocks explore-washi`／`blocks search-unsplash`／`blocks explore-themes`）＝☆ 不打印 usage、不报 HTTP 码、不回被请求动词的说明＝G1348；
+⇒ ⚠ **本批推翻一条上一轮未落盘的读数**＝那条写"`documents delete --help` **不报 unknown**、直接把 `delete` 当缺省参数回了一份回收站清单"＝实测**报 unknown**＝☆ 混记来源最可能是同轮 `documents list --location trash` 的读回＝⇒ 判据＝**未落盘的读数与已落盘的不同级，写进产物前必须当轮复打**；
+⇒ ☆ 顺带在册＝**只读面** `documents --help` 的动词清单只有 `list`／`resolve-link`＝该面无删除动词；☆ 写侧 `documents` 有 `create／move／delete`＝`documents delete` 只到**软删**（G869）、两面都无 `purge`（G678）＝⇒ 永久清除**无 API 通路**；⚠ **本节最初把这一形写成"第八种回包形态"＝过度声明**＝九段命令树那节里 `documents bogus` 的逐字回包就是同一张两行清单、第 124 批 `blocks update --help` 同形＝☆ 教训＝**新编号之前先 grep 同族全量**（这次 grep 迟到了落盘之后）＝G1348 已就地改判。
+
+### 八、☆ 回收站读回（删除类授权"动手前先读回"的现场，六位前缀缩写）
+
+⇒ `documents list --location trash` 逐字＝6 项＝空标题三枚（`2db38…`／`d8af0…`／`73dc4…`＝**非本轮所建＝不动**）＋`d48fd… QODER-HARVEST-B109-CODEFIELD`／`e5696… QODER-HARVEST-B111-THEME`／`8d3ac… QODER-HARVEST-B113-CODEBLOCK`＝☆ 本批**只读未删**＝屏上通路被窗口状态挡住（`list_pages` 只有 `about:blank`、截图回 blank）。
+
+## 仍未采到（第 137 批末，逐字面口径）
+
+① **篇间序的键**＝本批三把候选（条目数降序／命中位数降序／时间戳）互否＝☆ 已登记"可能不可证"＝只能等写侧造两篇命中完全同构的目标；
+② **预算"位"在相邻并段上的记账**＝`t**oo**ls` 给出 5 位／4 段＝☆ 需要一枚含"相邻两处同字符命中＋远距一处命中"的目标（官方样例里再找一遍可试，**零写入优先**）；
+③ **前后文保留的常数**＝三枚现场＝49 字符（一整块）／4 字符（半行）／约 100 字符级＝☆ 候选"≈≤100 字符"未钉死＝**零写入可判**＝下批首选；
+④ **三组"未达 5"是否自然耗尽**＝#3 的 d06ab 3 枚／#7 的 5376 3 枚／#15 的 756 4 枚＝未做全文核对＝☆ 判据已写好（本节六）＝下批顺手可结；
+⑤ **回收站三条具名残留的永久清除**＝读回完成、删除未执行＝等窗口状态可确认（屏上 V93；两面都无 `purge`＝G678）；
+⑥ ☆ 承历批未动＝写侧四条（四层以上页／>50 直接子块／当日日记页命中形状／名字含 `p{L}` 的目标）＝需当轮具名授权；六条屏幕项＝需用户开页；`api-contract.md` 的 `Common flags` 是否加 ✎；
+⑦ ☆ **本批新暴露**＝历批产物里"摘录＝渲染命中块／窗口上限＝约 400 字符／≤5 行"这类旧措辞在 `internals.md` 与 `api-contract.md` 仍有多处残留＝属盘上批（零调用）＝下批扫一遍统一为"每篇 5 枚命中位"。
