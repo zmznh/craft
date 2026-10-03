@@ -3093,3 +3093,16 @@ search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hy
 4. ★★ **块序逐字**（同一批 JSON 复原）＝`Welcome to Craft` 首页 20 枚子块＝[1] 页根 → [2] caption `CF0F502D…`（208 字符、`decorations:["callout"]`、`textAlignment:center`、`#00ca85`）→ [3] **`markdown` 空串块 `9A680E1A…`** → [4] 命中块 `75406AD9…`（64 字符，尾部自带 `…`）→ [5] `Agenda` … ⇒ **前文跨过 [3] 直接取 [2]**；
 5. ⇒ **本枚 caption 的完整字段**（在册第一次记全）＝`type:text`、`textStyle:caption`、`textAlignment:center`、`decorations:["callout"]`、`color:"#00ca85"`、`markdown` 带 `<callout><caption>…</caption></callout>` 双层标签；☆ 它的**文本**早在 `longtail.md:2994` 记过（第 137 批数句点那行）、**字段**本批首记；
 6. ⇒ **未解交接**＝普通 caption（无 callout）那三枚为何只留末词＝与本枚的差异有两处（callout 装饰／前一块是空串）**不可分**＝判据见 `gap.md` §三点一〇九一 ①。
+
+## 六十一、**第 142 批逐字片段＝转写复算 25 枚摘录窗口的前文分布（复算器 `_harvest/b142-count.mjs`、零新增调用）**
+
+1. ★★★★★ **读数原样**＝`payloads=59  windows_raw=28  dropped_noise=45  unique=25`；`noNL max=99  withNL max=100  noNL>=100=0  withNL>=100=1`。
+2. ★★★★ **noNL 全谱（升序 25 枚）**＝`0,0,1,2,2,3,4,6,18,18,80,89,90,95,95,95,96,96,96,97,97,98,98,98,99`＝☆ 与历批那 13 枚 `{4,4,6,19,24,35,52,53,81,90,90,97,98}` 同口径不同样本池＝**本批把最大值从 98 推到 99**（贴边程度，不是越过 100）。
+3. ★★★ **贴边那枚逐字**（三行窗、首枚命中＝`snippet`）＝
+   前文行 `...code, math formula (tex), and inline equation`
+   命中行 `you can also add code, math formula (tex), plaintext **snippet**s, inline code, and inline equation.`
+   ⇒ 前文行正文 45 ＋换行 1 ＋命中在行内偏移 54＝**换行不计＝99、换行计入＝100**＝这一枚正好卡在两种口径的分界上＝☆ 但两种解释都不被否证（正文口径下"材料只有 45、预算 46"属正常欠载）＝**登记为未决**。
+4. ★★ **口径互证那一枚逐字**（在册 98 那发复算回来）＝前文行 `...at a specific location.` ＋命中行 `if you are using a keyboard, you can also just press space when a block is **focus**ed to insert a new block below....`＝23＋75＝98＝与 G1351 那句"98＝`--include focus` 首窗＝23＋75"逐字相同。
+5. ☆ **从未登记的三族逐字**（在全部 24 份产物里 `grep` 零命中）＝`...in your documents. craft will automatically arrange them in the best possible layout. see some **examples** below:...`（单行窗＝95）／`...perfect both on desktop/laptop devices and on tablets/phones. feel free to take a look at a few **examples** below:...`（95）／前文行 `...a step further - craft can export your hierarchical notes into a flat interactive pdf.` ＋命中行 `see some **examples** below:...`（94）。
+6. ⇒ **数据卫生**＝以上正文全部出自官方样例文档 `d06ab…`（Craft Handbook）＝**用户自己写的块一枚未取**；出处含另一会话转写（`0a19f932…`）＝按历批口径**标为历史读数**、本批未复打＝不冒充本轮实测。
+
