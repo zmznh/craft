@@ -3106,3 +3106,15 @@ search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hy
 5. ☆ **从未登记的三族逐字**（在全部 24 份产物里 `grep` 零命中）＝`...in your documents. craft will automatically arrange them in the best possible layout. see some **examples** below:...`（单行窗＝95）／`...perfect both on desktop/laptop devices and on tablets/phones. feel free to take a look at a few **examples** below:...`（95）／前文行 `...a step further - craft can export your hierarchical notes into a flat interactive pdf.` ＋命中行 `see some **examples** below:...`（94）。
 6. ⇒ **数据卫生**＝以上正文全部出自官方样例文档 `d06ab…`（Craft Handbook）＝**用户自己写的块一枚未取**；出处含另一会话转写（`0a19f932…`）＝按历批口径**标为历史读数**、本批未复打＝不冒充本轮实测。
 
+## 六十二、**第 143 批逐字片段＝转写全量回包的两条常数复证（仪器 `_harvest/b143-count.mjs`／`_harvest/b143-pairsum.mjs`、零新增调用）**
+
+1. ★★★★★ **条目内加粗段数分布（71 条目）**＝`{0:3, 1:38, 2:15, 3:7, 4:2, 5:6}`＝**最大值恰为 5、零条目越界**；逐篇条目序列（同一篇跨发不合并）＝`75606`＝2,1,2,5,5,2,2,1,1,3／`89d53`＝5,5,1,1,1,4,2,3,2,1／`DFF43`＝2,1,1,2,2,5,1／`5376f`＝2,1,5／`d06ab`＝41 条目、最大 4。
+2. ★★★★ **"同一发内同一篇"段数和（34 组）**＝`1,1,1,1,1,2,2,2,2,2,2,3,3,3,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,7`＝**=5 的 16 组／<5 的 16 组／>5 的只有 2 组**。
+3. ★★★★★ **两枚越界的逐字分解**＝
+   `d06ab`（`Search results: 12 match(es)` 那一发）＝标题块行 `**Craft** Handbook`（1 段）＋正文 5 段（`here's a 'how to' of **craft**'s features....`／`**craft** lets you insert photos, videos, and any files from your camera, photo library,`／`photos, videos, and files will look absolutely stunning in your documents. **craft** wil`／`**craft** allows you to style your content in a beautiful and simple way. we've created `／`apart from using visual controls and buttons, **craft** allows you to style your content`）＝**1＋5＝6**；
+   `DFF43`（`Search results: 2 match(es)`、检索词＝`o`）＝标题块行 `Welc**o**me t**o** Craft`（2 段）＋正文行 `welc**o**me t**o** craft! this example d**o**cument is full **o**f c**o**ntent for you t`（5 段）＝**2＋5＝7**。
+   ⇒ **正文一侧从不越过 5＝越界全部来自标题块**＝G1334＋G1340 第一次被算成恒等式。
+4. ★★★★ **后文余量分布（行内口径）**＝末枚命中在其本行之后保留 `max=102`、`p50=15`、top5＝`99,100,101,101,102`＝☆ 与历批跨行口径的 116／153 并列＝**两口径都 >100**＝⇒ 后文不设预算这个结论再获一组、且本批给的是分布不是孤例。
+5. ★★★ **仪器自纠逐字**＝未切严边界时同一份数据报出 `payloads=63 pairs=34 max sum=18 >5 共 17 组`＝切严（到下一个 `Search results:` 之前）后 `payloads=81 entries=71 dropped=5`、>5 只剩 2 组＝⇒ 回包数在 59／60／69／81 之间跳过＝**计数类读数只在定稿切法下有效**。
+6. ⇒ **数据卫生**＝以上正文全部出自官方样例文档（`d06ab…` Craft Handbook／`DFF43…` 样例文档）＝用户自己写的块一枚未取＝出处＝会话转写（本会话＋另一会话 `0a19f932…`）＝**标历史读数、本批未复打**。
+
