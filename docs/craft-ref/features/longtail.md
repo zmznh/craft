@@ -3078,10 +3078,18 @@ search --include craft --document 7560… --fetch-blocks → 逐字相同 ＋ Hy
 ⇒ ⑦ ☆ 两形 `...` 并存复证＝本批 `blocks get --format markdown` 的 `<contentPreview>` 里带官方自带的 `...\n...and 22 more blocks`＝判"摘录被截"要先排除这种（历批仪器坑第三次踩点）。
 ## 仍未采到（第 139 批末，逐字面口径）
 
-① **`caption` 前文只留末词的机制**＝三枚逐字现场（预测 11／10／11、实测 4／4／7）＝☆ 分"去首词"／"只留末词"要一枚 **≥3 词的 caption**＝本账户样例全为 2 词＝零写入不可判（G1359）；
+① **`caption` 前文只留末词的机制**＝三枚逐字现场（预测 11／10／11、实测 4／4／7）＝☆ 分"去首词"／"只留末词"要一枚 **≥3 词的 caption** ⇒ ✎ **第 140 批＝"样例全为 2 词"作废**＝本文件 `longtail.md:2994` 那行就逐字记着 `DFF43C2D…` 首块的 32 词 caption ⇒ "全 2 词"只限该卡片子页 7 枚 ⇒ 零写入**可**判＝桥通后一发；
 ② **"前文只跨一枚上一行"的第二次采样**＝本批只有一枚反证（3 行代码块只给 `}`）＝☆ 需另一枚多行块（多行 callout／含换行的 text 块）复验（G1358）；
 ③ **常数 100 的边界行为**＝`p₁ ≥ 100` 时前文是零还是负数回退？＝☆ 可判条件＝一枚"命中落在行内第 100 字符之后"的目标＝本批五发都没造出这一形状（零写入可判＝下批顺手打）；
 ④ **`--cursor` 形状族**＝`50:zzz` 被接受并清空结果＝☆ `0:`／`999:`／无冒号／空串各走哪一支未测（G1360）；
 ⑤ **回收站三条具名残留**＝屏上通路本批未探测（零屏幕动作）＝等窗口状态；另 3 项空标题非本轮所建＝不动；
 ⑥ 写侧四条与六条屏幕项（需当轮具名授权／需用户开页）；⑦ ☆ 新问句＝第 138 批那条"游标会不会承认还有更多"本批已结案＝新句改成＝**游标清空结果这一档在 `blocks get`／`documents list` 这两面真有分页的动词上是否存在**（G1360 延伸＝零依赖可判）。
 
+## 六十、**第 140 批逐字片段＝32 词 caption 作前文的"预测 vs 实测"一次咬合（复算器 `_harvest/b140-count.mjs`）**
+
+1. ★★★★★ **回包逐字**（留底 `_harvest/b140-r3-strategy.txt`）＝`search --include strategy --document DFF43C2D…` → 1 窗＝`Blocks: <objId:21>`、`Match:` 两行＝前文行 `...videos or click around and explore on your own.` ＋命中行 `the goal of this meeting is to discuss marketing **strategy** for a…...`（**整行小写＋整行打印**＝G1350／G1352 第三次复证）；
+2. ★★★★ **模型预测列**（输入全部取自历批 `blocks get` 的逐字 JSON，非手工转录）＝caption 原文 `<callout><caption>Welcome to Craft! …explore on your own.</caption></callout>` → 索引副本（去标签＋小写）**170 字符**；命中行 **64 字符**、`p₁`（`strategy` 在行内偏移）＝**49** ⇒ 预算 ＝`100−49`＝**51** ⇒ 取末 51 → 起点落在词中 → 回退 → **47 字符 `videos or click around and explore on your own.`** ＝与实测**逐字符相等（MATCH）**；☆ 1-based 与 0-based 两种计法本枚都给 47（回退把它遮住了）＝⇒ **本枚不能分辨 `p₁` 的基数**＝如实登记；
+3. ★★★ **对照组（同脚本同规则）**＝① 批 139 `--include snippet` 窗（前一块＝普通段落）＝预测 `code, math formula (tex), and inline equation` ＝实测 **MATCH**；② 批 139 `--include equation` W2（前一块＝**普通 caption** `<caption>*Inline code*</caption>`）＝预测 `inline code`、实测 `code` ＝**MISS**（预算 93 明明够）⇒ 两组同脚本一个 MATCH 一个 MISS ⇒ 差异**不在复算器**、在输入块的属性；
+4. ★★ **块序逐字**（同一批 JSON 复原）＝`Welcome to Craft` 首页 20 枚子块＝[1] 页根 → [2] caption `CF0F502D…`（208 字符、`decorations:["callout"]`、`textAlignment:center`、`#00ca85`）→ [3] **`markdown` 空串块 `9A680E1A…`** → [4] 命中块 `75406AD9…`（64 字符，尾部自带 `…`）→ [5] `Agenda` … ⇒ **前文跨过 [3] 直接取 [2]**；
+5. ⇒ **本枚 caption 的完整字段**（在册第一次记全）＝`type:text`、`textStyle:caption`、`textAlignment:center`、`decorations:["callout"]`、`color:"#00ca85"`、`markdown` 带 `<callout><caption>…</caption></callout>` 双层标签；☆ 它的**文本**早在 `longtail.md:2994` 记过（第 137 批数句点那行）、**字段**本批首记；
+6. ⇒ **未解交接**＝普通 caption（无 callout）那三枚为何只留末词＝与本枚的差异有两处（callout 装饰／前一块是空串）**不可分**＝判据见 `gap.md` §三点一〇九一 ①。
